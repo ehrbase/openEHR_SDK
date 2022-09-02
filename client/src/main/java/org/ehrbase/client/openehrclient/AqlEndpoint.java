@@ -35,7 +35,7 @@ public interface AqlEndpoint {
 
     QueryResponseData executeStoredQuery(String qualifiedQueryName,
                                          String version,
-                                         Optional<UUID> ehrId,
+                                         //Optional<UUID> ehrId, // TODO: ehr_id not available in openEHR 1.0.0 spec. Has to be included in queryParameter
                                          Optional<Integer> offset,
                                          Optional<Integer> fetch,
                                          Optional<String> queryParameters);

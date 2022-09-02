@@ -183,7 +183,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     @Override
     public QueryResponseData executeStoredQuery(String qualifiedQueryName,
                                                 String version,
-                                                Optional<UUID> ehrId,
+                                                //Optional<UUID> ehrId, // TODO: ehr_id not available in openEHR 1.0.0 spec. Has to be included in queryParameter
                                                 Optional<Integer> offset,
                                                 Optional<Integer> fetch,
                                                 Optional<String> queryParameters) {
@@ -203,7 +203,8 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                 + version
         );
 
-        ehrId.ifPresent(value -> uriBuilder.addParameter("ehr_id", value.toString()));
+        //TODO: ehr_id not available in openEHR 1.0.0 spec
+        //ehrId.ifPresent(value -> uriBuilder.addParameter("ehr_id", value.toString()));
 
         offset.ifPresent(value -> uriBuilder.addParameter("offset", value.toString()));
 

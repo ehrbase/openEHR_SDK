@@ -553,7 +553,7 @@ public class AqlTestIT {
 
         Exception exception = assertThrows(
                 ClientException.class,
-                () -> openEhrClient.aqlEndpoint().executeStoredQuery(null,null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+                () -> openEhrClient.aqlEndpoint().executeStoredQuery(null,null,  Optional.empty(), Optional.empty(), Optional.empty()));
 
         String expectedMessage = "Invalid query";
         String actualMessage = exception.getMessage();
@@ -566,7 +566,7 @@ public class AqlTestIT {
 
         Exception exception = assertThrows(
                 ClientException.class,
-                () -> openEhrClient.aqlEndpoint().executeStoredQuery("queryName",null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+                () -> openEhrClient.aqlEndpoint().executeStoredQuery("queryName",null, Optional.empty(), Optional.empty(), Optional.empty()));
 
         String expectedMessage = "Invalid query";
         String actualMessage = exception.getMessage();
@@ -579,7 +579,7 @@ public class AqlTestIT {
 
         Exception exception = assertThrows(
                 WrongStatusCodeException.class,
-                () -> openEhrClient.aqlEndpoint().executeStoredQuery("org.openehr::blablabla","1.0", Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())
+                () -> openEhrClient.aqlEndpoint().executeStoredQuery("org.openehr::blablabla","1.0",  Optional.empty(), Optional.empty(), Optional.empty())
         );
 
         String expectedMessage = "Could not retrieve stored query for qualified name";
@@ -729,7 +729,7 @@ public class AqlTestIT {
 
         String fullVersion = version+patchVersion;
 
-        QueryResponseData queryResponse = openEhrClient.aqlEndpoint().executeStoredQuery(qualifiedQueryName, fullVersion, Optional.of(ehr), Optional.empty(), Optional.empty(), Optional.empty());
+        QueryResponseData queryResponse = openEhrClient.aqlEndpoint().executeStoredQuery(qualifiedQueryName, fullVersion, Optional.empty(), Optional.empty(), Optional.empty());
 
         //TODO: the qualified query name should not have the version number included
         String expectedName = qualifiedQueryName + "/" + version + patchVersion;
