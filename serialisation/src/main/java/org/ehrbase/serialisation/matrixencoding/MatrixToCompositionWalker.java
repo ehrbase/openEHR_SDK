@@ -43,6 +43,7 @@ import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.webtemplate.interpreter.Interpreter;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -88,8 +89,7 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
         }
 
         if (i == null
-                && WebTemplateSkeletonBuilder.findRmAttributeInfo(
-                                context.getNodeDeque().peek(), child)
+                && Interpreter.findRmAttributeInfo(context.getNodeDeque().peek(), child)
                         .isMultipleValued()) {
             i = 0;
         }
