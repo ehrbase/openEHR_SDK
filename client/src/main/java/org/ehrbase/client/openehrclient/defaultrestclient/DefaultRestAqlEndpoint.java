@@ -69,6 +69,9 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     private final DefaultRestClient defaultRestClient;
 
+    private final String INVALID_QUERY_ERROR_STRING = "Invalid query";
+    private final String INVALID_PARAMETERS_ERROR_STRING = "Invalid parameters";
+
     public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
         this.defaultRestClient = defaultRestClient;
     }
@@ -143,17 +146,17 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public QueryResponseData executeRaw(Query query, ParameterValue... parameters) {
 
         if (query == null) {
-            throw new ClientException("Invalid query");
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
         if (parameters == null) {
-            throw new ClientException("Invalid parameters");
+            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
         String queryString = query.buildAql();
 
         if (StringUtils.isEmpty(queryString)) {
-            throw new ClientException("Invalid query");
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
         for (ParameterValue v : parameters) {
@@ -184,7 +187,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public QueryResponseData executeStoredQuery(StoredQueryParameter queryParameter) {
 
         if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException("Invalid query");
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
         URIBuilder uriBuilder = getBaseUriBuilder()
@@ -215,7 +218,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     @Override
     public StoredQueryResponseData getStoredAqlQuery(StoredQueryParameter queryParameter) {
         if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException("Invalid query");
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
         URIBuilder uriBuilder = getBaseUriBuilder()
@@ -239,11 +242,11 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public void storeAqlQuery(Query query, StoredQueryParameter queryParameter) {
 
         if (query == null) {
-            throw new ClientException("Invalid query");
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
         if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException("Invalid parameters");
+            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
         JSONObject requestBody = new JSONObject();
