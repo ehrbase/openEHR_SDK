@@ -69,8 +69,8 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     private final DefaultRestClient defaultRestClient;
 
-    private final String INVALID_QUERY_ERROR_STRING = "Invalid query";
-    private final String INVALID_PARAMETERS_ERROR_STRING = "Invalid parameters";
+    private static final String INVALID_QUERY_ERROR_STRING = "Invalid query";
+    private static final String INVALID_PARAMETERS_ERROR_STRING = "Invalid parameters";
 
     public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
         this.defaultRestClient = defaultRestClient;
