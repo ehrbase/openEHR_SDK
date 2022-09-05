@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
+import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmPrimitive;
@@ -63,6 +64,13 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
     @Override
     protected FromWalkerDto extract(
             Context<FromWalkerDto> context, WebTemplateNode child, boolean isChoice, Integer i) {
+
+        if (i == null
+                && WebTemplateSkeletonBuilder.findRmAttributeInfo(
+                                context.getNodeDeque().peek(), child)
+                        .isMultipleValued()) {
+            i = 0;
+        }
 
         FromWalkerDto next = new FromWalkerDto(context.getObjectDeque().peek());
 

@@ -87,6 +87,13 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
             return null;
         }
 
+        if (i == null
+                && WebTemplateSkeletonBuilder.findRmAttributeInfo(
+                                context.getNodeDeque().peek(), child)
+                        .isMultipleValued()) {
+            i = 0;
+        }
+
         List<ToWalkerDto> filter = filter(context.getObjectDeque().peek(), child.getAqlPathDto(), i != null, i);
 
         // Check that the type is correct
@@ -100,6 +107,9 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
 
         if (filter.isEmpty()) {
             return null;
+        }
+        if (i != null) {
+            filter = filter.stream().map(MatrixToCompositionWalker::removeIndex).collect(Collectors.toList());
         }
         return filter;
     }
@@ -199,6 +209,10 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
                 .collect(Collectors.groupingBy(e -> e.path.getBaseNode().getName()));
 
         return collect.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
+            if (e.getKey() == null) {
+                System.out.println("ff");
+            }
+
             // Elementar Value found
             if (e.getValue().size() == 1 && e.getValue().get(0).path.getNodeCount() <= 1) {
                 return e.getValue().get(0).value;
@@ -345,5 +359,12 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
         }
 
         return index == null || toWalkerDto.index.get(0).equals(index);
+    }
+
+    private static ToWalkerDto removeIndex(ToWalkerDto current) {
+
+        ToWalkerDto toWalkerDto = new ToWalkerDto(current);
+        toWalkerDto.index.remove(0);
+        return toWalkerDto;
     }
 }

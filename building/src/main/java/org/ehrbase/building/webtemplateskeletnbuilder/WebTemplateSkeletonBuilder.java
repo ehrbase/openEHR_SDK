@@ -210,4 +210,14 @@ public class WebTemplateSkeletonBuilder {
             return Optional.empty();
         }
     }
+
+    public static RMAttributeInfo findRmAttributeInfo(WebTemplateNode parent, WebTemplateNode child) {
+
+        String attributeName = child.getAqlPathDto()
+                .removeStart(parent.getAqlPathDto())
+                .getBaseNode()
+                .getName();
+
+        return ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getRmType(), attributeName);
+    }
 }
