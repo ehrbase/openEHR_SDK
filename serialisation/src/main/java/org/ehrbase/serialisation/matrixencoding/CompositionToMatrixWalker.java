@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
@@ -59,7 +58,8 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerDto> {
 
     public static final String MAGNITUDE = "/magnitude";
-    private List<String> resolveTo = List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY");
+    private List<String> resolveTo =
+            List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY", "SECTION");
 
     @Override
     protected FromWalkerDto extract(
@@ -80,14 +80,12 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
         }
 
         // Is this a RM type to which we resolve to, then add a new Entity
-        if (child.getNodeId() != null
-                && findTypeName(child.getNodeId()) != null
-                && resolveTo.contains(findTypeName(child.getNodeId()))) {
+        if (child.getNodeId() != null && resolveTo.contains(child.getRmType())) {
 
             Entity nextEntity = new Entity(next.getCurrentEntity());
             nextEntity.setArchetypeId(child.getNodeId());
-            nextEntity.setPathFromRoot(
-                    child.getAqlPathDto().removeStart(next.getCurrentEntity().getPathFromRoot()));
+            nextEntity.setRmType(child.getRmType());
+            nextEntity.setPathFromRoot(child.getAqlPathDto());
             if (i != null) {
                 nextEntity.getEntityIdx().add(child.getAqlPath(), i);
             }
@@ -294,19 +292,5 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                     .get(fromWalkerDto.getCurrentFieldIndex())
                     .putAll(flatten(relativ, MARSHAL_OM.valueToTree(o)));
         }
-    }
-
-    static String findTypeName(String atCode) {
-        String typeName = null;
-
-        if (atCode.contains("openEHR-EHR-")) {
-
-            typeName = StringUtils.substringBetween(atCode, "openEHR-EHR-", ".");
-        } else if (atCode.startsWith("at")) {
-            typeName = null;
-        } else {
-            typeName = atCode;
-        }
-        return typeName;
     }
 }
