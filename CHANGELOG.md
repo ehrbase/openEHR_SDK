@@ -3,14 +3,11 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
- ### Fixed 
-
-## [1.21.0]
  ### Added
-- Get items from current folder 
- ### Fixed
+- Get items from current folder
+ ### Fixed 
 - Removed caching of root folders to prevent false conflicts and memory leaks
+
 
 ## [1.20.0]
  ### Added 
