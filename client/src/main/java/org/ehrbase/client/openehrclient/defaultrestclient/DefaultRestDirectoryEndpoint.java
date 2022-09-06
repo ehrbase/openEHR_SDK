@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.VersionUid;
@@ -46,13 +47,20 @@ public class DefaultRestDirectoryEndpoint {
         syncFromDb();
     }
 
+    public FolderDAO getFolder(String path) {
+        DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(this, path);
+        folderDAO.sync();
+        return folderDAO;
+    }
+
     synchronized void syncFromDb() {
         if (root == null) {
-            createRoot();
+            try {
+                retrieveRootFolder();
+            } catch (WrongStatusCodeException e) {
+                createRootFolder();
+            }
         }
-        Optional<DirectoryResponseData> directoryResponseData =
-                defaultRestClient.httpGet(resolve(""), DirectoryResponseData.class);
-        copyToFolder(root, directoryResponseData.orElseThrow());
     }
 
     synchronized void saveToDb() {
@@ -88,6 +96,18 @@ public class DefaultRestDirectoryEndpoint {
         return current;
     }
 
+    CompositionEndpoint getCompositionEndpoint() {
+        return defaultRestClient.compositionEndpoint(ehrId);
+    }
+
+    DefaultRestClient getDefaultRestClient() {
+        return defaultRestClient;
+    }
+
+    UUID getEhrId() {
+        return ehrId;
+    }
+
     private void copyToFolder(Folder folder, DirectoryResponseData responseData) {
         folder.setUid(responseData.getUid());
         folder.setName(responseData.getName());
@@ -96,12 +116,25 @@ public class DefaultRestDirectoryEndpoint {
         folder.setItems(responseData.getItems());
     }
 
-    private void createRoot() {
-        root = new Folder();
-        root.setName(new DvText("root"));
-        root.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
-        VersionUid versionUid = defaultRestClient.httpPost(resolve(""), root);
-        rootVersion = versionUid;
+    private void retrieveRootFolder() throws WrongStatusCodeException {
+        Optional<DirectoryResponseData> directoryResponseData =
+                defaultRestClient.httpGet(resolve(StringUtils.EMPTY), DirectoryResponseData.class);
+        root = initRootFolder();
+        copyToFolder(
+                root, directoryResponseData.orElseThrow(() -> new WrongStatusCodeException("Not Found", 404, 200)));
+        rootVersion = new VersionUid(root.getUid().toString());
+    }
+
+    private void createRootFolder() {
+        root = initRootFolder();
+        rootVersion = defaultRestClient.httpPost(resolve(""), root);
+    }
+
+    private Folder initRootFolder() {
+        var folder = new Folder();
+        folder.setName(new DvText("root"));
+        folder.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
+        return folder;
     }
 
     private URI resolve(String subPath) {
@@ -113,23 +146,5 @@ public class DefaultRestDirectoryEndpoint {
                     .getBaseUri()
                     .resolve(EHR_PATH + ehrId.toString() + DIRECTORY_PATH + subPath);
         }
-    }
-
-    public FolderDAO getFolder(String path) {
-        DefaultRestFolderDAO folderDAO = new DefaultRestFolderDAO(this, path);
-        folderDAO.sync();
-        return folderDAO;
-    }
-
-    CompositionEndpoint getCompositionEndpoint() {
-        return defaultRestClient.compositionEndpoint(ehrId);
-    }
-
-    DefaultRestClient getDefaultRestClient() {
-        return defaultRestClient;
-    }
-
-    UUID getEhrId() {
-        return ehrId;
     }
 }

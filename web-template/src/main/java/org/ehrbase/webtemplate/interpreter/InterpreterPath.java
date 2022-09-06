@@ -49,6 +49,11 @@ public class InterpreterPath implements Serializable {
         return sb.toString();
     }
 
+    public Long extractDepth() {
+
+        return nodeList.stream().filter(n -> n.getTemplateNode().isMulti()).count();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

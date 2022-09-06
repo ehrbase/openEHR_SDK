@@ -31,6 +31,10 @@ public class Row {
     private AqlPath entityPath;
     private String archetypeId;
 
+    private String rmType;
+
+    private String templateId;
+
     private Integer[] entityIdx;
 
     private Integer[] fieldIdx;
@@ -76,6 +80,22 @@ public class Row {
         this.fields = fields;
     }
 
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
+    }
+
+    public String getRmType() {
+        return rmType;
+    }
+
+    public void setRmType(String rmType) {
+        this.rmType = rmType;
+    }
+
     public int getNum() {
         return num;
     }
@@ -96,6 +116,8 @@ public class Row {
         return num == row.num
                 && Objects.equals(entityPath, row.entityPath)
                 && Objects.equals(archetypeId, row.archetypeId)
+                && Objects.equals(rmType, row.rmType)
+                && Objects.equals(templateId, row.templateId)
                 && Arrays.equals(entityIdx, row.entityIdx)
                 && Arrays.equals(fieldIdx, row.fieldIdx)
                 && Objects.equals(fields, row.fields);
@@ -103,7 +125,7 @@ public class Row {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(num, entityPath, archetypeId, fields);
+        int result = Objects.hash(num, entityPath, archetypeId, rmType, templateId, fields);
         result = 31 * result + Arrays.hashCode(entityIdx);
         result = 31 * result + Arrays.hashCode(fieldIdx);
         return result;
@@ -112,11 +134,13 @@ public class Row {
     @Override
     public String toString() {
         return "Row{" + "num="
-                + num + ", pathFromRoot="
+                + num + ", entityPath="
                 + entityPath + ", archetypeId='"
-                + archetypeId + '\'' + ", count="
-                + Arrays.toString(entityIdx) + ", index="
-                + Arrays.toString(fieldIdx) + ", other="
+                + archetypeId + '\'' + ", rmType='"
+                + rmType + '\'' + ", templateId='"
+                + templateId + '\'' + ", entityIdx="
+                + Arrays.toString(entityIdx) + ", fieldIdx="
+                + Arrays.toString(fieldIdx) + ", fields="
                 + fields + '}';
     }
 }

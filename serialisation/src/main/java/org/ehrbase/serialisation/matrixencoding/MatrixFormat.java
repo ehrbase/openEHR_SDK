@@ -17,8 +17,6 @@
  */
 package org.ehrbase.serialisation.matrixencoding;
 
-import static org.ehrbase.serialisation.matrixencoding.CompositionToMatrixWalker.findTypeName;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,6 +98,7 @@ public class MatrixFormat implements RMDataFormat {
         Entity currentEntity = new Entity();
         currentEntity.setPathFromRoot(AqlPath.ROOT_PATH);
         currentEntity.setArchetypeId(composition.getArchetypeNodeId());
+        currentEntity.setRmType("COMPOSITION");
         FromWalkerDto fromWalkerDto = new FromWalkerDto();
         fromWalkerDto.updateEntity(currentEntity);
         new CompositionToMatrixWalker()
@@ -122,6 +121,9 @@ public class MatrixFormat implements RMDataFormat {
         if (encoder != null) {
             flatten.forEach(this::encode);
         }
+
+        flatten.forEach(r -> r.setTemplateId(
+                composition.getArchetypeDetails().getTemplateId().getValue()));
 
         return flatten;
     }
@@ -146,6 +148,7 @@ public class MatrixFormat implements RMDataFormat {
         row.setEntityIdx(entity.getEntityIdx().getRepetitions());
         row.setArchetypeId(entity.getArchetypeId());
         row.setEntityPath(entity.getPathFromRoot());
+        row.setRmType(entity.getRmType());
         row.setFields(e.getValue());
         row.setFieldIdx(e.getKey().getRepetitions());
         return row;
@@ -187,6 +190,7 @@ public class MatrixFormat implements RMDataFormat {
         row.setEntityIdx(buildArray(csvRecord.get(HEADERS.ENTITY_IDX)));
         row.setFieldIdx(buildArray(csvRecord.get(HEADERS.FIELD_IDX)));
         row.setArchetypeId(csvRecord.get(HEADERS.ENTITY_CONCEPT));
+        row.setRmType(csvRecord.get(HEADERS.RM_ENTITY));
         row.setEntityPath(AqlPath.parse(csvRecord.get(HEADERS.ENTITY_PATH)));
         try {
             Map<String, Object> map = MAPPER.readValue(
@@ -240,7 +244,7 @@ public class MatrixFormat implements RMDataFormat {
             printer.printRecord(
                     r.getNum(),
                     r.getArchetypeId(),
-                    findTypeName(r.getArchetypeId()),
+                    r.getRmType(),
                     r.getEntityPath().format(AqlPath.OtherPredicatesFormat.SHORTED, true),
                     printArray(r.getEntityIdx()),
                     printArray(r.getFieldIdx()),
