@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+- Folder creation
 
 ## [1.21.0]
  ### Added
@@ -12,6 +13,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  ### Fixed 
 - Removed caching of root folders to prevent false conflicts and memory leaks ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
 -  new Matrix serialisation use rm-model for index and fix section handling ([#386](https://github.com/ehrbase/openEHR_SDK/pull/386))
+
 
 ## [1.20.0]
  ### Added 
