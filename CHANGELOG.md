@@ -6,6 +6,12 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  ### Added 
  ### Fixed 
 
+## [1.21.0]
+ ### Added
+- Get items from current folder 
+ ### Fixed
+- Removed caching of root folders to prevent false conflicts and memory leaks
+
 ## [1.20.0]
  ### Added 
 - Add spotless plugin, Add codestyle check to workflows ([#368](https://github.com/ehrbase/openEHR_SDK/pull/368))
