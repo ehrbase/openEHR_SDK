@@ -3,6 +3,10 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
+ ### Added 
+ ### Fixed 
+
+## [1.21.0]
  ### Added
 - Get items from current folder ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
  ### Fixed 
@@ -195,4 +199,5 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...v1.19.0
 
 [1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...HEAD
+[1.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...v1.21.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...HEAD
