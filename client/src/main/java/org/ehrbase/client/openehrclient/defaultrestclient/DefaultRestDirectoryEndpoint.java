@@ -54,12 +54,10 @@ public class DefaultRestDirectoryEndpoint {
     }
 
     synchronized void syncFromDb() {
-        if (root == null) {
-            try {
-                retrieveRootFolder();
-            } catch (WrongStatusCodeException e) {
-                createRootFolder();
-            }
+        try {
+            retrieveRootFolder();
+        } catch (WrongStatusCodeException e) {
+            createRootFolder();
         }
     }
 
@@ -119,7 +117,9 @@ public class DefaultRestDirectoryEndpoint {
     private void retrieveRootFolder() throws WrongStatusCodeException {
         Optional<DirectoryResponseData> directoryResponseData =
                 defaultRestClient.httpGet(resolve(StringUtils.EMPTY), DirectoryResponseData.class);
-        root = initRootFolder();
+        if (root == null) {
+            root = initRootFolder();
+        }
         copyToFolder(
                 root, directoryResponseData.orElseThrow(() -> new WrongStatusCodeException("Not Found", 404, 200)));
         rootVersion = new VersionUid(root.getUid().toString());
