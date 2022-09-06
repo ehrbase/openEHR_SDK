@@ -43,7 +43,6 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.WeakHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -58,7 +57,16 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.flattener.DefaultValuesProvider;
-import org.ehrbase.client.openehrclient.*;
+import org.ehrbase.client.openehrclient.AdminEhrEndpoint;
+import org.ehrbase.client.openehrclient.AdminTemplateEndpoint;
+import org.ehrbase.client.openehrclient.AqlEndpoint;
+import org.ehrbase.client.openehrclient.CompositionEndpoint;
+import org.ehrbase.client.openehrclient.FolderDAO;
+import org.ehrbase.client.openehrclient.OpenEhrClient;
+import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
+import org.ehrbase.client.openehrclient.TemplateEndpoint;
+import org.ehrbase.client.openehrclient.VersionUid;
+import org.ehrbase.client.openehrclient.VersionedCompositionEndpoint;
 import org.ehrbase.client.templateprovider.ClientTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
@@ -72,7 +80,6 @@ public class DefaultRestClient implements OpenEhrClient {
     private final TemplateProvider templateProvider;
     private final Executor executor;
     private final DefaultRestEhrEndpoint defaultRestEhrEndpoint;
-    private final Map<UUID, DefaultRestDirectoryEndpoint> directoryEndpointMap = new WeakHashMap<>();
     private final DefaultValuesProvider defaultValuesProvider;
 
     public DefaultRestClient(OpenEhrClientConfig config, TemplateProvider templateProvider) {
@@ -295,9 +302,7 @@ public class DefaultRestClient implements OpenEhrClient {
 
     @Override
     public FolderDAO folder(UUID ehrId, String path) {
-        return directoryEndpointMap
-                .computeIfAbsent(ehrId, k -> new DefaultRestDirectoryEndpoint(this, k))
-                .getFolder(path);
+        return new DefaultRestDirectoryEndpoint(this, ehrId).getFolder(path);
     }
 
     @Override

@@ -20,6 +20,7 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
+import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.util.ArrayList;
@@ -131,6 +132,15 @@ public class DefaultRestFolderDAO implements FolderDAO {
         return execute.stream().map(Record1::value1).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the items stored in the current folder
+     * @return The items of the current folder.
+     */
+    @Override
+    public List<ObjectRef<? extends ObjectId>> getItems() {
+        return getFolder().getItems();
+    }
+
     void sync() {
         getFolder();
         directoryEndpoint.saveToDb();
@@ -147,7 +157,7 @@ public class DefaultRestFolderDAO implements FolderDAO {
             folder.setItems(new ArrayList<>());
         }
         folder.getItems()
-                .add(new ObjectRef(
+                .add(new ObjectRef<>(
                         new ObjectVersionId(versionId.getUuid().toString()),
                         versionId.getSystem(),
                         "VERSIONED_COMPOSITION"));
