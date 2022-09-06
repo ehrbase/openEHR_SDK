@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+-  new Matrix serialisation use rm-model for index and fix section handling ([#386](https://github.com/ehrbase/openEHR_SDK/pull/386))
 
 ## [1.20.0]
  ### Added 
