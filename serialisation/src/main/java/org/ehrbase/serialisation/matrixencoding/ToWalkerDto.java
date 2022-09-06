@@ -17,6 +17,7 @@
  */
 package org.ehrbase.serialisation.matrixencoding;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.ehrbase.aql.dto.path.AqlPath;
 
@@ -28,4 +29,12 @@ class ToWalkerDto {
     AqlPath path;
     List<Integer> index;
     Object value;
+
+    public ToWalkerDto() {}
+
+    public ToWalkerDto(ToWalkerDto other) {
+        this.path = other.path;
+        this.index = new ArrayList<>(other.index);
+        this.value = other.value;
+    }
 }
