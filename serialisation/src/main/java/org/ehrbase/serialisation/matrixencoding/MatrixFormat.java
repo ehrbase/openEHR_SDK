@@ -291,7 +291,6 @@ public class MatrixFormat implements RMDataFormat {
 
     private void encode(Row row) {
 
-        row.setEntityPath(encoder.encode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> encoder.encode(e.getKey()),
@@ -304,7 +303,6 @@ public class MatrixFormat implements RMDataFormat {
 
     private void decode(Row row) {
 
-        row.setEntityPath(encoder.decode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> encoder.decode(e.getKey()),
