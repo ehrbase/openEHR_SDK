@@ -58,6 +58,22 @@ class MatrixConformanceTest {
             }
         });
         arguments.add(Arguments.of(
+                CompositionTestDataSimSDTJson.MULTI_OCCURRENCE,
+                new String[] {
+                    "Missing path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22.0",
+                    "Missing path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11.0",
+                    "Missing path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22.0",
+                    "Missing path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11.0"
+                },
+                new String[] {
+                    "Extra path: encounter/body_temperature:0/any_event:0/temperature|magnitude, value: 22",
+                    "Extra path: encounter/body_temperature:0/any_event:1/temperature|magnitude, value: 11",
+                    "Extra path: encounter/body_temperature:1/any_event:0/temperature|magnitude, value: 22",
+                    "Extra path: encounter/body_temperature:1/any_event:1/temperature|magnitude, value: 11"
+                },
+                new String[] {}));
+
+        arguments.add(Arguments.of(
                 CompositionTestDataSimSDTJson.ALL_TYPES,
                 new String[] {
                     "Missing path: test_all_types/test_all_types:0/identifier|id, value: 55175056",

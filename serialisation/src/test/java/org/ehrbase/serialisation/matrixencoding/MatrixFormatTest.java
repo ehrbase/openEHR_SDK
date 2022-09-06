@@ -80,36 +80,6 @@ class MatrixFormatTest {
     }
 
     @Test
-    void toMatrixIPSEncode() throws IOException {
-
-        String corona = IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8);
-
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), new FixedCodeSetEncoder());
-
-        String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
-
-        String expected =
-                IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPSEncode.csv"), StandardCharsets.UTF_8);
-
-        assertThat(actual).isEqualToNormalizingNewlines(expected);
-    }
-
-    @Test
-    void toMatrixCoronaEncode() throws IOException {
-
-        String corona = IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8);
-
-        MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider(), new FixedCodeSetEncoder());
-
-        String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
-
-        String expected = IOUtils.toString(
-                MatrixFormat.class.getResourceAsStream("/csv/CORONAEncode.csv"), StandardCharsets.UTF_8);
-
-        assertThat(actual).isEqualToNormalizingNewlines(expected);
-    }
-
-    @Test
     void fromMatrix() throws IOException {
         MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
         Composition actual = cut.unmarshal(
