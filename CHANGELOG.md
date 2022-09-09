@@ -5,6 +5,10 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+
+## [1.22.0]
+ ### Added 
+ ### Fixed 
 - Folder creation
 - fix not unique rows in matrix formate ([#390](https://github.com/ehrbase/openEHR_SDK/pull/390))
 
@@ -203,4 +207,5 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 [1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0
 [1.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...v1.21.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...HEAD
+[1.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...v1.22.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.22.0...HEAD
