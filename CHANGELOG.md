@@ -2,12 +2,19 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [1.22.0]
+ ### Added 
+ ### Fixed 
+- Folder creation
+- fix not unique rows in matrix formate ([#390](https://github.com/ehrbase/openEHR_SDK/pull/390))
+
 ## [1.21.0]
  ### Added
 - Get items from current folder ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
  ### Fixed 
 - Removed caching of root folders to prevent false conflicts and memory leaks ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
 -  new Matrix serialisation use rm-model for index and fix section handling ([#386](https://github.com/ehrbase/openEHR_SDK/pull/386))
+
 
 ## [1.20.0]
  ### Added 
@@ -196,3 +203,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 [1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0
 [1.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...v1.21.0
+[1.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...v1.22.0

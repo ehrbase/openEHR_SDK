@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVFormat;
@@ -140,7 +141,29 @@ public class MatrixFormat implements RMDataFormat {
 
     private List<Row> toRows(Entity entity, Map<Index, Map<AqlPath, Object>> map) {
 
-        return map.entrySet().stream().map(e -> toRow(entity, e)).collect(Collectors.toList());
+        // Make the row unique on archetype + entity_path + entity_index + field_idx
+        Map<String, Map<AqlPath, Map<List<Integer>, Map<List<Integer>, Optional<Row>>>>> collect =
+                map.entrySet().stream()
+                        .map(e -> toRow(entity, e))
+                        .collect(Collectors.groupingBy(
+                                Row::getArchetypeId,
+                                Collectors.groupingBy(
+                                        Row::getEntityPath,
+                                        Collectors.groupingBy(
+                                                r -> Arrays.asList(r.getEntityIdx()),
+                                                Collectors.groupingBy(
+                                                        r -> Arrays.asList(r.getFieldIdx()),
+                                                        Collectors.reducing((r1, r2) -> {
+                                                            r1.getFields().putAll(r2.getFields());
+                                                            return r1;
+                                                        }))))));
+
+        return collect.values().stream()
+                .flatMap(m -> m.values().stream())
+                .flatMap(m -> m.values().stream())
+                .flatMap(m -> m.values().stream())
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
     private Row toRow(Entity entity, Map.Entry<Index, Map<AqlPath, Object>> e) {
@@ -291,7 +314,6 @@ public class MatrixFormat implements RMDataFormat {
 
     private void encode(Row row) {
 
-        row.setEntityPath(encoder.encode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> encoder.encode(e.getKey()),
@@ -304,7 +326,6 @@ public class MatrixFormat implements RMDataFormat {
 
     private void decode(Row row) {
 
-        row.setEntityPath(encoder.decode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> encoder.decode(e.getKey()),
