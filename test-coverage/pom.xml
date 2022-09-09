@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.22.0</version>
+        <version>1.23.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>test-coverage</artifactId>
