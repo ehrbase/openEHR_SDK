@@ -79,7 +79,7 @@ public class WebTemplateNode implements Serializable {
         this.nodeId = other.nodeId;
         this.min = other.min;
         this.max = other.max;
-        this.aqlPath = other.aqlPath;
+        this.aqlPath = AqlPath.parse(other.aqlPath.toString());
         this.inContext = other.inContext;
         this.dependsOn.addAll(other.dependsOn);
         if (other.annotations != null) {

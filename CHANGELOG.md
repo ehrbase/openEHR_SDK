@@ -11,6 +11,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  ### Fixed 
 - Folder creation
 - fix not unique rows in matrix formate ([#390](https://github.com/ehrbase/openEHR_SDK/pull/390))
+- fix web-template aql-path was not cloned ([#391](https://github.com/ehrbase/openEHR_SDK/pull/391))
 
 ## [1.21.0]
  ### Added
