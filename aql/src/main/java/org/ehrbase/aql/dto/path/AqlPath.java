@@ -438,7 +438,8 @@ public final class AqlPath implements Serializable {
         return Arrays.stream(search)
                 .filter(s -> s.length() <= pathAfter.length())
                 .filter(s -> 0 == CharSequence.compare(s, pathAfter.subSequence(0, s.length())))
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
