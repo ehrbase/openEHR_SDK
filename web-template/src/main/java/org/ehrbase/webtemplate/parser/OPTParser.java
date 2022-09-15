@@ -408,7 +408,7 @@ public class OPTParser {
 
         if (StringUtils.isNotBlank(ccomplexobject.getNodeId()) && explicitName != null) {
             String nameValue = explicitName.label;
-            node.setAqlPath(node.getAqlPathDto().replaceLastNode(n -> n.withNameValue(nameValue)));
+            node.setAqlPath(node.getAqlPathDto().replaceLastNode(n -> n.withNameValue(nameValue.replace("'", "\\'"))));
         }
         return node;
     }
@@ -559,7 +559,8 @@ public class OPTParser {
                             .filter(n -> !n.getAqlPathDto().equals(c.getAqlPathDto()))
                             .anyMatch(n -> n.getAqlPathDto().equals(c.getAqlPathDto(), false)))
                     .forEach(c -> {
-                        AqlPath path = AqlPath.parse(c.getAqlPath(true), c.getName());
+                        AqlPath path =
+                                AqlPath.parse(c.getAqlPath(true), c.getName().replace("'", "\\'"));
                         c.getChildren().forEach(n -> replaceParentAql(n, c.getAqlPathDto(), path));
 
                         c.setAqlPath(path);

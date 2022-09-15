@@ -100,7 +100,7 @@ public class ItemExtractor {
                             .filter(c -> childPath
                                     .getBaseNode()
                                     .findOtherPredicate(AqlPath.NAME_VALUE_KEY)
-                                    .equals(((Locatable) c).getNameAsString()))
+                                    .equals(((Locatable) c).getNameAsString().replace("'", "\\'")))
                             .collect(Collectors.toList());
             // if name not found return null
             if (((List<?>) child).isEmpty()) {
