@@ -19,6 +19,7 @@ package org.ehrbase.aql.dto.path.predicate;
 
 import static org.ehrbase.aql.parser.AqlToDtoVisitor.buildLogicalOperator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -254,7 +255,7 @@ public class PredicateHelper {
             StringBuilder sb,
             PredicateLogicalAndOperation predicateDto,
             AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
-        List<SimplePredicateDto> values = predicateDto.getValues();
+        List<SimplePredicateDto> values = new ArrayList<>(predicateDto.getValues());
         values.sort(PREDICATE_DTO_COMPARATOR);
         for (int i = 0; i < values.size(); i++) {
             if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
