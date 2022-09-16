@@ -338,8 +338,8 @@ public class PredicateHelper {
 
         if (predicateDto instanceof PredicateLogicalOrOperation) {
 
-            return ((PredicateLogicalOrOperation) predicateDto)
-                    .getValues().stream()
+            return new ArrayList<>(((PredicateLogicalOrOperation) predicateDto).getValues())
+                    .stream()
                             .map(p -> find(p, statement))
                             .flatMap(Optional::stream)
                             .findAny();
@@ -347,8 +347,8 @@ public class PredicateHelper {
 
         if (predicateDto instanceof PredicateLogicalAndOperation) {
 
-            return ((PredicateLogicalAndOperation) predicateDto)
-                    .getValues().stream()
+            return new ArrayList<>(((PredicateLogicalAndOperation) predicateDto).getValues())
+                    .stream()
                             .map(p -> find(p, statement))
                             .flatMap(Optional::stream)
                             .findAny();
@@ -367,8 +367,8 @@ public class PredicateHelper {
         if (predicateDto instanceof PredicateLogicalAndOperation) {
 
             PredicateLogicalAndOperation clone = new PredicateLogicalAndOperation();
-            clone.setValues(((PredicateLogicalAndOperation) predicateDto)
-                    .getValues().stream().map(PredicateHelper::clone).collect(Collectors.toList()));
+            clone.setValues(new ArrayList<>(((PredicateLogicalAndOperation) predicateDto).getValues())
+                    .stream().map(PredicateHelper::clone).collect(Collectors.toList()));
             return (P) clone;
         }
 
