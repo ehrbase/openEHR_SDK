@@ -355,7 +355,7 @@ public final class AqlPath implements Serializable {
         String atCode;
         PredicateLogicalAndOperation otherPredicates;
 
-        PredicateDto predicateDto = null;
+        PredicateDto predicateDto;
         if (predicatesExp != null) {
             predicateDto = PredicateHelper.buildPredicate(predicatesExp.toString());
 
@@ -387,7 +387,6 @@ public final class AqlPath implements Serializable {
 
     public static CharSequence[] split(CharSequence path, Integer max, boolean addSearch, String... search) {
         List<CharSequence> strings = new ArrayList<>();
-        Arrays.sort(search, CharSequence::compare);
 
         boolean inBrackets = false;
         boolean inQuotes = false;
@@ -436,22 +435,11 @@ public final class AqlPath implements Serializable {
 
     private static CharSequence findPrefix(CharSequence fullPath, int startPos, String[] search) {
         CharSequence pathAfter = subSequence(fullPath, startPos, fullPath.length());
-        int insertionPoint = Arrays.binarySearch(search, pathAfter, CharSequence::compare);
-        if (insertionPoint >= 0) {
-            return search[insertionPoint];
-        }
-
-        int prefixPos = -insertionPoint - 2;
-        if (prefixPos < 0) {
-            return null;
-        }
-        String candidate = search[prefixPos];
-        if (candidate.length() <= pathAfter.length()
-                && 0 == CharSequence.compare(candidate, pathAfter.subSequence(0, candidate.length()))) {
-            return candidate;
-        } else {
-            return null;
-        }
+        return Arrays.stream(search)
+                .filter(s -> s.length() <= pathAfter.length())
+                .filter(s -> 0 == CharSequence.compare(s, pathAfter.subSequence(0, s.length())))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
