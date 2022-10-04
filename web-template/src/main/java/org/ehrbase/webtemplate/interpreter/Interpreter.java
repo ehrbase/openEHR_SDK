@@ -171,7 +171,7 @@ public class Interpreter {
         Containment containment = new Containment();
 
         // COMPOSITION has path '\' and thus must be dealt with extra.
-        if (MatcherUtil.findTypeName(n.getNodeId()).equals("COMPOSITION")) {
+        if ("COMPOSITION".equals(n.getRmType())) {
 
             containment.setArchetypeId(n.getNodeId());
             containment.setType("COMPOSITION");

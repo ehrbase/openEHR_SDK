@@ -66,7 +66,7 @@ public class MatcherUtil {
                 && (contain.getArchetypeId() == null || contain.getType().equals(contain.getArchetypeId()));
 
         if (isJustType) {
-            if (!contain.getType().equals(findTypeName(node.getNodeId()))) {
+            if (!contain.getType().equals(node.getRmType())) {
                 return false;
             }
         } else {
@@ -122,6 +122,10 @@ public class MatcherUtil {
      */
     static String findTypeName(String atCode) {
         String typeName = null;
+
+        if (atCode == null) {
+            return "";
+        }
 
         if (atCode.contains("openEHR-EHR-")) {
 
