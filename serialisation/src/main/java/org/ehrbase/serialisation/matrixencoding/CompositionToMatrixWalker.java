@@ -206,19 +206,24 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
      * @return
      */
     private Map<AqlPath, Object> flatten(AqlPath prefix, JsonNode node) {
+        Map<AqlPath, Object> resultMap = new LinkedHashMap<>();
+        flatten(prefix, node, resultMap);
+        return resultMap;
+    }
 
-        LinkedHashMap<AqlPath, Object> result = new LinkedHashMap<>();
+    private void flatten(AqlPath prefix, JsonNode node, Map<AqlPath, Object> result) {
+
         if (node instanceof ObjectNode) {
 
             for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
                 Map.Entry<String, JsonNode> child = it.next();
 
-                result.putAll(flatten(prefix.addEnd("/" + child.getKey()), child.getValue()));
+                flatten(prefix.addEnd(child.getKey()), child.getValue(), result);
             }
 
         } else if (node instanceof POJONode) {
             try {
-                result.putAll(flatten(prefix, MARSHAL_OM.readTree((node).toString())));
+                flatten(prefix, MARSHAL_OM.readTree((node).toString()), result);
             } catch (JsonProcessingException e) {
                 throw new SdkException(e.getMessage());
             }
@@ -237,8 +242,6 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                 throw new SdkException(e.getMessage());
             }
         }
-
-        return result;
     }
 
     @Override
