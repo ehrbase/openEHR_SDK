@@ -35,7 +35,7 @@ class Entity {
     public Entity() {}
 
     public Entity(Entity other) {
-        this.pathFromRoot = AqlPath.parse(other.pathFromRoot.getPath());
+        this.pathFromRoot = other.pathFromRoot;
         this.archetypeId = other.archetypeId;
         this.entityIdx = new Index(other.entityIdx);
         this.rmType = other.getRmType();
