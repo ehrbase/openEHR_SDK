@@ -17,12 +17,17 @@
  */
 package org.ehrbase.serialisation.walker;
 
+import com.nedap.archie.query.RMObjectWithPath;
+import com.nedap.archie.query.RMPathQuery;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -36,7 +41,6 @@ public class ItemExtractor {
     private WebTemplateNode childNode;
     private boolean isChoice;
     private Object child;
-    private String parentAql;
     private Object parent;
 
     public ItemExtractor(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice) {
@@ -53,22 +57,26 @@ public class ItemExtractor {
     public ItemExtractor invoke() {
 
         AqlPath childPath = currentNode.buildRelativePath(childNode, false);
+        AqlPath parentAql;
         if (childPath.getNodeCount() > 1) {
-            parentAql = childPath.removeEnd(1).getPath();
+            parentAql = childPath.removeEnd(1);
         } else {
-            parentAql = "/";
+            parentAql = AqlPath.ROOT_PATH;
         }
 
         if (currentRM instanceof Pathable) {
+            Pathable currentPathable = (Pathable) currentRM;
             try {
-                child = ((Pathable) currentRM).itemsAtPath(childPath.format(false));
-                if (child == null || ((List<?>) child).isEmpty()) {
-                    child = ((Pathable) currentRM).itemAtPath(childPath.format(false));
+                child = itemsAtPath(childPath, currentPathable);
+                if (((List<?>) child).isEmpty()) {
+                    // XXX why does this not just return null?
+                    child = itemAtPath(childPath, currentPathable);
                 }
             } catch (RuntimeException e) {
                 child = null;
             }
-            parent = ((Pathable) currentRM).itemAtPath(parentAql);
+            parent = itemAtPath(parentAql, currentPathable);
+
         } else if (currentRM instanceof DvInterval) {
             switch (childPath.getLastNode().getName()) {
                 case "upper_included":
@@ -87,6 +95,7 @@ public class ItemExtractor {
                     // NOOP
             }
             parent = currentRM;
+
         } else {
             throw new SdkException(String.format(
                     "Can not extract from class %s", currentRM.getClass().getSimpleName()));
@@ -132,8 +141,34 @@ public class ItemExtractor {
         return this;
     }
 
-    public AqlPath getParentAql() {
-        return AqlPath.parse(parentAql);
+    private BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathQueryCache =
+            (path, provider) -> provider.apply(path);
+
+    /**
+     * Adds a cache to prevent costly construction of duplicate RMPathQuery instances.
+     *
+     * @see com.nedap.archie.rmobjectvalidator.APathQueryCache
+     * @param rmPathQueryCache
+     * @return
+     */
+    public ItemExtractor withRmPathQueryCache(
+            BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathQueryCache) {
+        this.rmPathQueryCache = rmPathQueryCache;
+        return this;
+    }
+
+    private RMPathQuery getRmPathQuery(AqlPath path) {
+        return rmPathQueryCache.apply(path, p -> new RMPathQuery(p.format(false)));
+    }
+
+    private Object itemAtPath(AqlPath path, Pathable currentPathable) {
+        return getRmPathQuery(path).find(ArchieRMInfoLookup.getInstance(), currentPathable);
+    }
+
+    private List<?> itemsAtPath(AqlPath path, Pathable currentPathable) {
+        return getRmPathQuery(path).findList(ArchieRMInfoLookup.getInstance(), currentPathable).stream()
+                .map(RMObjectWithPath::getObject)
+                .collect(Collectors.toList());
     }
 
     public Object getParent() {
