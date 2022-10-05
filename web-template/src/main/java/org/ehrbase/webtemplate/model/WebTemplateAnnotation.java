@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -31,13 +31,15 @@ public class WebTemplateAnnotation implements Serializable {
     private String comment;
 
     @JsonAnySetter
-    private final Map<String, String> other = new HashMap<>();
+    private final Map<String, String> other;
 
-    public WebTemplateAnnotation() {}
+    public WebTemplateAnnotation() {
+        other = new LinkedHashMap<>();
+    }
 
     public WebTemplateAnnotation(WebTemplateAnnotation other) {
         this.comment = other.comment;
-        this.other.putAll(other.other);
+        this.other = new LinkedHashMap(other.other);
     }
 
     public String getComment() {
