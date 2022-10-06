@@ -66,13 +66,8 @@ public class ItemExtractor {
 
         if (currentRM instanceof Pathable) {
             Pathable currentPathable = (Pathable) currentRM;
-            try {
-                child = itemsAtPath(childPath, currentPathable);
-                if (((List<?>) child).isEmpty()) {
-                    // XXX why does this not just return null?
-                    child = itemAtPath(childPath, currentPathable);
-                }
-            } catch (RuntimeException e) {
+            child = itemsAtPath(childPath, currentPathable);
+            if (((List<?>) child).isEmpty()) {
                 child = null;
             }
             parent = itemAtPath(parentAql, currentPathable);
