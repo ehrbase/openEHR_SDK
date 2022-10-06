@@ -25,6 +25,7 @@ import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -66,7 +67,17 @@ public class ItemExtractor {
 
         if (currentRM instanceof Pathable) {
             Pathable currentPathable = (Pathable) currentRM;
-            child = itemsAtPath(childPath, currentPathable);
+            try {
+                child = itemsAtPath(childPath, currentPathable);
+            } catch (RuntimeException e) {
+                // work around known issue with archie where Event::getOffset throws a NPE due to time being null
+                if (e.getCause() instanceof InvocationTargetException
+                        && e.getCause().getCause() instanceof NullPointerException) {
+                    child = List.of();
+                } else {
+                    throw e;
+                }
+            }
             if (((List<?>) child).isEmpty()) {
                 child = null;
             }
