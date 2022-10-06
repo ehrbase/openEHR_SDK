@@ -19,7 +19,7 @@ package org.ehrbase.aql.dto.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,9 +31,9 @@ public class AqlPathTest {
 
         String cut = "at001, name/value = 'dfd' or name/value= 'fdf'";
 
-        CharSequence[] ands = AqlPath.split(cut, null, true, "and", "or", ",");
+        List<CharSequence> ands = AqlPath.split(cut, null, true, "and", "or", ",");
 
-        assertThat(Arrays.stream(ands).map(CharSequence::toString).collect(Collectors.toList()))
+        assertThat(ands.stream().map(CharSequence::toString).collect(Collectors.toList()))
                 .containsExactly("at001", ",", " name/value = 'dfd' ", "or", " name/value= 'fdf'");
     }
 

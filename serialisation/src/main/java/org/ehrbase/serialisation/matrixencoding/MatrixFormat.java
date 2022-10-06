@@ -123,8 +123,8 @@ public class MatrixFormat implements RMDataFormat {
             flatten.forEach(this::encode);
         }
 
-        flatten.forEach(r -> r.setTemplateId(
-                composition.getArchetypeDetails().getTemplateId().getValue()));
+        String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
+        flatten.forEach(r -> r.setTemplateId(templateId));
 
         return flatten;
     }
