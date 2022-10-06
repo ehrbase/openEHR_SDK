@@ -190,7 +190,7 @@ public final class AqlPath implements Serializable {
 
         // do not parse pathExp twice
         AqlNode[] nodesToAdd = Stream.concat(
-                        Arrays.stream(pathExp).map(AqlPath::parse).limit(pathExp.length - 1), Stream.of(lastPath))
+                        Arrays.stream(pathExp, 0, pathExp.length - 1).map(AqlPath::parse), Stream.of(lastPath))
                 .map(AqlPath::getNodes)
                 .flatMap(Collection::stream)
                 .toArray(AqlNode[]::new);
