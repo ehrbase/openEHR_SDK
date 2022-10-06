@@ -39,7 +39,7 @@ public class WebTemplateAnnotation implements Serializable {
 
     public WebTemplateAnnotation(WebTemplateAnnotation other) {
         this.comment = other.comment;
-        this.other = new LinkedHashMap(other.other);
+        this.other = new LinkedHashMap<>(other.other);
     }
 
     public String getComment() {
