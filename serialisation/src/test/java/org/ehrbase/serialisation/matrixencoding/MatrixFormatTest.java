@@ -22,7 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.nedap.archie.rm.composition.Composition;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
@@ -82,9 +84,24 @@ class MatrixFormatTest {
     @Test
     void fromMatrix() throws IOException {
         MatrixFormat cut = new MatrixFormat(new TestDataTemplateProvider());
+        StopWatch stopWatch = StopWatch.createStarted();
         Composition actual = cut.unmarshal(
                 IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8));
-
+        stopWatch.stop();
+        System.out.println(stopWatch.formatTime());
         assertThat(actual.getContent()).size().isEqualTo(14);
+    }
+
+    @Test
+    void fromMatrix2() throws IOException {
+
+        List<ToWalkerDto> toWalkerDtos = MatrixFormat.toEntryList(
+            IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8));
+
+        StopWatch stopWatch = StopWatch.createStarted();
+        Object unflatten = Unflattering.unflatten(toWalkerDtos);
+stopWatch.stop();
+        System.out.println(stopWatch.formatTime());
+        System.out.println(unflatten);
     }
 }

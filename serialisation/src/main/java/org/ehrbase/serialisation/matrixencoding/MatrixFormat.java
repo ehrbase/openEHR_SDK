@@ -166,7 +166,7 @@ public class MatrixFormat implements RMDataFormat {
                 .collect(Collectors.toList());
     }
 
-    private Row toRow(Entity entity, Map.Entry<Index, Map<AqlPath, Object>> e) {
+    private  Row toRow(Entity entity, Map.Entry<Index, Map<AqlPath, Object>> e) {
         Row row = new Row();
         row.setEntityIdx(entity.getEntityIdx().getRepetitions());
         row.setArchetypeId(entity.getArchetypeId());
@@ -177,13 +177,13 @@ public class MatrixFormat implements RMDataFormat {
         return row;
     }
 
-    private List<ToWalkerDto> toEntryList(String csv) {
+    protected static List<ToWalkerDto> toEntryList(String csv) {
 
         try {
             return CSV_FORMAT.parse(new StringReader(csv)).stream()
                     .skip(1)
-                    .map(this::toRow)
-                    .map(this::toEntryList)
+                    .map(MatrixFormat::toRow)
+                    .map(MatrixFormat::toEntryList)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList());
         } catch (IOException e) {
@@ -191,7 +191,7 @@ public class MatrixFormat implements RMDataFormat {
         }
     }
 
-    private List<ToWalkerDto> toEntryList(Row row) {
+    private static List<ToWalkerDto> toEntryList(Row row) {
 
         return row.getFields().entrySet().stream()
                 .map(e -> {
@@ -206,7 +206,7 @@ public class MatrixFormat implements RMDataFormat {
                 .collect(Collectors.toList());
     }
 
-    private Row toRow(CSVRecord csvRecord) {
+    private static Row toRow(CSVRecord csvRecord) {
 
         Row row = new Row();
         row.setNum(Integer.parseInt(csvRecord.get(HEADERS.NUM)));
@@ -225,9 +225,7 @@ public class MatrixFormat implements RMDataFormat {
             throw new SdkException(e.getMessage(), e);
         }
 
-        if (encoder != null) {
-            decode(row);
-        }
+
 
         return row;
     }
