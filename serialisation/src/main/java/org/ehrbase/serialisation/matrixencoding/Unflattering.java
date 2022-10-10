@@ -42,10 +42,10 @@ public class Unflattering {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final CollectionType VALUE_TYPE = OBJECT_MAPPER
-        .getTypeFactory()
-        .constructCollectionType(
-            ArrayList.class,
-            OBJECT_MAPPER.getTypeFactory().constructMapType(LinkedHashMap.class, String.class, Object.class));
+            .getTypeFactory()
+            .constructCollectionType(
+                    ArrayList.class,
+                    OBJECT_MAPPER.getTypeFactory().constructMapType(LinkedHashMap.class, String.class, Object.class));
 
     private final Encoder encoder;
 
@@ -65,12 +65,12 @@ public class Unflattering {
         map.remove("field_idx");
 
         var collect = map.entrySet().stream()
-            .map(e -> Pair.of(AqlPath.parse(e.getKey()), e.getValue()))
-            .map(p -> Pair.of(encoder != null ? encoder.decode(p.getKey()) : p.getKey(), p.getValue()))
-            .map(p -> Pair.of(entityPath.addEnd(p.getKey()), p.getValue()))
-            .filter(p -> p.getKey().startsWith(parse))
-            .map(p -> Pair.of(p.getKey().removeStart(parse), p.getValue()))
-            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+                .map(e -> Pair.of(AqlPath.parse(e.getKey()), e.getValue()))
+                .map(p -> Pair.of(encoder != null ? encoder.decode(p.getKey()) : p.getKey(), p.getValue()))
+                .map(p -> Pair.of(entityPath.addEnd(p.getKey()), p.getValue()))
+                .filter(p -> p.getKey().startsWith(parse))
+                .map(p -> Pair.of(p.getKey().removeStart(parse), p.getValue()))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
         LinkedHashMap<List<Integer>, Map<AqlPath, Object>> listMapLinkedHashMap = new LinkedHashMap<>();
         listMapLinkedHashMap.put(index, collect);
         return listMapLinkedHashMap;
@@ -83,14 +83,14 @@ public class Unflattering {
 
             List<ToWalkerDto> collect = new ArrayList<>();
             list.stream()
-                .map(map -> decode(map, aqlPath))
-                .forEach(m -> m.forEach((k, v) -> v.forEach((p, o) -> {
-                    ToWalkerDto walkerDto = new ToWalkerDto();
-                    walkerDto.index = k;
-                    walkerDto.path = p;
-                    walkerDto.value = o;
-                    collect.add(walkerDto);
-                })));
+                    .map(map -> decode(map, aqlPath))
+                    .forEach(m -> m.forEach((k, v) -> v.forEach((p, o) -> {
+                        ToWalkerDto walkerDto = new ToWalkerDto();
+                        walkerDto.index = k;
+                        walkerDto.path = p;
+                        walkerDto.value = o;
+                        collect.add(walkerDto);
+                    })));
 
             value = Unflattering.unflatten(collect);
 
