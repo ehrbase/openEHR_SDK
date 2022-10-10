@@ -22,6 +22,7 @@ import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.ehrbase.aql.dto.path.AqlPath;
 
@@ -77,32 +78,29 @@ public class Unflattering {
                 }
 
             } else {
-                List<ToWalkerDto> nextCollect = filter(collect, path, false, null);
-                if (!nextCollect.isEmpty()) {
+
+                var nextCollect2 = collect.stream()
+                        .filter(e -> matches(e, path, false, null))
+                        .collect(Collectors.groupingBy(
+                                e -> {
+                                    return Optional.ofNullable(
+                                                    e.path.getBaseNode().getAtCode())
+                                            .orElse("");
+                                },
+                                Collectors.groupingBy(
+                                        e2 -> {
+                                            return Optional.ofNullable(e2.path
+                                                            .getBaseNode()
+                                                            .findNameValue())
+                                                    .orElse("");
+                                        },
+                                        Collectors.mapping(Unflattering::removePath, Collectors.toList()))));
+                if (!nextCollect2.isEmpty()) {
                     List<Object> content = new ArrayList<>();
 
-                    List<ToWalkerDto> archtype = nextCollect.stream()
-                            .filter(w -> w.path.getNodeCount() == 2
-                                    && w.path.getNode(1).getName().equals("archetype_node_id"))
-                            .collect(Collectors.toList());
-
-                    archtype.stream().parallel().forEach(at -> {
-                        AqlPath aqlPath = AqlPath.parse("/" + a.getRmName() + "[" + at.value.toString() + "]");
-                        List<ToWalkerDto> filter = filter(nextCollect, aqlPath, false, null);
-
-                        List<ToWalkerDto> names = filter.stream()
-                                .filter(w -> w.path.removeStart(1).equals(AqlPath.parse("name/value")))
-                                .collect(Collectors.toList());
-
-                        names.stream()
-                                .parallel()
-                                .forEach(n -> content.addAll(handleMultiValued(filterAndRemovePath(
-                                        filter,
-                                        AqlPath.parse("/" + a.getRmName() + "[" + at.value.toString() + ",'"
-                                                + n.value.toString() + "']"),
-                                        false,
-                                        null))));
-                    });
+                    nextCollect2.values().stream()
+                            .flatMap(m -> m.values().stream())
+                            .forEach(l -> content.addAll(handleMultiValued(l)));
 
                     if (!content.isEmpty()) {
                         map.put(a.getRmName(), content);
@@ -181,11 +179,11 @@ public class Unflattering {
         }
 
         if ((path != null
-                && path.getBaseNode().findOtherPredicate("name/value") != null
-                && toWalkerDto.path.getBaseNode().findOtherPredicate("name/value") != null
+                && path.getBaseNode().findNameValue() != null
+                && toWalkerDto.path.getBaseNode().findNameValue() != null
                 && !path.getBaseNode()
-                        .findOtherPredicate("name/value")
-                        .equals(toWalkerDto.path.getBaseNode().findOtherPredicate("name/value")))) {
+                        .findNameValue()
+                        .equals(toWalkerDto.path.getBaseNode().findNameValue()))) {
             return false;
         }
 

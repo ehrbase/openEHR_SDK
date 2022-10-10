@@ -166,7 +166,7 @@ public class MatrixFormat implements RMDataFormat {
                 .collect(Collectors.toList());
     }
 
-    private  Row toRow(Entity entity, Map.Entry<Index, Map<AqlPath, Object>> e) {
+    private Row toRow(Entity entity, Map.Entry<Index, Map<AqlPath, Object>> e) {
         Row row = new Row();
         row.setEntityIdx(entity.getEntityIdx().getRepetitions());
         row.setArchetypeId(entity.getArchetypeId());
@@ -224,8 +224,6 @@ public class MatrixFormat implements RMDataFormat {
         } catch (JsonProcessingException e) {
             throw new SdkException(e.getMessage(), e);
         }
-
-
 
         return row;
     }

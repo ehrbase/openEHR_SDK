@@ -280,7 +280,7 @@ public class WebTemplateNode implements Serializable {
     }
 
     public boolean isRelativePathNameDependent(WebTemplateNode child) {
-        return buildRelativePath(child, false).getLastNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY) != null;
+        return buildRelativePath(child, false).getLastNode().findNameValue() != null;
     }
 
     public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {

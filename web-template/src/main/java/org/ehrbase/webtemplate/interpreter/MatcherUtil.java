@@ -111,7 +111,7 @@ public class MatcherUtil {
             return false;
         }
 
-        return path.findOtherPredicate(PredicateHelper.NAME_VALUE) == null
+        return path.findNameValue() == null
                 || path.findOtherPredicate(PredicateHelper.NAME_VALUE).equals(node.getName());
     }
 

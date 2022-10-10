@@ -112,10 +112,8 @@ public class ItemExtractor {
                 && Locatable.class.isAssignableFrom(Walker.ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
             child = ((List<?>) child)
                     .stream()
-                            .filter(c -> childPath
-                                    .getBaseNode()
-                                    .findOtherPredicate(AqlPath.NAME_VALUE_KEY)
-                                    .equals(((Locatable) c).getNameAsString()))
+                            .filter(c ->
+                                    childPath.getBaseNode().findNameValue().equals(((Locatable) c).getNameAsString()))
                             .collect(Collectors.toList());
             // if name not found return null
             if (((List<?>) child).isEmpty()) {

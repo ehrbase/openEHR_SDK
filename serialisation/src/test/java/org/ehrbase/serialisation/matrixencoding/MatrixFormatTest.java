@@ -96,11 +96,11 @@ class MatrixFormatTest {
     void fromMatrix2() throws IOException {
 
         List<ToWalkerDto> toWalkerDtos = MatrixFormat.toEntryList(
-            IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8));
+                IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8));
 
         StopWatch stopWatch = StopWatch.createStarted();
         Object unflatten = Unflattering.unflatten(toWalkerDtos);
-stopWatch.stop();
+        stopWatch.stop();
         System.out.println(stopWatch.formatTime());
         System.out.println(unflatten);
     }

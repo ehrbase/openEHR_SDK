@@ -17,8 +17,6 @@
  */
 package org.ehrbase.serialisation.matrixencoding;
 
-import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
-
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -85,6 +83,6 @@ class EncoderTool {
 
     private boolean isSimple(AqlPath.AqlNode node) {
 
-        return node.getAtCode() == null && node.findOtherPredicate(NAME_VALUE) == null;
+        return node.getAtCode() == null && node.findNameValue() == null;
     }
 }

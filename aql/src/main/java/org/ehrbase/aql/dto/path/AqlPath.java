@@ -583,6 +583,11 @@ public final class AqlPath implements Serializable {
                     .orElse(null);
         }
 
+        public String findNameValue() {
+
+            return findOtherPredicate(NAME_VALUE);
+        }
+
         public AqlNode clearOtherPredicates() {
             final PredicateLogicalAndOperation otherPredicates = new PredicateLogicalAndOperation();
             if (atCode != null) {
