@@ -17,13 +17,20 @@
  */
 package org.ehrbase.serialisation.matrixencoding;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 /**
@@ -32,6 +39,66 @@ import org.ehrbase.aql.dto.path.AqlPath;
 public class Unflattering {
 
     private static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final CollectionType VALUE_TYPE = OBJECT_MAPPER
+        .getTypeFactory()
+        .constructCollectionType(
+            ArrayList.class,
+            OBJECT_MAPPER.getTypeFactory().constructMapType(LinkedHashMap.class, String.class, Object.class));
+
+    private final Encoder encoder;
+
+    public Unflattering(Encoder encoder) {
+        this.encoder = encoder;
+    }
+
+    private Map<List<Integer>, Map<AqlPath, Object>> decode(Map<String, Object> map, AqlPath parse) {
+        AqlPath entityPath = AqlPath.parse(map.getOrDefault("entity_path", "/").toString());
+        map.remove("entity_path");
+
+        ArrayList<Integer> index = new ArrayList<>();
+
+        index.addAll((Collection<Integer>) map.getOrDefault("entity_idx", Collections.emptyList()));
+        map.remove("entity_idx");
+        index.addAll((Collection<Integer>) map.getOrDefault("field_idx", Collections.emptyList()));
+        map.remove("field_idx");
+
+        var collect = map.entrySet().stream()
+            .map(e -> Pair.of(AqlPath.parse(e.getKey()), e.getValue()))
+            .map(p -> Pair.of(encoder != null ? encoder.decode(p.getKey()) : p.getKey(), p.getValue()))
+            .map(p -> Pair.of(entityPath.addEnd(p.getKey()), p.getValue()))
+            .filter(p -> p.getKey().startsWith(parse))
+            .map(p -> Pair.of(p.getKey().removeStart(parse), p.getValue()))
+            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+        LinkedHashMap<List<Integer>, Map<AqlPath, Object>> listMapLinkedHashMap = new LinkedHashMap<>();
+        listMapLinkedHashMap.put(index, collect);
+        return listMapLinkedHashMap;
+    }
+
+    public Object toRmObject(String json, AqlPath aqlPath) {
+        Object value;
+        try {
+            List<Map<String, Object>> list = OBJECT_MAPPER.readValue(json, VALUE_TYPE);
+
+            List<ToWalkerDto> collect = new ArrayList<>();
+            list.stream()
+                .map(map -> decode(map, aqlPath))
+                .forEach(m -> m.forEach((k, v) -> v.forEach((p, o) -> {
+                    ToWalkerDto walkerDto = new ToWalkerDto();
+                    walkerDto.index = k;
+                    walkerDto.path = p;
+                    walkerDto.value = o;
+                    collect.add(walkerDto);
+                })));
+
+            value = Unflattering.unflatten(collect);
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
 
     public static Object unflatten(List<ToWalkerDto> collect) {
         if (collect.isEmpty()) {
