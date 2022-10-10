@@ -47,6 +47,10 @@ public class PredicateHelper {
     public static final String NAME_VALUE = "name/value";
     public static final String ARCHETYPE_NODE_ID = "archetype_node_id";
 
+    private static final String[] OPERATOR_SYMBOLS = Arrays.stream(ConditionComparisonOperatorSymbol.values())
+            .map(ConditionComparisonOperatorSymbol::getSymbole)
+            .toArray(String[]::new);
+
     public static final Comparator<PredicateDto> PREDICATE_DTO_COMPARATOR = new Comparator<PredicateDto>() {
         @Override
         public int compare(PredicateDto o1, PredicateDto o2) {
@@ -76,7 +80,7 @@ public class PredicateHelper {
         // NOP
     }
 
-    public static PredicateDto buildPredicate(String predicate) {
+    public static PredicateDto buildPredicate(CharSequence predicate) {
 
         List<Object> boolList = parsePredicate(predicate);
 
@@ -101,16 +105,16 @@ public class PredicateHelper {
         }
     }
 
-    static List<Object> parsePredicate(String predicate) {
+    static List<Object> parsePredicate(CharSequence predicate) {
 
-        CharSequence[] split = AqlPath.split(predicate, null, true, " and ", " AND ", " or ", " OR ", ",");
+        List<CharSequence> split = AqlPath.split(predicate, null, true, " and ", " AND ", " or ", " OR ", ",");
 
-        return IntStream.range(0, split.length)
+        return IntStream.range(0, split.size())
                 .mapToObj(i -> {
                     if (i % 2 == 0) {
-                        return handleOperator(split[i], i);
+                        return handleOperator(split.get(i), i);
                     } else {
-                        return handleSymbol(split[i]);
+                        return handleSymbol(split.get(i));
                     }
                 })
                 .collect(Collectors.toList());
@@ -131,36 +135,32 @@ public class PredicateHelper {
     }
 
     private static PredicateComparisonOperatorDto handleOperator(CharSequence sequence, int i) {
-        CharSequence[] split = AqlPath.split(
-                sequence,
-                3,
-                true,
-                Arrays.stream(ConditionComparisonOperatorSymbol.values())
-                        .map(ConditionComparisonOperatorSymbol::getSymbole)
-                        .toArray(String[]::new));
+        List<CharSequence> split = AqlPath.split(sequence, 3, true, OPERATOR_SYMBOLS);
         PredicateComparisonOperatorDto comparisonOperatorDto = new PredicateComparisonOperatorDto();
 
-        if (split.length == 1) {
+        if (split.size() == 1) {
             if (i == 0) {
 
                 comparisonOperatorDto.setStatement(ARCHETYPE_NODE_ID);
                 comparisonOperatorDto.setValue(
-                        parseValue(ARCHETYPE_NODE_ID, split[0].toString().trim()));
+                        parseValue(ARCHETYPE_NODE_ID, split.get(0).toString().trim()));
                 comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
             } else if (i == 2) {
 
                 comparisonOperatorDto.setStatement(NAME_VALUE);
                 comparisonOperatorDto.setValue(
-                        parseValue(NAME_VALUE, split[0].toString().trim()));
+                        parseValue(NAME_VALUE, split.get(0).toString().trim()));
                 comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
             }
         } else {
 
-            comparisonOperatorDto.setStatement(split[0].toString().trim());
+            comparisonOperatorDto.setStatement(split.get(0).toString().trim());
 
             comparisonOperatorDto.setValue(parseValue(
-                    comparisonOperatorDto.getStatement(), split[2].toString().trim()));
-            comparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.fromSymbol(split[1].toString()));
+                    comparisonOperatorDto.getStatement(),
+                    split.get(2).toString().trim()));
+            comparisonOperatorDto.setSymbol(
+                    ConditionComparisonOperatorSymbol.fromSymbol(split.get(1).toString()));
         }
 
         return comparisonOperatorDto;
@@ -209,7 +209,7 @@ public class PredicateHelper {
             }
         } else if (value instanceof ParameterValue) {
 
-            sb.append("$").append(((ParameterValue) value).getName());
+            sb.append('$').append(((ParameterValue) value).getName());
         }
     }
 
@@ -223,7 +223,7 @@ public class PredicateHelper {
             StringBuilder sb, PredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
         if (predicateDto instanceof ParameterValue) {
-            sb.append("$").append(((ParameterValue) predicateDto).getName());
+            sb.append('$').append(((ParameterValue) predicateDto).getName());
         } else if (predicateDto instanceof PredicateComparisonOperatorDto) {
             formatPredicateComparisonOperatorDto(
                     sb, (PredicateComparisonOperatorDto) predicateDto, otherPredicatesFormat);
@@ -245,7 +245,7 @@ public class PredicateHelper {
         for (int i = 0; i < values.size(); i++) {
 
             if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
-                sb.append(" ").append("or").append(" ");
+                sb.append(" or ");
             }
             format(sb, values.get(i), otherPredicatesFormat);
         }

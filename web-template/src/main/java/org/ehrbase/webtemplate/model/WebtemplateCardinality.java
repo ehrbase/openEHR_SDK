@@ -28,16 +28,18 @@ public class WebtemplateCardinality implements Serializable {
 
     private Integer min;
     private Integer max;
-    private final List<String> ids = new ArrayList<>();
+    private final List<String> ids;
 
     private Boolean excludeFromWebTemplate;
 
-    public WebtemplateCardinality() {}
+    public WebtemplateCardinality() {
+        ids = new ArrayList<>();
+    }
 
     public WebtemplateCardinality(WebtemplateCardinality other) {
         this.min = other.min;
         this.max = other.max;
-        this.ids.addAll(other.ids);
+        this.ids = new ArrayList<>(other.ids);
         this.excludeFromWebTemplate = other.getExcludeFromWebTemplate();
     }
 
