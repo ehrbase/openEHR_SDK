@@ -75,10 +75,35 @@ class MatrixFormatTest {
 
         String actual = cut.marshal(new CanonicalJson().unmarshal(corona));
 
+        StopWatch watch = StopWatch.createStarted();
+        actual = cut.marshal(new CanonicalJson().unmarshal(corona));
+        watch.stop();
+        System.out.println(watch.formatTime());
+
         String expected =
                 IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8);
 
         assertThat(actual).isEqualToNormalizingNewlines(expected);
+    }
+
+    @Test
+    void toMatrixIPSNew() throws IOException {
+
+        String corona = IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8);
+
+        String actual = Flatter.flatten(new CanonicalJson().unmarshal(corona));
+
+        StopWatch watch = StopWatch.createStarted();
+        actual = Flatter.flatten(new CanonicalJson().unmarshal(corona));
+        ;
+        watch.stop();
+        System.out.println(watch.formatTime());
+
+        String expected =
+                IOUtils.toString(MatrixFormat.class.getResourceAsStream("/csv/IPS.csv"), StandardCharsets.UTF_8);
+
+        System.out.println(actual);
+        //        assertThat(actual).isEqualToNormalizingNewlines(expected);
     }
 
     @Test

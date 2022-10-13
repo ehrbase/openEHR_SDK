@@ -149,18 +149,12 @@ public class Unflattering {
                 var nextCollect2 = collect.stream()
                         .filter(e -> matches(e, path, false, null))
                         .collect(Collectors.groupingBy(
-                                e -> {
-                                    return Optional.ofNullable(
-                                                    e.path.getBaseNode().getAtCode())
-                                            .orElse("");
-                                },
+                                e -> Optional.ofNullable(e.path.getBaseNode().getAtCode())
+                                        .orElse(""),
                                 Collectors.groupingBy(
-                                        e2 -> {
-                                            return Optional.ofNullable(e2.path
-                                                            .getBaseNode()
-                                                            .findNameValue())
-                                                    .orElse("");
-                                        },
+                                        e2 -> Optional.ofNullable(
+                                                        e2.path.getBaseNode().findNameValue())
+                                                .orElse(""),
                                         Collectors.mapping(Unflattering::removePath, Collectors.toList()))));
                 if (!nextCollect2.isEmpty()) {
                     List<Object> content = new ArrayList<>();

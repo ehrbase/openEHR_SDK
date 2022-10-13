@@ -332,7 +332,7 @@ public class MatrixFormat implements RMDataFormat {
                         LinkedHashMap::new)));
     }
 
-    private static class AqlPathKeyStdSerializer extends StdSerializer<AqlPath> {
+    static class AqlPathKeyStdSerializer extends StdSerializer<AqlPath> {
 
         public AqlPathKeyStdSerializer() {
             super((Class<AqlPath>) null);
