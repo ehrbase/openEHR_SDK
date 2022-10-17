@@ -339,8 +339,6 @@ public class PredicateHelper {
             deque = new ArrayDeque<>(values);
         }
 
-        deque.add(predicateDto);
-
         while (!deque.isEmpty()) {
             var pred = deque.pop();
 

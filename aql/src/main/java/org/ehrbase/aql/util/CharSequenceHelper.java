@@ -77,7 +77,6 @@ public class CharSequenceHelper {
 
         int len = strLen - removeLen;
         if (0 == compareSubsequence(remove, 0, removeLen, str, len, strLen)) {
-            // CharSequence.compare(remove, subSequence(str, len, strLen))) {
             return subSequence(str, 0, len);
         } else {
             return str;
