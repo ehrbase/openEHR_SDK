@@ -29,29 +29,55 @@ public class CharSequenceHelper {
         // NOOP
     }
 
-    public static CharBuffer subSequence(CharSequence str, int beginIndex, int endIndex) {
-        return CharBuffer.wrap(str, beginIndex, endIndex);
+    public static CharSequence subSequence(CharSequence str, int beginIndex, int endIndex) {
+        if (beginIndex == endIndex) {
+            return "";
+        } else if (beginIndex == 0 && endIndex == str.length()) {
+            return str;
+        } else if (str.getClass() == String.class) {
+            return CharBuffer.wrap(str, beginIndex, endIndex);
+        } else {
+            // CharBuffer does not have to be wrapped
+            return str.subSequence(beginIndex, endIndex);
+        }
     }
 
     public static CharSequence removeStart(final CharSequence str, final String remove) {
-        if (StringUtils.isEmpty(str) || str.length() < remove.length()) {
+        if (str == null) {
+            return null;
+        }
+        int strLen = str.length();
+        if (strLen == 0) {
+            return str;
+        }
+        int removeLen = remove.length();
+        if (strLen < removeLen) {
             return str;
         }
 
-        if (0 == CharSequence.compare(remove, CharBuffer.wrap(str, 0, remove.length()))) {
-            return CharBuffer.wrap(str, remove.length(), str.length());
+        if (0 == compareSubsequence(remove, 0, removeLen, str, 0, removeLen)) {
+            return subSequence(str, removeLen, strLen);
         } else {
             return str;
         }
     }
 
     public static CharSequence removeEnd(final CharSequence str, final String remove) {
-        if (StringUtils.isEmpty(str) || str.length() < remove.length()) {
+        if (str == null) {
+            return null;
+        }
+        int strLen = str.length();
+        if (strLen == 0) {
+            return str;
+        }
+        int removeLen = remove.length();
+        if (strLen < removeLen) {
             return str;
         }
 
-        if (0 == CharSequence.compare(remove, CharBuffer.wrap(str, str.length() - remove.length(), str.length()))) {
-            return CharBuffer.wrap(str, 0, str.length() - remove.length());
+        int len = strLen - removeLen;
+        if (0 == compareSubsequence(remove, 0, removeLen, str, len, strLen)) {
+            return subSequence(str, 0, len);
         } else {
             return str;
         }
@@ -67,17 +93,46 @@ public class CharSequenceHelper {
             return new CharSequence[] {str};
 
         } else {
+            int strLen = str.length();
             if (pos == 0) {
-                if (str.length() == 1) {
+                // leading separator
+                if (strLen == 1) {
                     return new CharSequence[0];
                 } else {
-                    return new CharSequence[] {CharBuffer.wrap(str, 1, str.length())};
+                    return new CharSequence[] {subSequence(str, 1, strLen)};
                 }
-            } else if (pos + 1 == str.length()) {
-                return new CharSequence[] {CharBuffer.wrap(str, 0, pos)};
+            } else if (pos + 1 == strLen) {
+                // trailing separator
+                return new CharSequence[] {subSequence(str, 0, pos)};
             } else {
-                return new CharSequence[] {CharBuffer.wrap(str, 0, pos), CharBuffer.wrap(str, pos + 1, str.length())};
+                return new CharSequence[] {subSequence(str, 0, pos), subSequence(str, pos + 1, strLen)};
             }
         }
+    }
+
+    public static int compareSubsequence(
+            CharSequence cs1, int start1, int end1, CharSequence cs2, int start2, int end2) {
+
+        if (cs1 == cs2 && start1 == start2 && end1 == end2) {
+            return 0;
+        }
+
+        int len1 = end1 - start1;
+        int len2 = end2 - start2;
+        int len = Math.min(len1, len2);
+
+        if ((start1 & start2) == 0 && len == cs1.length() && len == cs2.length()) {
+            return CharSequence.compare(cs1, cs2);
+        }
+
+        for (int p1 = start1, p2 = start2, e1 = start1 + len; p1 < e1; p1++, p2++) {
+            char a = cs1.charAt(p1);
+            char b = cs2.charAt(p2);
+            if (a != b) {
+                return a - b;
+            }
+        }
+
+        return len1 - len2;
     }
 }

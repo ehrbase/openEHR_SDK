@@ -63,7 +63,7 @@ public class WebTemplateNode implements Serializable {
     private final List<WebTemplateInput> inputs;
     private Boolean inContext;
     private final Map<String, WebTemplateTerminology> termBindings;
-    private final List<String> dependsOn = new ArrayList<>();
+    private final List<String> dependsOn;
     private WebTemplateAnnotation annotations;
     private final List<ProportionType> proportionTypes;
     private final List<WebtemplateCardinality> cardinalities;
@@ -75,6 +75,7 @@ public class WebTemplateNode implements Serializable {
         inputs = new ArrayList<>();
         termBindings = new LinkedHashMap<>();
         proportionTypes = new ArrayList<>();
+        dependsOn = new ArrayList<>();
         cardinalities = new ArrayList<>();
     }
 
@@ -89,14 +90,14 @@ public class WebTemplateNode implements Serializable {
         this.max = other.max;
         this.aqlPath = other.aqlPath;
         this.inContext = other.inContext;
-        this.dependsOn.addAll(other.dependsOn);
+        this.dependsOn = new ArrayList<>(other.dependsOn);
         if (other.annotations != null) {
             this.annotations = new WebTemplateAnnotation(other.annotations);
         }
 
         this.cardinalities =
                 other.cardinalities.stream().map(WebtemplateCardinality::new).collect(Collectors.toList());
-        this.inputs = other.getInputs().stream().map(WebTemplateInput::new).collect(Collectors.toList());
+        this.inputs = other.inputs.stream().map(WebTemplateInput::new).collect(Collectors.toList());
         this.children = other.children.stream().map(WebTemplateNode::new).collect(Collectors.toList());
         this.localizedNames = new LinkedHashMap<>(other.localizedNames);
         this.localizedDescriptions = new LinkedHashMap<>(other.localizedDescriptions);

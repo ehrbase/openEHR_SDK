@@ -56,6 +56,7 @@ import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -177,8 +178,13 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             ConditionComparisonOperatorDto conditionComparisonOperatorDto = new ConditionComparisonOperatorDto();
             SelectFieldDto statement = new SelectFieldDto();
             statement.setContainmentId(containmentId);
-            statement.setAqlPath(
-                    StringUtils.prependIfMissing(((PredicateComparisonOperatorDto) predicateDto).getStatement(), "/"));
+
+            String aqlStr = ((PredicateComparisonOperatorDto) predicateDto).getStatement();
+            if (StringUtils.isEmpty(aqlStr)) {
+                statement.setAqlPath(AqlPath.ROOT_PATH);
+            } else {
+                statement.setAqlPath(AqlPath.parse(aqlStr));
+            }
             conditionComparisonOperatorDto.setStatement(statement);
             conditionComparisonOperatorDto.setSymbol(((PredicateComparisonOperatorDto) predicateDto).getSymbol());
             conditionComparisonOperatorDto.setValue(((PredicateComparisonOperatorDto) predicateDto).getValue());
@@ -378,9 +384,10 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     @Override
     public ConditionDto visitIdentifiedExpr(AqlParser.IdentifiedExprContext ctx) {
 
-        List<Object> boolList = new ArrayList<>();
+        int childCount = ctx.getChildCount();
+        List<Object> boolList = new ArrayList<>(childCount);
 
-        for (int i = 0; i < ctx.getChildCount(); i++) {
+        for (int i = 0; i < childCount; i++) {
             ParseTree child = ctx.getChild(i);
             if (child instanceof AqlParser.IdentifiedEqualityContext) {
                 boolList.add(visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext) child));
@@ -418,21 +425,24 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         S currentSymbol = (S) boolList.get(1);
         LogicalOperatorDto<S, T> currentOperator = creator.apply(currentSymbol);
         currentOperator.getValues().add((T) boolList.get(0));
+
         LogicalOperatorDto<S, T> lowestOperator = currentOperator;
-        for (int i = 2; i < boolList.size(); i = i + 2) {
-            S nextSymbol = i + 1 < boolList.size() ? (S) boolList.get(i + 1) : null;
+        for (int i = 2, l = boolList.size(); i < l; i += 2) {
+            S nextSymbol = i + 1 < l ? (S) boolList.get(i + 1) : null;
+            T currentOpValue = (T) boolList.get(i);
             if (nextSymbol == null || Objects.equals(currentSymbol, nextSymbol)) {
-                currentOperator.getValues().add((T) boolList.get(i));
+                currentOperator.getValues().add(currentOpValue);
                 currentSymbol = nextSymbol;
+
             } else {
                 LogicalOperatorDto<S, T> nextOperator = creator.apply(nextSymbol);
 
                 if (hasHigherPrecedence(currentSymbol, nextSymbol)) {
-                    currentOperator.getValues().add((T) boolList.get(i));
+                    currentOperator.getValues().add(currentOpValue);
                     nextOperator.getValues().add((T) currentOperator);
                     lowestOperator = nextOperator;
                 } else {
-                    nextOperator.getValues().add((T) boolList.get(i));
+                    nextOperator.getValues().add(currentOpValue);
                     currentOperator.getValues().add((T) nextOperator);
                     lowestOperator = currentOperator;
                 }
