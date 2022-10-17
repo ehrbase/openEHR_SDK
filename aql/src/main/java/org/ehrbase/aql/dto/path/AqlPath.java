@@ -313,7 +313,7 @@ public final class AqlPath implements Serializable {
         }
         String attributeName = null;
 
-        final List<CharSequence> nodeStrings = split(CharSequenceHelper.removeStart(pathExp, "/"), null, false, "/");
+        final List<CharSequence> nodeStrings = split(CharSequenceHelper.removeStart(pathExp, "/"), -1, false, "/");
 
         int nodeCount = nodeStrings.size();
         List<AqlNode> nodes = new ArrayList<>(nodeCount);
@@ -358,17 +358,15 @@ public final class AqlPath implements Serializable {
         String atCode;
         PredicateLogicalAndOperation otherPredicates;
 
-        PredicateDto predicateDto;
         if (predicatesExp != null) {
-            predicateDto = PredicateHelper.buildPredicate(predicatesExp);
+            PredicateDto predicateDto = PredicateHelper.buildPredicate(predicatesExp);
 
             if (predicateDto instanceof PredicateLogicalOrOperation) {
                 throw new SdkException("Or in predicate not supported");
             } else if (predicateDto instanceof PredicateLogicalAndOperation) {
                 otherPredicates = (PredicateLogicalAndOperation) predicateDto;
             } else {
-                otherPredicates = new PredicateLogicalAndOperation();
-                otherPredicates.getValues().add((SimplePredicateDto) predicateDto);
+                otherPredicates = new PredicateLogicalAndOperation((SimplePredicateDto) predicateDto);
             }
 
             atCode = find(otherPredicates, ARCHETYPE_NODE_ID)
@@ -388,15 +386,15 @@ public final class AqlPath implements Serializable {
         return Optional.of(node);
     }
 
-    public static List<CharSequence> split(CharSequence path, Integer max, boolean addSearch, String... search) {
-        List<CharSequence> strings = new ArrayList<>();
+    public static List<CharSequence> split(CharSequence path, int max, boolean addSearch, String... search) {
+        List<CharSequence> strings = new ArrayList<>(max > 0 && max < 10 ? max : 10);
 
         boolean inBrackets = false;
         boolean inQuotes = false;
         boolean escape = false;
 
         int last = 0;
-        for (int i = 0; i < path.length(); i++) {
+        for (int i = 0, l = path.length(); i < l; i++) {
             char ch = path.charAt(i);
             if (!inQuotes && ch == '[') {
                 inBrackets = true;
@@ -420,7 +418,7 @@ public final class AqlPath implements Serializable {
                         strings.add(prefix);
                     }
                     last = prefix.length() + i;
-                    if (max != null && strings.size() == max - 1) {
+                    if (max > 0 && strings.size() == max - 1) {
                         strings.add(subSequence(path, last, path.length()));
                         break;
                     }
@@ -430,7 +428,7 @@ public final class AqlPath implements Serializable {
 
         if (strings.isEmpty()) {
             strings.add(path);
-        } else if (last < path.length() && max == null) {
+        } else if (max <= 0 && last < path.length()) {
             strings.add(subSequence(path, last, path.length()));
         }
         return strings;
@@ -438,9 +436,12 @@ public final class AqlPath implements Serializable {
 
     private static String findPrefix(CharSequence fullPath, int startPos, String[] search) {
         CharSequence pathAfter = subSequence(fullPath, startPos, fullPath.length());
+        int pathAfterLength = pathAfter.length();
         for (String s : search) {
-            if (s.length() <= pathAfter.length()
-                    && 0 == CharSequence.compare(s, pathAfter.subSequence(0, s.length()))) {
+            int len = s.length();
+
+            if (len <= pathAfterLength && 0 == CharSequenceHelper.compareSubsequence(s, 0, len, pathAfter, 0, len)) {
+                // if (len <= pathAfterLength && 0 == CharSequence.compare(s, pathAfter.subSequence(0, len))) {
                 return s;
             }
         }
@@ -563,9 +564,7 @@ public final class AqlPath implements Serializable {
 
         private PredicateLogicalAndOperation remove(String nameValue) {
             PredicateLogicalAndOperation newPredicateDto = PredicateHelper.clone(otherPredicate);
-            Optional<PredicateComparisonOperatorDto> predicateComparisonOperatorDto = find(newPredicateDto, nameValue);
-            predicateComparisonOperatorDto.ifPresent(
-                    p -> newPredicateDto.getValues().remove(p));
+            find(newPredicateDto, nameValue).ifPresent(newPredicateDto.getValues()::remove);
             return newPredicateDto;
         }
 

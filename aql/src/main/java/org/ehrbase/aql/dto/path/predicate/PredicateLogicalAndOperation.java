@@ -33,12 +33,14 @@ public class PredicateLogicalAndOperation
                 Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.AND;
-    private List<SimplePredicateDto> values = new ArrayList<>();
+    private List<SimplePredicateDto> values;
 
-    public PredicateLogicalAndOperation() {}
+    public PredicateLogicalAndOperation() {
+        this.values = new ArrayList<>();
+    }
 
     public PredicateLogicalAndOperation(SimplePredicateDto... values) {
-        this.values.addAll(Arrays.asList(values));
+        this.values = new ArrayList<>(Arrays.asList(values));
     }
 
     @Override

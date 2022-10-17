@@ -31,7 +31,7 @@ public class AqlPathTest {
 
         String cut = "at001, name/value = 'dfd' or name/value= 'fdf'";
 
-        List<CharSequence> ands = AqlPath.split(cut, null, true, "and", "or", ",");
+        List<CharSequence> ands = AqlPath.split(cut, -1, true, "and", "or", ",");
 
         assertThat(ands.stream().map(CharSequence::toString).collect(Collectors.toList()))
                 .containsExactly("at001", ",", " name/value = 'dfd' ", "or", " name/value= 'fdf'");
