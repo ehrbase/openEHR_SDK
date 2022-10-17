@@ -330,8 +330,9 @@ public class PredicateHelper {
 
             for (SimplePredicateDto v : values) {
                 if (v instanceof PredicateComparisonOperatorDto) {
-                    if (statement.equals(((PredicateComparisonOperatorDto) v).getStatement())) {
-                        return Optional.of((PredicateComparisonOperatorDto) v);
+                    PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) v;
+                    if (statement.equals(cmpOp.getStatement())) {
+                        return Optional.of(cmpOp);
                     }
                 }
             }
@@ -353,8 +354,9 @@ public class PredicateHelper {
             }
             for (SimplePredicateDto v : values) {
                 if (v instanceof PredicateComparisonOperatorDto) {
-                    if (statement.equals(((PredicateComparisonOperatorDto) v).getStatement())) {
-                        return Optional.of((PredicateComparisonOperatorDto) v);
+                    PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) v;
+                    if (statement.equals(cmpOp.getStatement())) {
+                        return Optional.of(cmpOp);
                     }
                 }
             }

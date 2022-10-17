@@ -441,7 +441,6 @@ public final class AqlPath implements Serializable {
             int len = s.length();
 
             if (len <= pathAfterLength && 0 == CharSequenceHelper.compareSubsequence(s, 0, len, pathAfter, 0, len)) {
-                // if (len <= pathAfterLength && 0 == CharSequence.compare(s, pathAfter.subSequence(0, len))) {
                 return s;
             }
         }
