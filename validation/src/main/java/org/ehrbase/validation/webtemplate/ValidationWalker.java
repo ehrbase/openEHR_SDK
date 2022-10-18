@@ -41,7 +41,7 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     private static final Map<Class<? extends RMObject>, ConstraintValidator> VALIDATORS =
             ReflectionHelper.buildMap(ConstraintValidator.class);
 
-    private static final DefaultValidator DEFAULT_VALIDATOR = new DefaultValidator();
+    private final DefaultValidator defaultValidator = new DefaultValidator();
 
     public ValidationWalker(ExternalTerminologyValidation externalTerminologyValidation) {
         if (externalTerminologyValidation != null) {
@@ -74,6 +74,6 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     @SuppressWarnings("unchecked")
     private <T extends RMObject> ConstraintValidator<T> getValidator(RMObject object) {
-        return VALIDATORS.getOrDefault(object.getClass(), DEFAULT_VALIDATOR);
+        return VALIDATORS.getOrDefault(object.getClass(), defaultValidator);
     }
 }
