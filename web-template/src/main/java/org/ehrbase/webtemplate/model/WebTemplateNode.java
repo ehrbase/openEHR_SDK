@@ -187,7 +187,7 @@ public class WebTemplateNode implements Serializable {
     }
 
     public String getAqlPath() {
-        return aqlPath.format(true);
+        return getAqlPath(true);
     }
 
     @JsonIgnore
