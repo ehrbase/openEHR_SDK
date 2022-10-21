@@ -35,12 +35,10 @@ public class ConditionLogicalOperatorDto
         return this.values;
     }
 
-    @Override
     public void setSymbol(ConditionLogicalOperatorSymbol symbol) {
         this.symbol = symbol;
     }
 
-    @Override
     public void setValues(List<ConditionDto> values) {
         this.values = values;
     }

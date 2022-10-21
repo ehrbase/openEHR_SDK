@@ -23,13 +23,11 @@ import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
 
-public class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {
+public final class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {
 
     private String statement;
     private ConditionComparisonOperatorSymbol symbol;
     private Value value;
-
-    public PredicateComparisonOperatorDto() {}
 
     public PredicateComparisonOperatorDto(PredicateComparisonOperatorDto other) {
         this.statement = other.statement;
@@ -38,7 +36,7 @@ public class PredicateComparisonOperatorDto implements SimplePredicateDto, Seria
         if (other.value instanceof ParameterValue) {
             this.value = new ParameterValue((ParameterValue) other.value);
         } else {
-            this.value = new SimpleValue(((SimpleValue) other.value).getValue());
+            this.value = new SimpleValue((SimpleValue) other.value);
         }
     }
 
@@ -58,18 +56,6 @@ public class PredicateComparisonOperatorDto implements SimplePredicateDto, Seria
 
     public Value getValue() {
         return this.value;
-    }
-
-    public void setStatement(String statement) {
-        this.statement = statement;
-    }
-
-    public void setSymbol(ConditionComparisonOperatorSymbol symbol) {
-        this.symbol = symbol;
-    }
-
-    public void setValue(Value value) {
-        this.value = value;
     }
 
     public boolean equals(final Object o) {

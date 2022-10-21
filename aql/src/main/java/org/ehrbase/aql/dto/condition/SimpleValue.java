@@ -18,24 +18,37 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.io.Serializable;
+import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 
-public class SimpleValue implements Value, Serializable {
+public final class SimpleValue implements Value, Serializable {
 
     private Object value;
 
     public SimpleValue() {}
 
-    public SimpleValue(Object value) {
+    public SimpleValue(String value) {
+        this.value = value;
+    }
+
+    public SimpleValue(Number value) {
+        this.value = value;
+    }
+
+    public SimpleValue(Boolean value) {
+        this.value = value;
+    }
+
+    public SimpleValue(SimpleValue other) {
+        this.value = other.value;
+    }
+
+    public SimpleValue(TemporalAccessor value) {
         this.value = value;
     }
 
     public Object getValue() {
         return this.value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 
     public boolean equals(final Object o) {

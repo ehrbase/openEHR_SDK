@@ -20,7 +20,7 @@ package org.ehrbase.aql.dto.condition;
 import java.io.Serializable;
 import org.ehrbase.aql.dto.path.predicate.SimplePredicateDto;
 
-public class ParameterValue implements Value, SimplePredicateDto, Serializable {
+public final class ParameterValue implements Value, SimplePredicateDto, Serializable {
 
     private String name;
     private String type;
@@ -32,20 +32,17 @@ public class ParameterValue implements Value, SimplePredicateDto, Serializable {
         this.type = other.type;
     }
 
+    public ParameterValue(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
+
     public String getName() {
         return this.name;
     }
 
     public String getType() {
         return this.type;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public boolean equals(final Object o) {

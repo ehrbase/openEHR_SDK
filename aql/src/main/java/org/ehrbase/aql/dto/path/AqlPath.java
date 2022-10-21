@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.SimpleValue;
+import org.ehrbase.aql.dto.condition.Value;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -520,51 +521,130 @@ public final class AqlPath implements Serializable {
         }
 
         public AqlNode withAtCode(String atCode) {
-
-            if (atCode != null) {
-
-                return new AqlNode(name, atCode, replace(ARCHETYPE_NODE_ID, atCode));
-            } else {
-
-                return new AqlNode(name, null, remove(ARCHETYPE_NODE_ID));
-            }
+            return withStatement(ARCHETYPE_NODE_ID, atCode);
         }
 
-        private PredicateLogicalAndOperation replace(String archetypeNodeId, String atCode) {
-            PredicateLogicalAndOperation newPredicateDto = PredicateHelper.clone(otherPredicate);
-
-            Optional<PredicateComparisonOperatorDto> predicateComparisonOperatorDto =
-                    find(newPredicateDto, archetypeNodeId);
-
-            if (predicateComparisonOperatorDto.isPresent()) {
-                predicateComparisonOperatorDto.get().setValue(new SimpleValue(atCode));
-            } else {
-                PredicateComparisonOperatorDto add = new PredicateComparisonOperatorDto();
-                add.setStatement(archetypeNodeId);
-                add.setSymbol(ConditionComparisonOperatorSymbol.EQ);
-                add.setValue(new SimpleValue(atCode));
-                newPredicateDto.getValues().add(add);
+        /**
+         *
+         * @param cmpOp
+         * @param statement
+         * @param newValue
+         * @return new value; null means not found
+         */
+        private static PredicateComparisonOperatorDto replaceValue(
+                PredicateComparisonOperatorDto cmpOp, String statement, String newValue) {
+            if (cmpOp.getSymbol() == ConditionComparisonOperatorSymbol.EQ
+                    && cmpOp.getStatement().equals(statement)) {
+                Value v = cmpOp.getValue();
+                if (v instanceof SimpleValue) {
+                    Object oldValue = ((SimpleValue) v).getValue();
+                    if (Objects.equals(newValue, oldValue)) {
+                        // value unchanged
+                        return cmpOp;
+                    } else {
+                        // value changed
+                        return new PredicateComparisonOperatorDto(
+                                statement, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(newValue));
+                    }
+                }
             }
-            return newPredicateDto;
+            // statement not found
+            return null;
+        }
+
+        private static <P extends SimplePredicateDto> P replaceInternal(
+                P predicate, String statement, String newValue) {
+            if (predicate instanceof PredicateComparisonOperatorDto) {
+                return (P) replaceValue((PredicateComparisonOperatorDto) predicate, statement, newValue);
+
+            } else if (predicate instanceof PredicateLogicalAndOperation) {
+                for (SimplePredicateDto child : ((PredicateLogicalAndOperation) predicate).getValues()) {
+                    SimplePredicateDto newChild = replaceInternal(child, statement, newValue);
+                    if (newChild == child) {
+                        // value unchanged
+                        return predicate;
+                    } else if (newChild != null) {
+                        // value changed
+                        SimplePredicateDto[] newValues = ((PredicateLogicalAndOperation) predicate)
+                                .getValues().stream()
+                                        .map(p -> p == child ? newChild : p)
+                                        .toArray(SimplePredicateDto[]::new);
+                        return (P) new PredicateLogicalAndOperation(newValues);
+                    }
+                }
+            }
+            // statement not found
+            return null;
+        }
+
+        private static final PredicateComparisonOperatorDto NO_PREDICATE =
+                new PredicateComparisonOperatorDto(null, null, null);
+
+        private static <P extends SimplePredicateDto> P remove(P predicate, String statement) {
+            if (predicate instanceof PredicateComparisonOperatorDto) {
+                PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) predicate;
+                if (cmpOp.getSymbol() == ConditionComparisonOperatorSymbol.EQ
+                        && cmpOp.getStatement().equals(statement)) {
+                    return (P) NO_PREDICATE;
+                }
+                // statement not found
+                return predicate;
+
+            } else if (predicate instanceof PredicateLogicalAndOperation) {
+                for (SimplePredicateDto child : ((PredicateLogicalAndOperation) predicate).getValues()) {
+                    SimplePredicateDto newChild = remove(child, statement);
+                    if (newChild != child) {
+                        // statement removed
+                        SimplePredicateDto[] newValues = ((PredicateLogicalAndOperation) predicate)
+                                .getValues().stream()
+                                        .filter(p -> p != NO_PREDICATE)
+                                        .map(p -> p == child ? newChild : p)
+                                        .toArray(SimplePredicateDto[]::new);
+                        return (P) new PredicateLogicalAndOperation(newValues);
+                    }
+                }
+            }
+            // statement not found
+            return predicate;
+        }
+
+        private PredicateLogicalAndOperation replace(String statement, String newValue) {
+            PredicateLogicalAndOperation newPredicateDto = replaceInternal(otherPredicate, statement, newValue);
+
+            if (newPredicateDto == null) {
+                // statement not found
+                SimplePredicateDto[] newValues = Stream.concat(
+                                otherPredicate.getValues().stream(),
+                                Stream.of(new PredicateComparisonOperatorDto(
+                                        statement, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(newValue))))
+                        .toArray(SimplePredicateDto[]::new);
+                return new PredicateLogicalAndOperation(newValues);
+
+            } else {
+                return newPredicateDto;
+            }
         }
 
         public AqlNode withNameValue(String nameValue) {
-
-            if (Objects.equals(nameValue, find(otherPredicate, NAME_VALUE))) {
-                return this;
-            }
-            if (nameValue != null) {
-                return new AqlNode(name, atCode, replace(NAME_VALUE, nameValue));
-            } else {
-
-                return new AqlNode(name, atCode, remove(NAME_VALUE));
-            }
+            return withStatement(NAME_VALUE, nameValue);
         }
 
-        private PredicateLogicalAndOperation remove(String nameValue) {
-            PredicateLogicalAndOperation newPredicateDto = PredicateHelper.clone(otherPredicate);
-            find(newPredicateDto, nameValue).ifPresent(newPredicateDto.getValues()::remove);
-            return newPredicateDto;
+        private AqlNode withStatement(String statement, String value) {
+            PredicateLogicalAndOperation newOtherPredicate;
+            if (value == null) {
+                newOtherPredicate = PredicateHelper.remove(otherPredicate, statement);
+            } else {
+                newOtherPredicate = replace(statement, value);
+            }
+            if (newOtherPredicate == otherPredicate) {
+                return this;
+            }
+            String newAtCode = ARCHETYPE_NODE_ID.equals(statement) ? value : atCode;
+            return new AqlNode(name, newAtCode, newOtherPredicate);
+        }
+
+        private PredicateLogicalAndOperation remove(String statement) {
+            return PredicateHelper.remove(otherPredicate, statement);
         }
 
         public PredicateLogicalAndOperation getOtherPredicate() {
@@ -582,14 +662,12 @@ public final class AqlPath implements Serializable {
         }
 
         public AqlNode clearOtherPredicates() {
-            final PredicateLogicalAndOperation otherPredicates = new PredicateLogicalAndOperation();
-            if (atCode != null) {
-                PredicateComparisonOperatorDto predicateComparisonOperatorDto = new PredicateComparisonOperatorDto();
-
-                predicateComparisonOperatorDto.setStatement(ARCHETYPE_NODE_ID);
-                predicateComparisonOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.EQ);
-                predicateComparisonOperatorDto.setValue(new SimpleValue(atCode));
-                otherPredicates.getValues().add(predicateComparisonOperatorDto);
+            final PredicateLogicalAndOperation otherPredicates;
+            if (atCode == null) {
+                otherPredicates = new PredicateLogicalAndOperation();
+            } else {
+                otherPredicates = new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
+                        ARCHETYPE_NODE_ID, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(atCode)));
             }
             return new AqlNode(name, atCode, otherPredicates);
         }

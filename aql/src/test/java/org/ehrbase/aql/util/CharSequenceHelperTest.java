@@ -17,8 +17,12 @@
  */
 package org.ehrbase.aql.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
+import java.nio.CharBuffer;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 public class CharSequenceHelperTest {
@@ -83,5 +87,23 @@ public class CharSequenceHelperTest {
             assertEquals("FOO", split[0].toString());
             assertEquals("BAR", split[1].toString());
         }
+    }
+
+    @Test
+    public void trim() {
+        // no trimming
+        Stream.of("546gnjkmlg hjh g- zjh ukgg", "", CharBuffer.wrap("", 0, 0), CharBuffer.wrap(" tt fs ", 1, 6))
+                .forEach(v -> assertSame(v, CharSequenceHelper.trim(v)));
+
+        // trim to empty
+        Stream.of(" ", "  \t \r\n ", CharBuffer.wrap("  \t \r\n "))
+                .forEach(v -> assertEquals("", CharSequenceHelper.trim(v)));
+
+        Stream.of(
+                        Pair.of(" test ", CharBuffer.wrap("test")),
+                        Pair.of(
+                                " \t 546g\tnjkmlg hjh g- zjh ukgg  \r\n",
+                                CharBuffer.wrap("546g\tnjkmlg hjh g- zjh ukgg")))
+                .forEach(p -> assertEquals(p.getRight(), CharSequenceHelper.trim(p.getLeft())));
     }
 }
