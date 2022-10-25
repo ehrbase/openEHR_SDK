@@ -27,6 +27,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -362,6 +363,7 @@ public class PredicateHelper {
 
     public static SimplePredicateDto add(SimplePredicateDto simplePredicateDto, SimplePredicateDto add) {
         if (simplePredicateDto instanceof PredicateLogicalAndOperation) {
+            // ((PredicateLogicalAndOperation) simplePredicateDto).addValues(Stream.of(add));
             ((PredicateLogicalAndOperation) simplePredicateDto).getValues().add(add);
             return simplePredicateDto;
         } else {
@@ -376,14 +378,17 @@ public class PredicateHelper {
      * @return
      */
     public static PredicateLogicalAndOperation remove(PredicateLogicalAndOperation and, String... remove) {
-        return removeInternal(and, remove);
+        return removeInternal(
+                and,
+                cmpOp -> cmpOp.getSymbol() == ConditionComparisonOperatorSymbol.EQ
+                        && ArrayUtils.contains(remove, cmpOp.getStatement()));
     }
 
-    private static <P extends SimplePredicateDto> P removeInternal(P predicate, String... statements) {
+    private static <P extends SimplePredicateDto> P removeInternal(
+            P predicate, Predicate<PredicateComparisonOperatorDto> filter) {
         if (predicate instanceof PredicateComparisonOperatorDto) {
             PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) predicate;
-            if (cmpOp.getSymbol() == ConditionComparisonOperatorSymbol.EQ
-                    && ArrayUtils.contains(statements, cmpOp.getStatement())) {
+            if (filter.test(cmpOp)) {
                 return (P) NO_PREDICATE;
             }
             // statement not found
@@ -396,7 +401,7 @@ public class PredicateHelper {
             int s = values.size();
             for (int i = 0; i < s; i++) {
                 SimplePredicateDto child = values.get(i);
-                SimplePredicateDto newChild = removeInternal(child, statements);
+                SimplePredicateDto newChild = removeInternal(child, filter);
                 if (newChild != child) {
                     boolean removeNode = newChild == NO_PREDICATE;
                     if (newValues == null) {

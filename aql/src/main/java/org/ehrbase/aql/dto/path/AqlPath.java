@@ -577,37 +577,6 @@ public final class AqlPath implements Serializable {
             return null;
         }
 
-        private static final PredicateComparisonOperatorDto NO_PREDICATE =
-                new PredicateComparisonOperatorDto(null, null, null);
-
-        private static <P extends SimplePredicateDto> P remove(P predicate, String statement) {
-            if (predicate instanceof PredicateComparisonOperatorDto) {
-                PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) predicate;
-                if (cmpOp.getSymbol() == ConditionComparisonOperatorSymbol.EQ
-                        && cmpOp.getStatement().equals(statement)) {
-                    return (P) NO_PREDICATE;
-                }
-                // statement not found
-                return predicate;
-
-            } else if (predicate instanceof PredicateLogicalAndOperation) {
-                for (SimplePredicateDto child : ((PredicateLogicalAndOperation) predicate).getValues()) {
-                    SimplePredicateDto newChild = remove(child, statement);
-                    if (newChild != child) {
-                        // statement removed
-                        SimplePredicateDto[] newValues = ((PredicateLogicalAndOperation) predicate)
-                                .getValues().stream()
-                                        .filter(p -> p != NO_PREDICATE)
-                                        .map(p -> p == child ? newChild : p)
-                                        .toArray(SimplePredicateDto[]::new);
-                        return (P) new PredicateLogicalAndOperation(newValues);
-                    }
-                }
-            }
-            // statement not found
-            return predicate;
-        }
-
         private PredicateLogicalAndOperation replace(String statement, String newValue) {
             PredicateLogicalAndOperation newPredicateDto = replaceInternal(otherPredicate, statement, newValue);
 
@@ -641,10 +610,6 @@ public final class AqlPath implements Serializable {
             }
             String newAtCode = ARCHETYPE_NODE_ID.equals(statement) ? value : atCode;
             return new AqlNode(name, newAtCode, newOtherPredicate);
-        }
-
-        private PredicateLogicalAndOperation remove(String statement) {
-            return PredicateHelper.remove(otherPredicate, statement);
         }
 
         public PredicateLogicalAndOperation getOtherPredicate() {
