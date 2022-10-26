@@ -17,6 +17,7 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import static org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol.EQ;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.remove;
@@ -37,7 +38,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
@@ -175,8 +175,8 @@ public class Interpreter {
 
             containment.setArchetypeId(n.getNodeId());
             containment.setType("COMPOSITION");
-            containment.setOtherPredicates(new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
-                    ARCHETYPE_NODE_ID, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(n.getNodeId()))));
+            containment.setOtherPredicates(new PredicateLogicalAndOperation(
+                    new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new SimpleValue(n.getNodeId()))));
 
         } else {
             AqlNode lastNode = n.getAqlPathDto().getLastNode();
@@ -254,7 +254,7 @@ public class Interpreter {
                         .setMulti(findRmAttributeInfo(parent, node).isMultipleValued());
             }
             interpreterPathNode.setOtherPredicate(
-                    remove(path.getBaseNode().getOtherPredicate(), NAME_VALUE, ARCHETYPE_NODE_ID));
+                    remove(path.getBaseNode().getOtherPredicate(), EQ, NAME_VALUE, ARCHETYPE_NODE_ID));
             interpreterPathNode.setNormalisedNode(node.getAqlPathDto().getLastNode());
             interpreterPathNode.setRepresentingObject(true);
             if (path.getNodeCount() == 1) {

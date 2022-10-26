@@ -29,6 +29,10 @@ public class CharSequenceHelper {
         // NOOP
     }
 
+    public static CharSequence subSequence(CharSequence str, int beginIndex) {
+        return subSequence(str, beginIndex, str.length());
+    }
+
     public static CharSequence subSequence(CharSequence str, int beginIndex, int endIndex) {
         if (beginIndex == endIndex) {
             return "";
@@ -134,5 +138,18 @@ public class CharSequenceHelper {
         }
 
         return len1 - len2;
+    }
+
+    public static CharSequence trim(CharSequence value) {
+        int length = value.length();
+        int len = length;
+        int st = 0;
+        while (st < len && value.charAt(st) <= ' ') {
+            st++;
+        }
+        while (st < len && value.charAt(len - 1) <= ' ') {
+            len--;
+        }
+        return ((st > 0) || (len < length)) ? subSequence(value, st, len) : value;
     }
 }

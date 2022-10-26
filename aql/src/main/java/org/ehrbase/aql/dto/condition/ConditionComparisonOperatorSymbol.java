@@ -43,12 +43,12 @@ public enum ConditionComparisonOperatorSymbol {
         return symbole;
     }
 
-    public static ConditionComparisonOperatorSymbol fromSymbol(String symbole) {
+    public static ConditionComparisonOperatorSymbol fromSymbol(CharSequence symbol) {
         for (ConditionComparisonOperatorSymbol s : values()) {
-            if (s.getSymbole().equals(symbole)) {
+            if (s.getSymbole().contentEquals(symbol)) {
                 return s;
             }
         }
-        throw new NoSuchElementException(symbole);
+        throw new NoSuchElementException(symbol.toString());
     }
 }

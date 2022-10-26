@@ -19,6 +19,7 @@ package org.ehrbase.aql.dto.path.predicate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -84,10 +85,30 @@ class PredicateHelperTest {
     void remove() {
         PredicateDto predicateDto = PredicateHelper.buildPredicate("name/value='name1' and archetype_node_id=at001");
 
-        PredicateLogicalAndOperation actual =
-                PredicateHelper.remove((PredicateLogicalAndOperation) predicateDto, PredicateHelper.NAME_VALUE);
-        StringBuilder sb = new StringBuilder();
-        PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);
-        assertThat(sb).hasToString("at001");
+        {
+            PredicateLogicalAndOperation actual = PredicateHelper.remove(
+                    (PredicateLogicalAndOperation) predicateDto,
+                    ConditionComparisonOperatorSymbol.EQ,
+                    PredicateHelper.NAME_VALUE);
+            StringBuilder sb = new StringBuilder();
+            PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);
+            assertThat(sb).hasToString("at001");
+        }
+        {
+            PredicateLogicalAndOperation actual = PredicateHelper.remove(
+                    (PredicateLogicalAndOperation) predicateDto,
+                    ConditionComparisonOperatorSymbol.GT_EQ,
+                    PredicateHelper.NAME_VALUE);
+            StringBuilder sb = new StringBuilder();
+            PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);
+            assertThat(sb).hasToString("at001,'name1'");
+        }
+        {
+            PredicateLogicalAndOperation actual = PredicateHelper.remove(
+                    (PredicateLogicalAndOperation) predicateDto, null, PredicateHelper.NAME_VALUE);
+            StringBuilder sb = new StringBuilder();
+            PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);
+            assertThat(sb).hasToString("at001");
+        }
     }
 }
