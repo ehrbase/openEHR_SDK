@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -363,24 +364,26 @@ public class PredicateHelper {
 
     public static SimplePredicateDto add(SimplePredicateDto simplePredicateDto, SimplePredicateDto add) {
         if (simplePredicateDto instanceof PredicateLogicalAndOperation) {
-            // ((PredicateLogicalAndOperation) simplePredicateDto).addValues(Stream.of(add));
-            ((PredicateLogicalAndOperation) simplePredicateDto).getValues().add(add);
-            return simplePredicateDto;
+            return ((PredicateLogicalAndOperation) simplePredicateDto).addValues(Stream.of(add));
         } else {
             return new PredicateLogicalAndOperation(simplePredicateDto, add);
         }
     }
 
     /**
-     * Return a clone of <code>and</code> with all {@link PredicateComparisonOperatorDto} removed where {@link PredicateComparisonOperatorDto#getStatement()} is in <code>remove</code>
+     * Return a clone of <code>and</code> with all {@link PredicateComparisonOperatorDto} removed where
+     * the operator <code>symbol</code> matches
+     * and {@link PredicateComparisonOperatorDto#getStatement()} is in <code>remove</code>
      * @param and
-     * @param remove
+     * @param symbol the operator to be matched, or null
+     * @param remove names of statements to be removed
      * @return
      */
-    public static PredicateLogicalAndOperation remove(PredicateLogicalAndOperation and, String... remove) {
+    public static PredicateLogicalAndOperation remove(
+            PredicateLogicalAndOperation and, ConditionComparisonOperatorSymbol symbol, String... remove) {
         return removeInternal(
                 and,
-                cmpOp -> cmpOp.getSymbol() == ConditionComparisonOperatorSymbol.EQ
+                cmpOp -> (symbol == null || symbol == cmpOp.getSymbol())
                         && ArrayUtils.contains(remove, cmpOp.getStatement()));
     }
 

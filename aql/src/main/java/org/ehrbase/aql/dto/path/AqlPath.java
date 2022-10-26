@@ -17,6 +17,7 @@
  */
 package org.ehrbase.aql.dto.path;
 
+import static org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol.EQ;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.find;
@@ -33,7 +34,6 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
@@ -533,8 +533,7 @@ public final class AqlPath implements Serializable {
          */
         private static PredicateComparisonOperatorDto replaceValue(
                 PredicateComparisonOperatorDto cmpOp, String statement, String newValue) {
-            if (cmpOp.getSymbol() == ConditionComparisonOperatorSymbol.EQ
-                    && cmpOp.getStatement().equals(statement)) {
+            if (cmpOp.getSymbol() == EQ && cmpOp.getStatement().equals(statement)) {
                 Value v = cmpOp.getValue();
                 if (v instanceof SimpleValue) {
                     Object oldValue = ((SimpleValue) v).getValue();
@@ -543,8 +542,7 @@ public final class AqlPath implements Serializable {
                         return cmpOp;
                     } else {
                         // value changed
-                        return new PredicateComparisonOperatorDto(
-                                statement, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(newValue));
+                        return new PredicateComparisonOperatorDto(statement, EQ, new SimpleValue(newValue));
                     }
                 }
             }
@@ -584,8 +582,7 @@ public final class AqlPath implements Serializable {
                 // statement not found
                 SimplePredicateDto[] newValues = Stream.concat(
                                 otherPredicate.getValues().stream(),
-                                Stream.of(new PredicateComparisonOperatorDto(
-                                        statement, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(newValue))))
+                                Stream.of(new PredicateComparisonOperatorDto(statement, EQ, new SimpleValue(newValue))))
                         .toArray(SimplePredicateDto[]::new);
                 return new PredicateLogicalAndOperation(newValues);
 
@@ -601,7 +598,7 @@ public final class AqlPath implements Serializable {
         private AqlNode withStatement(String statement, String value) {
             PredicateLogicalAndOperation newOtherPredicate;
             if (value == null) {
-                newOtherPredicate = PredicateHelper.remove(otherPredicate, statement);
+                newOtherPredicate = PredicateHelper.remove(otherPredicate, EQ, statement);
             } else {
                 newOtherPredicate = replace(statement, value);
             }
@@ -631,8 +628,8 @@ public final class AqlPath implements Serializable {
             if (atCode == null) {
                 otherPredicates = new PredicateLogicalAndOperation();
             } else {
-                otherPredicates = new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
-                        ARCHETYPE_NODE_ID, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(atCode)));
+                otherPredicates = new PredicateLogicalAndOperation(
+                        new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new SimpleValue(atCode)));
             }
             return new AqlNode(name, atCode, otherPredicates);
         }
