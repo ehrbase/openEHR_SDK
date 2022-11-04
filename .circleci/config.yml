@@ -1192,7 +1192,7 @@ commands:
             git clone git@github.com:ehrbase/integration-tests.git
             ls -la
             cd integration-tests
-            mv tests/* ../tests/
+            mv tests/* ../ehrbase/tests/
             cd ..
 
   build-and-test-ehrbase:
