@@ -1190,6 +1190,7 @@ commands:
           name: Git clone Robot integration-tests repository
           command: |
             git clone git@github.com:ehrbase/integration-tests.git
+            git fetch
             git checkout main
             ls -la
             cd integration-tests
