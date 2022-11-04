@@ -505,7 +505,7 @@ class InterpreterTest {
                                 })
                                 .collect(Collectors.joining(";")),
                         o -> o.getPathFromRootToValue()
-                                .buildNormalisedAql()
+                                .buildNormalisedAqlDto()
                                 .format(AqlPath.OtherPredicatesFormat.SHORTED, true),
                         InterpreterOutput::isRepresentingObject)
                 .containsExactly(tuples);

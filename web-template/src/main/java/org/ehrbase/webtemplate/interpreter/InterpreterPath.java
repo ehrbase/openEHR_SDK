@@ -38,12 +38,28 @@ public class InterpreterPath implements Serializable {
         this.nodeList = nodeList;
     }
 
-    public AqlPath buildNormalisedAql() {
+    public AqlPath buildNormalisedAqlDto() {
         if (CollectionUtils.isNotEmpty(nodeList)) {
             AqlPath.AqlNode[] nodes =
                     nodeList.stream().map(n -> n.getNormalisedNode()).toArray(AqlPath.AqlNode[]::new);
             return AqlPath.ROOT_PATH.addEnd(nodes);
         } else return AqlPath.EMPTY_PATH;
+    }
+
+    /**
+     * @deprecated superseded by ::buildNormalisedAqlDto
+     * @return
+     */
+    @Deprecated
+    public String buildNormalisedAql() {
+        StringBuilder sb = new StringBuilder();
+        if (nodeList != null) {
+            nodeList.forEach(n -> {
+                sb.append("/");
+                n.getNormalisedNode().appendFormat(sb, AqlPath.OtherPredicatesFormat.SHORTED);
+            });
+        }
+        return sb.toString();
     }
 
     public Long extractDepth() {
