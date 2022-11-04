@@ -284,7 +284,7 @@ public abstract class Walker<T> {
         return parentNode.getChildren().size() <= 1
                 || parentNode.getChildren().stream()
                         .filter(n -> n != childNode)
-                        .filter(n -> n.getAqlPath(true).equals(childNode.getAqlPath(true)))
+                        .filter(n -> n.getAqlPathDto().equals(childNode.getAqlPathDto()))
                         .noneMatch(n -> rmType.equals(n.getRmType()));
     }
 
