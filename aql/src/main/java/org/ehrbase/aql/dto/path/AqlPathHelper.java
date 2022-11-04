@@ -149,7 +149,7 @@ public class AqlPathHelper {
         }
 
         if (strings == null) {
-            strings = List.of(path);
+            strings = List.of(startPos == 0 ? path : subSequence(path, startPos, pathLength));
         } else if (max <= 0 && last < pathLength) {
             strings.add(subSequence(path, last, pathLength));
         }
