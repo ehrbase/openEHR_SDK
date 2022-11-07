@@ -66,7 +66,7 @@ public class AqlPathHelper {
                 };
             }
 
-            // lookup table with search terms be first character
+            // lookup table with search terms by first character
             String[][] charMatches = new String[maxChar - minChar + 1][];
             for (int i = 0; i < firstChars.length; i++) {
                 int ii = i;

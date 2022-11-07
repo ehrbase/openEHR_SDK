@@ -57,7 +57,7 @@ public class PredicateHelper {
 
     private static final PredicateComparisonOperatorDto NO_PREDICATE =
             new PredicateComparisonOperatorDto(null, null, null);
-    public static final AqlPathHelper.PrefixMatcher PREDICATES_MATCHER =
+    private static final AqlPathHelper.PrefixMatcher PREDICATES_MATCHER =
             AqlPathHelper.PrefixMatcher.forStrings(" and ", " AND ", " or ", " OR ", ",");
 
     private static int comparisonKey(PredicateDto dto) {
