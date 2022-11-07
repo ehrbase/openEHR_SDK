@@ -117,8 +117,8 @@ public class CharSequenceHelper {
     public static int compareSubsequence(
             CharSequence cs1, int start1, int end1, CharSequence cs2, int start2, int end2) {
 
-        if (cs1 == cs2 && start1 == start2 && end1 == end2) {
-            return 0;
+        if (cs1 == cs2 && start1 == start2) {
+            return end1 - end2;
         }
 
         int len1 = end1 - start1;

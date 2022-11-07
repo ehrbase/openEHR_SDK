@@ -135,7 +135,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
                     SelectFieldDto value = e.getValue();
                     value.setName(selectFieldDto.getName());
-                    value.setAqlPath(selectFieldDto.getAqlPath());
+                    value.setAqlPath(selectFieldDto.getAqlPathDto());
                     value.setContainmentId(selectFieldDto.getContainmentId());
                 });
         return aqlDto;

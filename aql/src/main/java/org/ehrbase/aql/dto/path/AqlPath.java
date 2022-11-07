@@ -24,7 +24,6 @@ import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.find;
 import static org.ehrbase.aql.util.CharSequenceHelper.subSequence;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,7 +41,6 @@ import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
 import org.ehrbase.aql.dto.path.predicate.SimplePredicateDto;
-import org.ehrbase.aql.util.CharSequenceHelper;
 import org.ehrbase.util.exception.SdkException;
 
 public final class AqlPath implements Serializable {
@@ -52,6 +50,8 @@ public final class AqlPath implements Serializable {
 
     private static final AqlNode NO_NODE = new AqlNode("", null, new PredicateLogicalAndOperation());
     public static final String NAME_VALUE_KEY = "name/value";
+    public static final AqlPathHelper.PrefixMatcher ATTRIBUTE_SEPARATOR = AqlPathHelper.PrefixMatcher.forChar('|');
+    public static final AqlPathHelper.PrefixMatcher PATH_SEPARATOR = AqlPathHelper.PrefixMatcher.forChar('/');
 
     private final boolean isEmpty;
     private final AqlNode[] nodes;
@@ -314,10 +314,12 @@ public final class AqlPath implements Serializable {
         }
         String attributeName = null;
 
-        final List<CharSequence> nodeStrings = split(CharSequenceHelper.removeStart(pathExp, "/"), -1, false, "/");
+        final List<CharSequence> nodeStrings =
+                AqlPathHelper.split(pathExp, pathExp.startsWith("/") ? 1 : 0, -1, false, PATH_SEPARATOR);
 
         int nodeCount = nodeStrings.size();
-        List<AqlNode> nodes = new ArrayList<>(nodeCount);
+        AqlNode[] nodes = new AqlNode[nodeCount];
+        int nodePos = 0;
 
         for (int i = 0; i < nodeCount; i++) {
 
@@ -326,18 +328,25 @@ public final class AqlPath implements Serializable {
 
             // remove attribute
             if (isLastNode) {
-                List<CharSequence> attributeSplit = split(currentNode, 2, false, "|");
+                List<CharSequence> attributeSplit = AqlPathHelper.split(currentNode, 0, 2, false, ATTRIBUTE_SEPARATOR);
                 if (attributeSplit.size() == 2) {
                     attributeName = attributeSplit.get(1).toString();
                 }
                 currentNode = attributeSplit.get(0);
             }
-            parseNode(currentNode, isLastNode, nameValue).ifPresent(nodes::add);
+            Optional<AqlNode> aqlNode = parseNode(currentNode, isLastNode, nameValue);
+            if (aqlNode.isPresent()) {
+                nodes[nodePos++] = aqlNode.get();
+            }
         }
 
         boolean isAttributeOnly = attributeName != null && pathExp.startsWith("|");
 
-        return new AqlPath(isAttributeOnly, nodes.toArray(AqlNode[]::new), 0, attributeName);
+        if (nodePos != nodes.length) {
+            nodes = Arrays.copyOf(nodes, nodePos);
+        }
+
+        return new AqlPath(isAttributeOnly, nodes, 0, attributeName);
     }
 
     private static Optional<AqlNode> parseNode(CharSequence currentNode, boolean isLastNode, String nameValue) {
@@ -385,67 +394,6 @@ public final class AqlPath implements Serializable {
             node = node.withNameValue(nameValue);
         }
         return Optional.of(node);
-    }
-
-    public static List<CharSequence> split(CharSequence path, int max, boolean addSearch, String... search) {
-        List<CharSequence> strings = new ArrayList<>(max > 0 && max < 10 ? max : 10);
-
-        boolean inBrackets = false;
-        boolean inQuotes = false;
-        boolean escape = false;
-
-        int last = 0;
-        for (int i = 0, l = path.length(); i < l; i++) {
-            char ch = path.charAt(i);
-            if (!inQuotes && ch == '[') {
-                inBrackets = true;
-                escape = false;
-            } else if (!inQuotes && ch == ']') {
-                inBrackets = false;
-                escape = false;
-            } else if (!escape && ch == '\'') {
-                inQuotes = !inQuotes;
-            } else if (!escape && ch == '\\') {
-                escape = true;
-            } else if (inBrackets || inQuotes) {
-                escape = false;
-            } else {
-                String prefix = findPrefix(path, i, search);
-                if (prefix == null) {
-                    escape = false;
-                } else {
-                    strings.add(subSequence(path, last, i));
-                    if (addSearch) {
-                        strings.add(prefix);
-                    }
-                    last = prefix.length() + i;
-                    if (max > 0 && strings.size() == max - 1) {
-                        strings.add(subSequence(path, last, path.length()));
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (strings.isEmpty()) {
-            strings.add(path);
-        } else if (max <= 0 && last < path.length()) {
-            strings.add(subSequence(path, last, path.length()));
-        }
-        return strings;
-    }
-
-    private static String findPrefix(CharSequence fullPath, int startPos, String[] search) {
-        CharSequence pathAfter = subSequence(fullPath, startPos, fullPath.length());
-        int pathAfterLength = pathAfter.length();
-        for (String s : search) {
-            int len = s.length();
-
-            if (len <= pathAfterLength && 0 == CharSequenceHelper.compareSubsequence(s, 0, len, pathAfter, 0, len)) {
-                return s;
-            }
-        }
-        return null;
     }
 
     @Override

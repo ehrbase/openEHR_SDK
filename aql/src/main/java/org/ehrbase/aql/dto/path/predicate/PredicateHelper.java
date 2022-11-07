@@ -38,6 +38,7 @@ import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.condition.Value;
 import org.ehrbase.aql.dto.path.AqlPath;
+import org.ehrbase.aql.dto.path.AqlPathHelper;
 import org.ehrbase.aql.util.CharSequenceHelper;
 import org.ehrbase.util.exception.SdkException;
 
@@ -49,12 +50,15 @@ public class PredicateHelper {
     public static final String NAME_VALUE = "name/value";
     public static final String ARCHETYPE_NODE_ID = "archetype_node_id";
 
-    private static final String[] OPERATOR_SYMBOLS = Arrays.stream(ConditionComparisonOperatorSymbol.values())
-            .map(ConditionComparisonOperatorSymbol::getSymbole)
-            .toArray(String[]::new);
+    private static final AqlPathHelper.PrefixMatcher OPERATOR_SYMBOLS =
+            AqlPathHelper.PrefixMatcher.forStrings(Arrays.stream(ConditionComparisonOperatorSymbol.values())
+                    .map(ConditionComparisonOperatorSymbol::getSymbole)
+                    .toArray(String[]::new));
 
     private static final PredicateComparisonOperatorDto NO_PREDICATE =
             new PredicateComparisonOperatorDto(null, null, null);
+    private static final AqlPathHelper.PrefixMatcher PREDICATES_MATCHER =
+            AqlPathHelper.PrefixMatcher.forStrings(" and ", " AND ", " or ", " OR ", ",");
 
     private static int comparisonKey(PredicateDto dto) {
         if (dto instanceof PredicateComparisonOperatorDto) {
@@ -103,7 +107,7 @@ public class PredicateHelper {
 
     static Object[] parsePredicate(CharSequence predicate) {
 
-        List<CharSequence> split = AqlPath.split(predicate, -1, true, " and ", " AND ", " or ", " OR ", ",");
+        List<CharSequence> split = AqlPathHelper.split(predicate, 0, -1, true, PREDICATES_MATCHER);
 
         Object[] ret = new Object[split.size()];
         for (int i = 0, l = split.size(); i < l; i++) {
@@ -131,7 +135,7 @@ public class PredicateHelper {
     }
 
     private static PredicateComparisonOperatorDto handleOperator(CharSequence sequence, int i) {
-        List<CharSequence> split = AqlPath.split(sequence, 3, true, OPERATOR_SYMBOLS);
+        List<CharSequence> split = AqlPathHelper.split(sequence, 0, 3, true, OPERATOR_SYMBOLS);
 
         String statement;
         ConditionComparisonOperatorSymbol operator;
