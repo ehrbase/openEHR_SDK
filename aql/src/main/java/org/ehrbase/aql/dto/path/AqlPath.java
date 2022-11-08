@@ -58,7 +58,7 @@ public final class AqlPath implements Serializable {
     private final int firstNode;
     private final String attributeName;
 
-    private transient Integer hashCode;
+    private final int hashCode;
 
     private AqlPath(boolean isEmpty, AqlNode[] nodes, int firstNode, String attributeName) {
 
@@ -71,6 +71,8 @@ public final class AqlPath implements Serializable {
             this.firstNode = firstNode;
         }
         this.attributeName = attributeName;
+
+        this.hashCode = calcHash();
     }
 
     public String getAttributeName() {
@@ -402,37 +404,42 @@ public final class AqlPath implements Serializable {
     }
 
     public boolean equals(Object o, boolean withOtherPredicates) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (withOtherPredicates && this.hashCode() != o.hashCode()) return false;
-        AqlPath aqlPath = (AqlPath) o;
-
-        if (isEmpty == aqlPath.isEmpty) {
-
-            if (getNodeCount() != aqlPath.getNodeCount()) {
-                return false;
-            }
-            for (int i = 0, c = getNodeCount(); i < c; i++) {
-                if (!getNode(i).equals(aqlPath.getNode(i), withOtherPredicates)) {
-                    return false;
-                }
-            }
+        if (this == o) {
             return true;
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        AqlPath aqlPath = (AqlPath) o;
+        if (this.hashCode != aqlPath.hashCode && withOtherPredicates) {
+            return false;
+        }
+        if (isEmpty != aqlPath.isEmpty) {
+            return false;
+        }
+        int nodeCount = getNodeCount();
+        if (nodeCount != aqlPath.getNodeCount()) {
+            return false;
+        }
+        for (int i = 0; i < nodeCount; i++) {
+            if (!getNode(i).equals(aqlPath.getNode(i), withOtherPredicates)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int calcHash() {
+        int result = 31 * Objects.hashCode(attributeName) + Boolean.hashCode(isEmpty);
+
+        for (int i = firstNode, c = nodes.length; i < c; i++) {
+            result = 31 * result + nodes[i].hashCode;
+        }
+        return result;
     }
 
     @Override
     public int hashCode() {
-        if (hashCode == null) {
-            int result = Objects.hash(attributeName, isEmpty);
-
-            for (int i = firstNode, c = nodes.length; i < c; i++) {
-                result = 31 * result + nodes[i].hashCode();
-            }
-            hashCode = result;
-        }
         return hashCode;
     }
 
@@ -452,12 +459,13 @@ public final class AqlPath implements Serializable {
         private final String atCode;
         private final PredicateLogicalAndOperation otherPredicate;
 
-        private transient Integer hashCode;
+        private final int hashCode;
 
         public AqlNode(String name, String atCode, PredicateLogicalAndOperation otherPredicates) {
             this.name = name;
             this.atCode = StringUtils.isBlank(atCode) ? null : atCode;
             this.otherPredicate = otherPredicates;
+            this.hashCode = calcHash();
         }
 
         public String getName() {
@@ -584,10 +592,16 @@ public final class AqlPath implements Serializable {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (this.hashCode() != o.hashCode()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             AqlNode aqlNode = (AqlNode) o;
+            if (this.hashCode != aqlNode.hashCode) {
+                return false;
+            }
             return Objects.equals(name, aqlNode.name)
                     && Objects.equals(atCode, aqlNode.atCode)
                     && Objects.equals(otherPredicate, aqlNode.otherPredicate);
@@ -596,16 +610,19 @@ public final class AqlPath implements Serializable {
         public boolean equals(AqlNode o, boolean withOtherPredicates) {
             if (withOtherPredicates) {
                 return equals(o);
+            } else if (this == o) {
+                return true;
             } else {
                 return Objects.equals(name, o.name) && Objects.equals(atCode, o.atCode);
             }
         }
 
+        private int calcHash() {
+            return Objects.hash(name, atCode, otherPredicate);
+        }
+
         @Override
         public int hashCode() {
-            if (hashCode == null) {
-                hashCode = Objects.hash(name, atCode, otherPredicate);
-            }
             return hashCode;
         }
 
