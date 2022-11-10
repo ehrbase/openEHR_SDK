@@ -280,7 +280,30 @@ public final class AqlPath implements Serializable {
         }
     }
 
+    private String[] formatCache;
+
+    public AqlPath enableFormatCache() {
+        if (formatCache == null) {
+            formatCache = new String[2 * OtherPredicatesFormat.values().length];
+        }
+        return this;
+    }
+
     public String format(OtherPredicatesFormat otherPredicatesFormat, boolean includeAttributeName) {
+        if (formatCache == null) {
+            return formatUncached(otherPredicatesFormat, includeAttributeName);
+        } else {
+            int idx = otherPredicatesFormat.ordinal() * (includeAttributeName ? 1 : 2);
+            String value = formatCache[idx];
+            if (value == null) {
+                value = formatUncached(otherPredicatesFormat, includeAttributeName);
+                formatCache[idx] = value;
+            }
+            return value;
+        }
+    }
+
+    private String formatUncached(OtherPredicatesFormat otherPredicatesFormat, boolean includeAttributeName) {
         StringBuilder sb = new StringBuilder();
         appendFormat(sb, otherPredicatesFormat, includeAttributeName);
         return sb.toString();
