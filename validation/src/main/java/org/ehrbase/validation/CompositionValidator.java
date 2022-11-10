@@ -19,7 +19,9 @@ package org.ehrbase.validation;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessage;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.ehrbase.validation.terminology.ExternalTerminologyValidation;
@@ -31,8 +33,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 /**
  * Validator that checks a composition against constraints define in an Operational Template or a
  * Web Template.
- *
- * @since 1.7
+ * This class is NOT thread-safe!
  */
 public class CompositionValidator {
 
@@ -66,17 +67,18 @@ public class CompositionValidator {
      * @return the list of constraint violations
      */
     public List<ConstraintViolation> validate(Composition composition, WebTemplate template) {
-        var result = rmObjectValidator.validate(composition).stream()
-                .map(validationMessage ->
-                        new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
-                .collect(Collectors.toList());
-
-        if (result.isEmpty()) {
+        List<RMObjectValidationMessage> messages = rmObjectValidator.validate(composition);
+        if (messages.isEmpty()) {
+            List<ConstraintViolation> result = new ArrayList<>();
             new ValidationWalker(externalTerminologyValidation)
                     .walk(composition, result, template.getTree(), template.getTemplateId());
+            return result;
+        } else {
+            return messages.stream()
+                    .map(validationMessage ->
+                            new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
+                    .collect(Collectors.toList());
         }
-
-        return result;
     }
 
     /**
@@ -95,5 +97,9 @@ public class CompositionValidator {
      */
     public void setExternalTerminologyValidation(ExternalTerminologyValidation externalTerminologyValidation) {
         this.externalTerminologyValidation = externalTerminologyValidation;
+    }
+
+    public RMObjectValidator getRmObjectValidator() {
+        return rmObjectValidator;
     }
 }
