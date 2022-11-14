@@ -100,12 +100,15 @@ public abstract class Walker<T> {
         if (visitChildren(currentNode)) {
 
             if (ACTION.equals(currentNode.getRmType())) {
-                List<WebTemplateNode> ismTransitionList = currentNode.getChildren().stream()
-                        .filter(n -> ISM_TRANSITION.equals(n.getRmType()))
-                        .collect(Collectors.toList());
-                if (!ismTransitionList.isEmpty()) {
-                    currentNode.getChildren().removeAll(ismTransitionList);
-                    currentNode.getChildren().add(ismTransitionList.get(0));
+                Iterator<WebTemplateNode> it = currentNode.getChildren().iterator();
+                while (it.hasNext() && !ISM_TRANSITION.equals(it.next().getRmType())) {
+                    // skip until AFTER first ISM_TRANSITION
+                }
+                // remove addition ISM_TRANSITIONs
+                while (it.hasNext()) {
+                    if (ISM_TRANSITION.equals(it.next().getRmType())) {
+                        it.remove();
+                    }
                 }
             }
             handleInheritance(currentNode);
