@@ -23,7 +23,11 @@ public enum ContributionTestDataCanonicalJson {
     ONE_ENTRY_COMPOSITION(
             "contribution-one_entry-composition.json", "Contribution with rather minimal composition entry"),
     TWO_ENTRIES_COMPOSITION(
-            "contribution-two_entries-composition.json", "Contribution with two rather minimal composition entries");
+            "contribution-two_entries-composition.json", "Contribution with two rather minimal composition entries"),
+    STATUS_COMPOITION_MODIFICATION(
+            "status.contribution.modification.json", "Contribution with rather minimal composition entry"),
+    ONE_ENTRY_COMPOSITION_LATEST(
+            "latest-contribution-one_entry-composition.json", "Contribution with rather minimal composition entry");
 
     private final String filename;
     private final String description;

@@ -61,6 +61,7 @@ import org.ehrbase.client.openehrclient.AdminEhrEndpoint;
 import org.ehrbase.client.openehrclient.AdminTemplateEndpoint;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.CompositionEndpoint;
+import org.ehrbase.client.openehrclient.ContributionEndpoint;
 import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
@@ -298,6 +299,11 @@ public class DefaultRestClient implements OpenEhrClient {
     @Override
     public CompositionEndpoint compositionEndpoint(UUID ehrId) {
         return new DefaultRestCompositionEndpoint(this, ehrId);
+    }
+
+    @Override
+    public ContributionEndpoint contributionEndpoint(UUID ehrId) {
+        return new DefaultRestContributionEndpoint(this, ehrId);
     }
 
     @Override
