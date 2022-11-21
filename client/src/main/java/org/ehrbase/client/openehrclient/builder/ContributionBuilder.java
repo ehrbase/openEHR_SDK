@@ -37,7 +37,8 @@ import org.ehrbase.response.openehr.ContributionCreateDto;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 
 /**
- * TODO:: Refactor duplicate code part and check uui  + composition CRUD
+ * TODO:: Refactor duplicate code part and check uui  + composition CRUD.
+ * Clarify about CRUD for composition and contribution
  *
  * The type Contribution builder.
  */
@@ -339,6 +340,7 @@ public class ContributionBuilder {
          */
         public ContributionBuilderDtoBuilder addContributionCommitterName(String name) {
             AuditDetails audit = this.contributionCreateDto.getAudit();
+            // TODO:: Check the behaviour if something except of PartyIdentified anf the logic below
             if (audit != null && audit.getCommitter() != null && audit.getCommitter() instanceof PartyIdentified) {
                 PartyIdentified committer = (PartyIdentified) audit.getCommitter();
                 if (isBlank(committer.getName())) {
