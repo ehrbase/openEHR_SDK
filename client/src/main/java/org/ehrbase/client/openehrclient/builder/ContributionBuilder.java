@@ -37,6 +37,8 @@ import org.ehrbase.response.openehr.ContributionCreateDto;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 
 /**
+ * TODO:: Refactor duplicate code part and check uui  + composition CRUD
+ *
  * The type Contribution builder.
  */
 public class ContributionBuilder {
