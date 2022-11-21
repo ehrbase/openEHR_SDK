@@ -41,7 +41,7 @@ public class ContributionCreateDto extends RMObject {
     @JsonProperty(value = "versions")
     @JacksonXmlElementWrapper(localName = "versions")
     @JacksonXmlProperty(localName = "version")
-    private List<OriginalVersion<?>> versions = new ArrayList();
+    private List<OriginalVersion<? extends Object>> versions = new ArrayList<>();
 
     private AuditDetails audit;
 
@@ -65,7 +65,7 @@ public class ContributionCreateDto extends RMObject {
         return this.versions;
     }
 
-    public void setVersions(List<OriginalVersion<?>> versions) {
+    public void setVersions(List<OriginalVersion<? extends Object>> versions) {
         this.versions = versions;
     }
 

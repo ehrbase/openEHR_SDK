@@ -39,37 +39,6 @@ public interface ContributionEndpoint {
     VersionUid mergeContributionEntity(ContributionCreateDto contribution) throws JsonProcessingException;
 
     /**
-     * Add Composition to existing Contribution and save a Contribution to remote systems.
-     *
-     * @param contribution the contribution
-     * @param entity the entity
-     * @return the version uid
-     * @throws JsonProcessingException the json processing exception
-     */
-    VersionUid mergeContributionEntity(ContributionCreateDto contribution, Object entity)
-            throws JsonProcessingException;
-
-    /**
-     * TODO:: Clarify about wrapping composition
-     * Create a new default Contribution from Composition provided and save a Contribution to remote systems.
-     *
-     * @param entity the entity
-     * @return the version uid
-     * @throws JsonProcessingException the json processing exception
-     */
-    VersionUid mergeContributionCompositionEntity(Object entity) throws JsonProcessingException;
-
-    /**
-     * TODO:: Clarify about wrapping composition
-     * Create a new default Contribution from  Composition provided and save a Contribution to remote systems.
-     *
-     * @param entity the entity
-     * @return the version uid
-     * @throws JsonProcessingException the json processing exception
-     */
-    VersionUid mergeContributionCompositionsEntity(Object entity) throws JsonProcessingException;
-
-    /**
      *  Get the Contribution by {@code ehrId} and {@code contributionId}.
      *
      * @param ehrId          the ehr id
