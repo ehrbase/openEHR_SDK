@@ -17,29 +17,19 @@
  */
 package org.ehrbase.client.openehrclient.builder;
 
-import static java.util.Collections.EMPTY_LIST;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.ehrbase.client.openehrclient.ContributionChangeType.CREATION;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.generic.AuditDetails;
-import com.nedap.archie.rm.generic.PartyIdentified;
-import com.nedap.archie.rm.support.identification.GenericId;
-import com.nedap.archie.rm.support.identification.HierObjectId;
-import com.nedap.archie.rm.support.identification.PartyRef;
-import java.util.*;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.annotation.Nullable;
-import org.ehrbase.client.openehrclient.ContributionChangeType;
 import org.ehrbase.response.openehr.ContributionCreateDto;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 
 /**
- * TODO:: Refactor duplicate code part and check uui  + composition CRUD.
- * Clarify about CRUD for composition and contribution
- *
  * The type Contribution builder.
  */
 public class ContributionBuilder {
@@ -48,10 +38,11 @@ public class ContributionBuilder {
     /**
      * Builder contribution builder dto builder.
      *
+     * @param audit the audit
      * @return the contribution builder dto builder
      */
-    public static ContributionBuilderDtoBuilder builder() {
-        return new ContributionBuilderDtoBuilder();
+    public static ContributionBuilderDtoBuilder builder(AuditDetails audit) {
+        return new ContributionBuilderDtoBuilder(audit);
     }
 
     /**
@@ -76,8 +67,10 @@ public class ContributionBuilder {
      * The type Contribution builder dto builder.
      */
     public static class ContributionBuilderDtoBuilder {
-
-        public static final String OPTIONAL_NAME_OF_THE_COMMITTER = "<optional name of the committer>";
+        /**
+         * The constant MANDATORY_CONTRIBUTOR_AUDIT_DETAILS.
+         */
+        public static final String MANDATORY_CONTRIBUTOR_AUDIT_DETAILS = "Missing mandatory contributor AuditDetails.";
         /**
          * The Contribution create dto.
          */
@@ -85,368 +78,189 @@ public class ContributionBuilder {
 
         /**
          * Instantiates a new Contribution builder dto builder.
-         */
-        ContributionBuilderDtoBuilder() {}
-
-        /**
-         * Add contribution uuid contribution builder dto builder.
-         *
-         * @param uuid the uuid
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addContributionUuid(@Nullable UUID uuid) {
-            HierObjectId uid = new HierObjectId();
-            if (uuid != null) {
-                uid.setValue(uuid.toString());
-            }
-            this.contributionCreateDto.setUid(uid);
-
-            return this;
-        }
-
-        /**
-         * Add composition contribution builder dto builder.
-         *
-         * @param rmObject the rm object
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addComposition(final RMObject rmObject) {
-            if (rmObject != null) {
-                String rmObjectJson = new CanonicalJson().marshal(rmObject);
-                LinkedHashMap<String, Object> secondComposition =
-                        (LinkedHashMap<String, Object>) new CanonicalJson().unmarshalToMap(rmObjectJson);
-
-                OriginalVersion<Object> objectOriginalVersion = new OriginalVersion<>();
-
-                objectOriginalVersion.setData(secondComposition);
-                objectOriginalVersion.setCommitAudit(createAuditDetails(CREATION, OPTIONAL_NAME_OF_THE_COMMITTER));
-                this.contributionCreateDto.setAudit(createAuditDetails(CREATION, OPTIONAL_NAME_OF_THE_COMMITTER));
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add composition contribution builder dto builder.
-         *
-         * @param rmObject                 the rm object
-         * @param compositionCommitterName the composition committer name
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addComposition(
-                final RMObject rmObject, final String compositionCommitterName) {
-            if (rmObject != null) {
-                String rmObjectJson = new CanonicalJson().marshal(rmObject);
-                LinkedHashMap<String, Object> secondComposition =
-                        (LinkedHashMap<String, Object>) new CanonicalJson().unmarshalToMap(rmObjectJson);
-
-                OriginalVersion<Object> objectOriginalVersion = new OriginalVersion<>();
-
-                objectOriginalVersion.setData(secondComposition);
-
-                objectOriginalVersion.setCommitAudit(createAuditDetails(CREATION, compositionCommitterName));
-
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add composition contribution builder dto builder.
-         *
-         * @param rmObject the rm object
-         * @param type     the type
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addComposition(
-                final RMObject rmObject, final ContributionChangeType type) {
-            if (rmObject != null) {
-                String rmObjectJson = new CanonicalJson().marshal(rmObject);
-                LinkedHashMap<String, Object> secondComposition =
-                        (LinkedHashMap<String, Object>) new CanonicalJson().unmarshalToMap(rmObjectJson);
-
-                OriginalVersion<Object> objectOriginalVersion = new OriginalVersion<>();
-
-                objectOriginalVersion.setData(secondComposition);
-
-                objectOriginalVersion.setCommitAudit(createAuditDetails(type, "<optional name of the committer>"));
-
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add composition contribution builder dto builder.
-         *
-         * @param rmObject                 the rm object
-         * @param type                     the type
-         * @param compositionCommitterName the composition committer name
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addComposition(
-                final RMObject rmObject, final ContributionChangeType type, final String compositionCommitterName) {
-            if (rmObject != null) {
-                String rmObjectJson = new CanonicalJson().marshal(rmObject);
-                LinkedHashMap<String, Object> secondComposition =
-                        (LinkedHashMap<String, Object>) new CanonicalJson().unmarshalToMap(rmObjectJson);
-
-                OriginalVersion<Object> objectOriginalVersion = new OriginalVersion<>();
-
-                objectOriginalVersion.setData(secondComposition);
-
-                objectOriginalVersion.setCommitAudit(createAuditDetails(type, compositionCommitterName));
-
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add composition contribution builder dto builder.
-         *
-         * @param canonicalObject          the canonical object
-         * @param compositionCommitterName the composition committer name
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addComposition(
-                final Map<String, Object> canonicalObject, String compositionCommitterName) {
-            if (canonicalObject != null) {
-                OriginalVersion<Object> objectOriginalVersion = new OriginalVersion<>();
-                // Audit Details
-                objectOriginalVersion.setCommitAudit(createAuditDetails(CREATION, compositionCommitterName));
-                objectOriginalVersion.setData(canonicalObject);
-
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-                this.contributionCreateDto.setAudit(createAuditDetails(CREATION, compositionCommitterName));
-            }
-
-            return this;
-        }
-
-        /**
-         * Add composition contribution builder dto builder.
-         *
-         * @param canonicalObject the canonical object
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addComposition(final Map<String, Object> canonicalObject) {
-            if (canonicalObject != null) {
-                OriginalVersion<Object> objectOriginalVersion = new OriginalVersion<>();
-                // Audit Details
-                objectOriginalVersion.setCommitAudit(createAuditDetails(CREATION, "<optional name of the committer>"));
-                objectOriginalVersion.setData(canonicalObject);
-
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-                this.contributionCreateDto.setAudit(createAuditDetails(CREATION, "<optional name of the committer>"));
-            }
-
-            return this;
-        }
-
-        /**
-         * Add composition contribution builder dto builder.
-         *
-         * @param canonicalObject the canonical object
-         * @param type            the type
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addComposition(
-                final Map<String, Object> canonicalObject, final ContributionChangeType type) {
-            if (canonicalObject != null) {
-                // Can be created OriginalVersionBuilder to make more customizable
-                OriginalVersion<Object> objectOriginalVersion = new OriginalVersion<>();
-                objectOriginalVersion.setCommitAudit(createAuditDetails(type, "<optional name of the committer>"));
-                objectOriginalVersion.setData(canonicalObject);
-                this.contributionCreateDto.getVersions().add(objectOriginalVersion);
-            }
-
-            return this;
-        }
-
-        private static AuditDetails createAuditDetails(final ContributionChangeType type, String committerName) {
-
-            //           need to provide AuditDetailsBuilder to make easier to generate and hide some default logic
-            AuditDetails commitAudit = new AuditDetails();
-            // changeType
-            DvCodedText changeType = new DvCodedText();
-            changeType.setDefiningCode(new CodePhrase(null, String.valueOf(type.getCode())));
-            changeType.setValue(type.getName());
-            commitAudit.setChangeType(changeType);
-
-            commitAudit.setSystemId("test-system-id");
-
-            PartyIdentified committer = new PartyIdentified();
-            committer.setName(committerName);
-            committer.setIdentifiers(EMPTY_LIST);
-            PartyRef partyRef = new PartyRef();
-            partyRef.setNamespace("demographic");
-            partyRef.setType("PERSON");
-            GenericId id = new GenericId();
-            id.setScheme("<ID SCHEME NAME>");
-            id.setValue("<OBJECT_ID>");
-            partyRef.setId(id);
-            //            partyRef.setNamespace(defaultValues.getDefaultValue(DefaultValuePath.ID_NAMESPACE));
-            //            partyRef.setType("PARTY");
-            //            partyRef.setId(new GenericId(defaultValues.getDefaultValue(id),
-            // defaultValues.getDefaultValue(DefaultValuePath.ID_SCHEME)));
-            //            partyProxy.setExternalRef(partyRef);
-            committer.setExternalRef(partyRef);
-
-            commitAudit.setCommitter(committer);
-
-            return commitAudit;
-        }
-
-        /**
-         * Add hier object id contribution builder dto builder.
-         *
-         * @param uid the uid
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addHierObjectId(final HierObjectId uid) {
-            if (uid != null) {
-                this.contributionCreateDto.setUid(uid);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add contribution audit details contribution builder dto builder.
          *
          * @param audit the audit
+         */
+        ContributionBuilderDtoBuilder(AuditDetails audit) {
+            this.contributionCreateDto.setAudit(audit);
+        }
+
+        /**
+         * Add composition creation contribution builder dto builder.
+         *
+         * @param composition the composition
          * @return the contribution builder dto builder
          */
-        public ContributionBuilderDtoBuilder addContributionAuditDetails(final AuditDetails audit) {
-            if (audit != null) {
-                this.contributionCreateDto.setAudit(audit);
-            }
+        public ContributionBuilderDtoBuilder addCompositionCreation(final RMObject composition) {
+            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
+            updateContribution(canonicalComposition, null);
 
             return this;
         }
 
         /**
-         * Add contribution committer name contribution builder dto builder.
+         * Add composition creation contribution builder dto builder.
          *
-         * @param name the name
+         * @param composition the composition
          * @return the contribution builder dto builder
          */
-        public ContributionBuilderDtoBuilder addContributionCommitterName(String name) {
+        public ContributionBuilderDtoBuilder addCompositionCreation(final Map<String, Object> composition) {
+            updateContribution(composition, null);
+
+            return this;
+        }
+
+        private void setAudit(OriginalVersion<Object> originalVersion) {
             AuditDetails audit = this.contributionCreateDto.getAudit();
-            // TODO:: Check the behaviour if something except of PartyIdentified anf the logic below
-            if (audit != null && audit.getCommitter() != null && audit.getCommitter() instanceof PartyIdentified) {
-                PartyIdentified committer = (PartyIdentified) audit.getCommitter();
-                if (isBlank(committer.getName())) {
-                    committer.setName(name);
+
+            if (audit == null) {
+                throw new IllegalArgumentException(MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
+            }
+
+            originalVersion.setCommitAudit(audit);
+        }
+
+        private void setOriginalVersion(
+                OriginalVersion<LinkedHashMap<String, Object>> originalVersion, @Nullable String precedingVersionUid) {
+            if (originalVersion != null) {
+
+                AuditDetails audit;
+                if (originalVersion.getCommitAudit() != null) {
+                    audit = originalVersion.getCommitAudit();
+                } else {
+                    audit = this.contributionCreateDto.getAudit();
                 }
-            } else {
-                this.contributionCreateDto.setAudit(createAuditDetails(CREATION, name));
-            }
 
-            return this;
-        }
-
-        /**
-         * Add original version contribution builder dto builder.
-         *
-         * @param originalVersion          the original version
-         * @param compositionCommitterName the composition committer name
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersion(
-                OriginalVersion<LinkedHashMap<String, Object>> originalVersion, String compositionCommitterName) {
-            if (originalVersion != null) {
-                originalVersion.setCommitAudit(createAuditDetails(CREATION, compositionCommitterName));
-                this.contributionCreateDto.getVersions().add(originalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add original version contribution builder dto builder.
-         *
-         * @param originalVersion the original version
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersion(
-                OriginalVersion<LinkedHashMap<String, Object>> originalVersion) {
-            if (originalVersion != null) {
-                originalVersion.setCommitAudit(createAuditDetails(CREATION, "<optional name of the committer>"));
-
-                this.contributionCreateDto.setAudit(createAuditDetails(CREATION, "<optional name of the committer>"));
-                this.contributionCreateDto.getVersions().add(originalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add original version contribution builder dto builder.
-         *
-         * @param originalVersion the original version
-         * @param type            the type
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersion(
-                OriginalVersion<LinkedHashMap<String, Object>> originalVersion, final ContributionChangeType type) {
-            if (originalVersion != null) {
-                originalVersion.setCommitAudit(createAuditDetails(type, "<optional name of the committer>"));
-
-                this.contributionCreateDto.getVersions().add(originalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add original version contribution builder dto builder.
-         *
-         * @param originalVersion          the original version
-         * @param type                     the type
-         * @param compositionCommitterName the composition committer name
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersion(
-                OriginalVersion<LinkedHashMap<String, Object>> originalVersion,
-                final ContributionChangeType type,
-                String compositionCommitterName) {
-            if (originalVersion != null) {
-                originalVersion.setCommitAudit(createAuditDetails(CREATION, "<optional name of the committer>"));
-
-                this.contributionCreateDto.getVersions().add(originalVersion);
-            }
-
-            return this;
-        }
-
-        /**
-         * Add original version contribution builder dto builder.
-         *
-         * @param originalVersion the original version
-         * @param audit           the audit
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersion(
-                OriginalVersion<LinkedHashMap<String, Object>> originalVersion, @Nullable final AuditDetails audit) {
-            if (originalVersion != null) {
                 if (audit != null) {
                     originalVersion.setCommitAudit(audit);
                 } else {
-                    originalVersion.setCommitAudit(createAuditDetails(CREATION, "<optional name of the committer>"));
+                    throw new IllegalArgumentException(MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
+                }
+
+                if (isNotBlank(precedingVersionUid)) {
+                    originalVersion.setPrecedingVersionUid(new ObjectVersionId(precedingVersionUid));
                 }
 
                 this.contributionCreateDto.getVersions().add(originalVersion);
             }
+        }
+
+        /**
+         * Add composition modification contribution builder dto builder.
+         *
+         * @param composition         the composition
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution builder dto builder
+         */
+        public ContributionBuilderDtoBuilder addCompositionModification(
+                final RMObject composition, final String precedingVersionUid) {
+            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
+            updateContribution(canonicalComposition, precedingVersionUid);
 
             return this;
+        }
+
+        /**
+         * Add composition modification contribution builder dto builder.
+         *
+         * @param composition         the composition
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution builder dto builder
+         */
+        public ContributionBuilderDtoBuilder addCompositionModification(
+                final Map<String, Object> composition, final String precedingVersionUid) {
+            updateContribution(composition, precedingVersionUid);
+
+            return this;
+        }
+
+        /**
+         * Add composition deletion contribution builder dto builder.
+         *
+         * @param composition         the composition
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution builder dto builder
+         */
+        public ContributionBuilderDtoBuilder addCompositionDeletion(
+                final RMObject composition, final String precedingVersionUid) {
+            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
+            updateContribution(canonicalComposition, precedingVersionUid);
+
+            return this;
+        }
+
+        /**
+         * Add composition deletion contribution builder dto builder.
+         *
+         * @param composition         the composition
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution builder dto builder
+         */
+        public ContributionBuilderDtoBuilder addCompositionDeletion(
+                final Map<String, Object> composition, final String precedingVersionUid) {
+            updateContribution(composition, precedingVersionUid);
+
+            return this;
+        }
+
+        private void updateContribution(Map<String, Object> composition, @Nullable String precedingVersionUid) {
+            OriginalVersion<Object> originalVersion = new OriginalVersion<>();
+            setAudit(originalVersion);
+            if (isNotBlank(precedingVersionUid)) {
+                originalVersion.setPrecedingVersionUid(new ObjectVersionId(precedingVersionUid));
+            }
+            originalVersion.setData(composition);
+
+            this.contributionCreateDto.getVersions().add(originalVersion);
+        }
+
+        /**
+         * Add original version creation contribution builder dto builder.
+         *
+         * @param originalVersion the original version
+         * @return the contribution builder dto builder
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionCreation(
+                final OriginalVersion<LinkedHashMap<String, Object>> originalVersion) {
+            setOriginalVersion(originalVersion, null);
+
+            return this;
+        }
+
+        /**
+         * Add original version modification contribution builder dto builder.
+         *
+         * @param originalVersion     the original version
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution builder dto builder
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionModification(
+                final OriginalVersion<LinkedHashMap<String, Object>> originalVersion,
+                final String precedingVersionUid) {
+            setOriginalVersion(originalVersion, precedingVersionUid);
+
+            return this;
+        }
+
+        /**
+         * Add original version deletion contribution builder dto builder.
+         *
+         * @param originalVersion     the original version
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution builder dto builder
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionDeletion(
+                final OriginalVersion<LinkedHashMap<String, Object>> originalVersion,
+                final String precedingVersionUid) {
+            setOriginalVersion(originalVersion, precedingVersionUid);
+
+            return this;
+        }
+
+        private static LinkedHashMap<String, Object> getCanonicalComposition(RMObject composition) {
+            String compositionJson = new CanonicalJson().marshal(composition);
+
+            return (LinkedHashMap<String, Object>) new CanonicalJson().unmarshalToMap(compositionJson);
         }
 
         /**

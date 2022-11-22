@@ -74,9 +74,7 @@ public class DefaultRestContributionEndpoint implements ContributionEndpoint {
         try {
             String body = IOUtils.toString(response.getEntity().getContent(), UTF_8);
 
-            // TODO:: This replacement is wrong. need to clarify why we have CONTRIBUTION on type on json
-            return Optional.of(new CanonicalJson()
-                    .unmarshal(body.replace("\"_type\": \"CONTRIBUTION\",", ""), Contribution.class));
+            return Optional.of(new CanonicalJson().unmarshal(body, Contribution.class));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }

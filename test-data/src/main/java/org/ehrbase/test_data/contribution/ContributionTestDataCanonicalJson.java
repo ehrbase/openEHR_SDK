@@ -27,7 +27,13 @@ public enum ContributionTestDataCanonicalJson {
     STATUS_COMPOITION_MODIFICATION(
             "status.contribution.modification.json", "Contribution with rather minimal composition entry"),
     ONE_ENTRY_COMPOSITION_LATEST(
-            "latest-contribution-one_entry-composition.json", "Contribution with rather minimal composition entry");
+            "latest-contribution-one_entry-composition.json", "Contribution with rather minimal composition entry"),
+    ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST(
+            "latest-contribution-one_entry-composition-modification.json",
+            "Contribution with rather minimal composition entry"),
+    ONE_ENTRY_COMPOSITION_DELETION_LATEST(
+            "latest-contribution-one_entry-composition-deletion.json",
+            "Contribution with rather minimal composition entry");
 
     private final String filename;
     private final String description;

@@ -17,15 +17,17 @@
  */
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.client.TestData.buildProxyEhrbaseBloodPressureSimpleDeV0Composition;
-import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.ONE_ENTRY_COMPOSITION_LATEST;
-import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.STATUS_COMPOITION_MODIFICATION;
+import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.nedap.archie.rm.changecontrol.Contribution;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.ehr.EhrStatus;
+import com.nedap.archie.rm.generic.AuditDetails;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -34,6 +36,8 @@ import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.Integration;
+import org.ehrbase.client.classgenerator.examples.minimalevaluationenv1composition.MinimalEvaluationEnV1Composition;
+import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.openehrclient.ContributionEndpoint;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
@@ -43,17 +47,26 @@ import org.ehrbase.client.openehrclient.defaultrestclient.systematic.composition
 import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.response.openehr.ContributionCreateDto;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+/**
+ * The type Default rest contribution endpoint it.
+ */
 @Category(Integration.class)
 public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQueryIT {
 
     private static OpenEhrClient openEhrClient;
     private UUID ehr;
 
+    /**
+     * Sets .
+     *
+     * @throws URISyntaxException the uri syntax exception
+     */
     @BeforeClass
     public static void setup() throws URISyntaxException {
         openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
@@ -65,6 +78,11 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         openEhrClient.adminEhrEndpoint().delete(ehr);
     }
 
+    /**
+     * Test save and get contribution.
+     *
+     * @throws IOException the io exception
+     */
     @Test
     public void testSaveAndGetContribution() throws IOException {
         ehr = openEhrClient.ehrEndpoint().createEhr();
@@ -81,31 +99,113 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         assertTrue(remoteContribution.isPresent());
     }
 
+    /**
+     * Test save ehr status contribution modification.
+     *
+     * @throws IOException the io exception
+     */
     @Test
-    public void testSaveContributionCreatedWithCanonicalComposition() throws IOException {
+    public void testSaveContributionEhrStatusModification() throws IOException {
         ehr = openEhrClient.ehrEndpoint().createEhr();
+        Optional<EhrStatus> ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehr);
 
-        String contributionJson = IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
+        assertTrue(ehrStatus.isPresent());
+
+        ContributionCreateDto contributionDto = createContributionWithEhrStatus(ehrStatus.get());
+        ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
+        VersionUid versionUid = contributionEndpoint.mergeContributionEntity(contributionDto);
+        Optional<Contribution> remoteContribution = contributionEndpoint.find(ehr, versionUid.getUuid());
+
+        assertTrue(remoteContribution.isPresent());
+    }
+
+    /**
+     * Test save contribution with canonical composition modification.
+     *
+     * @throws IOException the io exception
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSaveContributionWithCompositionModification() throws IOException {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+        String compositionPrecedingVersionUid = getCompositionPrecedingVersionUid(ehr);
+
+        String contributionModificationJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
         ContributionCreateDto contributionDto =
-                new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
+                new CanonicalJson().unmarshal(contributionModificationJson, ContributionCreateDto.class);
         OriginalVersion<LinkedHashMap<String, Object>> originalVersion =
                 (OriginalVersion<LinkedHashMap<String, Object>>)
                         contributionDto.getVersions().get(0);
 
         LinkedHashMap<String, Object> composition = originalVersion.getData();
 
-        ContributionBuilder contributionBuilder =
-                ContributionBuilder.builder().addComposition(composition).build();
+        AuditDetails compositionModificationAudit =
+                contributionDto.getVersions().get(0).getCommitAudit();
+
+        ContributionBuilder contributionBuilder = ContributionBuilder.builder(compositionModificationAudit)
+                .addCompositionModification(composition, compositionPrecedingVersionUid)
+                .build();
 
         ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
         VersionUid versionUid =
                 contributionEndpoint.mergeContributionEntity(contributionBuilder.getContributionCreateDto());
+
+        assertThat(versionUid.getVersion()).isEqualTo(1L);
 
         Optional<Contribution> remoteContribution = contributionEndpoint.find(ehr, versionUid.getUuid());
 
         assertTrue(remoteContribution.isPresent());
     }
 
+    /**
+     * Test save contribution with canonical composition deletion.
+     *
+     * @throws IOException the io exception
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSaveContributionWithCompositionDeletion() throws IOException {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+        String compositionPrecedingVersionUid = getContributionCompositionModified(ehr);
+
+        String contributionModificationJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_DELETION_LATEST.getStream(), StandardCharsets.UTF_8);
+        ContributionCreateDto contributionDto =
+                new CanonicalJson().unmarshal(contributionModificationJson, ContributionCreateDto.class);
+        OriginalVersion<LinkedHashMap<String, Object>> originalVersion =
+                (OriginalVersion<LinkedHashMap<String, Object>>)
+                        contributionDto.getVersions().get(0);
+
+        LinkedHashMap<String, Object> composition = originalVersion.getData();
+
+        AuditDetails compositionModificationAudit =
+                contributionDto.getVersions().get(0).getCommitAudit();
+
+        ContributionBuilder contributionBuilder = ContributionBuilder.builder(compositionModificationAudit)
+                .addCompositionDeletion(composition, compositionPrecedingVersionUid)
+                .build();
+
+        ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
+        VersionUid versionUid =
+                contributionEndpoint.mergeContributionEntity(contributionBuilder.getContributionCreateDto());
+
+        assertThat(versionUid.getVersion()).isEqualTo(1L);
+
+        Optional<Contribution> remoteContribution = contributionEndpoint.find(ehr, versionUid.getUuid());
+
+        assertTrue(remoteContribution.isPresent());
+        String version = remoteContribution.get().getVersions().get(0).getId().getValue();
+        String updatedVersion = version.substring(version.lastIndexOf("::") + 2);
+
+        assertEquals("3", updatedVersion);
+    }
+
+    /**
+     * Test save contribution created with rm object composition.
+     *
+     * @throws IOException the io exception
+     */
     @Test
     public void testSaveContributionCreatedWithRMObjectComposition() throws IOException {
 
@@ -114,73 +214,33 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyDto = buildProxyEhrbaseBloodPressureSimpleDeV0Composition();
 
-        Composition proxyComposition = (Composition) cut.unflatten(proxyDto);
+        ProxyEhrbaseBloodPressureSimpleDeV0Composition comp =
+                openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxyDto);
 
-        ContributionBuilder contributionBuilder =
-                ContributionBuilder.builder().addComposition(proxyComposition).build();
+        assertThat(comp.getVersionUid()).isNotNull();
 
-        ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
-        VersionUid versionUid =
-                contributionEndpoint.mergeContributionEntity(contributionBuilder.getContributionCreateDto());
-        Optional<Contribution> remoteContribution = contributionEndpoint.find(ehr, versionUid.getUuid());
+        AuditDetails auditDetails = getAuditDetails();
 
-        assertTrue(remoteContribution.isPresent());
-    }
-
-    @Test
-    public void testSaveDefaultContributionEntityCreatedByBuilderWithCanonicalCompositionWithName() throws IOException {
-        ehr = openEhrClient.ehrEndpoint().createEhr();
-
-        String contributionJson = IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
-        ContributionCreateDto contributionDto =
-                new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
-        OriginalVersion<LinkedHashMap<String, Object>> originalVersion =
-                (OriginalVersion<LinkedHashMap<String, Object>>)
-                        contributionDto.getVersions().get(0);
-
-        LinkedHashMap<String, Object> composition = originalVersion.getData();
-
-        ContributionBuilder contributionBuilder = ContributionBuilder.builder()
-                .addComposition(composition, "<optional name of the committer>")
+        ContributionBuilder contributionBuilder = ContributionBuilder.builder(auditDetails)
+                .addCompositionCreation(cut.unflatten(comp))
                 .build();
 
         ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
         VersionUid versionUid =
                 contributionEndpoint.mergeContributionEntity(contributionBuilder.getContributionCreateDto());
-
         Optional<Contribution> remoteContribution = contributionEndpoint.find(ehr, versionUid.getUuid());
 
         assertTrue(remoteContribution.isPresent());
     }
 
+    /**
+     * Test save contribution canonical entity created by builder.
+     *
+     * @throws IOException the io exception
+     */
     @Test
-    public void testSaveContributionEntitySuccess() throws IOException {
-        ehr = openEhrClient.ehrEndpoint().createEhr();
-
-        String contributionJson = IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
-        ContributionCreateDto contributionDto =
-                new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
-
-        LinkedHashMap<String, Object> composition = (LinkedHashMap<String, Object>)
-                contributionDto.getVersions().get(0).getData();
-
-        ContributionBuilder contributionBuilder = ContributionBuilder.builder()
-                .addComposition(composition, "test")
-                .addHierObjectId(contributionDto.getUid())
-                .addContributionAuditDetails(contributionDto.getAudit())
-                .build();
-
-        ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
-        VersionUid versionUid =
-                contributionEndpoint.mergeContributionEntity(contributionBuilder.getContributionCreateDto());
-
-        Optional<Contribution> remoteContribution = contributionEndpoint.find(ehr, versionUid.getUuid());
-
-        assertTrue(remoteContribution.isPresent());
-    }
-
-    @Test
-    public void testSaveContributionCanonicalEntityCreatedByBuilder() throws IOException {
+    @SuppressWarnings("unchecked")
+    public void testSaveContributionWithOriginalVersion() throws IOException {
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
         String contributionJson = IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
@@ -191,10 +251,8 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 (OriginalVersion<LinkedHashMap<String, Object>>)
                         contributionDto.getVersions().get(0);
 
-        ContributionBuilder contributionBuilder = ContributionBuilder.builder()
-                .addOriginalVersion(originalVersion)
-                .addHierObjectId(contributionDto.getUid())
-                .addContributionAuditDetails(contributionDto.getAudit())
+        ContributionBuilder contributionBuilder = ContributionBuilder.builder(contributionDto.getAudit())
+                .addOriginalVersionCreation(originalVersion)
                 .build();
 
         ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
@@ -206,10 +264,16 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         assertTrue(remoteContribution.isPresent());
     }
 
+    /**
+     * Test save contribution with compositions creation.
+     *
+     * @throws IOException the io exception
+     */
     @Test
-    public void removeME_addEverythingJustForTestPurposes() throws IOException {
+    public void testSaveContributionWithCompositionsCreation() throws IOException {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
+
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
 
         ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyDto = buildProxyEhrbaseBloodPressureSimpleDeV0Composition();
@@ -224,20 +288,20 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         OriginalVersion<LinkedHashMap<String, Object>> originalVersion = new OriginalVersion<>();
         originalVersion.setData(secondComposition);
 
-        String contributionJson = IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
+        String contributionJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
         ContributionCreateDto contributionDto =
                 new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
 
-        ContributionBuilder contributionBuilder = ContributionBuilder.builder()
-                .addComposition(proxyComposition)
-                .addOriginalVersion(originalVersion)
-                .addHierObjectId(contributionDto.getUid())
-                .addContributionAuditDetails(contributionDto.getAudit())
-                .addComposition(
-                        (LinkedHashMap<String, Object>)
-                                contributionDto.getVersions().get(0).getData(),
-                        "<optional name of the committer>")
-                .addContributionCommitterName("<optional name of the committer>")
+        ContributionBuilder contributionBuilder = ContributionBuilder.builder(contributionDto.getAudit())
+                .addCompositionCreation(proxyComposition)
+                .addCompositionCreation(proxyComposition)
+                .addCompositionCreation(proxyComposition)
+                .addCompositionCreation(proxyComposition)
+                .addOriginalVersionCreation(originalVersion)
+                .addOriginalVersionCreation(originalVersion)
+                .addOriginalVersionCreation(originalVersion)
+                .addOriginalVersionCreation(originalVersion)
                 .build();
 
         ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
@@ -247,20 +311,119 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         assertTrue(remoteContribution.isPresent());
     }
-
+    /**
+     * Test save contribution with canonical composition different compositions.
+     *
+     * @throws IOException the io exception
+     */
     @Test
-    public void testSaveEhrStatusContributionModification() throws IOException {
+    @SuppressWarnings("unchecked")
+    public void testSaveContributionWithCompositionsCreationAndModification() throws IOException {
         ehr = openEhrClient.ehrEndpoint().createEhr();
-        Optional<EhrStatus> ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehr);
+        String compositionPrecedingVersionUid = getCompositionPrecedingVersionUid(ehr);
 
-        assertTrue(ehrStatus.isPresent());
+        String contributionModificationJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
+        ContributionCreateDto contributionDto =
+                new CanonicalJson().unmarshal(contributionModificationJson, ContributionCreateDto.class);
+        OriginalVersion<LinkedHashMap<String, Object>> originalVersion =
+                (OriginalVersion<LinkedHashMap<String, Object>>)
+                        contributionDto.getVersions().get(0);
 
-        ContributionCreateDto contributionDto = createContributionWithEhrStatus(ehrStatus.get());
+        String contributionJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
+        ContributionCreateDto contributionDtoCreation =
+                new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
+
+        AuditDetails compositionModificationAudit =
+                contributionDto.getVersions().get(0).getCommitAudit();
+        originalVersion.setCommitAudit(compositionModificationAudit);
+
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+
+        ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyDto = buildProxyEhrbaseBloodPressureSimpleDeV0Composition();
+
+        Composition proxyComposition = (Composition) cut.unflatten(proxyDto);
+
+        ContributionBuilder contributionBuilder = ContributionBuilder.builder(contributionDtoCreation.getAudit())
+                .addCompositionCreation(proxyComposition)
+                .addOriginalVersionModification(originalVersion, compositionPrecedingVersionUid)
+                .build();
+
         ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
-        VersionUid versionUid = contributionEndpoint.mergeContributionEntity(contributionDto);
+        VersionUid versionUid =
+                contributionEndpoint.mergeContributionEntity(contributionBuilder.getContributionCreateDto());
+
+        assertThat(versionUid.getVersion()).isEqualTo(1L);
+
         Optional<Contribution> remoteContribution = contributionEndpoint.find(ehr, versionUid.getUuid());
 
         assertTrue(remoteContribution.isPresent());
+    }
+
+    /**
+     * Gets contribution composition modified.
+     *
+     * @param ehr the ehr
+     * @return the contribution composition modified
+     * @throws IOException the io exception
+     */
+    @SuppressWarnings("unchecked")
+    public String getContributionCompositionModified(UUID ehr) throws IOException {
+        String compositionPrecedingVersionUid = getCompositionPrecedingVersionUid(ehr);
+
+        String contributionModificationJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
+        ContributionCreateDto contributionDto =
+                new CanonicalJson().unmarshal(contributionModificationJson, ContributionCreateDto.class);
+        OriginalVersion<LinkedHashMap<String, Object>> originalVersion =
+                (OriginalVersion<LinkedHashMap<String, Object>>)
+                        contributionDto.getVersions().get(0);
+
+        LinkedHashMap<String, Object> composition = originalVersion.getData();
+
+        AuditDetails compositionModificationAudit =
+                contributionDto.getVersions().get(0).getCommitAudit();
+
+        ContributionBuilder contributionBuilder = ContributionBuilder.builder(compositionModificationAudit)
+                .addCompositionModification(composition, compositionPrecedingVersionUid)
+                .build();
+
+        ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(this.ehr);
+        VersionUid versionUid =
+                contributionEndpoint.mergeContributionEntity(contributionBuilder.getContributionCreateDto());
+
+        assertThat(versionUid.getVersion()).isEqualTo(1L);
+
+        Optional<Contribution> remoteContribution = contributionEndpoint.find(this.ehr, versionUid.getUuid());
+
+        assertTrue(remoteContribution.isPresent());
+
+        String version = remoteContribution.get().getVersions().get(0).getId().getValue();
+        String updatedVersion = version.substring(version.lastIndexOf("::") + 2);
+
+        assertEquals("2", updatedVersion);
+
+        return version;
+    }
+
+    private String getCompositionPrecedingVersionUid(UUID ehr) throws IOException {
+        aComposition = new CanonicalJson()
+                .unmarshal(
+                        IOUtils.toString(
+                                CompositionTestDataCanonicalJson.MINIMAL_EVAL.getStream(), StandardCharsets.UTF_8),
+                        Composition.class);
+
+        Flattener flattener = new Flattener(new TestDataTemplateProvider());
+        MinimalEvaluationEnV1Composition minimalEvaluationEnV1Composition =
+                flattener.flatten(aComposition, MinimalEvaluationEnV1Composition.class);
+
+        MinimalEvaluationEnV1Composition comp =
+                openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(minimalEvaluationEnV1Composition);
+
+        assertThat(comp.getVersionUid()).isNotNull();
+
+        return comp.getVersionUid().toString();
     }
 
     private static ContributionCreateDto createContributionWithEhrStatus(EhrStatus ehrStatus) throws IOException {
@@ -274,5 +437,14 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 .setValue(ehrStatus.getUid().getValue());
 
         return contributionDto;
+    }
+
+    private static AuditDetails getAuditDetails() throws IOException {
+        String contributionCreateJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
+        ContributionCreateDto contributionDto =
+                new CanonicalJson().unmarshal(contributionCreateJson, ContributionCreateDto.class);
+
+        return contributionDto.getVersions().get(0).getCommitAudit();
     }
 }
