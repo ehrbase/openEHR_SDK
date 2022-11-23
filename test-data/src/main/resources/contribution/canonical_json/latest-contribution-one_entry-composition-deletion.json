@@ -47,6 +47,10 @@
         "_type": "DV_TEXT",
         "value": "Minimal"
       },
+      "uid": {
+        "_type": "OBJECT_VERSION_ID",
+        "value": "797d1096-81c7-4fc0-ab9c-c8ba810e6a79::local.ehrbase.org::1"
+      },
       "archetype_details": {
         "archetype_id": {
           "value": "openEHR-EHR-COMPOSITION.minimal.v1"

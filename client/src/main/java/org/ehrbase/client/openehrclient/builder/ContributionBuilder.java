@@ -17,8 +17,12 @@
  */
 package org.ehrbase.client.openehrclient.builder;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.ehrbase.client.openehrclient.ContributionChangeType.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nedap.archie.json.JacksonUtil;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.generic.AuditDetails;
@@ -26,20 +30,22 @@ import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
+import org.ehrbase.client.openehrclient.ContributionChangeType;
 import org.ehrbase.response.openehr.ContributionCreateDto;
+import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 
 /**
- * The type Contribution builder.
+ * The Contribution builder class helps build composition create/update/delete inside a contribution
  */
 public class ContributionBuilder {
     private final ContributionCreateDto contributionCreateDto;
 
     /**
-     * Builder contribution builder dto builder.
+     * Contribution dto builder.
      *
      * @param audit the audit
-     * @return the contribution builder dto builder
+     * @return the contribution create dto
      */
     public static ContributionBuilderDtoBuilder builder(AuditDetails audit) {
         return new ContributionBuilderDtoBuilder(audit);
@@ -59,7 +65,7 @@ public class ContributionBuilder {
      *
      * @return the contribution create dto
      */
-    public ContributionCreateDto getContributionCreateDto() {
+    public ContributionCreateDto getContribution() {
         return contributionCreateDto;
     }
 
@@ -67,204 +73,338 @@ public class ContributionBuilder {
      * The type Contribution builder dto builder.
      */
     public static class ContributionBuilderDtoBuilder {
-        /**
-         * The constant MANDATORY_CONTRIBUTOR_AUDIT_DETAILS.
-         */
+
         public static final String MANDATORY_CONTRIBUTOR_AUDIT_DETAILS = "Missing mandatory contributor AuditDetails.";
+
+        public static final String MISSING_MANDATORY_PRECEDING_VERSION_UID = "Missing mandatory precedingVersionUid.";
+        public static final String INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER =
+                "Input invalid. Composition can't be modified without pointer to precedingVersionUid in Version container.";
+
         /**
          * The Contribution create dto.
          */
         ContributionCreateDto contributionCreateDto = new ContributionCreateDto();
 
         /**
-         * Instantiates a new Contribution builder dto builder.
+         * Instantiates a new Contribution.
          *
-         * @param audit the audit
+         * @param audit The audit for contribution and compositions inside
          */
         ContributionBuilderDtoBuilder(AuditDetails audit) {
             this.contributionCreateDto.setAudit(audit);
         }
 
         /**
-         * Add composition creation contribution builder dto builder.
+         * Add composition creation.
          *
-         * @param composition the composition
-         * @return the contribution builder dto builder
+         * @param composition RMObject composition instance
+         * @return the contribution create dto
          */
         public ContributionBuilderDtoBuilder addCompositionCreation(final RMObject composition) {
             LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
-            updateContribution(canonicalComposition, null);
+            updateContribution(canonicalComposition, CREATION, null);
 
             return this;
         }
 
         /**
-         * Add composition creation contribution builder dto builder.
+         * Add composition creation.
          *
          * @param composition the composition
-         * @return the contribution builder dto builder
+         * @return the contribution create dto
          */
         public ContributionBuilderDtoBuilder addCompositionCreation(final Map<String, Object> composition) {
-            updateContribution(composition, null);
+            updateContribution(composition, CREATION, null);
 
             return this;
         }
 
-        private void setAudit(OriginalVersion<Object> originalVersion) {
+        private ObjectVersionId getVersionId(Map<String, Object> composition) {
+            Object versionsContent = composition.get("uid");
+            try {
+                String json = JacksonUtil.getObjectMapper().writeValueAsString(versionsContent);
+                return new CanonicalJson().unmarshal(json, ObjectVersionId.class);
+            } catch (JsonProcessingException e) {
+                throw new IllegalArgumentException("Error while processing given json input: " + e.getMessage());
+            }
+        }
+
+        /**
+         * Add composition modification.
+         *
+         * @param composition         RMObject composition instance
+         * @param precedingVersionUid the previous composition entity id
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addCompositionModification(
+                final RMObject composition, final String precedingVersionUid) {
+            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
+            updateContribution(canonicalComposition, MODIFICATION, precedingVersionUid);
+
+            return this;
+        }
+
+        /**
+         * Add composition modification.
+         *
+         * @param composition the RMObject composition instance
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addCompositionModification(final RMObject composition) {
+            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
+            updateContribution(canonicalComposition, MODIFICATION, null);
+
+            return this;
+        }
+
+        /**
+         * Add composition modification.
+         *
+         * @param composition         the composition
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addCompositionModification(
+                final Map<String, Object> composition, final String precedingVersionUid) {
+            updateContribution(composition, MODIFICATION, precedingVersionUid);
+
+            return this;
+        }
+
+        public ContributionBuilderDtoBuilder addCompositionModification(final Map<String, Object> composition) {
+            updateContribution(composition, MODIFICATION, null);
+
+            return this;
+        }
+
+        /**
+         * Add composition deletion.
+         *
+         * @param composition         the RMObject composition instance
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addCompositionDeletion(
+                final RMObject composition, final String precedingVersionUid) {
+            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
+            updateContribution(canonicalComposition, DELETED, precedingVersionUid);
+
+            return this;
+        }
+
+        /**
+         * Add composition deletion.
+         *
+         * @param composition the RMObject composition instance
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addCompositionDeletion(final RMObject composition) {
+            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
+            updateContribution(canonicalComposition, DELETED, null);
+
+            return this;
+        }
+
+        /**
+         * Add composition deletion.
+         *
+         * @param composition the composition instance
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addCompositionDeletion(
+                final Map<String, Object> composition, final String precedingVersionUid) {
+            updateContribution(composition, DELETED, precedingVersionUid);
+
+            return this;
+        }
+
+        /**
+         * Add composition deletion.
+         *
+         * @param composition the composition
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addCompositionDeletion(final Map<String, Object> composition) {
+            updateContribution(composition, DELETED, null);
+
+            return this;
+        }
+
+        private void updateContribution(
+                Map<String, Object> composition, ContributionChangeType type, @Nullable String precedingVersionUid) {
+            updateContribution(composition, type, precedingVersionUid, new OriginalVersion<>());
+        }
+
+        private void updateContribution(
+                @Nullable Map<String, Object> composition,
+                ContributionChangeType type,
+                @Nullable String precedingVersionUid,
+                OriginalVersion<Map<String, Object>> originalVersion) {
+
+            if (originalVersion == null) {
+                throw new IllegalArgumentException("Missing mandatory OriginalVersion RmObject.");
+            }
+
+            AuditDetails compositionAudit = getCompositionAudit();
+            ObjectVersionId versionId = null;
+            if (composition != null) {
+                versionId = getVersionId(composition);
+            }
+
+            precedingVersionUid = updateCompositionChangeType(type, precedingVersionUid, compositionAudit, versionId);
+
+            if (isNotBlank(precedingVersionUid)) {
+                originalVersion.setPrecedingVersionUid(new ObjectVersionId(precedingVersionUid));
+            }
+
+            if (originalVersion.getData() == null || originalVersion.getData().isEmpty()) {
+                originalVersion.setData(composition);
+            }
+
+            updateMetadataById(precedingVersionUid, originalVersion, compositionAudit);
+
+            originalVersion.setCommitAudit(compositionAudit);
+
+            this.contributionCreateDto.getVersions().add(originalVersion);
+        }
+
+        private AuditDetails getCompositionAudit() {
             AuditDetails audit = this.contributionCreateDto.getAudit();
 
             if (audit == null) {
                 throw new IllegalArgumentException(MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
             }
 
-            originalVersion.setCommitAudit(audit);
+            return (AuditDetails) audit.clone();
         }
 
-        private void setOriginalVersion(
-                OriginalVersion<LinkedHashMap<String, Object>> originalVersion, @Nullable String precedingVersionUid) {
-            if (originalVersion != null) {
-
-                AuditDetails audit;
-                if (originalVersion.getCommitAudit() != null) {
-                    audit = originalVersion.getCommitAudit();
-                } else {
-                    audit = this.contributionCreateDto.getAudit();
+        private static String updateCompositionChangeType(
+                ContributionChangeType type,
+                String precedingVersionUid,
+                AuditDetails compositionAudit,
+                ObjectVersionId versionId) {
+            switch (type) {
+                case CREATION: {
+                    modifyCompositionChangeType(compositionAudit, CREATION);
+                    break;
                 }
+                case AMENDMENT:
+                case MODIFICATION: {
+                    if (versionId != null && isNotBlank(versionId.getValue()) && isBlank(precedingVersionUid)) {
+                        precedingVersionUid = versionId.getValue();
+                    }
 
-                if (audit != null) {
-                    originalVersion.setCommitAudit(audit);
-                } else {
-                    throw new IllegalArgumentException(MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
+                    if (isBlank(precedingVersionUid)) {
+                        throw new IllegalArgumentException(MISSING_MANDATORY_PRECEDING_VERSION_UID);
+                    }
+
+                    modifyCompositionChangeType(compositionAudit, MODIFICATION);
+                    break;
                 }
+                case DELETED: {
+                    if (versionId != null && isNotBlank(versionId.getValue()) && isBlank(precedingVersionUid)) {
+                        precedingVersionUid = versionId.getValue();
+                    }
 
-                if (isNotBlank(precedingVersionUid)) {
-                    originalVersion.setPrecedingVersionUid(new ObjectVersionId(precedingVersionUid));
+                    if (isBlank(precedingVersionUid)) {
+                        throw new IllegalArgumentException(MISSING_MANDATORY_PRECEDING_VERSION_UID);
+                    }
+
+                    modifyCompositionChangeType(compositionAudit, DELETED);
+                    break;
                 }
+                default: {
+                    modifyCompositionChangeType(compositionAudit, UNKNOWN);
 
-                this.contributionCreateDto.getVersions().add(originalVersion);
+                    break;
+                }
+            }
+
+            return precedingVersionUid;
+        }
+
+        private static void updateMetadataById(
+                String precedingVersionUid,
+                OriginalVersion<Map<String, Object>> originalVersion,
+                AuditDetails compositionAudit) {
+            if (originalVersion.getData() == null || originalVersion.getData().isEmpty()) {
+                // version doesn't contain "data", so it is only a metadata one to,
+                // for instance, delete a specific object via ID regardless of type
+                modifyCompositionChangeType(compositionAudit, DELETED);
+
+                if (isBlank(precedingVersionUid)) {
+                    throw new IllegalArgumentException(INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER);
+                }
             }
         }
 
-        /**
-         * Add composition modification contribution builder dto builder.
-         *
-         * @param composition         the composition
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addCompositionModification(
-                final RMObject composition, final String precedingVersionUid) {
-            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
-            updateContribution(canonicalComposition, precedingVersionUid);
-
-            return this;
+        private static void modifyCompositionChangeType(AuditDetails audit, ContributionChangeType type) {
+            audit.getChangeType().setValue(type.getName());
+            audit.getChangeType().getDefiningCode().setCodeString(String.valueOf(type.getCode()));
         }
 
         /**
-         * Add composition modification contribution builder dto builder.
-         *
-         * @param composition         the composition
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addCompositionModification(
-                final Map<String, Object> composition, final String precedingVersionUid) {
-            updateContribution(composition, precedingVersionUid);
-
-            return this;
-        }
-
-        /**
-         * Add composition deletion contribution builder dto builder.
-         *
-         * @param composition         the composition
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addCompositionDeletion(
-                final RMObject composition, final String precedingVersionUid) {
-            LinkedHashMap<String, Object> canonicalComposition = getCanonicalComposition(composition);
-            updateContribution(canonicalComposition, precedingVersionUid);
-
-            return this;
-        }
-
-        /**
-         * Add composition deletion contribution builder dto builder.
-         *
-         * @param composition         the composition
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution builder dto builder
-         */
-        public ContributionBuilderDtoBuilder addCompositionDeletion(
-                final Map<String, Object> composition, final String precedingVersionUid) {
-            updateContribution(composition, precedingVersionUid);
-
-            return this;
-        }
-
-        private void updateContribution(Map<String, Object> composition, @Nullable String precedingVersionUid) {
-            OriginalVersion<Object> originalVersion = new OriginalVersion<>();
-            setAudit(originalVersion);
-            if (isNotBlank(precedingVersionUid)) {
-                originalVersion.setPrecedingVersionUid(new ObjectVersionId(precedingVersionUid));
-            }
-            originalVersion.setData(composition);
-
-            this.contributionCreateDto.getVersions().add(originalVersion);
-        }
-
-        /**
-         * Add original version creation contribution builder dto builder.
+         * Add original version creation.
          *
          * @param originalVersion the original version
-         * @return the contribution builder dto builder
+         * @return the contribution create dto
          */
         public ContributionBuilderDtoBuilder addOriginalVersionCreation(
-                final OriginalVersion<LinkedHashMap<String, Object>> originalVersion) {
-            setOriginalVersion(originalVersion, null);
+                final OriginalVersion<Map<String, Object>> originalVersion) {
+            updateContribution(null, CREATION, null, originalVersion);
 
             return this;
         }
 
         /**
-         * Add original version modification contribution builder dto builder.
+         *
+         * Add original version modification.
          *
          * @param originalVersion     the original version
          * @param precedingVersionUid the preceding version uid
-         * @return the contribution builder dto builder
+         * @return the contribution create dto
          */
         public ContributionBuilderDtoBuilder addOriginalVersionModification(
-                final OriginalVersion<LinkedHashMap<String, Object>> originalVersion,
-                final String precedingVersionUid) {
-            setOriginalVersion(originalVersion, precedingVersionUid);
+                final OriginalVersion<Map<String, Object>> originalVersion, final String precedingVersionUid) {
+            updateContribution(null, MODIFICATION, precedingVersionUid, originalVersion);
 
             return this;
         }
 
         /**
-         * Add original version deletion contribution builder dto builder.
+         * Add original version modification.
+         *
+         * @param originalVersion the original version
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionModification(
+                final OriginalVersion<Map<String, Object>> originalVersion) {
+            updateContribution(null, MODIFICATION, null, originalVersion);
+
+            return this;
+        }
+
+        /**
+         * Add original version deletion.
          *
          * @param originalVersion     the original version
          * @param precedingVersionUid the preceding version uid
-         * @return the contribution builder dto builder
+         * @return the contribution create dto
          */
         public ContributionBuilderDtoBuilder addOriginalVersionDeletion(
-                final OriginalVersion<LinkedHashMap<String, Object>> originalVersion,
-                final String precedingVersionUid) {
-            setOriginalVersion(originalVersion, precedingVersionUid);
+                final OriginalVersion<Map<String, Object>> originalVersion, final String precedingVersionUid) {
+            updateContribution(null, DELETED, precedingVersionUid, originalVersion);
 
             return this;
         }
 
         private static LinkedHashMap<String, Object> getCanonicalComposition(RMObject composition) {
-            String compositionJson = new CanonicalJson().marshal(composition);
-
-            return (LinkedHashMap<String, Object>) new CanonicalJson().unmarshalToMap(compositionJson);
+            return (LinkedHashMap<String, Object>) new RmObjectEncoding(composition).toMap();
         }
 
         /**
-         * Build contribution builder.
+         * Build contribution.
          *
          * @return the contribution builder
          */
