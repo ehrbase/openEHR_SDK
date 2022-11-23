@@ -339,9 +339,9 @@ public class CoronaTestIT {
                 .extracting(Record2::value1, Record2::value2)
                 .containsExactlyInAnyOrder(
                         new Tuple("SARS-Cov-2", 32L),
-                        new Tuple("SARS-Cov-2", 34L),
-                        new Tuple("SARS-Cov-2", 32L),
-                        new Tuple("SARS-Cov-2", 34L));
+                        new Tuple("SARS-Cov-2", 34L)
+                );
+
     }
 
     /**
@@ -498,8 +498,6 @@ public class CoronaTestIT {
         assertThat(actual)
                 .extracting(Record2::value1, Record2::value2)
                 .containsExactlyInAnyOrder(
-                        new Tuple("SARS-Cov-2", 32L),
-                        new Tuple("SARS-Cov-2", 34L),
                         new Tuple("SARS-Cov-2", 32L),
                         new Tuple("SARS-Cov-2", 34L));
     }
