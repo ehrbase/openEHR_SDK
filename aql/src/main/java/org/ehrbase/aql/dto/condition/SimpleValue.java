@@ -23,9 +23,17 @@ import java.util.Objects;
 
 public final class SimpleValue implements Value, Serializable {
 
-    private Object value;
+    private final Object value;
 
-    public SimpleValue() {}
+    public static final SimpleValue NULL_VALUE = new SimpleValue();
+
+    public SimpleValue() {
+        this.value = null;
+    }
+
+    private SimpleValue(Object value) {
+        this.value = value;
+    }
 
     public SimpleValue(String value) {
         this.value = value;
@@ -49,6 +57,26 @@ public final class SimpleValue implements Value, Serializable {
 
     public Object getValue() {
         return this.value;
+    }
+
+    private static final Class[] SUPPORTED_TYPES = {String.class, TemporalAccessor.class, Number.class, Boolean.class};
+
+    private static final String ERR_UNSUPPORTED_TYPE = "Type not supported: %s";
+
+    public static SimpleValue forImmutableObject(Object immutableObject) {
+        if (immutableObject == null) {
+            return NULL_VALUE;
+        }
+        Class<?> objectType = immutableObject.getClass();
+        if (objectType == SimpleValue.class) {
+            return (SimpleValue) immutableObject;
+        }
+        for (int i = 0; i < SUPPORTED_TYPES.length; i++) {
+            if (SUPPORTED_TYPES[i].isAssignableFrom(objectType)) {
+                return new SimpleValue(immutableObject);
+            }
+        }
+        throw new IllegalArgumentException(String.format(ERR_UNSUPPORTED_TYPE, objectType.getName()));
     }
 
     public boolean equals(final Object o) {
