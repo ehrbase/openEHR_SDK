@@ -125,16 +125,6 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyComposition =
                 openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxyDto);
 
-        //  getting WARN because of Rm Object uses kryo for copy objects
-        //  Look like the same issue is here and still not fixed https://github.com/EsotericSoftware/kryo/issues/626
-        // WARNING: An illegal reflective access operation has occurred
-        // WARNING: Illegal reflective access by com.esotericsoftware.kryo.kryo5.unsafe.UnsafeUtil
-        // (file:..m2/repository/com/esotericsoftware/kryo/kryo5/5.3.0/kryo5-5.3.0.jar) to constructor java.nio.DirectByteBuffer(long,int)
-        // WARNING: Please consider reporting this to the maintainers of
-        // com.esotericsoftware.kryo.kryo5.unsafe.UnsafeUtil
-        // WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
-        // WARNING: All illegal access operations will be denied in a future release
-
         Composition unflattenSecondComposition = (Composition) cut.unflatten(proxyComposition);
         // Create contribution
         ContributionBuilder contributionBuilder = ContributionBuilder.builder(createAuditDetails())
