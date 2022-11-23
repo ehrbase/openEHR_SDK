@@ -62,8 +62,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
-
 @Category(Integration.class)
 public class AqlTestIT {
 
@@ -464,22 +462,21 @@ public class AqlTestIT {
 
         QueryResponseData result = openEhrClient.aqlEndpoint().executeRaw(query, new ParameterValue("ehr_id", ehr));
 
-      assertNotNull(result);
-      assertNotNull(result.getQuery());
-      assertNotNull(result.getRows());
-      assertNotNull(result.getColumns());
-      assertEquals(7, result.getRows().size());
-      assertEquals(2, result.getColumns().size());
+        assertNotNull(result);
+        assertNotNull(result.getQuery());
+        assertNotNull(result.getRows());
+        assertNotNull(result.getColumns());
+        assertEquals(7, result.getRows().size());
+        assertEquals(2, result.getColumns().size());
 
-      List expectedResults = Arrays.asList(
-              List.of("Nicht vorhanden", "Durchfall"),
-              List.of("Nicht vorhanden", "gestörter Geruchssinn"),
-              List.of("Nicht vorhanden", "gestörter Geschmackssinn"),
-              List.of("Nicht vorhanden", "Heiserkeit"),
-              List.of("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
-              List.of("Vorhanden", "Husten"),
-              List.of("Vorhanden", "Schnupfen")
-      );
+        List expectedResults = Arrays.asList(
+                List.of("Nicht vorhanden", "Durchfall"),
+                List.of("Nicht vorhanden", "gestörter Geruchssinn"),
+                List.of("Nicht vorhanden", "gestörter Geschmackssinn"),
+                List.of("Nicht vorhanden", "Heiserkeit"),
+                List.of("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
+                List.of("Vorhanden", "Husten"),
+                List.of("Vorhanden", "Schnupfen"));
 
         assertTrue(CollectionUtils.isEqualCollection(result.getRows(), expectedResults));
     }

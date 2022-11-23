@@ -73,13 +73,12 @@ public class WebTemplateTest {
         OPTParser cut = new OPTParser(template);
         WebTemplate actual = cut.parse();
 
+        WebTemplateNode node =
+                actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]").get();
 
-    WebTemplateNode node = actual
-            .findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]")
-            .get();
-
-//
-    Assertions.assertThat(actual.getTree().isRelativePathNameDependent(node)).isTrue();
+        //
+        Assertions.assertThat(actual.getTree().isRelativePathNameDependent(node))
+                .isTrue();
 
         Assertions.assertThat(node.isRelativePathNameDependent(
                         node.findChildById("uid").get()))
@@ -132,7 +131,6 @@ public class WebTemplateTest {
                 .getTemplate();
         Set<Set<NodeId>> actual = new OPTParser(operationaltemplate).parse().findAllContainmentCombinations();
 
-    Assertions.assertThat(actual).size().isEqualTo(5);
-  }
-
+        Assertions.assertThat(actual).size().isEqualTo(5);
+    }
 }

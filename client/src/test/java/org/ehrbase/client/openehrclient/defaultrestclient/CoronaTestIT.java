@@ -337,11 +337,7 @@ public class CoronaTestIT {
         // NB. At the moment, we cannot specify DISTINCT with SDK
         assertThat(actual)
                 .extracting(Record2::value1, Record2::value2)
-                .containsExactlyInAnyOrder(
-                        new Tuple("SARS-Cov-2", 32L),
-                        new Tuple("SARS-Cov-2", 34L)
-                );
-
+                .containsExactlyInAnyOrder(new Tuple("SARS-Cov-2", 32L), new Tuple("SARS-Cov-2", 34L));
     }
 
     /**
@@ -497,8 +493,6 @@ public class CoronaTestIT {
         // NB. At the moment, we cannot specify DISTINCT with SDK
         assertThat(actual)
                 .extracting(Record2::value1, Record2::value2)
-                .containsExactlyInAnyOrder(
-                        new Tuple("SARS-Cov-2", 32L),
-                        new Tuple("SARS-Cov-2", 34L));
+                .containsExactlyInAnyOrder(new Tuple("SARS-Cov-2", 32L), new Tuple("SARS-Cov-2", 34L));
     }
 }
