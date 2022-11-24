@@ -556,6 +556,39 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             conditionDto = matchesOperatorDto;
         } else if (ctx.EXISTS() != null) {
             conditionDto = new ExistsConditionOperatorDto(visitIdentifiedPath(ctx.identifiedPath()));
+        } else if (ctx.LIKE() != null) {
+            ConditionComparisonOperatorDto wildcardOperatorDto = new ConditionComparisonOperatorDto();
+            wildcardOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.LIKE);
+            wildcardOperatorDto.setStatement(
+                    visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
+            String value = StringUtils.unwrap(StringUtils.unwrap(ctx.getChild(2).getText(), "'"), "\"");
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < value.length(); i++) {
+                char current = value.charAt(i);
+                if (i > 0) {
+                    char prev = value.charAt(i - 1);
+
+                    if (current == '*' && prev != '\\') {
+                        builder.append('%');
+                    } else if (current == '?' && prev != '\\') {
+                        builder.append('_');
+                    } else {
+                        builder.append(current);
+                    }
+                } else {
+                    if (current == '*') {
+                        builder.append('%');
+                    } else if (current == '?') {
+                        builder.append('_');
+                    } else {
+                        builder.append(current);
+                    }
+                }
+            }
+
+            wildcardOperatorDto.setValue(new SimpleValue(builder.toString()));
+            conditionDto = wildcardOperatorDto;
         }
 
         if (ctx.NOT() != null

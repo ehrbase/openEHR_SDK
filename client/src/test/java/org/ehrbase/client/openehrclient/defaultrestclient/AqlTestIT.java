@@ -30,12 +30,16 @@ import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
+import org.ehrbase.aql.binder.AqlBinder;
+import org.ehrbase.aql.parser.AqlToDtoParser;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.TestData;
 import org.ehrbase.client.aql.condition.Condition;
@@ -47,6 +51,7 @@ import org.ehrbase.client.aql.parameter.ParameterValue;
 import org.ehrbase.client.aql.query.EntityQuery;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record2;
+import org.ehrbase.client.aql.record.Record3;
 import org.ehrbase.client.classgenerator.examples.coronaanamnesecomposition.CoronaAnamneseComposition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.exception.ClientException;
@@ -528,5 +533,105 @@ public class AqlTestIT {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testExecute17() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+        AqlToDtoParser cut = new AqlToDtoParser();
+
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        saveComposition(ehr, "when test\\* present: positive case");
+        saveComposition(ehr, "tesT when asterisk on random \\* place: positive case");
+        saveComposition(ehr, "case sensitive Test\\* present: negative case");
+        saveComposition(ehr, "when not\\* presen: negative caset");
+
+        String aql = "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]  "
+                + "from EHR e[ehr_id/value = $ehr_id]  "
+                + "contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1] "
+                + "contains Observation o[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] "
+                + "where o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1 "
+                + "and o/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value like '*tes?*\\\\**'";
+        String nativeAql = new AqlBinder().bind(cut.parse(aql)).getLeft().buildAql();
+        Query<Record2<UUID, ItemList>> query = Query.buildNativeQuery(nativeAql, UUID.class, ItemList.class);
+
+        List<Record2<UUID, ItemList>> result =
+                openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+        assertThat(result).isNotNull().hasSize(2);
+    }
+
+    private void saveComposition(UUID ehr, String commentValue) {
+        EhrbaseBloodPressureSimpleDeV0Composition pressureSimple2 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        pressureSimple2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
+        pressureSimple2.getBloodPressureTrainingSample().get(0).setCommentValue(commentValue);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(pressureSimple2);
+    }
+
+    @Test
+    public void testExecute18() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+        AqlToDtoParser cut = new AqlToDtoParser();
+
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        saveComposition(2019, 03);
+        saveComposition(2022, 02);
+
+        String aql = "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]  "
+                + "from EHR e[ehr_id/value = $ehr_id]  "
+                + "contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1] "
+                + "contains Observation o[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                + "where o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1"
+                + "and a/context/start_time/value like '2019-0?-*'";
+        String nativeAql = new AqlBinder().bind(cut.parse(aql)).getLeft().buildAql();
+        Query<Record2<UUID, ItemList>> query = Query.buildNativeQuery(nativeAql, UUID.class, ItemList.class);
+
+        List<Record2<UUID, ItemList>> result =
+                openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+        assertThat(result).isNotNull().hasSize(1);
+    }
+
+    private void saveComposition(int year, int month) {
+        EhrbaseBloodPressureSimpleDeV0Composition pressureSimple2 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
+        pressureSimple2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
+        pressureSimple2.setStartTimeValue(OffsetDateTime.of(year, month, 04, 22, 00, 00, 00, ZoneOffset.UTC));
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(pressureSimple2);
+    }
+
+    @Test
+    public void testExecute19() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
+
+        saveComposition(ehr, "test");
+
+        Containment observationContainment = new Containment("OBSERVATION");
+
+        NativeSelectAqlField<Double> magnitudeField = new NativeSelectAqlField<>(
+                observationContainment,
+                "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude",
+                Double.class);
+
+        NativeSelectAqlField<String> comment = new NativeSelectAqlField<>(
+                observationContainment,
+                "/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value",
+                String.class);
+
+        EntityQuery<Record3<UUID, Double, String>> entityQuery =
+                Query.buildEntityQuery(observationContainment, EhrFields.EHR_ID(), magnitudeField, comment);
+
+        Parameter<UUID> ehrIdParameter = entityQuery.buildParameter();
+        entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter)
+                .and(Condition.equal(magnitudeField, 1.1d))
+                .and(Condition.like(comment, "%es%")));
+
+        List<Record3<UUID, Double, String>> result =
+                openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+        assertThat(result).isNotNull().size().isEqualTo(1);
     }
 }

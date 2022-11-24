@@ -133,5 +133,17 @@ public interface Condition {
         return new Exists(field);
     }
 
+    static <T> Condition like(SelectAqlField<T> field, T value) {
+        return new Like<T>(field, value);
+    }
+
+    static <T> Condition like(SelectAqlField<T> field, Parameter<T> parameter) {
+        return new Like<T>(field, parameter);
+    }
+
+    static <T> Condition like(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+        return new Like<T>(field, compereField);
+    }
+
     String buildAql(Containment ehrContainment);
 }

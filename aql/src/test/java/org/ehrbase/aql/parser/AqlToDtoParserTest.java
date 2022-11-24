@@ -111,7 +111,12 @@ class AqlToDtoParserTest {
     @Test
     void addMatches() {
         String aql =
-                "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+                "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, "
+                        + "e/ehr_id/value as ehr_id "
+                        + "from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] "
+                        + "where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude "
+                        + "and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1 "
+                        + "and o0/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value like '?*\\\\*test?\\\\?*')";
 
         AqlToDtoParser cut = new AqlToDtoParser();
         AqlDto actual = cut.parse(aql);
@@ -142,7 +147,12 @@ class AqlToDtoParserTest {
 
         assertThat(actualAql)
                 .isEqualTo(
-                        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1 and e/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'})");
+                        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, "
+                                + "e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                                + " where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude"
+                                + " and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1"
+                                + " and o0/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value like '_%\\\\*test_\\\\?%'"
+                                + " and e/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'})");
     }
 
     @Test
