@@ -500,6 +500,7 @@ jobs:
       - build-sdk
       - git-clone-ehrbase-repo:
           branch: ${CIRCLE_BRANCH}
+      - git-clone-robot-integration-tests-repo
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
       - build-and-run-ehrbase-then-run-all-sdk-java-tests
