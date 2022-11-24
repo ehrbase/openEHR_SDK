@@ -55,10 +55,11 @@ public class DvCodedTextAdapter extends DvTypeAdapter<DvCodedText> {
 
     @Override
     public void write(JsonWriter writer, DvCodedText dvalue) throws IOException {
-        if (!Optional.ofNullable(dvalue)
-                .map(DvCodedText::getDefiningCode)
-                .map(CodePhrase::getCodeString)
-                .isPresent()) {
+        if (dvalue == null
+                || Optional.of(dvalue)
+                        .map(DvCodedText::getDefiningCode)
+                        .map(CodePhrase::getCodeString)
+                        .isEmpty()) {
             writer.nullValue();
             return;
         }

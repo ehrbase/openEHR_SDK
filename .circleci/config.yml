@@ -477,6 +477,7 @@ jobs:
       - cache-out-sdk-m2-dependencies
       - build-sdk
       - git-clone-ehrbase-repo
+      - git-clone-robot-integration-tests-repo
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
       - build-and-run-ehrbase-then-run-all-sdk-java-tests
@@ -499,6 +500,7 @@ jobs:
       - build-sdk
       - git-clone-ehrbase-repo:
           branch: ${CIRCLE_BRANCH}
+      - git-clone-robot-integration-tests-repo
       - cache-out-ehrbase-m2-dependencies
       - force-ehrbase-build-to-use-local-sdk-version
       - build-and-run-ehrbase-then-run-all-sdk-java-tests
@@ -1183,6 +1185,16 @@ commands:
             cd ehrbase
             git checkout << parameters.branch >>
   
+  git-clone-robot-integration-tests-repo:
+    steps:
+      - run:
+          name: Git clone Robot integration-tests repository
+          command: |
+            git clone git@github.com:ehrbase/integration-tests.git
+            ls -la
+            cd integration-tests
+            mv tests/* ../ehrbase/tests/
+            cd ..
 
   build-and-test-ehrbase:
     steps:

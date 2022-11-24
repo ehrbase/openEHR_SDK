@@ -18,27 +18,28 @@
 package org.ehrbase.aql.dto.path.predicate;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 
 /**
  * @author Stefan Spiska
  */
-public class PredicateLogicalAndOperation
+public final class PredicateLogicalAndOperation
         implements LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>,
                 SimplePredicateDto,
                 Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.AND;
-    private List<SimplePredicateDto> values = new ArrayList<>();
+    private List<SimplePredicateDto> values;
 
-    public PredicateLogicalAndOperation() {}
+    public PredicateLogicalAndOperation() {
+        this.values = List.of();
+    }
 
     public PredicateLogicalAndOperation(SimplePredicateDto... values) {
-        this.values.addAll(Arrays.asList(values));
+        this.values = List.of(values);
     }
 
     @Override
@@ -52,13 +53,10 @@ public class PredicateLogicalAndOperation
     }
 
     @Override
-    public void setSymbol(PredicateLogicalOperatorSymbol symbol) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setValues(List<SimplePredicateDto> values) {
-        this.values = values;
+    public PredicateLogicalAndOperation addValues(Stream<SimplePredicateDto> valuesStream) {
+        SimplePredicateDto[] newValues =
+                Stream.concat(values.stream(), valuesStream).toArray(SimplePredicateDto[]::new);
+        return new PredicateLogicalAndOperation(newValues);
     }
 
     @Override

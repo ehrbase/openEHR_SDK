@@ -139,7 +139,7 @@ public class Filter implements WebTemplateFilter {
         merged.setRmType(DV_CODED_TEXT);
         WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
         merged.getInputs().addAll(codedTextValue.getInputs());
-        merged.setAqlPath(codedTextValue.getAqlPath());
+        merged.setAqlPath(codedTextValue.getAqlPathDto());
         merged.getLocalizedDescriptions().putAll(node.getLocalizedDescriptions());
         merged.getLocalizedNames().putAll(node.getLocalizedNames());
         merged.setLocalizedName(node.getLocalizedName());

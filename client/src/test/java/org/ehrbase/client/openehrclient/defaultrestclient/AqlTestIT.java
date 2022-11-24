@@ -395,17 +395,10 @@ public class AqlTestIT {
                 .extracting(Record2::value1, Record2::value2)
                 .containsExactlyInAnyOrder(
                         new Tuple("Nicht vorhanden", "Durchfall"),
-                        new Tuple("Nicht vorhanden", "Fieber oder erhöhte Körpertemperatur"),
                         new Tuple("Nicht vorhanden", "gestörter Geruchssinn"),
                         new Tuple("Nicht vorhanden", "gestörter Geschmackssinn"),
                         new Tuple("Nicht vorhanden", "Heiserkeit"),
-                        new Tuple("Nicht vorhanden", "Husten"),
-                        new Tuple("Nicht vorhanden", "Schnupfen"),
-                        new Tuple("Vorhanden", "Durchfall"),
                         new Tuple("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
-                        new Tuple("Vorhanden", "gestörter Geruchssinn"),
-                        new Tuple("Vorhanden", "gestörter Geschmackssinn"),
-                        new Tuple("Vorhanden", "Heiserkeit"),
                         new Tuple("Vorhanden", "Husten"),
                         new Tuple("Vorhanden", "Schnupfen"));
     }
@@ -475,22 +468,15 @@ public class AqlTestIT {
         assertNotNull(result.getQuery());
         assertNotNull(result.getRows());
         assertNotNull(result.getColumns());
-        assertEquals(14, result.getRows().size());
+        assertEquals(7, result.getRows().size());
         assertEquals(2, result.getColumns().size());
 
         List expectedResults = Arrays.asList(
                 List.of("Nicht vorhanden", "Durchfall"),
-                List.of("Nicht vorhanden", "Fieber oder erhöhte Körpertemperatur"),
                 List.of("Nicht vorhanden", "gestörter Geruchssinn"),
                 List.of("Nicht vorhanden", "gestörter Geschmackssinn"),
                 List.of("Nicht vorhanden", "Heiserkeit"),
-                List.of("Nicht vorhanden", "Husten"),
-                List.of("Nicht vorhanden", "Schnupfen"),
-                List.of("Vorhanden", "Durchfall"),
                 List.of("Vorhanden", "Fieber oder erhöhte Körpertemperatur"),
-                List.of("Vorhanden", "gestörter Geruchssinn"),
-                List.of("Vorhanden", "gestörter Geschmackssinn"),
-                List.of("Vorhanden", "Heiserkeit"),
                 List.of("Vorhanden", "Husten"),
                 List.of("Vorhanden", "Schnupfen"));
 

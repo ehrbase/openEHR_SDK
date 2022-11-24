@@ -88,6 +88,7 @@ class MatcherUtilTest {
 
         WebTemplateNode webTemplateNode = new WebTemplateNode();
         webTemplateNode.setNodeId("openEHR-EHR-OBSERVATION.demo_observation.v0");
+        webTemplateNode.setRmType("OBSERVATION");
         webTemplateNode.setName("first_observation");
         webTemplateNode.setAqlPath(
                 "/content[openEHR-EHR-SECTION.adhoc.v1, 'cause']/items[openEHR-EHR-OBSERVATION.demo_observation.v0, 'first_observation']");

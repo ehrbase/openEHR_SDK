@@ -17,10 +17,13 @@
  */
 package org.ehrbase.webtemplate.interpreter;
 
+import static org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol.EQ;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.remove;
 
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.RMAttributeInfo;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +38,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
@@ -54,6 +56,8 @@ import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
  * @author Stefan Spiska
  */
 public class Interpreter {
+
+    private static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     private final List<String> resolveTo;
 
@@ -152,7 +156,7 @@ public class Interpreter {
         } else {
 
             return current.getChildren().stream()
-                    .map(c -> findPathToValue(input.getPathFromContainment(), c))
+                    .map(c -> findPathToValue(current, input.getPathFromContainment(), c))
                     .flatMap(Set::stream)
                     .map(l -> {
                         InterpreterOutput output = new InterpreterOutput(interpreterOutput);
@@ -167,12 +171,12 @@ public class Interpreter {
         Containment containment = new Containment();
 
         // COMPOSITION has path '\' and thus must be dealt with extra.
-        if (MatcherUtil.findTypeName(n.getNodeId()).equals("COMPOSITION")) {
+        if ("COMPOSITION".equals(n.getRmType())) {
 
             containment.setArchetypeId(n.getNodeId());
             containment.setType("COMPOSITION");
-            containment.setOtherPredicates(new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
-                    ARCHETYPE_NODE_ID, ConditionComparisonOperatorSymbol.EQ, new SimpleValue(n.getNodeId()))));
+            containment.setOtherPredicates(new PredicateLogicalAndOperation(
+                    new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new SimpleValue(n.getNodeId()))));
 
         } else {
             AqlNode lastNode = n.getAqlPathDto().getLastNode();
@@ -218,6 +222,11 @@ public class Interpreter {
             interpreterPathNode.setOtherPredicate(new PredicateLogicalAndOperation());
             interpreterPathNode.setTemplateNode(new SimpleTemplateNode(next));
             interpreterPathNode.setRepresentingObject(true);
+            if (!interpreterPathNode.getTemplateNode().isMulti()) {
+                interpreterPathNode
+                        .getTemplateNode()
+                        .setMulti(findRmAttributeInfo(curent, next).isMultipleValued());
+            }
 
             interpreterOutput.getPathFromRootToValue().getNodeList().add(interpreterPathNode);
             curent = next;
@@ -231,14 +240,21 @@ public class Interpreter {
      * @param node
      * @return
      */
-    protected Set<List<InterpreterPathNode>> findPathToValue(AqlPath path, WebTemplateNode node) {
+    protected Set<List<InterpreterPathNode>> findPathToValue(
+            WebTemplateNode parent, AqlPath path, WebTemplateNode node) {
 
         if (MatcherUtil.matches(path.getBaseNode(), node)) {
 
             InterpreterPathNode interpreterPathNode = new InterpreterPathNode();
             interpreterPathNode.setTemplateNode(new SimpleTemplateNode(node));
+
+            if (!interpreterPathNode.getTemplateNode().isMulti()) {
+                interpreterPathNode
+                        .getTemplateNode()
+                        .setMulti(findRmAttributeInfo(parent, node).isMultipleValued());
+            }
             interpreterPathNode.setOtherPredicate(
-                    remove(path.getBaseNode().getOtherPredicate(), NAME_VALUE, ARCHETYPE_NODE_ID));
+                    remove(path.getBaseNode().getOtherPredicate(), EQ, NAME_VALUE, ARCHETYPE_NODE_ID));
             interpreterPathNode.setNormalisedNode(node.getAqlPathDto().getLastNode());
             interpreterPathNode.setRepresentingObject(true);
             if (path.getNodeCount() == 1) {
@@ -249,7 +265,7 @@ public class Interpreter {
                 if (CollectionUtils.isEmpty(node.getChildren())) {
 
                     Optional<InterpreterPathNode> input = node.getInputs().stream()
-                            .map(i -> findPathToValue(path.removeStart(1), i))
+                            .map(i -> findPathToValue(node, path.removeStart(1), i))
                             .flatMap(Optional::stream)
                             .findAny();
                     if (input.isEmpty()) {
@@ -262,7 +278,7 @@ public class Interpreter {
                     LinkedHashSet<List<InterpreterPathNode>> result = new LinkedHashSet<>();
 
                     node.getChildren().stream()
-                            .map(c -> findPathToValue(path.removeStart(1), c))
+                            .map(c -> findPathToValue(node, path.removeStart(1), c))
                             .flatMap(Set::stream)
                             .forEach(l -> {
                                 l.add(0, interpreterPathNode);
@@ -283,7 +299,8 @@ public class Interpreter {
      * @param input
      * @return
      */
-    protected Optional<InterpreterPathNode> findPathToValue(AqlPath path, WebTemplateInput input) {
+    protected Optional<InterpreterPathNode> findPathToValue(
+            WebTemplateNode parent, AqlPath path, WebTemplateInput input) {
 
         if (MatcherUtil.matches(path.getBaseNode(), input)) {
 
@@ -440,5 +457,15 @@ public class Interpreter {
                 return result;
             }
         }
+    }
+
+    public static RMAttributeInfo findRmAttributeInfo(WebTemplateNode parent, WebTemplateNode child) {
+
+        String attributeName = child.getAqlPathDto()
+                .removeStart(parent.getAqlPathDto())
+                .getBaseNode()
+                .getName();
+
+        return ARCHIE_RM_INFO_LOOKUP.getAttributeInfo(parent.getRmType(), attributeName);
     }
 }

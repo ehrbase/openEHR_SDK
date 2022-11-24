@@ -17,7 +17,17 @@
  */
 package org.ehrbase.serialisation.walker;
 
-import static org.ehrbase.util.rmconstants.RmConstants.*;
+import static org.ehrbase.util.rmconstants.RmConstants.ACTION;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.EVENT;
+import static org.ehrbase.util.rmconstants.RmConstants.INTERVAL_EVENT;
+import static org.ehrbase.util.rmconstants.RmConstants.ISM_TRANSITION;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_IDENTIFIED;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_PROXY;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_RELATED;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_SELF;
+import static org.ehrbase.util.rmconstants.RmConstants.POINT_EVENT;
 
 import com.nedap.archie.openehrtestrm.Element;
 import com.nedap.archie.rm.RMObject;
@@ -28,12 +38,18 @@ import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.webtemplate.model.WebTemplate;
@@ -84,17 +100,20 @@ public abstract class Walker<T> {
         if (visitChildren(currentNode)) {
 
             if (ACTION.equals(currentNode.getRmType())) {
-                List<WebTemplateNode> ismTransitionList = currentNode.getChildren().stream()
-                        .filter(n -> ISM_TRANSITION.equals(n.getRmType()))
-                        .collect(Collectors.toList());
-                if (!ismTransitionList.isEmpty()) {
-                    currentNode.getChildren().removeAll(ismTransitionList);
-                    currentNode.getChildren().add(ismTransitionList.get(0));
+                Iterator<WebTemplateNode> it = currentNode.getChildren().iterator();
+                while (it.hasNext() && !ISM_TRANSITION.equals(it.next().getRmType())) {
+                    // skip until AFTER first ISM_TRANSITION
+                }
+                // remove addition ISM_TRANSITIONs
+                while (it.hasNext()) {
+                    if (ISM_TRANSITION.equals(it.next().getRmType())) {
+                        it.remove();
+                    }
                 }
             }
             handleInheritance(currentNode);
 
-            Map<?, List<WebTemplateNode>> childrenByPath = currentNode.getChildren().stream()
+            Map<AqlPath, List<WebTemplateNode>> childrenByPath = currentNode.getChildren().stream()
                     .collect(Collectors.groupingBy(
                             WebTemplateNode::getAqlPathDto, LinkedHashMap::new, Collectors.toList()));
 
@@ -196,52 +215,28 @@ public abstract class Walker<T> {
      */
     protected void handleInheritance(WebTemplateNode currentNode) {
 
-        for (WebTemplateNode childNode : new ArrayList<>(currentNode.getChildren())) {
+        List<WebTemplateNode> nodesToAdd = new ArrayList<>();
+
+        Iterator<WebTemplateNode> it = currentNode.getChildren().iterator();
+        while (it.hasNext()) {
+            WebTemplateNode childNode = it.next();
 
             // Add explicit DV_CODED_TEXT
-            if (childNode.getRmType().equals(DV_TEXT)
-                    && currentNode.getChildren().stream()
-                            .filter(n -> n.getAqlPath(true).equals(childNode.getAqlPath(true)))
-                            .noneMatch(n -> DV_CODED_TEXT.equals(n.getRmType()))) {
-
-                currentNode.getChildren().add(buildCopy(childNode, DV_CODED_TEXT));
+            if (childNode.getRmType().equals(DV_TEXT) && siblingMissing(currentNode, childNode, DV_CODED_TEXT)) {
+                nodesToAdd.add(buildCopy(childNode, DV_CODED_TEXT));
             }
 
             // Add explicit Party
             if (childNode.getRmType().equals(PARTY_PROXY)) {
+                nodesToAdd.add(buildCopy(childNode, PARTY_SELF));
+                nodesToAdd.add(buildCopy(childNode, PARTY_IDENTIFIED));
+                nodesToAdd.add(copyAsPartyRelated(childNode));
+                it.remove();
 
-                currentNode.getChildren().add(buildCopy(childNode, PARTY_SELF));
-                currentNode.getChildren().add(buildCopy(childNode, PARTY_IDENTIFIED));
-
-                WebTemplateNode party = buildCopy(childNode, PARTY_RELATED);
-                WebTemplateNode relationship = new WebTemplateNode();
-                relationship.setId("relationship");
-                relationship.setName("relationship");
-                relationship.setRmType(DV_CODED_TEXT);
-                relationship.setMax(1);
-                relationship.setMin(1);
-                relationship.setAqlPath(party.getAqlPath() + "/relationship");
-                party.getChildren().add(relationship);
-
-                currentNode.getChildren().add(party);
-
-                currentNode.getChildren().remove(childNode);
-            }
-
-            // Add explicit Party related
-            if (childNode.getRmType().equals(PARTY_IDENTIFIED)) {
-
-                WebTemplateNode party = buildCopy(childNode, PARTY_RELATED);
-                WebTemplateNode relationship = new WebTemplateNode();
-                relationship.setId("relationship");
-                relationship.setName("relationship");
-                relationship.setRmType(DV_CODED_TEXT);
-                relationship.setMax(1);
-                relationship.setMin(1);
-                relationship.setAqlPath(party.getAqlPath() + "/relationship");
-                party.getChildren().add(relationship);
-
-                currentNode.getChildren().add(party);
+            } else if (childNode.getRmType().equals(PARTY_IDENTIFIED)
+                    && siblingMissing(currentNode, childNode, PARTY_RELATED)) {
+                // Add explicit Party related
+                nodesToAdd.add(copyAsPartyRelated(childNode));
             }
 
             // Add explicit Event
@@ -255,7 +250,7 @@ public abstract class Walker<T> {
                 width.setRmType("DV_DURATION");
                 width.setMax(1);
                 width.setMin(1);
-                width.setAqlPath(intervalEvent.getAqlPath() + "/width");
+                width.setAqlPath(intervalEvent.getAqlPathDto().addEnd("width"));
                 intervalEvent.getChildren().add(width);
 
                 WebTemplateNode math = new WebTemplateNode();
@@ -264,7 +259,7 @@ public abstract class Walker<T> {
                 math.setRmType(DV_CODED_TEXT);
                 math.setMax(1);
                 math.setMin(1);
-                math.setAqlPath(intervalEvent.getAqlPath() + "/math_function");
+                math.setAqlPath(intervalEvent.getAqlPathDto().addEnd("math_function"));
                 intervalEvent.getChildren().add(math);
 
                 WebTemplateNode sampleCount = new WebTemplateNode();
@@ -272,19 +267,45 @@ public abstract class Walker<T> {
                 sampleCount.setName("sample_count");
                 sampleCount.setRmType("LONG");
                 sampleCount.setMax(1);
-                sampleCount.setAqlPath(intervalEvent.getAqlPath() + "/sample_count");
+                sampleCount.setAqlPath(intervalEvent.getAqlPathDto().addEnd("sample_count"));
                 intervalEvent.getChildren().add(sampleCount);
 
-                currentNode.getChildren().add(intervalEvent);
+                nodesToAdd.add(intervalEvent);
 
-                currentNode.getChildren().add(buildCopy(childNode, POINT_EVENT));
+                nodesToAdd.add(buildCopy(childNode, POINT_EVENT));
 
-                currentNode.getChildren().remove(childNode);
+                it.remove();
             }
+        }
+
+        if (!nodesToAdd.isEmpty()) {
+            currentNode.getChildren().addAll(nodesToAdd);
         }
     }
 
-    private WebTemplateNode buildCopy(WebTemplateNode childNode, String rmType) {
+    private static boolean siblingMissing(WebTemplateNode parentNode, WebTemplateNode childNode, String rmType) {
+        return parentNode.getChildren().size() <= 1
+                || parentNode.getChildren().stream()
+                        .filter(n -> n != childNode)
+                        .filter(n -> n.getAqlPathDto().equals(childNode.getAqlPathDto()))
+                        .noneMatch(n -> rmType.equals(n.getRmType()));
+    }
+
+    private static WebTemplateNode copyAsPartyRelated(WebTemplateNode party) {
+        WebTemplateNode node = buildCopy(party, PARTY_RELATED);
+
+        WebTemplateNode relationship = new WebTemplateNode();
+        relationship.setId("relationship");
+        relationship.setName("relationship");
+        relationship.setRmType(DV_CODED_TEXT);
+        relationship.setMax(1);
+        relationship.setMin(1);
+        relationship.setAqlPath(node.getAqlPathDto().addEnd("relationship"));
+        node.getChildren().add(relationship);
+        return node;
+    }
+
+    private static WebTemplateNode buildCopy(WebTemplateNode childNode, String rmType) {
         WebTemplateNode partyIdent = new WebTemplateNode(childNode);
         partyIdent.setRmType(rmType);
         return partyIdent;
@@ -375,7 +396,7 @@ public abstract class Walker<T> {
             width.setRmType("DV_DURATION");
             width.setMax(1);
             width.setMin(1);
-            width.setAqlPath(event.getAqlPath() + "/width");
+            width.setAqlPath(event.getAqlPathDto().addEnd("width"));
             intervalEvent.getChildren().add(width);
 
             WebTemplateNode math = new WebTemplateNode();
@@ -384,7 +405,7 @@ public abstract class Walker<T> {
             math.setRmType(DV_CODED_TEXT);
             math.setMax(1);
             math.setMin(1);
-            math.setAqlPath(event.getAqlPath() + "/math_function");
+            math.setAqlPath(event.getAqlPathDto().addEnd("math_function"));
             intervalEvent.getChildren().add(math);
 
             WebTemplateNode sampleCount = new WebTemplateNode();
@@ -392,7 +413,7 @@ public abstract class Walker<T> {
             sampleCount.setName("sample_count");
             sampleCount.setRmType("LONG");
             sampleCount.setMax(1);
-            sampleCount.setAqlPath(event.getAqlPath() + "/sample_count");
+            sampleCount.setAqlPath(event.getAqlPathDto().addEnd("sample_count"));
             intervalEvent.getChildren().add(sampleCount);
 
             return this;

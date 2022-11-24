@@ -7,6 +7,20 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Added handling of stored AQL query requests ([#384](https://github.com/ehrbase/openEHR_SDK/pull/384))
  ### Fixed 
 
+## [1.22.0]
+ ### Added 
+ ### Fixed 
+- Folder creation
+- fix not unique rows in matrix formate ([#390](https://github.com/ehrbase/openEHR_SDK/pull/390))
+
+## [1.21.0]
+ ### Added
+- Get items from current folder ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
+ ### Fixed 
+- Removed caching of root folders to prevent false conflicts and memory leaks ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
+-  new Matrix serialisation use rm-model for index and fix section handling ([#386](https://github.com/ehrbase/openEHR_SDK/pull/386))
+
+
 ## [1.20.0]
  ### Added 
 - Add spotless plugin, Add codestyle check to workflows ([#368](https://github.com/ehrbase/openEHR_SDK/pull/368))
@@ -193,4 +207,6 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...v1.19.0
 
 [1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...HEAD
+[1.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...v1.21.0
+[1.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...v1.22.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.22.0...HEAD

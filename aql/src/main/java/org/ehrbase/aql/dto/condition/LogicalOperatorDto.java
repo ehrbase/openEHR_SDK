@@ -18,6 +18,7 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Stefan Spiska
@@ -27,7 +28,15 @@ public interface LogicalOperatorDto<S, T> {
 
     List<T> getValues();
 
-    void setSymbol(S symbol);
-
-    void setValues(List<T> values);
+    /**
+     * Adds the values from the stream.
+     * Depending on the implementation, the original object may or may not be modified.
+     *
+     * @param valuesStream
+     * @return
+     */
+    default LogicalOperatorDto<S, T> addValues(Stream<T> valuesStream) {
+        valuesStream.forEach(getValues()::add);
+        return this;
+    }
 }

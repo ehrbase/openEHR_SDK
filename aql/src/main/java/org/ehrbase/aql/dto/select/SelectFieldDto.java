@@ -49,6 +49,10 @@ public class SelectFieldDto implements SelectStatementDto {
         this.aqlPath = AqlPath.parse(aqlPath);
     }
 
+    public void setAqlPath(AqlPath aqlPath) {
+        this.aqlPath = aqlPath;
+    }
+
     public void setContainmentId(int containmentId) {
         this.containmentId = containmentId;
     }

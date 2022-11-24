@@ -17,8 +17,6 @@
  */
 package org.ehrbase.serialisation.matrixencoding;
 
-import static org.ehrbase.serialisation.matrixencoding.CompositionToMatrixWalker.findTypeName;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVFormat;
@@ -100,6 +99,7 @@ public class MatrixFormat implements RMDataFormat {
         Entity currentEntity = new Entity();
         currentEntity.setPathFromRoot(AqlPath.ROOT_PATH);
         currentEntity.setArchetypeId(composition.getArchetypeNodeId());
+        currentEntity.setRmType("COMPOSITION");
         FromWalkerDto fromWalkerDto = new FromWalkerDto();
         fromWalkerDto.updateEntity(currentEntity);
         new CompositionToMatrixWalker()
@@ -123,6 +123,9 @@ public class MatrixFormat implements RMDataFormat {
             flatten.forEach(this::encode);
         }
 
+        String templateId = composition.getArchetypeDetails().getTemplateId().getValue();
+        flatten.forEach(r -> r.setTemplateId(templateId));
+
         return flatten;
     }
 
@@ -138,7 +141,29 @@ public class MatrixFormat implements RMDataFormat {
 
     private List<Row> toRows(Entity entity, Map<Index, Map<AqlPath, Object>> map) {
 
-        return map.entrySet().stream().map(e -> toRow(entity, e)).collect(Collectors.toList());
+        // Make the row unique on archetype + entity_path + entity_index + field_idx
+        Map<String, Map<AqlPath, Map<List<Integer>, Map<List<Integer>, Optional<Row>>>>> collect =
+                map.entrySet().stream()
+                        .map(e -> toRow(entity, e))
+                        .collect(Collectors.groupingBy(
+                                Row::getArchetypeId,
+                                Collectors.groupingBy(
+                                        Row::getEntityPath,
+                                        Collectors.groupingBy(
+                                                r -> Arrays.asList(r.getEntityIdx()),
+                                                Collectors.groupingBy(
+                                                        r -> Arrays.asList(r.getFieldIdx()),
+                                                        Collectors.reducing((r1, r2) -> {
+                                                            r1.getFields().putAll(r2.getFields());
+                                                            return r1;
+                                                        }))))));
+
+        return collect.values().stream()
+                .flatMap(m -> m.values().stream())
+                .flatMap(m -> m.values().stream())
+                .flatMap(m -> m.values().stream())
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
     private Row toRow(Entity entity, Map.Entry<Index, Map<AqlPath, Object>> e) {
@@ -146,6 +171,7 @@ public class MatrixFormat implements RMDataFormat {
         row.setEntityIdx(entity.getEntityIdx().getRepetitions());
         row.setArchetypeId(entity.getArchetypeId());
         row.setEntityPath(entity.getPathFromRoot());
+        row.setRmType(entity.getRmType());
         row.setFields(e.getValue());
         row.setFieldIdx(e.getKey().getRepetitions());
         return row;
@@ -187,6 +213,7 @@ public class MatrixFormat implements RMDataFormat {
         row.setEntityIdx(buildArray(csvRecord.get(HEADERS.ENTITY_IDX)));
         row.setFieldIdx(buildArray(csvRecord.get(HEADERS.FIELD_IDX)));
         row.setArchetypeId(csvRecord.get(HEADERS.ENTITY_CONCEPT));
+        row.setRmType(csvRecord.get(HEADERS.RM_ENTITY));
         row.setEntityPath(AqlPath.parse(csvRecord.get(HEADERS.ENTITY_PATH)));
         try {
             Map<String, Object> map = MAPPER.readValue(
@@ -240,7 +267,7 @@ public class MatrixFormat implements RMDataFormat {
             printer.printRecord(
                     r.getNum(),
                     r.getArchetypeId(),
-                    findTypeName(r.getArchetypeId()),
+                    r.getRmType(),
                     r.getEntityPath().format(AqlPath.OtherPredicatesFormat.SHORTED, true),
                     printArray(r.getEntityIdx()),
                     printArray(r.getFieldIdx()),
@@ -287,7 +314,6 @@ public class MatrixFormat implements RMDataFormat {
 
     private void encode(Row row) {
 
-        row.setEntityPath(encoder.encode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> encoder.encode(e.getKey()),
@@ -300,7 +326,6 @@ public class MatrixFormat implements RMDataFormat {
 
     private void decode(Row row) {
 
-        row.setEntityPath(encoder.decode(row.getEntityPath()));
         row.setFields(row.getFields().entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> encoder.decode(e.getKey()),

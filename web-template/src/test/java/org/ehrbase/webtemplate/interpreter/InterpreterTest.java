@@ -360,6 +360,38 @@ class InterpreterTest {
     }
 
     @Test
+    void interpretDepth() {
+
+        String aql =
+                "SELECT e/ehr_id/value, c/uid/value as composition_id, c/context/start_time/value as start_time, o/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as body_temperature"
+                        + "  FROM EHR e "
+                        + "    CONTAINS COMPOSITION c "
+                        + "    CONTAINS OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
+                        + " WHERE e/ehr_id/value = '96940df3-c979-4d96-9a51-34b6c5222777' "
+                        + "    AND o/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude > 37.5"
+                        + " LIMIT 10 OFFSET 10"
+                        + " ORDER BY c/context/start_time/value DESC";
+        AqlDto parse = new AqlToDtoParser().parse(aql);
+
+        SelectFieldDto clusterSelectStatementDto =
+                (SelectFieldDto) parse.getSelect().getStatement().get(3);
+
+        Interpreter cut = new Interpreter(
+                new TestDataTemplateProvider(),
+                List.of("COMPOSITION", "OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY"));
+
+        Set<InterpreterOutput> interpreterOutputSet = cut.interpret(
+                clusterSelectStatementDto,
+                parse.getContains(),
+                OperationalTemplateTestData.CORONA_ANAMNESE.getTemplateId());
+
+        assertThat(interpreterOutputSet)
+                .map(InterpreterOutput::getPathFromRootToValue)
+                .map(InterpreterPath::extractDepth)
+                .containsExactly(2L);
+    }
+
+    @Test
     void interpretWhere() {
 
         String aql = "select c/uid/value," + " o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/value,"
@@ -472,7 +504,9 @@ class InterpreterTest {
                                     return sb.toString();
                                 })
                                 .collect(Collectors.joining(";")),
-                        o -> o.getPathFromRootToValue().buildNormalisedAql(),
+                        o -> o.getPathFromRootToValue()
+                                .buildNormalisedAqlDto()
+                                .format(AqlPath.OtherPredicatesFormat.SHORTED, true),
                         InterpreterOutput::isRepresentingObject)
                 .containsExactly(tuples);
     }

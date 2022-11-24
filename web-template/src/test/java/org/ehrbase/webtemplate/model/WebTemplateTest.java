@@ -73,9 +73,10 @@ public class WebTemplateTest {
         OPTParser cut = new OPTParser(template);
         WebTemplate actual = cut.parse();
 
-        WebTemplateNode node = actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']")
-                .get();
+        WebTemplateNode node =
+                actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]").get();
 
+        //
         Assertions.assertThat(actual.getTree().isRelativePathNameDependent(node))
                 .isTrue();
 

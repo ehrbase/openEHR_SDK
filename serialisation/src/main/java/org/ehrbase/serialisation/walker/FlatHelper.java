@@ -17,13 +17,29 @@
  */
 package org.ehrbase.serialisation.walker;
 
-import static org.ehrbase.util.rmconstants.RmConstants.*;
+import static org.ehrbase.util.rmconstants.RmConstants.CODE_PHRASE;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.ELEMENT;
+import static org.ehrbase.util.rmconstants.RmConstants.ISM_TRANSITION;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_IDENTIFIED;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_PROXY;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_RELATED;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_SELF;
+import static org.ehrbase.util.rmconstants.RmConstants.RM_OBJECT;
 import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 import static org.ehrbase.webtemplate.parser.OPTParser.buildId;
 
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
@@ -357,7 +373,7 @@ public class FlatHelper<T> {
         WebTemplateNode node = new WebTemplateNode();
         node.setId(buildId(attributeName));
         node.setName(attributeName);
-        node.setAqlPath(parent.getAqlPath() + PATH_DIVIDER + attributeName);
+        node.setAqlPath(parent.getAqlPathDto().addEnd(attributeName));
         node.setMax(0);
         node.setMax(1);
 

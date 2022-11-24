@@ -18,15 +18,40 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.io.Serializable;
+import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 
-public class SimpleValue implements Value, Serializable {
+public final class SimpleValue implements Value, Serializable {
 
-    private Object value;
+    private final Object value;
 
-    public SimpleValue() {}
+    public static final SimpleValue NULL_VALUE = new SimpleValue();
 
-    public SimpleValue(Object value) {
+    public SimpleValue() {
+        this.value = null;
+    }
+
+    private SimpleValue(Object value) {
+        this.value = value;
+    }
+
+    public SimpleValue(String value) {
+        this.value = value;
+    }
+
+    public SimpleValue(Number value) {
+        this.value = value;
+    }
+
+    public SimpleValue(Boolean value) {
+        this.value = value;
+    }
+
+    public SimpleValue(SimpleValue other) {
+        this.value = other.value;
+    }
+
+    public SimpleValue(TemporalAccessor value) {
         this.value = value;
     }
 
@@ -34,8 +59,24 @@ public class SimpleValue implements Value, Serializable {
         return this.value;
     }
 
-    public void setValue(Object value) {
-        this.value = value;
+    private static final Class[] SUPPORTED_TYPES = {String.class, TemporalAccessor.class, Number.class, Boolean.class};
+
+    private static final String ERR_UNSUPPORTED_TYPE = "Type not supported: %s";
+
+    public static SimpleValue forImmutableObject(Object immutableObject) {
+        if (immutableObject == null) {
+            return NULL_VALUE;
+        }
+        Class<?> objectType = immutableObject.getClass();
+        if (objectType == SimpleValue.class) {
+            return (SimpleValue) immutableObject;
+        }
+        for (int i = 0; i < SUPPORTED_TYPES.length; i++) {
+            if (SUPPORTED_TYPES[i].isAssignableFrom(objectType)) {
+                return new SimpleValue(immutableObject);
+            }
+        }
+        throw new IllegalArgumentException(String.format(ERR_UNSUPPORTED_TYPE, objectType.getName()));
     }
 
     public boolean equals(final Object o) {

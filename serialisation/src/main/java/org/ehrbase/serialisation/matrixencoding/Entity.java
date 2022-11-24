@@ -28,14 +28,17 @@ class Entity {
     private AqlPath pathFromRoot;
     private String archetypeId;
 
+    private String rmType;
+
     private Index entityIdx = new Index();
 
     public Entity() {}
 
     public Entity(Entity other) {
-        this.pathFromRoot = AqlPath.parse(other.pathFromRoot.getPath());
+        this.pathFromRoot = other.pathFromRoot;
         this.archetypeId = other.archetypeId;
         this.entityIdx = new Index(other.entityIdx);
+        this.rmType = other.getRmType();
     }
 
     public AqlPath getPathFromRoot() {
@@ -62,8 +65,17 @@ class Entity {
         this.entityIdx = entityIdx;
     }
 
+    public String getRmType() {
+        return rmType;
+    }
+
+    public void setRmType(String rmType) {
+        this.rmType = rmType;
+    }
+
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
@@ -73,19 +85,21 @@ class Entity {
         Entity entity = (Entity) o;
         return Objects.equals(pathFromRoot, entity.pathFromRoot)
                 && Objects.equals(archetypeId, entity.archetypeId)
+                && Objects.equals(rmType, entity.rmType)
                 && Objects.equals(entityIdx, entity.entityIdx);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pathFromRoot, archetypeId, entityIdx);
+        return Objects.hash(pathFromRoot, archetypeId, rmType, entityIdx);
     }
 
     @Override
     public String toString() {
-        return "Resolve{" + "pathFromRoot="
+        return "Entity{" + "pathFromRoot="
                 + pathFromRoot + ", archetypeId='"
-                + archetypeId + '\'' + ", count="
+                + archetypeId + '\'' + ", rmType='"
+                + rmType + '\'' + ", entityIdx="
                 + entityIdx + '}';
     }
 }

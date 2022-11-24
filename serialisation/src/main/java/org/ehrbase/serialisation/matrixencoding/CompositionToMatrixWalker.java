@@ -44,12 +44,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.webtemplate.interpreter.Interpreter;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 /**
@@ -58,11 +58,18 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerDto> {
 
     public static final String MAGNITUDE = "/magnitude";
-    private List<String> resolveTo = List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY");
+    private List<String> resolveTo =
+            List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY", "SECTION");
 
     @Override
     protected FromWalkerDto extract(
             Context<FromWalkerDto> context, WebTemplateNode child, boolean isChoice, Integer i) {
+
+        if (i == null
+                && Interpreter.findRmAttributeInfo(context.getNodeDeque().peek(), child)
+                        .isMultipleValued()) {
+            i = 0;
+        }
 
         FromWalkerDto next = new FromWalkerDto(context.getObjectDeque().peek());
 
@@ -73,14 +80,12 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
         }
 
         // Is this a RM type to which we resolve to, then add a new Entity
-        if (child.getNodeId() != null
-                && findTypeName(child.getNodeId()) != null
-                && resolveTo.contains(findTypeName(child.getNodeId()))) {
+        if (child.getNodeId() != null && resolveTo.contains(child.getRmType())) {
 
             Entity nextEntity = new Entity(next.getCurrentEntity());
             nextEntity.setArchetypeId(child.getNodeId());
-            nextEntity.setPathFromRoot(
-                    child.getAqlPathDto().removeStart(next.getCurrentEntity().getPathFromRoot()));
+            nextEntity.setRmType(child.getRmType());
+            nextEntity.setPathFromRoot(child.getAqlPathDto());
             if (i != null) {
                 nextEntity.getEntityIdx().add(child.getAqlPath(), i);
             }
@@ -201,19 +206,24 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
      * @return
      */
     private Map<AqlPath, Object> flatten(AqlPath prefix, JsonNode node) {
+        Map<AqlPath, Object> resultMap = new LinkedHashMap<>();
+        flatten(prefix, node, resultMap);
+        return resultMap;
+    }
 
-        LinkedHashMap<AqlPath, Object> result = new LinkedHashMap<>();
+    private void flatten(AqlPath prefix, JsonNode node, Map<AqlPath, Object> result) {
+
         if (node instanceof ObjectNode) {
 
             for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
                 Map.Entry<String, JsonNode> child = it.next();
 
-                result.putAll(flatten(prefix.addEnd("/" + child.getKey()), child.getValue()));
+                flatten(prefix.addEnd(child.getKey()), child.getValue(), result);
             }
 
         } else if (node instanceof POJONode) {
             try {
-                result.putAll(flatten(prefix, MARSHAL_OM.readTree((node).toString())));
+                flatten(prefix, MARSHAL_OM.readTree((node).toString()), result);
             } catch (JsonProcessingException e) {
                 throw new SdkException(e.getMessage());
             }
@@ -232,8 +242,6 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                 throw new SdkException(e.getMessage());
             }
         }
-
-        return result;
     }
 
     @Override
@@ -287,19 +295,5 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
                     .get(fromWalkerDto.getCurrentFieldIndex())
                     .putAll(flatten(relativ, MARSHAL_OM.valueToTree(o)));
         }
-    }
-
-    static String findTypeName(String atCode) {
-        String typeName = null;
-
-        if (atCode.contains("openEHR-EHR-")) {
-
-            typeName = StringUtils.substringBetween(atCode, "openEHR-EHR-", ".");
-        } else if (atCode.startsWith("at")) {
-            typeName = null;
-        } else {
-            typeName = atCode;
-        }
-        return typeName;
     }
 }

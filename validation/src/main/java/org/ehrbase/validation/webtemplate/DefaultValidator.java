@@ -18,14 +18,24 @@
 package org.ehrbase.validation.webtemplate;
 
 import com.nedap.archie.base.MultiplicityInterval;
+import com.nedap.archie.query.RMObjectWithPath;
+import com.nedap.archie.query.RMPathQuery;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.archetyped.Pathable;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessageIds;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.validation.ConstraintViolation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -36,12 +46,29 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
  */
 public class DefaultValidator implements ConstraintValidator<RMObject> {
 
+    private BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathQueryCache;
+
+    public DefaultValidator() {
+        Map<AqlPath, RMPathQuery> cache = new HashMap<>();
+        rmPathQueryCache = (path, provider) -> cache.computeIfAbsent(path, provider::apply);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Class<RMObject> getAssociatedClass() {
         return RMObject.class;
+    }
+
+    private RMPathQuery getRmPathQuery(AqlPath path) {
+        return rmPathQueryCache.apply(path, p -> new RMPathQuery(p.toString()));
+    }
+
+    private List<Object> itemsAtPath(AqlPath path, Pathable currentPathable) {
+        return getRmPathQuery(path).findList(ArchieRMInfoLookup.getInstance(), currentPathable).stream()
+                .map(RMObjectWithPath::getObject)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -58,14 +85,15 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
 
     private List<ConstraintViolation> validate(Locatable locatable, WebTemplateNode node) {
         List<ConstraintViolation> result = new ArrayList<>();
-
         node.getChildren().forEach(childNode -> {
             var count = 0;
-            for (var item : locatable.itemsAtPath(
-                    node.buildRelativePath(childNode, false).toString())) {
+            AqlPath relativePath = node.buildRelativePath(childNode, false);
+            List<Object> children = itemsAtPath(relativePath, locatable);
+
+            for (var item : children) {
                 if (item instanceof Locatable) {
-                    if (!node.isRelativePathNameDependent(childNode)
-                            || Objects.equals(((Locatable) item).getNameAsString(), childNode.getName())) {
+                    if (Objects.equals(((Locatable) item).getNameAsString(), childNode.getName())
+                            || !node.isRelativePathNameDependent(childNode)) {
                         count++;
                     }
                 } else {

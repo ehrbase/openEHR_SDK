@@ -126,11 +126,7 @@ class AqlToDtoParserTest {
         matchesOperatorDto.setStatement(selectFieldDto);
         matchesOperatorDto.setValues(
                 Stream.of("f4da8646-8e36-4d9d-869c-af9dce5935c7", "61861e76-1606-48c9-adcf-49ebbb2c6bbd")
-                        .map(s -> {
-                            SimpleValue simpleValue = new SimpleValue();
-                            simpleValue.setValue(s);
-                            return simpleValue;
-                        })
+                        .map(SimpleValue::new)
                         .collect(Collectors.toList()));
 
         ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
