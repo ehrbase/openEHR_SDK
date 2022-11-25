@@ -17,6 +17,10 @@
  */
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static org.ehrbase.client.TestData.buildProxyEhrbaseBloodPressureSimpleDeV0Composition;
+import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.*;
+import static org.junit.Assert.*;
+
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.changecontrol.Contribution;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
@@ -24,6 +28,11 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.client.Integration;
 import org.ehrbase.client.classgenerator.examples.minimalevaluationenv1composition.MinimalEvaluationEnV1Composition;
@@ -42,17 +51,6 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.ehrbase.client.TestData.buildProxyEhrbaseBloodPressureSimpleDeV0Composition;
-import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
 public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQueryIT {
@@ -79,8 +77,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         ContributionCreateDto contributionDto =
                 new CanonicalJson().unmarshal(contribution, ContributionCreateDto.class);
 
-        VersionUid contributionEntity =
-                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionDto);
+        VersionUid contributionEntity = openEhrClient.contributionEndpoint(ehr).saveContribution(contributionDto);
 
         Optional<Contribution> remoteContribution =
                 openEhrClient.contributionEndpoint(ehr).find(contributionEntity.getUuid());
@@ -94,8 +91,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         // Save first composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
-        Composition composition =
-                (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
 
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
 
@@ -152,8 +148,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         // Save composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
-        Composition composition =
-                (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
         AuditDetails audit = createAuditDetails();
 
         // 2 Create contribution with composition modification
@@ -202,8 +197,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         // 1 Save composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
-        Composition composition =
-                (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
         AuditDetails audit = createAuditDetails();
 
         // 2 Create contribution with composition modification
@@ -312,7 +306,11 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 .contributionEndpoint(ehr)
                 .saveContribution(contributionBuilderCompositionDeletion.getContribution());
 
-        // 8 Find Contribution
+        // 8 Confirm that composition no longer exist
+        Optional<Composition> composition = openEhrClient.compositionEndpoint(ehr).findRaw(getCompositionUuid(rmCompositionResponse));
+        assertFalse(composition.isPresent());
+
+        // 9 Find Contribution
         Optional<Contribution> remoteContribution =
                 openEhrClient.contributionEndpoint(ehr).find(versionUid1.getUuid());
 
@@ -406,8 +404,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         assertTrue(remoteContribution.isPresent());
     }
 
-    private static void changeToLatestCompositionVersion(
-            Composition composition, Contribution contribution) {
+    private static void changeToLatestCompositionVersion(Composition composition, Contribution contribution) {
         UIDBasedId compositionPrecedingVersionUid =
                 (UIDBasedId) contribution.getVersions().get(0).getId();
         composition.setUid(compositionPrecedingVersionUid);
@@ -421,6 +418,12 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         String compositionId = remoteContribution.getVersions().get(0).getId().getValue();
 
         return compositionId.substring(compositionId.lastIndexOf("::") + 2);
+    }
+
+    private static UUID getCompositionUuid(Composition composition) {
+        String compositionId = composition.getUid().getValue();
+
+        return UUID.fromString(compositionId.substring(0, compositionId.indexOf("::")));
     }
 
     private static AuditDetails createAuditDetails() throws IOException {
@@ -445,5 +448,4 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         return openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(minimalEvaluationEnV1Composition);
     }
-
 }

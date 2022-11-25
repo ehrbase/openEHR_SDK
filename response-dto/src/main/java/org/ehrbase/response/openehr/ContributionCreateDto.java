@@ -61,7 +61,8 @@ public class ContributionCreateDto extends RMObject {
      * @param versions the versions
      * @param audit    the audit
      */
-    public ContributionCreateDto(HierObjectId uid, List<OriginalVersion<? extends RMObject>> versions, AuditDetails audit) {
+    public ContributionCreateDto(
+            HierObjectId uid, List<OriginalVersion<? extends RMObject>> versions, AuditDetails audit) {
         this.uid = uid;
         this.versions = versions;
         this.audit = audit;

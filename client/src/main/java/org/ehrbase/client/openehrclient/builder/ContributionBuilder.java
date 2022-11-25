@@ -26,10 +26,8 @@ import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
-
-import javax.annotation.Nullable;
-
 import com.nedap.archie.rm.support.identification.UIDBasedId;
+import javax.annotation.Nullable;
 import org.ehrbase.client.openehrclient.ContributionChangeType;
 import org.ehrbase.response.openehr.ContributionCreateDto;
 
@@ -298,9 +296,7 @@ public class ContributionBuilder {
         }
 
         private static void updateMetadataById(
-                String precedingVersionUid,
-                OriginalVersion<Locatable> originalVersion,
-                AuditDetails compositionAudit) {
+                String precedingVersionUid, OriginalVersion<Locatable> originalVersion, AuditDetails compositionAudit) {
             if (originalVersion.getData() == null) {
                 // version doesn't contain "data", so it is only a metadata one to,
                 // for instance, delete a specific object via ID regardless of type

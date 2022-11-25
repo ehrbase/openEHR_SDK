@@ -104,9 +104,7 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
                 .map(ObjectId::toString)
                 .map(VersionUid::new);
 
-        VersionUid newVersionUid = internalMerge(composition, versionUid.orElse(null));
-
-        return newVersionUid;
+        return internalMerge(composition, versionUid.orElse(null));
     }
 
     @Override
@@ -119,13 +117,12 @@ public class DefaultRestCompositionEndpoint implements CompositionEndpoint {
 
     @Override
     public Optional<Composition> findRaw(UUID compositionId) {
-        Optional<Composition> composition = defaultRestClient.httpGet(
+        return defaultRestClient.httpGet(
                 defaultRestClient
                         .getConfig()
                         .getBaseUri()
                         .resolve(EHR_PATH + ehrId.toString() + COMPOSITION_PATH + compositionId.toString()),
                 Composition.class);
-        return composition;
     }
 
     @Override
