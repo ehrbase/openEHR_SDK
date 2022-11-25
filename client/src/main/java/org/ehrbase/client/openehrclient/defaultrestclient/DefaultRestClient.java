@@ -167,6 +167,24 @@ public class DefaultRestClient implements OpenEhrClient {
         return response;
     }
 
+    protected HttpResponse internalPut(
+            URI uri, Map<String, String> headers, String bodyString, ContentType contentType, String accept) {
+        HttpResponse response;
+        try {
+
+            Request request =
+                    Request.Put(uri).addHeader(HttpHeaders.ACCEPT, accept).bodyString(bodyString, contentType);
+            if (headers != null) {
+                headers.forEach(request::addHeader);
+            }
+            response = executor.execute(request).returnResponse();
+            checkStatus(response, HttpStatus.SC_OK, HttpStatus.SC_CREATED, HttpStatus.SC_NO_CONTENT);
+        } catch (IOException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+        return response;
+    }
+
     protected VersionUid httpPut(URI uri, Locatable body, VersionUid versionUid) {
         return httpPut(uri, body, versionUid, null);
     }
