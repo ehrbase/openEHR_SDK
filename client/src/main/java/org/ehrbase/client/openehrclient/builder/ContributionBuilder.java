@@ -35,33 +35,19 @@ import org.ehrbase.response.openehr.ContributionCreateDto;
 import org.ehrbase.serialisation.dbencoding.RmObjectEncoding;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 
-/**
- * The Contribution builder class helps build composition create/update/delete inside a contribution
- */
 public class ContributionBuilder {
     private final ContributionCreateDto contributionCreateDto;
 
-    /**
-     * Contribution dto builder.
-     *
-     * @param audit the audit
-     * @return the contribution create dto
-     */
     public static ContributionBuilderDtoBuilder builder(AuditDetails audit) {
         return new ContributionBuilderDtoBuilder(audit);
     }
 
-    /**
-     * Instantiates a new Contribution builder.
-     *
-     * @param contributionCreateDto the contribution create dto
-     */
     public ContributionBuilder(ContributionCreateDto contributionCreateDto) {
         this.contributionCreateDto = contributionCreateDto;
     }
 
     /**
-     * Gets contribution create dto.
+     * Gets contribution dto.
      *
      * @return the contribution create dto
      */
@@ -69,9 +55,6 @@ public class ContributionBuilder {
         return contributionCreateDto;
     }
 
-    /**
-     * The type Contribution builder dto builder.
-     */
     public static class ContributionBuilderDtoBuilder {
 
         public static final String MANDATORY_CONTRIBUTOR_AUDIT_DETAILS = "Missing mandatory contributor AuditDetails.";
@@ -80,10 +63,7 @@ public class ContributionBuilder {
         public static final String INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER =
                 "Input invalid. Composition can't be modified without pointer to precedingVersionUid in Version container.";
 
-        /**
-         * The Contribution create dto.
-         */
-        ContributionCreateDto contributionCreateDto = new ContributionCreateDto();
+        private final ContributionCreateDto contributionCreateDto = new ContributionCreateDto();
 
         /**
          * Instantiates a new Contribution.
@@ -95,7 +75,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition creation.
+         * Add composition creation change type to contribution.
          *
          * @param composition RMObject composition instance
          * @return the contribution create dto
@@ -108,7 +88,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition creation.
+         * Add composition creation change type to contribution.
          *
          * @param composition the composition
          * @return the contribution create dto
@@ -130,7 +110,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition modification.
+         * Add composition modification change type to contribution.
          *
          * @param composition         RMObject composition instance
          * @param precedingVersionUid the previous composition entity id
@@ -145,7 +125,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition modification.
+         * Add composition modification change type to contribution.
          *
          * @param composition the RMObject composition instance
          * @return the contribution create dto
@@ -158,7 +138,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition modification.
+         * Add composition modification change type to contribution.
          *
          * @param composition         the composition
          * @param precedingVersionUid the preceding version uid
@@ -171,6 +151,12 @@ public class ContributionBuilder {
             return this;
         }
 
+        /**
+         * Add composition modification change type to contribution.
+         *
+         * @param composition the composition
+         * @return the contribution builder dto builder
+         */
         public ContributionBuilderDtoBuilder addCompositionModification(final Map<String, Object> composition) {
             updateContribution(composition, MODIFICATION, null);
 
@@ -178,7 +164,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition deletion.
+         * Add composition deletion change type to contribution.
          *
          * @param composition         the RMObject composition instance
          * @param precedingVersionUid the preceding version uid
@@ -193,7 +179,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition deletion.
+         * Add composition deletion change type to contribution.
          *
          * @param composition the RMObject composition instance
          * @return the contribution create dto
@@ -206,7 +192,7 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition deletion.
+         * Add composition deletion change type to contribution.
          *
          * @param composition the composition instance
          * @param precedingVersionUid the preceding version uid
@@ -220,13 +206,68 @@ public class ContributionBuilder {
         }
 
         /**
-         * Add composition deletion.
+         * Add composition deletion change type to contribution.
          *
          * @param composition the composition
          * @return the contribution create dto
          */
         public ContributionBuilderDtoBuilder addCompositionDeletion(final Map<String, Object> composition) {
             updateContribution(composition, DELETED, null);
+
+            return this;
+        }
+
+        /**
+         * Add original version with composition creation change type to contribution.
+         *
+         * @param originalVersion the original version
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionCreation(
+                final OriginalVersion<Map<String, Object>> originalVersion) {
+            updateContribution(null, CREATION, null, originalVersion);
+
+            return this;
+        }
+
+        /**
+         *
+         * Add original version with composition modification change type to contribution.
+         *
+         * @param originalVersion     the original version
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionModification(
+                final OriginalVersion<Map<String, Object>> originalVersion, final String precedingVersionUid) {
+            updateContribution(null, MODIFICATION, precedingVersionUid, originalVersion);
+
+            return this;
+        }
+
+        /**
+         * Add original version with composition modification change type to contribution.
+         *
+         * @param originalVersion the original version
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionModification(
+                final OriginalVersion<Map<String, Object>> originalVersion) {
+            updateContribution(null, MODIFICATION, null, originalVersion);
+
+            return this;
+        }
+
+        /**
+         * Add original version with composition deletion change type to contribution.
+         *
+         * @param originalVersion     the original version
+         * @param precedingVersionUid the preceding version uid
+         * @return the contribution create dto
+         */
+        public ContributionBuilderDtoBuilder addOriginalVersionDeletion(
+                final OriginalVersion<Map<String, Object>> originalVersion, final String precedingVersionUid) {
+            updateContribution(null, DELETED, precedingVersionUid, originalVersion);
 
             return this;
         }
@@ -342,61 +383,6 @@ public class ContributionBuilder {
         private static void modifyCompositionChangeType(AuditDetails audit, ContributionChangeType type) {
             audit.getChangeType().setValue(type.getName());
             audit.getChangeType().getDefiningCode().setCodeString(String.valueOf(type.getCode()));
-        }
-
-        /**
-         * Add original version creation.
-         *
-         * @param originalVersion the original version
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionCreation(
-                final OriginalVersion<Map<String, Object>> originalVersion) {
-            updateContribution(null, CREATION, null, originalVersion);
-
-            return this;
-        }
-
-        /**
-         *
-         * Add original version modification.
-         *
-         * @param originalVersion     the original version
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionModification(
-                final OriginalVersion<Map<String, Object>> originalVersion, final String precedingVersionUid) {
-            updateContribution(null, MODIFICATION, precedingVersionUid, originalVersion);
-
-            return this;
-        }
-
-        /**
-         * Add original version modification.
-         *
-         * @param originalVersion the original version
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionModification(
-                final OriginalVersion<Map<String, Object>> originalVersion) {
-            updateContribution(null, MODIFICATION, null, originalVersion);
-
-            return this;
-        }
-
-        /**
-         * Add original version deletion.
-         *
-         * @param originalVersion     the original version
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionDeletion(
-                final OriginalVersion<Map<String, Object>> originalVersion, final String precedingVersionUid) {
-            updateContribution(null, DELETED, precedingVersionUid, originalVersion);
-
-            return this;
         }
 
         private static LinkedHashMap<String, Object> getCanonicalComposition(RMObject composition) {

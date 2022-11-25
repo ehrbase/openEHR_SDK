@@ -30,6 +30,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * The duplicate of Contribution from com.nedap.archie.rm.changecontrol
+ * with changed field versions list of ObjectRef to list of OriginalVersion.
+ */
 @XmlType(
         name = "CONTRIBUTION",
         propOrder = {"uid", "versions", "audit"})
@@ -45,34 +49,74 @@ public class ContributionCreateDto extends RMObject {
 
     private AuditDetails audit;
 
+    /**
+     * Instantiates a new Contribution create dto.
+     */
     public ContributionCreateDto() {}
 
+    /**
+     * Instantiates a new Contribution create dto.
+     *
+     * @param uid      the uid
+     * @param versions the versions
+     * @param audit    the audit
+     */
     public ContributionCreateDto(HierObjectId uid, List<OriginalVersion<?>> versions, AuditDetails audit) {
         this.uid = uid;
         this.versions = versions;
         this.audit = audit;
     }
 
+    /**
+     * Gets uid.
+     *
+     * @return the uid
+     */
     public HierObjectId getUid() {
         return this.uid;
     }
 
+    /**
+     * Sets uid.
+     *
+     * @param uid the uid
+     */
     public void setUid(HierObjectId uid) {
         this.uid = uid;
     }
 
+    /**
+     * Gets versions.
+     *
+     * @return the versions
+     */
     public List<OriginalVersion<?>> getVersions() {
         return this.versions;
     }
 
+    /**
+     * Sets versions.
+     *
+     * @param versions the versions
+     */
     public void setVersions(List<OriginalVersion<? extends Object>> versions) {
         this.versions = versions;
     }
 
+    /**
+     * Gets audit.
+     *
+     * @return the audit
+     */
     public AuditDetails getAudit() {
         return this.audit;
     }
 
+    /**
+     * Sets audit.
+     *
+     * @param audit the audit
+     */
     public void setAudit(AuditDetails audit) {
         this.audit = audit;
     }
