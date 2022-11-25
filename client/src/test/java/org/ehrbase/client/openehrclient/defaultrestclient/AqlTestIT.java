@@ -355,7 +355,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, Double>> result =
                 openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
-        assertThat(result).isNotNull().hasSize(1);
+        assertThat(result).isNotNull().hasSize(2);
     }
 
     @Test
@@ -374,7 +374,7 @@ public class AqlTestIT {
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(coronaAnamneseComposition);
 
         Query<Record2<String, String>> query = Query.buildNativeQuery(
-                "Select DISTINCT"
+                "Select "
                         + " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value as var1,"
                         + " o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as var2"
                         + " from EHR e[ehr_id/value = $ehr_id] "
@@ -433,7 +433,7 @@ public class AqlTestIT {
 
         List<Record2<UUID, Double>> result =
                 openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
-        assertThat(result).isNotNull().size().isEqualTo(1);
+        assertThat(result).isNotNull().size().isEqualTo(2);
     }
 
     @Test
