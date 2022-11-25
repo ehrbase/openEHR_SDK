@@ -26,7 +26,7 @@ public enum ConditionComparisonOperatorSymbol {
     GT("greaterThan", ">"),
     LT_EQ("lessOrEqual", "<="),
     LT("lessThan", "<"),
-    LIKE("like", "like"); // TODO:: change it as logical operator ??
+    LIKE("like", "like");
 
     private final String javaName;
     private final String symbole;
