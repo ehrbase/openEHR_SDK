@@ -307,7 +307,8 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 .saveContribution(contributionBuilderCompositionDeletion.getContribution());
 
         // 8 Confirm that composition no longer exist
-        Optional<Composition> composition = openEhrClient.compositionEndpoint(ehr).findRaw(getCompositionUuid(rmCompositionResponse));
+        Optional<Composition> composition =
+                openEhrClient.compositionEndpoint(ehr).findRaw(getCompositionUuid(rmCompositionResponse));
         assertFalse(composition.isPresent());
 
         // 9 Find Contribution
