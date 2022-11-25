@@ -73,7 +73,7 @@ public class DefaultRestDirectoryEndpoint {
         String[] split = path.split(FOLDER_DIVIDER);
         Folder current = root;
         for (String folderName : split) {
-            Folder newFolder = Optional.ofNullable(current)
+            Folder newFolder = Optional.of(current)
                     .map(Folder::getFolders)
                     .flatMap(l -> l.stream()
                             .filter(f -> folderName.equals(f.getName().getValue()))

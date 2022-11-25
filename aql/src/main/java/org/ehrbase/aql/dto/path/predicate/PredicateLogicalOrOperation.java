@@ -18,9 +18,9 @@
 package org.ehrbase.aql.dto.path.predicate;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 
 /**
@@ -30,7 +30,11 @@ public class PredicateLogicalOrOperation
         implements PredicateDto, LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>, Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.OR;
-    private List<SimplePredicateDto> values = new ArrayList<>();
+    private List<SimplePredicateDto> values;
+
+    public PredicateLogicalOrOperation(SimplePredicateDto... values) {
+        this.values = List.of(values);
+    }
 
     @Override
     public PredicateLogicalOperatorSymbol getSymbol() {
@@ -43,13 +47,10 @@ public class PredicateLogicalOrOperation
     }
 
     @Override
-    public void setSymbol(PredicateLogicalOperatorSymbol symbol) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setValues(List<SimplePredicateDto> values) {
-        this.values = values;
+    public PredicateLogicalOrOperation addValues(Stream<SimplePredicateDto> valuesStream) {
+        SimplePredicateDto[] newValues =
+                Stream.concat(values.stream(), valuesStream).toArray(SimplePredicateDto[]::new);
+        return new PredicateLogicalOrOperation(newValues);
     }
 
     @Override

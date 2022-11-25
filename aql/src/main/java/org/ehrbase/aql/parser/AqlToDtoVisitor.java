@@ -19,6 +19,7 @@ package org.ehrbase.aql.parser;
 
 import com.nedap.archie.datetime.DateTimeParsers;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -27,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -56,6 +58,7 @@ import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -96,9 +99,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             } else {
                 ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
                 and.setSymbol(ConditionLogicalOperatorSymbol.AND);
-                and.setValues(new ArrayList<>());
-                and.getValues().add(aqlDto.getWhere());
-                and.getValues().add(visitFromEHR.getRight());
+                and.setValues(new ArrayList<>(List.of(aqlDto.getWhere(), visitFromEHR.getRight())));
                 aqlDto.setWhere(and);
             }
         }
@@ -134,7 +135,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
                     SelectFieldDto value = e.getValue();
                     value.setName(selectFieldDto.getName());
-                    value.setAqlPath(selectFieldDto.getAqlPath());
+                    value.setAqlPath(selectFieldDto.getAqlPathDto());
                     value.setContainmentId(selectFieldDto.getContainmentId());
                 });
         return aqlDto;
@@ -177,8 +178,13 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             ConditionComparisonOperatorDto conditionComparisonOperatorDto = new ConditionComparisonOperatorDto();
             SelectFieldDto statement = new SelectFieldDto();
             statement.setContainmentId(containmentId);
-            statement.setAqlPath(
-                    StringUtils.prependIfMissing(((PredicateComparisonOperatorDto) predicateDto).getStatement(), "/"));
+
+            String aqlStr = ((PredicateComparisonOperatorDto) predicateDto).getStatement();
+            if (StringUtils.isEmpty(aqlStr)) {
+                statement.setAqlPath(AqlPath.ROOT_PATH);
+            } else {
+                statement.setAqlPath(AqlPath.parse(aqlStr));
+            }
             conditionComparisonOperatorDto.setStatement(statement);
             conditionComparisonOperatorDto.setSymbol(((PredicateComparisonOperatorDto) predicateDto).getSymbol());
             conditionComparisonOperatorDto.setValue(((PredicateComparisonOperatorDto) predicateDto).getValue());
@@ -378,9 +384,10 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     @Override
     public ConditionDto visitIdentifiedExpr(AqlParser.IdentifiedExprContext ctx) {
 
-        List<Object> boolList = new ArrayList<>();
+        int childCount = ctx.getChildCount();
+        List<Object> boolList = new ArrayList<>(childCount);
 
-        for (int i = 0; i < ctx.getChildCount(); i++) {
+        for (int i = 0; i < childCount; i++) {
             ParseTree child = ctx.getChild(i);
             if (child instanceof AqlParser.IdentifiedEqualityContext) {
                 boolList.add(visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext) child));
@@ -412,34 +419,78 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                 });
     }
 
+    private static <T, S extends LogicalOperatorSymbol> LogicalOperatorDto<S, T> buildLogicalOperator(
+            OperatorStructure<S> structure, Function<S, LogicalOperatorDto<S, T>> creator) {
+
+        LogicalOperatorDto<S, T> operator = creator.apply(structure.getSymbol());
+
+        Stream<T> stream = structure.getChildren().stream().map(v -> {
+            if (v instanceof OperatorStructure) {
+                return (T) buildLogicalOperator((OperatorStructure<S>) v, creator);
+            } else {
+                return (T) v;
+            }
+        });
+        return operator.addValues(stream);
+    }
+
     public static <S extends LogicalOperatorSymbol, T> LogicalOperatorDto<S, T> buildLogicalOperator(
             List<Object> boolList, Function<S, LogicalOperatorDto<S, T>> creator) {
+        OperatorStructure<S> structure = buildLogicalOperatorStructure(boolList);
+        return buildLogicalOperator(structure, creator);
+    }
+
+    private static final class OperatorStructure<S extends LogicalOperatorSymbol> {
+        private final S symbol;
+        private final List<Object> children;
+
+        private OperatorStructure(S symbol, Object... children) {
+            this.symbol = symbol;
+            this.children = Arrays.stream(children).collect(Collectors.toList());
+        }
+
+        public S getSymbol() {
+            return symbol;
+        }
+
+        public List<Object> getChildren() {
+            return children;
+        }
+
+        public void addChild(Object child) {
+            children.add(child);
+        }
+    }
+
+    private static <S extends LogicalOperatorSymbol> OperatorStructure<S> buildLogicalOperatorStructure(
+            List<Object> boolList) {
 
         S currentSymbol = (S) boolList.get(1);
-        LogicalOperatorDto<S, T> currentOperator = creator.apply(currentSymbol);
-        currentOperator.getValues().add((T) boolList.get(0));
-        LogicalOperatorDto<S, T> lowestOperator = currentOperator;
-        for (int i = 2; i < boolList.size(); i = i + 2) {
-            S nextSymbol = i + 1 < boolList.size() ? (S) boolList.get(i + 1) : null;
+        OperatorStructure<S> currentOperator = new OperatorStructure(currentSymbol, boolList.get(0));
+
+        OperatorStructure<S> lowestOperator = currentOperator;
+        for (int i = 2, l = boolList.size(); i < l; i += 2) {
+            S nextSymbol = i + 1 < l ? (S) boolList.get(i + 1) : null;
+            Object currentOpValue = boolList.get(i);
             if (nextSymbol == null || Objects.equals(currentSymbol, nextSymbol)) {
-                currentOperator.getValues().add((T) boolList.get(i));
-                currentSymbol = nextSymbol;
+                currentOperator.addChild(currentOpValue);
+
             } else {
-                LogicalOperatorDto<S, T> nextOperator = creator.apply(nextSymbol);
+                OperatorStructure<S> nextOperator = new OperatorStructure<>(nextSymbol);
 
                 if (hasHigherPrecedence(currentSymbol, nextSymbol)) {
-                    currentOperator.getValues().add((T) boolList.get(i));
-                    nextOperator.getValues().add((T) currentOperator);
+                    currentOperator.addChild(currentOpValue);
+                    nextOperator.addChild(currentOperator);
                     lowestOperator = nextOperator;
                 } else {
-                    nextOperator.getValues().add((T) boolList.get(i));
-                    currentOperator.getValues().add((T) nextOperator);
+                    nextOperator.addChild(currentOpValue);
+                    currentOperator.addChild(nextOperator);
                     lowestOperator = currentOperator;
                 }
 
                 currentOperator = nextOperator;
-                currentSymbol = nextSymbol;
             }
+            currentSymbol = nextSymbol;
         }
         return lowestOperator;
     }
@@ -521,32 +572,19 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         final Value value;
 
         if (isBooleanOperand(ctx)) {
-            SimpleValue simpleValue = new SimpleValue();
-            simpleValue.setValue(Boolean.parseBoolean(ctx.getText()));
-            value = simpleValue;
+            value = new SimpleValue(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null) {
-            SimpleValue simpleValue = new SimpleValue();
             String unwrap = StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
-            simpleValue.setValue(DateTimeParsers.parseTimeValue(unwrap));
-            value = simpleValue;
+            value = new SimpleValue(DateTimeParsers.parseTimeValue(unwrap));
         } else if (ctx.FLOAT() != null) {
-            SimpleValue simpleValue = new SimpleValue();
-            simpleValue.setValue(Double.valueOf(ctx.getText()));
-            value = simpleValue;
+            value = new SimpleValue(Double.valueOf(ctx.getText()));
         } else if (ctx.INTEGER() != null) {
-            SimpleValue simpleValue = new SimpleValue();
-            simpleValue.setValue(Integer.valueOf(ctx.getText()));
-            value = simpleValue;
+            value = new SimpleValue(Integer.valueOf(ctx.getText()));
         } else if (ctx.STRING() != null) {
-            SimpleValue simpleValue = new SimpleValue();
             String unwrap = StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
-            simpleValue.setValue(unwrap);
-            value = simpleValue;
+            value = new SimpleValue(unwrap);
         } else if (ctx.PARAMETER() != null) {
-            ParameterValue simpleValue = new ParameterValue();
-            simpleValue.setName(StringUtils.removeStart(ctx.getText(), "$"));
-            simpleValue.setType("?");
-            value = simpleValue;
+            value = new ParameterValue(StringUtils.removeStart(ctx.getText(), "$"), "?");
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }

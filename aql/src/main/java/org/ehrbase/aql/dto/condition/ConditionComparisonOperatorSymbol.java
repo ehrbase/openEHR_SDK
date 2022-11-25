@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 public enum ConditionComparisonOperatorSymbol {
     EQ("equal", "="),
@@ -43,10 +43,12 @@ public enum ConditionComparisonOperatorSymbol {
         return symbole;
     }
 
-    public static ConditionComparisonOperatorSymbol fromSymbol(String symbole) {
-        return Arrays.stream(values())
-                .filter(s -> s.getSymbole().equals(symbole))
-                .findAny()
-                .orElseThrow();
+    public static ConditionComparisonOperatorSymbol fromSymbol(CharSequence symbol) {
+        for (ConditionComparisonOperatorSymbol s : values()) {
+            if (s.getSymbole().contentEquals(symbol)) {
+                return s;
+            }
+        }
+        throw new NoSuchElementException(symbol.toString());
     }
 }

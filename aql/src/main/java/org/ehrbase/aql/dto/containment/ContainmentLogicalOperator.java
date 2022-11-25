@@ -30,6 +30,7 @@ public class ContainmentLogicalOperator
         return this.symbol;
     }
 
+    @Override
     public List<ContainmentExpresionDto> getValues() {
         return this.values;
     }

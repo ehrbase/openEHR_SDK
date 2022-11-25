@@ -22,7 +22,11 @@ import java.util.List;
 import java.util.Objects;
 import org.ehrbase.aql.binder.AqlBinder;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.condition.*;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ParameterValue;
+import org.ehrbase.aql.dto.condition.Value;
 import org.ehrbase.aql.parser.AqlToDtoParser;
 
 public class AqlUtil {

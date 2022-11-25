@@ -20,7 +20,6 @@ package org.ehrbase.aql.dto.containment;
 import java.io.Serializable;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
-import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 
 public class Containment implements Serializable {
     private String archetypeId;
@@ -33,7 +32,7 @@ public class Containment implements Serializable {
     public Containment(Containment other) {
         this.archetypeId = other.archetypeId;
         this.type = other.type;
-        this.otherPredicates = PredicateHelper.clone(other.otherPredicates);
+        this.otherPredicates = other.otherPredicates;
     }
 
     public Containment(String type, String archetypeId, PredicateDto otherPredicates) {

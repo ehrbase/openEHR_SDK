@@ -24,7 +24,7 @@ import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,24 +51,33 @@ public class WebTemplateNode implements Serializable {
     private String nodeId;
     private int min;
     private int max;
-    private final Map<String, String> localizedNames = new HashMap<>();
-    private final Map<String, String> localizedDescriptions = new HashMap<>();
+    private final Map<String, String> localizedNames;
+    private final Map<String, String> localizedDescriptions;
 
     @JsonIgnore
     private final String[] aqlCache = new String[2];
 
     private AqlPath aqlPath;
 
-    private final List<WebTemplateNode> children = new ArrayList<>();
-    private final List<WebTemplateInput> inputs = new ArrayList<>();
+    private final List<WebTemplateNode> children;
+    private final List<WebTemplateInput> inputs;
     private Boolean inContext;
-    private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
-    private final List<String> dependsOn = new ArrayList<>();
+    private final Map<String, WebTemplateTerminology> termBindings;
+    private final List<String> dependsOn;
     private WebTemplateAnnotation annotations;
-    private final List<ProportionType> proportionTypes = new ArrayList<>();
-    private final List<WebtemplateCardinality> cardinalities = new ArrayList<>();
+    private final List<ProportionType> proportionTypes;
+    private final List<WebtemplateCardinality> cardinalities;
 
-    public WebTemplateNode() {}
+    public WebTemplateNode() {
+        localizedNames = new LinkedHashMap<>();
+        localizedDescriptions = new LinkedHashMap<>();
+        children = new ArrayList<>();
+        inputs = new ArrayList<>();
+        termBindings = new LinkedHashMap<>();
+        proportionTypes = new ArrayList<>();
+        dependsOn = new ArrayList<>();
+        cardinalities = new ArrayList<>();
+    }
 
     public WebTemplateNode(WebTemplateNode other) {
         this.id = other.id;
@@ -81,23 +90,24 @@ public class WebTemplateNode implements Serializable {
         this.max = other.max;
         this.aqlPath = other.aqlPath;
         this.inContext = other.inContext;
-        this.dependsOn.addAll(other.dependsOn);
+        this.dependsOn = new ArrayList<>(other.dependsOn);
         if (other.annotations != null) {
             this.annotations = new WebTemplateAnnotation(other.annotations);
-        } else {
-            this.annotations = null;
         }
 
-        this.cardinalities.addAll(
-                other.cardinalities.stream().map(WebtemplateCardinality::new).collect(Collectors.toList()));
-        this.inputs.addAll(other.getInputs().stream().map(WebTemplateInput::new).collect(Collectors.toList()));
-        this.getChildren()
-                .addAll(other.children.stream().map(WebTemplateNode::new).collect(Collectors.toList()));
-        this.localizedNames.putAll(other.localizedNames);
-        this.localizedDescriptions.putAll(other.localizedDescriptions);
-        this.proportionTypes.addAll(other.getProportionTypes());
-        this.termBindings.putAll(other.termBindings.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new WebTemplateTerminology(e.getValue()))));
+        this.cardinalities =
+                other.cardinalities.stream().map(WebtemplateCardinality::new).collect(Collectors.toList());
+        this.inputs = other.inputs.stream().map(WebTemplateInput::new).collect(Collectors.toList());
+        this.children = other.children.stream().map(WebTemplateNode::new).collect(Collectors.toList());
+        this.localizedNames = new LinkedHashMap<>(other.localizedNames);
+        this.localizedDescriptions = new LinkedHashMap<>(other.localizedDescriptions);
+        this.proportionTypes = new ArrayList<>(other.getProportionTypes());
+        this.termBindings = other.termBindings.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> new WebTemplateTerminology(e.getValue()),
+                        (a, b) -> a,
+                        LinkedHashMap::new));
     }
 
     public String getId() {
@@ -177,7 +187,7 @@ public class WebTemplateNode implements Serializable {
     }
 
     public String getAqlPath() {
-        return aqlPath.format(true);
+        return getAqlPath(true);
     }
 
     @JsonIgnore

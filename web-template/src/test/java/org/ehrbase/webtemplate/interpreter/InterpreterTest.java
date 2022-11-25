@@ -504,7 +504,9 @@ class InterpreterTest {
                                     return sb.toString();
                                 })
                                 .collect(Collectors.joining(";")),
-                        o -> o.getPathFromRootToValue().buildNormalisedAql(),
+                        o -> o.getPathFromRootToValue()
+                                .buildNormalisedAqlDto()
+                                .format(AqlPath.OtherPredicatesFormat.SHORTED, true),
                         InterpreterOutput::isRepresentingObject)
                 .containsExactly(tuples);
     }

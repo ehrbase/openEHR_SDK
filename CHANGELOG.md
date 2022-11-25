@@ -2,6 +2,12 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [1.23.0]
+ ### Added 
+   - Added handling of stored AQL query requests ([#384](https://github.com/ehrbase/openEHR_SDK/pull/384))
+
+ ### Fixed 
+- update archie  to 2.1.0 ([#410](https://github.com/ehrbase/openEHR_SDK/pull/410))
 ## [1.22.0]
  ### Added 
  ### Fixed 
@@ -204,3 +210,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0
 [1.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...v1.21.0
 [1.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...v1.22.0
+[1.23.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.22.0...v1.23.0

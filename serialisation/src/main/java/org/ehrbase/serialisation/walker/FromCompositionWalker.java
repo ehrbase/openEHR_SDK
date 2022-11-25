@@ -17,15 +17,25 @@
  */
 package org.ehrbase.serialisation.walker;
 
+import com.nedap.archie.query.RMPathQuery;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
 public abstract class FromCompositionWalker<T> extends Walker<T> {
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
+    private final Map<AqlPath, RMPathQuery> rmPathableCache = new HashMap<>();
+
+    private final BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathableCacheFunc =
+            (path, provider) -> rmPathableCache.computeIfAbsent(path, provider::apply);
 
     protected Object extractRMChild(
             RMObject currentRM,
@@ -34,8 +44,9 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
             boolean isChoice,
             Integer count) {
 
-        ItemExtractor itemExtractor =
-                new ItemExtractor(currentRM, currentNode, childNode, isChoice && count == null).invoke();
+        ItemExtractor itemExtractor = new ItemExtractor(currentRM, currentNode, childNode, isChoice && count == null)
+                .withRmPathQueryCache(rmPathableCacheFunc)
+                .invoke();
 
         Object child = itemExtractor.getChild();
 

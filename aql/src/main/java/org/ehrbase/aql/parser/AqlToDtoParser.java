@@ -34,7 +34,7 @@ public class AqlToDtoParser {
             AqlToDtoVisitor listener = new AqlToDtoVisitor();
             return listener.visitQuery(aqlParser.query());
         } catch (RuntimeException e) {
-            throw new AqlParseException(e.getMessage());
+            throw new AqlParseException(e.getMessage(), e);
         }
     }
 }
