@@ -55,14 +55,14 @@ public class DefaultRestContributionEndpoint implements ContributionEndpoint {
     }
 
     @Override
-    public VersionUid mergeContributionEntity(ContributionCreateDto contribution) {
+    public VersionUid saveContribution(ContributionCreateDto contribution) {
         URI baseUri = defaultRestClient.getConfig().getBaseUri();
         return defaultRestClient.httpPost(
                 baseUri.resolve(EHR_PATH + ehrId.toString() + CONTRIBUTION_PATH), contribution);
     }
 
     @Override
-    public Optional<Contribution> find(UUID ehrId, UUID contributionId) {
+    public Optional<Contribution> find(UUID contributionId) {
 
         URI uri = defaultRestClient
                 .getConfig()

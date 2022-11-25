@@ -45,7 +45,7 @@ public class ContributionCreateDto extends RMObject {
     @JsonProperty(value = "versions")
     @JacksonXmlElementWrapper(localName = "versions")
     @JacksonXmlProperty(localName = "version")
-    private List<OriginalVersion<? extends Object>> versions = new ArrayList<>();
+    private List<OriginalVersion<? extends RMObject>> versions = new ArrayList<>();
 
     private AuditDetails audit;
 
@@ -61,7 +61,7 @@ public class ContributionCreateDto extends RMObject {
      * @param versions the versions
      * @param audit    the audit
      */
-    public ContributionCreateDto(HierObjectId uid, List<OriginalVersion<?>> versions, AuditDetails audit) {
+    public ContributionCreateDto(HierObjectId uid, List<OriginalVersion<? extends RMObject>> versions, AuditDetails audit) {
         this.uid = uid;
         this.versions = versions;
         this.audit = audit;
@@ -90,7 +90,7 @@ public class ContributionCreateDto extends RMObject {
      *
      * @return the versions
      */
-    public List<OriginalVersion<?>> getVersions() {
+    public List<OriginalVersion<? extends RMObject>> getVersions() {
         return this.versions;
     }
 
@@ -99,7 +99,7 @@ public class ContributionCreateDto extends RMObject {
      *
      * @param versions the versions
      */
-    public void setVersions(List<OriginalVersion<? extends Object>> versions) {
+    public void setVersions(List<OriginalVersion<? extends RMObject>> versions) {
         this.versions = versions;
     }
 

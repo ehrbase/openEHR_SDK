@@ -36,15 +36,14 @@ public interface ContributionEndpoint {
      * @return the version uid
      * @throws JsonProcessingException the json processing exception
      */
-    VersionUid mergeContributionEntity(ContributionCreateDto contribution) throws JsonProcessingException;
+    VersionUid saveContribution(ContributionCreateDto contribution) throws JsonProcessingException;
 
     /**
      *  Get the Contribution by {@code ehrId} and {@code contributionId}.
      *
-     * @param ehrId          the ehr id
      * @param contributionId the contribution id
      * @return the optional
      * @throws IOException the io exception
      */
-    Optional<Contribution> find(UUID ehrId, UUID contributionId) throws IOException;
+    Optional<Contribution> find(UUID contributionId) throws IOException;
 }
