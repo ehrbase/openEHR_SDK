@@ -111,7 +111,6 @@ public class ContributionBuilder {
         /**
          * Add composition deletion change type to contribution.
          * <p>
-         * //         * @param composition the composition instance
          *
          * @param precedingVersionUid the preceding version uid
          * @return the contribution create dto
