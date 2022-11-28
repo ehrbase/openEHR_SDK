@@ -32,21 +32,19 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.ehrbase.client.annotations.Entity;
 import org.ehrbase.client.aql.field.AqlField;
 import org.ehrbase.client.aql.field.ListSelectAqlField;
 import org.ehrbase.client.aql.parameter.ParameterValue;
+import org.ehrbase.client.aql.parameter.StoredQueryParameter;
 import org.ehrbase.client.aql.query.Query;
 import org.ehrbase.client.aql.record.Record;
 import org.ehrbase.client.aql.record.RecordImp;
@@ -56,16 +54,23 @@ import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.openehrclient.AqlEndpoint;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.response.openehr.QueryResponseData;
+import org.ehrbase.response.openehr.StoredQueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
+import org.json.JSONObject;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     public static final String AQL_PATH = "rest/openehr/v1/query/aql/";
+    public static final String AQL_STORED_QUERY_PATH = "rest/openehr/v1/query/";
+    public static final String STORE_AQL_QUERY_PATH = "rest/openehr/v1/definition/query/";
     public static final String QUERY_MAP_KEY = "q";
     public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
 
     private final DefaultRestClient defaultRestClient;
+
+    private static final String INVALID_QUERY_ERROR_STRING = "Invalid query";
+    private static final String INVALID_PARAMETERS_ERROR_STRING = "Invalid parameters";
 
     public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
         this.defaultRestClient = defaultRestClient;
@@ -141,17 +146,17 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public QueryResponseData executeRaw(Query query, ParameterValue... parameters) {
 
         if (query == null) {
-            throw new ClientException("Invalid query");
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
         if (parameters == null) {
-            throw new ClientException("Invalid parameters");
+            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
         String queryString = query.buildAql();
 
         if (StringUtils.isEmpty(queryString)) {
-            throw new ClientException("Invalid query");
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
         for (ParameterValue v : parameters) {
@@ -176,6 +181,104 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public QueryResponseData executeStoredQuery(StoredQueryParameter queryParameter) {
+
+        if (queryParameter == null || !queryParameter.isValid()) {
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
+        }
+
+        URIBuilder uriBuilder = getBaseUriBuilder()
+                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                        + AQL_STORED_QUERY_PATH
+                        + queryParameter.getPath());
+
+        queryParameter.getOffset().ifPresent(value -> uriBuilder.addParameter("offset", value.toString()));
+
+        queryParameter.getFetch().ifPresent(value -> uriBuilder.addParameter("fetch", value.toString()));
+
+        for (Map.Entry<String, String> param : queryParameter.getQueryParams().entrySet()) {
+            uriBuilder.addParameter(param.getKey(), param.getValue());
+        }
+
+        try {
+            HttpResponse response = defaultRestClient.internalGet(
+                    uriBuilder.build(), Collections.emptyMap(), ContentType.APPLICATION_JSON.getMimeType());
+
+            String responseJson = EntityUtils.toString(response.getEntity());
+
+            return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, QueryResponseData.class);
+        } catch (IOException | URISyntaxException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public StoredQueryResponseData getStoredAqlQuery(StoredQueryParameter queryParameter) {
+        if (queryParameter == null || !queryParameter.isValid()) {
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
+        }
+
+        URIBuilder uriBuilder = getBaseUriBuilder()
+                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                        + AQL_STORED_QUERY_PATH
+                        + queryParameter.getPath());
+
+        try {
+            HttpResponse response = defaultRestClient.internalGet(
+                    uriBuilder.build(), Collections.emptyMap(), ContentType.APPLICATION_JSON.getMimeType());
+
+            String responseJson = EntityUtils.toString(response.getEntity());
+
+            return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, StoredQueryResponseData.class);
+        } catch (IOException | URISyntaxException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void storeAqlQuery(Query query, StoredQueryParameter queryParameter) {
+
+        if (query == null) {
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
+        }
+
+        if (queryParameter == null || !queryParameter.isValid()) {
+            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
+        }
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("q", query.buildAql());
+
+        URIBuilder uriBuilder = getBaseUriBuilder()
+                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                        + STORE_AQL_QUERY_PATH
+                        + queryParameter.getPath());
+
+        queryParameter.getType().ifPresent(type -> uriBuilder.addParameter("type", type));
+
+        try {
+            defaultRestClient.internalPut(
+                    uriBuilder.build(),
+                    Collections.emptyMap(),
+                    requestBody.toString(),
+                    ContentType.APPLICATION_JSON,
+                    ContentType.APPLICATION_JSON.getMimeType());
+
+        } catch (URISyntaxException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+    }
+
+    private URIBuilder getBaseUriBuilder() {
+        URI baseUri = defaultRestClient.getConfig().getBaseUri();
+
+        return new URIBuilder()
+                .setScheme(baseUri.getScheme())
+                .setHost(baseUri.getHost())
+                .setPort(baseUri.getPort());
     }
 
     private Object extractValue(String valueAsString, Class<?> aClass)
