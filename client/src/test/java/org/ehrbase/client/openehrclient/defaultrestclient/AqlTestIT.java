@@ -746,17 +746,17 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecute17() {
+    public void testExecuteLikeOperator() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         AqlToDtoParser cut = new AqlToDtoParser();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
-        saveComposition(ehr, "when test\\* present: positive case");
-        saveComposition(ehr, "tesT when asterisk on random \\* place: positive case");
-        saveComposition(ehr, "case sensitive Test\\* present: negative case");
-        saveComposition(ehr, "when not\\* presen: negative caset");
+        mergeComposition(ehr, "when test\\* present: positive case");
+        mergeComposition(ehr, "tesT when asterisk on random \\* place: positive case");
+        mergeComposition(ehr, "case sensitive Test\\* present: negative case");
+        mergeComposition(ehr, "when not\\* presen: negative caset");
 
         String aql = "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]  "
                 + "from EHR e[ehr_id/value = $ehr_id]  "
@@ -772,7 +772,7 @@ public class AqlTestIT {
         assertThat(result).isNotNull().hasSize(2);
     }
 
-    private void saveComposition(UUID ehr, String commentValue) {
+    private void mergeComposition(UUID ehr, String commentValue) {
         EhrbaseBloodPressureSimpleDeV0Composition pressureSimple2 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         pressureSimple2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
         pressureSimple2.getBloodPressureTrainingSample().get(0).setCommentValue(commentValue);
@@ -780,15 +780,15 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecute18() {
+    public void testExecuteLikeOperatorWithDate() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         AqlToDtoParser cut = new AqlToDtoParser();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
-        saveComposition(2019, 03);
-        saveComposition(2022, 02);
+        mergeComposition(2019, 03);
+        mergeComposition(2022, 02);
 
         String aql = "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]  "
                 + "from EHR e[ehr_id/value = $ehr_id]  "
@@ -804,7 +804,7 @@ public class AqlTestIT {
         assertThat(result).isNotNull().hasSize(1);
     }
 
-    private void saveComposition(int year, int month) {
+    private void mergeComposition(int year, int month) {
         EhrbaseBloodPressureSimpleDeV0Composition pressureSimple2 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         pressureSimple2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
         pressureSimple2.setStartTimeValue(OffsetDateTime.of(year, month, 04, 22, 00, 00, 00, ZoneOffset.UTC));
@@ -812,13 +812,13 @@ public class AqlTestIT {
     }
 
     @Test
-    public void testExecute19() {
+    public void testExecuteLikeOperatorUsingDto() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(TestData.buildEhrbaseBloodPressureSimpleDeV0());
 
-        saveComposition(ehr, "test");
+        mergeComposition(ehr, "test");
 
         Containment observationContainment = new Containment("OBSERVATION");
 
