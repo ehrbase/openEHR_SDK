@@ -589,7 +589,8 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
 
             // replace all escaped backslashes with asterisks by asterisk since it is used as regular asterisk
             // for native aql. For question mark the same behaviour
-            SimpleValue value1 = new SimpleValue(builder.toString().replace("\\\\*", "*").replace("\\\\?", "?"));
+            SimpleValue value1 =
+                    new SimpleValue(builder.toString().replace("\\\\*", "*").replace("\\\\?", "?"));
             wildcardOperatorDto.setValue(value1);
             conditionDto = wildcardOperatorDto;
         }
