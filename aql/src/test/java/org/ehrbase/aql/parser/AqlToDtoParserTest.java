@@ -469,6 +469,6 @@ class AqlToDtoParserTest {
                         "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, "
                                 + "e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                                 + " where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1"
-                                + " and o0/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value like '_%\\\\*test_\\\\?%')");
+                                + " and o0/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value like '_%*test_?%')");
     }
 }
