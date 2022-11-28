@@ -18,16 +18,13 @@
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
 import static org.ehrbase.client.TestData.buildProxyEhrbaseBloodPressureSimpleDeV0Composition;
-import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.*;
+import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.ONE_ENTRY_COMPOSITION_LATEST;
+import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST;
 import static org.junit.Assert.*;
 
-import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.changecontrol.Contribution;
-import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.generic.AuditDetails;
-import com.nedap.archie.rm.support.identification.ObjectVersionId;
-import com.nedap.archie.rm.support.identification.UIDBasedId;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -169,12 +166,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         assertEquals(1L, getContributionVersion(versionUid));
         assertEquals("2", getCompositionVersion(remoteContribution_.get()));
 
-        // 5 Replace composition version
-        changeToLatestCompositionVersion(composition, remoteContribution_.get());
+        // 5 Get previous composition version id
+        String compositionPrecedingVersionUid =
+                remoteContribution_.get().getVersions().get(0).getId().getValue();
 
         // 6 Create contribution with composition deletion
         ContributionBuilder contributionBuilderCompositionDeletion = ContributionBuilder.builder(audit)
-                .addCompositionDeletion(composition)
+                .addCompositionDeletion(compositionPrecedingVersionUid)
                 .build();
 
         // 7 Save Contribution
@@ -246,7 +244,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         // 10 Create contribution with composition deletion
         ContributionBuilder contributionBuilderCompositionDeletion1 = ContributionBuilder.builder(audit)
-                .addCompositionDeletion(composition, compositionPrecedingVersionUid1)
+                .addCompositionDeletion(compositionPrecedingVersionUid1)
                 .build();
 
         // 11 Save Contribution
@@ -291,14 +289,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         assertEquals(1L, getContributionVersion(versionUid));
         assertEquals("2", getCompositionVersion(remoteContribution_.get()));
 
-        // 5 Replace composition version
+        // 5 Get previous version composition uid
         String compositionPrecedingVersionUid =
                 remoteContribution_.get().getVersions().get(0).getId().getValue();
-        rmCompositionResponse.setUid(new ObjectVersionId(compositionPrecedingVersionUid));
 
         // 6 Create contribution with composition deletion
         ContributionBuilder contributionBuilderCompositionDeletion = ContributionBuilder.builder(audit)
-                .addCompositionDeletion(rmCompositionResponse)
+                .addCompositionDeletion(compositionPrecedingVersionUid)
                 .build();
 
         // 7 Save Contribution
@@ -357,7 +354,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         // 6 Create contribution with composition deletion
         ContributionBuilder contributionBuilderCompositionDeletion = ContributionBuilder.builder(audit)
-                .addCompositionDeletion(rmCompositionResponse, compositionPrecedingVersionUid)
+                .addCompositionDeletion(compositionPrecedingVersionUid)
                 .build();
 
         // 7 Save Contribution
@@ -390,12 +387,8 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         ContributionCreateDto contributionDto =
                 new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
 
-        OriginalVersion<Locatable> originalVersion = new OriginalVersion<>();
-        originalVersion.setData(proxyComposition);
-
         ContributionBuilder contributionBuilder = ContributionBuilder.builder(contributionDto.getAudit())
                 .addCompositionCreation(proxyComposition)
-                .addOriginalVersionCreation(originalVersion)
                 .build();
 
         ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
@@ -403,12 +396,6 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         Optional<Contribution> remoteContribution = contributionEndpoint.find(versionUid.getUuid());
 
         assertTrue(remoteContribution.isPresent());
-    }
-
-    private static void changeToLatestCompositionVersion(Composition composition, Contribution contribution) {
-        UIDBasedId compositionPrecedingVersionUid =
-                (UIDBasedId) contribution.getVersions().get(0).getId();
-        composition.setUid(compositionPrecedingVersionUid);
     }
 
     private static long getContributionVersion(VersionUid versionUid) {

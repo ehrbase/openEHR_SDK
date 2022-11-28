@@ -110,20 +110,6 @@ public class ContributionBuilder {
 
         /**
          * Add composition deletion change type to contribution.
-         *
-         * @param composition         the composition instance
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addCompositionDeletion(
-                final Composition composition, final String precedingVersionUid) {
-            updateContribution(composition, DELETED, precedingVersionUid);
-
-            return this;
-        }
-
-        /**
-         * Add composition deletion change type to contribution.
          * <p>
          * //         * @param composition the composition instance
          *
@@ -132,72 +118,6 @@ public class ContributionBuilder {
          */
         public ContributionBuilderDtoBuilder addCompositionDeletion(final String precedingVersionUid) {
             updateContribution(null, DELETED, precedingVersionUid);
-
-            return this;
-        }
-
-        /**
-         * Add composition deletion change type to contribution.
-         *
-         * @param composition the composition
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addCompositionDeletion(final Composition composition) {
-            updateContribution(composition, DELETED, null);
-
-            return this;
-        }
-
-        /**
-         * Add original version with composition creation change type to contribution.
-         *
-         * @param originalVersion the original version
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionCreation(
-                final OriginalVersion<Locatable> originalVersion) {
-            updateContribution(null, CREATION, null, originalVersion);
-
-            return this;
-        }
-
-        /**
-         * Add original version with composition modification change type to contribution.
-         *
-         * @param originalVersion     the original version
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionModification(
-                final OriginalVersion<Locatable> originalVersion, final String precedingVersionUid) {
-            updateContribution(null, MODIFICATION, precedingVersionUid, originalVersion);
-
-            return this;
-        }
-
-        /**
-         * Add original version with composition modification change type to contribution.
-         *
-         * @param originalVersion the original version
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionModification(
-                final OriginalVersion<Locatable> originalVersion) {
-            updateContribution(null, MODIFICATION, null, originalVersion);
-
-            return this;
-        }
-
-        /**
-         * Add original version with composition deletion change type to contribution.
-         *
-         * @param originalVersion     the original version
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addOriginalVersionDeletion(
-                final OriginalVersion<Locatable> originalVersion, final String precedingVersionUid) {
-            updateContribution(null, DELETED, precedingVersionUid, originalVersion);
 
             return this;
         }
@@ -274,10 +194,6 @@ public class ContributionBuilder {
                     break;
                 }
                 case DELETED: {
-                    if (versionId != null && isNotBlank(versionId.getValue()) && isBlank(precedingVersionUid)) {
-                        precedingVersionUid = versionId.getValue();
-                    }
-
                     if (isBlank(precedingVersionUid)) {
                         throw new IllegalArgumentException(MISSING_MANDATORY_PRECEDING_VERSION_UID);
                     }
