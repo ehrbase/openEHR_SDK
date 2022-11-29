@@ -4,6 +4,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+   - Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
+
  ### Fixed 
 
 ## [1.23.0]
