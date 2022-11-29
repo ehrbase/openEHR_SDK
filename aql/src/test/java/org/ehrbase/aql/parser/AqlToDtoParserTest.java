@@ -442,33 +442,4 @@ class AqlToDtoParserTest {
                 + "order by c/context/start_time ASCENDING";
         testAql(aql4, aql4);
     }
-
-    @Test
-    void parseLikeOperator() {
-        String aql =
-                "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, "
-                        + "e/ehr_id/value as ehr_id "
-                        + "from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] "
-                        + "where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1 "
-                        + "and o0/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value like '?*\\\\*test?\\\\?*')";
-
-        AqlToDtoParser cut = new AqlToDtoParser();
-        AqlDto actual = cut.parse(aql);
-        ConditionDto contains = actual.getWhere();
-        ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
-
-        and.setSymbol(ConditionLogicalOperatorSymbol.AND);
-        and.setValues(new ArrayList<>());
-        and.getValues().add(contains);
-        actual.setWhere(and);
-
-        String actualAql = new AqlBinder().bind(actual).getLeft().buildAql();
-
-        assertThat(actualAql)
-                .isEqualTo(
-                        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, "
-                                + "e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
-                                + " where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1"
-                                + " and o0/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value like '_%*test_?%')");
-    }
 }
