@@ -442,4 +442,14 @@ class AqlToDtoParserTest {
                 + "order by c/context/start_time ASCENDING";
         testAql(aql4, aql4);
     }
+
+    @Test
+    void parseLike() {
+        String aql = "Select c0 as openEHR_EHR_COMPOSITION_self_monitoring_v0, c1 as openEHR_EHR_COMPOSITION_report_v1 "
+                + "from EHR e contains (COMPOSITION c0[openEHR-EHR-COMPOSITION.self_monitoring.v0] and COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1]) "
+                + "where (e/ehr_id/value matches {'b3a40b41-36e1-4802-8748-062d4000aaae'} "
+                + "and c1/archetype_details/template_id/value like '%test%')";
+
+        testAql(aql, aql);
+    }
 }
