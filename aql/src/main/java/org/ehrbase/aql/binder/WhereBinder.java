@@ -128,25 +128,26 @@ public class WhereBinder {
 
         Condition condition;
         final Class<?> valueClass;
+        final Object conditionValue;
         List<ParameterValue> parameterList = new ArrayList<>();
         if (value instanceof SimpleValue) {
             valueClass = Object.class;
-            value = ((SimpleValue) value).getValue();
+            conditionValue = ((SimpleValue) value).getValue();
         } else if (value instanceof ParameterValue) {
             valueClass = Parameter.class;
-            value = new Parameter<>(((ParameterValue) value).getName());
+            conditionValue = new Parameter<>(((ParameterValue) value).getName());
             parameterList.add(((ParameterValue) value));
         } else {
             throw new SdkException(String.format("Unexpected class %s", dtoClassName));
         }
-        Method method = null;
+        Method method;
         try {
             method = Condition.class.getMethod(symbolJavaName, SelectAqlField.class, valueClass);
         } catch (NoSuchMethodException e) {
             throw new SdkException(e.getMessage(), e);
         }
         try {
-            condition = (Condition) method.invoke(null, selectBinder.bind(statement, containmentMap), value);
+            condition = (Condition) method.invoke(null, selectBinder.bind(statement, containmentMap), conditionValue);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new SdkException(e.getMessage(), e);
         }
