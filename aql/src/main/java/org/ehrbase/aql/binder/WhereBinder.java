@@ -24,18 +24,9 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
-import org.ehrbase.aql.dto.condition.LikeOperatorDto;
-import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.SimpleValue;
+import org.ehrbase.aql.dto.condition.*;
+import org.ehrbase.aql.dto.select.SelectStatementDto;
 import org.ehrbase.client.aql.condition.Condition;
-import org.ehrbase.client.aql.condition.Like;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
@@ -109,61 +100,53 @@ public class WhereBinder {
     public Pair<Condition, List<ParameterValue>> handleComparisonOperator(
             ConditionComparisonOperatorDto dto, Map<Integer, Containment> containmentMap) {
 
-        Condition condition;
-        final Class<?> valueClass;
-        final Object value;
-        List<ParameterValue> parameterList = new ArrayList<>();
-        if (dto.getValue() instanceof SimpleValue) {
-            valueClass = Object.class;
-            value = ((SimpleValue) dto.getValue()).getValue();
-        } else if (dto.getValue() instanceof ParameterValue) {
-            valueClass = Parameter.class;
-            value = new Parameter<>(((ParameterValue) dto.getValue()).getName());
-            parameterList.add(((ParameterValue) dto.getValue()));
-        } else {
-            throw new SdkException(
-                    String.format("Unexpected class %s", dto.getClass().getSimpleName()));
-        }
-        Method method = null;
-        try {
-            method = Condition.class.getMethod(dto.getSymbol().getJavaName(), SelectAqlField.class, valueClass);
-        } catch (NoSuchMethodException e) {
-            throw new SdkException(e.getMessage(), e);
-        }
-        try {
-            condition = (Condition) method.invoke(null, selectBinder.bind(dto.getStatement(), containmentMap), value);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SdkException(e.getMessage(), e);
-        }
-        return new ImmutablePair<>(condition, parameterList);
+        return handleComparisonOperator(
+                dto.getValue(),
+                dto.getSymbol().getJavaName(),
+                dto.getStatement(),
+                dto.getClass().getSimpleName(),
+                containmentMap);
     }
 
     public Pair<Condition, List<ParameterValue>> handleLikeOperator(
             LikeOperatorDto dto, Map<Integer, Containment> containmentMap) {
 
+        return handleComparisonOperator(
+                dto.getValue(),
+                dto.getSymbol().getJavaName(),
+                dto.getStatement(),
+                dto.getClass().getSimpleName(),
+                containmentMap);
+    }
+
+    public Pair<Condition, List<ParameterValue>> handleComparisonOperator(
+            Object value,
+            String symbolJavaName,
+            SelectStatementDto statement,
+            String dtoClassName,
+            Map<Integer, Containment> containmentMap) {
+
         Condition condition;
         final Class<?> valueClass;
-        final Object value;
         List<ParameterValue> parameterList = new ArrayList<>();
-        if (dto.getValue() instanceof SimpleValue) {
+        if (value instanceof SimpleValue) {
             valueClass = Object.class;
-            value = ((SimpleValue) dto.getValue()).getValue();
-        } else if (dto.getValue() instanceof ParameterValue) {
+            value = ((SimpleValue) value).getValue();
+        } else if (value instanceof ParameterValue) {
             valueClass = Parameter.class;
-            value = new Parameter<>(((ParameterValue) dto.getValue()).getName());
-            parameterList.add(((ParameterValue) dto.getValue()));
+            value = new Parameter<>(((ParameterValue) value).getName());
+            parameterList.add(((ParameterValue) value));
         } else {
-            throw new SdkException(
-                    String.format("Unexpected class %s", dto.getClass().getSimpleName()));
+            throw new SdkException(String.format("Unexpected class %s", dtoClassName));
         }
         Method method = null;
         try {
-            method = Condition.class.getMethod(dto.getSymbol().getJavaName(), SelectAqlField.class, valueClass);
+            method = Condition.class.getMethod(symbolJavaName, SelectAqlField.class, valueClass);
         } catch (NoSuchMethodException e) {
             throw new SdkException(e.getMessage(), e);
         }
         try {
-            condition = (Condition) method.invoke(null, selectBinder.bind(dto.getStatement(), containmentMap), value);
+            condition = (Condition) method.invoke(null, selectBinder.bind(statement, containmentMap), value);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new SdkException(e.getMessage(), e);
         }
