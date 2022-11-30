@@ -20,8 +20,7 @@ package org.ehrbase.aql.dto.condition;
 import java.util.NoSuchElementException;
 
 public enum LikeOperatorSymbol {
-    LIKE("like", "like"),
-    ILIKE("ilike", "ilike");
+    LIKE("like", "like");
 
     private final String javaName;
     private final String symbole;

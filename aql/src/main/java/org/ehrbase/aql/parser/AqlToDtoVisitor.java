@@ -40,19 +40,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.EhrDto;
 import org.ehrbase.aql.dto.LogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
-import org.ehrbase.aql.dto.condition.LikeOperatorDto;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.SimpleValue;
-import org.ehrbase.aql.dto.condition.Value;
+import org.ehrbase.aql.dto.condition.*;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
@@ -561,8 +549,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             LikeOperatorDto likeOperatorDto = new LikeOperatorDto();
             likeOperatorDto.setStatement(
                     visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
-            likeOperatorDto.setStatement(
-                    visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
+            likeOperatorDto.setSymbol(LikeOperatorSymbol.LIKE);
             String unwrap =
                     StringUtils.unwrap(StringUtils.unwrap(ctx.getChild(2).getText(), "'"), "\"");
             likeOperatorDto.setValue(new SimpleValue(unwrap));
