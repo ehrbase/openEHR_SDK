@@ -561,6 +561,8 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             LikeOperatorDto likeOperatorDto = new LikeOperatorDto();
             likeOperatorDto.setStatement(
                     visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
+            likeOperatorDto.setStatement(
+                    visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
             String unwrap =
                     StringUtils.unwrap(StringUtils.unwrap(ctx.getChild(2).getText(), "'"), "\"");
             likeOperatorDto.setValue(new SimpleValue(unwrap));

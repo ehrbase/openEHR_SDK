@@ -22,11 +22,11 @@ import org.ehrbase.client.aql.parameter.Parameter;
 
 public class Like<T> extends ComparisonOperator<T> {
 
-    public Like(SelectAqlField<T> field, T value) {
+    protected Like(SelectAqlField<T> field, T value) {
         super(field, value);
     }
 
-    public Like(SelectAqlField<T> field, Parameter<T> parameter) {
+    protected Like(SelectAqlField<T> field, Parameter<T> parameter) {
         super(field, parameter);
     }
 

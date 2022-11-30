@@ -142,20 +142,31 @@ public class WhereBinder {
             LikeOperatorDto dto, Map<Integer, Containment> containmentMap) {
 
         Condition condition;
+        final Class<?> valueClass;
+        final Object value;
         List<ParameterValue> parameterList = new ArrayList<>();
         if (dto.getValue() instanceof SimpleValue) {
-            condition = new Like<>(
-                    selectBinder.bind(dto.getStatement(), containmentMap), ((SimpleValue) dto.getValue()).getValue());
+            valueClass = Object.class;
+            value = ((SimpleValue) dto.getValue()).getValue();
         } else if (dto.getValue() instanceof ParameterValue) {
+            valueClass = Parameter.class;
+            value = new Parameter<>(((ParameterValue) dto.getValue()).getName());
             parameterList.add(((ParameterValue) dto.getValue()));
-            condition = new Like<>(
-                    selectBinder.bind(dto.getStatement(), containmentMap),
-                    new Parameter<>(((ParameterValue) dto.getValue()).getName()));
         } else {
             throw new SdkException(
                     String.format("Unexpected class %s", dto.getClass().getSimpleName()));
         }
-
+        Method method = null;
+        try {
+            method = Condition.class.getMethod(dto.getSymbol().getJavaName(), SelectAqlField.class, valueClass);
+        } catch (NoSuchMethodException e) {
+            throw new SdkException(e.getMessage(), e);
+        }
+        try {
+            condition = (Condition) method.invoke(null, selectBinder.bind(dto.getStatement(), containmentMap), value);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new SdkException(e.getMessage(), e);
+        }
         return new ImmutablePair<>(condition, parameterList);
     }
 

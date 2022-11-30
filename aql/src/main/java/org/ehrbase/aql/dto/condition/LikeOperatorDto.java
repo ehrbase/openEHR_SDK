@@ -23,6 +23,16 @@ public class LikeOperatorDto implements ConditionDto {
 
     private SelectStatementDto statement;
 
+    public LikeOperatorSymbol getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(LikeOperatorSymbol symbol) {
+        this.symbol = symbol;
+    }
+
+    private LikeOperatorSymbol symbol;
+
     private Value value;
 
     public SelectStatementDto getStatement() {
@@ -43,12 +53,15 @@ public class LikeOperatorDto implements ConditionDto {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof ConditionComparisonOperatorDto)) return false;
-        final ConditionComparisonOperatorDto other = (ConditionComparisonOperatorDto) o;
+        if (!(o instanceof LikeOperatorDto)) return false;
+        final LikeOperatorDto other = (LikeOperatorDto) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$statement = this.getStatement();
         final Object other$statement = other.getStatement();
         if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
+        final Object this$symbol = this.getSymbol();
+        final Object other$symbol = other.getSymbol();
+        if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
         final Object this$value = this.getValue();
         final Object other$value = other.getValue();
         if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
@@ -69,8 +82,13 @@ public class LikeOperatorDto implements ConditionDto {
         return result;
     }
 
-    @Override
     public String toString() {
-        return "LikeOperatorDto{" + "statement=" + statement + ", value=" + value + '}';
+        return "LikeOperatorDto(statement="
+                + this.getStatement()
+                + ", symbol="
+                + this.getSymbol()
+                + ", value="
+                + this.getValue()
+                + ")";
     }
 }
