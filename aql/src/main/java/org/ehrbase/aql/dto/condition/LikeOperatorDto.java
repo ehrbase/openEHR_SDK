@@ -77,6 +77,8 @@ public class LikeOperatorDto implements ConditionDto {
         int result = 1;
         final Object $statement = this.getStatement();
         result = result * PRIME + ($statement == null ? 43 : $statement.hashCode());
+        final Object $symbol = this.getSymbol();
+        result = result * PRIME + ($symbol == null ? 43 : $symbol.hashCode());
         final Object $value = this.getValue();
         result = result * PRIME + ($value == null ? 43 : $value.hashCode());
         return result;
