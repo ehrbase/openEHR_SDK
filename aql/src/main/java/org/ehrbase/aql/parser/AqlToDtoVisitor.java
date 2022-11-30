@@ -46,6 +46,7 @@ import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
+import org.ehrbase.aql.dto.condition.LikeOperatorDto;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
 import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
@@ -557,42 +558,14 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         } else if (ctx.EXISTS() != null) {
             conditionDto = new ExistsConditionOperatorDto(visitIdentifiedPath(ctx.identifiedPath()));
         } else if (ctx.LIKE() != null) {
-            ConditionComparisonOperatorDto wildcardOperatorDto = new ConditionComparisonOperatorDto();
-            wildcardOperatorDto.setSymbol(ConditionComparisonOperatorSymbol.LIKE);
-            wildcardOperatorDto.setStatement(
+            LikeOperatorDto likeOperatorDto = new LikeOperatorDto();
+            likeOperatorDto.setStatement(
                     visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
-            String value = StringUtils.unwrap(StringUtils.unwrap(ctx.getChild(2).getText(), "'"), "\"");
+            String unwrap =
+                    StringUtils.unwrap(StringUtils.unwrap(ctx.getChild(2).getText(), "'"), "\"");
+            likeOperatorDto.setValue(new SimpleValue(unwrap));
 
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < value.length(); i++) {
-                char current = value.charAt(i);
-                if (i > 0) {
-                    char prev = value.charAt(i - 1);
-
-                    if (current == '*' && prev != '\\') {
-                        builder.append('%');
-                    } else if (current == '?' && prev != '\\') {
-                        builder.append('_');
-                    } else {
-                        builder.append(current);
-                    }
-                } else {
-                    if (current == '*') {
-                        builder.append('%');
-                    } else if (current == '?') {
-                        builder.append('_');
-                    } else {
-                        builder.append(current);
-                    }
-                }
-            }
-
-            // replace all escaped backslashes with asterisks by asterisk since it is used as regular asterisk
-            // for native aql. For question mark the same behaviour
-            SimpleValue value1 =
-                    new SimpleValue(builder.toString().replace("\\\\*", "*").replace("\\\\?", "?"));
-            wildcardOperatorDto.setValue(value1);
-            conditionDto = wildcardOperatorDto;
+            conditionDto = likeOperatorDto;
         }
 
         if (ctx.NOT() != null

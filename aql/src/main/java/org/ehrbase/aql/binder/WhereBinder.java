@@ -29,11 +29,13 @@ import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
+import org.ehrbase.aql.dto.condition.LikeOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
 import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.client.aql.condition.Condition;
+import org.ehrbase.client.aql.condition.Like;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
@@ -76,6 +78,10 @@ public class WhereBinder {
         } else if (dto instanceof NotConditionOperatorDto) {
             condition = Condition.not(bind(((NotConditionOperatorDto) dto).getConditionDto(), containmentMap)
                     .getLeft());
+        } else if (dto instanceof LikeOperatorDto) {
+            Pair<Condition, List<ParameterValue>> pair = handleLikeOperator((LikeOperatorDto) dto, containmentMap);
+            condition = pair.getLeft();
+            parameterList.addAll(pair.getRight());
         } else {
             throw new SdkException(
                     String.format("Unexpected class: %s", dto.getClass().getSimpleName()));
@@ -129,6 +135,27 @@ public class WhereBinder {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new SdkException(e.getMessage(), e);
         }
+        return new ImmutablePair<>(condition, parameterList);
+    }
+
+    public Pair<Condition, List<ParameterValue>> handleLikeOperator(
+            LikeOperatorDto dto, Map<Integer, Containment> containmentMap) {
+
+        Condition condition;
+        List<ParameterValue> parameterList = new ArrayList<>();
+        if (dto.getValue() instanceof SimpleValue) {
+            condition = new Like<>(
+                    selectBinder.bind(dto.getStatement(), containmentMap), ((SimpleValue) dto.getValue()).getValue());
+        } else if (dto.getValue() instanceof ParameterValue) {
+            parameterList.add(((ParameterValue) dto.getValue()));
+            condition = new Like<>(
+                    selectBinder.bind(dto.getStatement(), containmentMap),
+                    new Parameter<>(((ParameterValue) dto.getValue()).getName()));
+        } else {
+            throw new SdkException(
+                    String.format("Unexpected class %s", dto.getClass().getSimpleName()));
+        }
+
         return new ImmutablePair<>(condition, parameterList);
     }
 

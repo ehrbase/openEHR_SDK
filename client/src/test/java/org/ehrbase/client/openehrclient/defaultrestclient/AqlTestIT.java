@@ -179,22 +179,26 @@ public class AqlTestIT {
 
         EhrbaseBloodPressureSimpleDeV0Composition pressureSimple1 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         pressureSimple1.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
+        pressureSimple1.getBloodPressureTrainingSample().get(0).setCommentValue("test");
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(pressureSimple1);
 
         EhrbaseBloodPressureSimpleDeV0Composition pressureSimple2 = TestData.buildEhrbaseBloodPressureSimpleDeV0();
         pressureSimple2.getBloodPressureTrainingSample().get(0).setSystolicMagnitude(1.1);
+        pressureSimple2.getBloodPressureTrainingSample().get(0).setCommentValue("tes");
         openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(pressureSimple2);
 
         Query<Record2<UUID, ItemList>> query = Query.buildNativeQuery(
                 "select e/ehr_id/value,o/data[at0001]/events[at0002]/data[at0003]  "
                         + "from EHR e[ehr_id/value = $ehr_id]  "
                         + "contains COMPOSITION a [openEHR-EHR-COMPOSITION.sample_encounter.v1] contains Observation o[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
-                        + "where o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1",
+                        + "where o/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude = 1.1"
+                        + " AND o/data[at0001]/events[at0002]/data[at0003]/items[at0033]/value/value LIKE $description",
                 UUID.class,
                 ItemList.class);
 
-        List<Record2<UUID, ItemList>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+        List<Record2<UUID, ItemList>> result = openEhrClient
+                .aqlEndpoint()
+                .execute(query, new ParameterValue("ehr_id", ehr), new ParameterValue("description", "tes%"));
         assertThat(result).isNotNull().hasSize(2);
     }
 

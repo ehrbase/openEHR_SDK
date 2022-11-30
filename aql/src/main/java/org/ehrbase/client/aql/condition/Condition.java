@@ -141,9 +141,5 @@ public interface Condition {
         return new Like<T>(field, parameter);
     }
 
-    static <T> Condition like(SelectAqlField<T> field, SelectAqlField<T> compereField) {
-        return new Like<T>(field, compereField);
-    }
-
     String buildAql(Containment ehrContainment);
 }
