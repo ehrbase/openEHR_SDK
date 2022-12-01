@@ -462,7 +462,7 @@ jobs:
 
 
   check-codestyle:
-    executor: docker-python3-java11
+    executor: docker-python3
     steps:
       - checkout
       - install-maven
@@ -471,7 +471,7 @@ jobs:
 
   build-and-test-openEHR_SDK:
     description: Build and run all openEHR_SDK Java tests (unit and integration tests w/ EHRbase + DB running).
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     steps:
       - checkout
       - cache-out-sdk-m2-dependencies
@@ -493,7 +493,7 @@ jobs:
     description: |
       Build and run all openEHR_SDK Java tests (unit and integration tests)
       w/ EHRbase being checked out from a sync/*-branch or feature/sync/*-branch
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     steps:
       - checkout
       - cache-out-sdk-m2-dependencies
@@ -513,7 +513,7 @@ jobs:
 
 
   COMPOSITION-tests-1:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -528,7 +528,7 @@ jobs:
           test-suite-name: "COMPOSITION_1"
 
   COMPOSITION-tests-2:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -542,7 +542,7 @@ jobs:
           test-suite-name: "COMPOSITION_2"
 
   COMPOSITION-tests-3:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -556,7 +556,7 @@ jobs:
           test-suite-name: "COMPOSITION_3"
 
   COMPOSITION-tests-4:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -570,7 +570,7 @@ jobs:
           test-suite-name: "COMPOSITION_4"
 
   COMPOSITION-tests-5:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -584,7 +584,7 @@ jobs:
           test-suite-name: "COMPOSITION_5"
 
   CONTRIBUTION-tests:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -598,7 +598,7 @@ jobs:
           test-suite-name: "CONTRIBUTION"
 
   DIRECTORY-tests:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -612,7 +612,7 @@ jobs:
           test-suite-name: "DIRECTORY"
 
   EHRSERVICE-tests:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -626,7 +626,7 @@ jobs:
           test-suite-name: "EHR_SERVICE"
 
   EHRSTATUS-tests:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -640,7 +640,7 @@ jobs:
           test-suite-name: "EHR_STATUS"
 
   KNOWLEDGE-tests:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -656,7 +656,7 @@ jobs:
           cache-enabled: false
 
   QUERYSERVICE-tests-1:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -731,7 +731,7 @@ jobs:
 
 
   ROBOT-TEST-REPORT:
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -744,7 +744,7 @@ jobs:
 
 
   publish-snapshot:
-    executor: docker-python3-java11
+    executor: docker-python3
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only!)
     description: |
       Publishes a SNAPSHOT release version via jitpack.io
@@ -759,7 +759,7 @@ jobs:
 
 
   publish-release:
-    executor: docker-python3-java11
+    executor: docker-python3
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only!)
     description: |
       Publishes a (stable) release version via jitpack.io
@@ -772,7 +772,7 @@ jobs:
 
 
   update-ehrbase-sdk-dependency:
-    executor: docker-python3-java11
+    executor: docker-python3
     # executor: machine-ubuntu-2004                          # (use for pipeline debugging only!)
     steps:
       #-----------------------------------#---------------(use for pipeline debugging only)
@@ -789,7 +789,7 @@ jobs:
       Runs code analysis w/ SonarCloud via CircleCI Orb provided by sonarsource team.
       Orb documentation: https://circleci.com/orbs/registry/orb/sonarsource/sonarcloud
       Scanner configuration happens in file sonar-project.properties in project's root folder.
-    executor: docker-py3-java11-postgres
+    executor: docker-py3-postgres
     steps:
       - checkout
       - cache-out-sdk-m2-dependencies
@@ -1184,7 +1184,7 @@ commands:
             ls -la
             cd ehrbase
             git checkout << parameters.branch >>
-  
+
   git-clone-robot-integration-tests-repo:
     steps:
       - run:
@@ -1550,15 +1550,15 @@ orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.2
 
 executors:
-  docker-python3-java11:
+  docker-python3:
     working_directory: ~/projects
     docker:
-      - image: circleci/python:3.8.5-node-browsers
+      - image: cimg/python:3.8.14-node
 
-  docker-py3-java11-postgres:
+  docker-py3-postgres:
     working_directory: ~/projects
     docker:
-      - image: circleci/python:3.8.5-node-browsers
+      - image: cimg/python:3.8.14-node
       - image: ehrbase/ehrbase-postgres:13.4
         environment:
           POSTGRES_USER: postgres
