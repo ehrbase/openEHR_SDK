@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -47,7 +48,6 @@ import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.LikeOperatorDto;
-import org.ehrbase.aql.dto.condition.LikeOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
 import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
@@ -558,14 +558,13 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             conditionDto = matchesOperatorDto;
         } else if (ctx.EXISTS() != null) {
             conditionDto = new ExistsConditionOperatorDto(visitIdentifiedPath(ctx.identifiedPath()));
+
         } else if (ctx.LIKE() != null) {
+
             LikeOperatorDto likeOperatorDto = new LikeOperatorDto();
             likeOperatorDto.setStatement(
                     visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
-            likeOperatorDto.setSymbol(LikeOperatorSymbol.LIKE);
-            String unwrap =
-                    StringUtils.unwrap(StringUtils.unwrap(ctx.getChild(2).getText(), "'"), "\"");
-            likeOperatorDto.setValue(new SimpleValue(unwrap));
+            likeOperatorDto.setValue(visitLikeOperand(ctx.likeOperand()));
 
             conditionDto = likeOperatorDto;
         }
@@ -586,21 +585,42 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         if (isBooleanOperand(ctx)) {
             value = new SimpleValue(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null) {
-            String unwrap = StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
+            String unwrap = unwrapText(ctx);
             value = new SimpleValue(DateTimeParsers.parseTimeValue(unwrap));
         } else if (ctx.FLOAT() != null) {
             value = new SimpleValue(Double.valueOf(ctx.getText()));
         } else if (ctx.INTEGER() != null) {
             value = new SimpleValue(Integer.valueOf(ctx.getText()));
         } else if (ctx.STRING() != null) {
-            String unwrap = StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
-            value = new SimpleValue(unwrap);
+            value = new SimpleValue(unwrapText(ctx));
         } else if (ctx.PARAMETER() != null) {
-            value = new ParameterValue(StringUtils.removeStart(ctx.getText(), "$"), "?");
+            value = parameter(ctx);
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
         return value;
+    }
+
+    @Override
+    public Value visitLikeOperand(AqlParser.LikeOperandContext ctx) {
+        final Value value;
+
+        if (ctx.STRING() != null) {
+            value = new SimpleValue(unwrapText(ctx));
+        } else if (ctx.PARAMETER() != null) {
+            value = parameter(ctx);
+        } else {
+            throw new AqlParseException("Can not handle value " + ctx.getText());
+        }
+        return value;
+    }
+
+    private static String unwrapText(RuleContext ctx) {
+        return StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
+    }
+
+    private static ParameterValue parameter(RuleContext ctx) {
+        return new ParameterValue(StringUtils.removeStart(ctx.getText(), "$"), "?");
     }
 
     @Override

@@ -21,17 +21,9 @@ import org.ehrbase.aql.dto.select.SelectStatementDto;
 
 public class LikeOperatorDto implements ConditionDto {
 
+    public static final String SYMBOL = "like";
+
     private SelectStatementDto statement;
-
-    public LikeOperatorSymbol getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(LikeOperatorSymbol symbol) {
-        this.symbol = symbol;
-    }
-
-    private LikeOperatorSymbol symbol;
 
     private Value value;
 
@@ -59,9 +51,6 @@ public class LikeOperatorDto implements ConditionDto {
         final Object this$statement = this.getStatement();
         final Object other$statement = other.getStatement();
         if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
-        final Object this$symbol = this.getSymbol();
-        final Object other$symbol = other.getSymbol();
-        if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
         final Object this$value = this.getValue();
         final Object other$value = other.getValue();
         if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
@@ -77,20 +66,12 @@ public class LikeOperatorDto implements ConditionDto {
         int result = 1;
         final Object $statement = this.getStatement();
         result = result * PRIME + ($statement == null ? 43 : $statement.hashCode());
-        final Object $symbol = this.getSymbol();
-        result = result * PRIME + ($symbol == null ? 43 : $symbol.hashCode());
         final Object $value = this.getValue();
         result = result * PRIME + ($value == null ? 43 : $value.hashCode());
         return result;
     }
 
     public String toString() {
-        return "LikeOperatorDto(statement="
-                + this.getStatement()
-                + ", symbol="
-                + this.getSymbol()
-                + ", value="
-                + this.getValue()
-                + ")";
+        return "LikeOperatorDto(statement=" + this.getStatement() + ", value=" + this.getValue() + ")";
     }
 }
