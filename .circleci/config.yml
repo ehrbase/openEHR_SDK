@@ -465,7 +465,7 @@ jobs:
     executor: docker-python3
     steps:
       - checkout
-      - install-maven
+      - install-java-maven
       - maven-check-codestyle
 
 
@@ -829,7 +829,7 @@ commands:
 
   update-and-publish-snapshot-release-version:
     steps:
-      - install-maven
+      - install-java-maven
       - install-xml-cli-tool
       - run:
           name: Update Snapshot Release Version
@@ -841,7 +841,7 @@ commands:
                 *"[major]"*)
                 
                     echo "bump major release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
@@ -857,7 +857,7 @@ commands:
                 *"[minor]"*)
 
                     echo "bump minor release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
                     SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
@@ -873,8 +873,8 @@ commands:
                 *"[patch]"*)
 
                     echo "bump patch release version"
-                    mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-                    SDK_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+                    SDK_VERSION=$(mvn11 -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
                     git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b patch-snapshot-update
@@ -895,7 +895,7 @@ commands:
 
   publish-release-version:
     steps:
-      - install-maven
+      - install-java-maven
       - install-xml-cli-tool
       - run:
           name: Create and push release version tag
@@ -975,18 +975,18 @@ commands:
       - run:
           name: Run spotless plugin check goal
           command: |
-            mvn com.diffplug.spotless:spotless-maven-plugin:check
+            mvn11 com.diffplug.spotless:spotless-maven-plugin:check
 
 
   build-sdk:
     steps:
-      - install-maven
+      - install-java-maven
       - install-xml-cli-tool
       - run:
           name: Maven build, install openEHR_SDK (skip Tests!)
           command: |
-            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
-            mvn install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
+            mvn11 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
+            mvn11 install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -997,13 +997,13 @@ commands:
 
   build-and-test-sdk:
     steps:
-      - install-maven
+      - install-java-maven
       - install-xml-cli-tool
       - run:
           name: Maven build, test (ONLY unit tests), install openEHR_SDK
           command: |
-            mvn build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
-            mvn install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
+            mvn11 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
+            mvn11 install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -1016,7 +1016,7 @@ commands:
     description: |
       WARNING: this command requires EHRbase to be up and running
     steps:
-      - install-maven
+      - install-java-maven
       - run:
           name: Maven run only Java integration tests of openEHR_SDK
           description: |
@@ -1024,7 +1024,7 @@ commands:
             This way only the Java integration tests are executed.
           command: |
             jps
-            mvn test -Pslow -Dmaven.javadoc.skip=true
+            mvn11 test -Pslow -Dmaven.javadoc.skip=true
 
 
   build-and-run-ehrbase-then-run-all-sdk-java-tests:
@@ -1045,13 +1045,13 @@ commands:
         type: boolean
         default: true
     steps:
-      - install-maven
+      - install-java-maven
       - install-xml-cli-tool
       - run:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
-            mvn package -Dmaven.javadoc.skip=<< parameters.skip-javadoc >> \
+            mvn17 package -Dmaven.javadoc.skip=<< parameters.skip-javadoc >> \
                         -Djacoco.skip=<< parameters.skip-jacoco >> \
                         -Dmaven.test.skip=<< parameters.skip-tests >>
       - run:
@@ -1061,11 +1061,11 @@ commands:
             cd ~/projects/ehrbase
             EHRbase_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
             echo ${EHRbase_VERSION}
-            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log &
+            java17 -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log &
             grep -m 1 "Started EhrBase in" <(tail -f log)
             cd ..
             jps
-            mvn verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >>
+            mvn11 verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >>
 
 
   cache-out-sdk-m2-dependencies:
@@ -1198,12 +1198,12 @@ commands:
 
   build-and-test-ehrbase:
     steps:
-      - install-maven
+      - install-java-maven
       - run:
           name: Maven build EHRbase
           command: |
             cd ~/projects/ehrbase
-            mvn package dependency:go-offline -Dmaven.javadoc.skip=true
+            mvn17 package dependency:go-offline -Dmaven.javadoc.skip=true
 
 
   cache-in-ehrbase-m2-dependencies:
@@ -1275,15 +1275,86 @@ commands:
 # /// HELPER COMMANDS                                                    ///
 # ///////////////////////////////////////////////////////////////////////////
 
-  install-maven:
-    description: Install Maven tool only if it's not already installed
+  install-java-maven:
+    description: Install Java 11, 17 and maven (if not already installed)
     steps:
+      - run:
+          name: Install Java 11
+          command: |
+            if [ ! -d "/usr/lib/jvm/jdk-11.0.17+8" ]; then
+              wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.17%2B8/OpenJDK11U-jdk_x64_linux_hotspot_11.0.17_8.tar.gz -O /tmp/openjdk-11.tar.gz
+              sudo mkdir -p /usr/lib/jvm
+              sudo tar xfvz /tmp/openjdk-11.tar.gz --directory /usr/lib/jvm
+              rm -f /tmp/openjdk-11.tar.gz
+              sudo ln -s /usr/lib/jvm/jdk-11.0.17+8 /opt/jdk11
+            fi
+      - run:
+          name: Install Java 17
+          command: |
+            if [ ! -d "/usr/lib/jvm/jdk-17.0.5+8" ]; then
+              wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.5%2B8/OpenJDK17U-jdk_x64_linux_hotspot_17.0.5_8.tar.gz -O /tmp/openjdk-17.tar.gz
+              sudo mkdir -p /usr/lib/jvm
+              sudo tar xfvz /tmp/openjdk-17.tar.gz --directory /usr/lib/jvm
+              rm -f /tmp/openjdk-17.tar.gz
+              sudo ln -s /usr/lib/jvm/jdk-17.0.5+8 /opt/jdk17
+              sudo sh -c 'for bin in /usr/lib/jvm/jdk-17.0.5+8/bin/*; do update-alternatives --install /usr/bin/$(basename $bin) $(basename $bin) $bin 100; done'
+              sudo sh -c 'for bin in /usr/lib/jvm/jdk-17.0.5+8/bin/*; do update-alternatives --set $(basename $bin) $bin; done'
+            fi
       - run:
           name: Install Maven tool
           command: |
             sudo killall -9 apt-get || true
-            sudo apt -y update
-            [ -f /usr/bin/mvn ] && echo "Maven is already installed." || sudo apt install maven -y
+            if [ ! -d "/usr/lib/maven/apache-maven-3.8.6" ]; then
+              wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz -O /tmp/maven.tar.gz
+              sudo mkdir -p /usr/lib/maven
+              sudo tar xfvz /tmp/maven.tar.gz --directory /usr/lib/maven
+              rm -f /tmp/maven.tar.gz
+              sudo ln -s /usr/lib/maven/apache-maven-3.8.6 /opt/maven
+              sudo update-alternatives --install /usr/bin/mvn mvn /usr/lib/maven/apache-maven-3.8.6/bin/mvn 100
+              sudo update-alternatives --set mvn /usr/lib/maven/apache-maven-3.8.6/bin/mvn
+            fi
+      - run:
+          name: Setup aliases and variables
+          command: |
+            #We default to JDK17 so we do not run into problems with running ehrbase through mvn
+            #To make sure Byte code and jvm libs of SDK are compatible with JRE11 maven.compiler.release property is used in SDK main pom.xml
+            sudo sh -c "echo 'export JAVA_HOME=/opt/jdk17' >> /etc/bash.bashrc"
+            sudo sh -c "echo 'export MAVEN_HOME=/opt/maven' >> /etc/bash.bashrc"
+            sudo sh -c "echo 'export M2_HOME=\$MAVEN_HOME' >> /etc/bash.bashrc"
+            sudo sh -c "echo 'alias java11=\"/opt/jdk11/bin/java\"' >> /etc/bash.bashrc"
+            sudo sh -c "echo 'alias java17=\"/opt/jdk17/bin/java\"' >> /etc/bash.bashrc"
+            sudo sh -c "echo 'alias mvn11=\"JAVA_HOME=/opt/jdk11 /opt/maven/bin/mvn\"' >> /etc/bash.bashrc"
+            sudo sh -c "echo 'alias mvn17=\"JAVA_HOME=/opt/jdk17 /opt/maven/bin/mvn\"' >> /etc/bash.bashrc"
+            sudo chmod +x /etc/bash.bashrc
+            sudo chmod +x /etc/profile
+            source /etc/bash.bashrc
+            cat /etc/bash.bashrc
+            ls -lah /etc
+      - verify-java-maven-install
+
+  verify-java-maven-install:
+    description: Install Java 11, 17 and maven (if not already installed)
+    steps:
+      - run:
+          name: Show active and installed JDK/Maven versions
+          command: |
+            echo "PATH: $PATH"
+            echo "JAVA_HOME: $JAVA_HOME"
+            echo "MAVEN_HOME: $MAVEN_HOME"
+            echo "M2_HOME: $M2_HOME"
+            echo 'JDK 17 (java17):'
+            java17 --version
+            echo 'JDK 11 (java11):'
+            java11 --version
+            echo 'JDK default (java):'
+            java --version
+            echo 'Maven with JDK 17 (mvn17):'
+            mvn17 --version
+            echo 'Maven with JDK 11 (mvn11):'
+            mvn11 --version
+            echo 'Maven default (mvn):'
+            mvn --version
+            
 
 
   install-python3-requirements:
@@ -1314,7 +1385,7 @@ commands:
     steps:
       # - openjdk-install/openjdk:    # (use w/ machine executor only)
       #     version: 11               #
-      - install-maven
+      - install-java-maven
       - install-xml-cli-tool
       - run:
           name: Start EHRbase server
@@ -1324,7 +1395,7 @@ commands:
             cd ehrbase
             EHRbase_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
             echo ${EHRbase_VERSION}
-            java -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log
+            java17 -jar application/target/application-${EHRbase_VERSION}.jar --cache.enabled=true > log
 
 
   run-robot-tests:
@@ -1368,7 +1439,7 @@ commands:
     steps:
       # - cache-out-python-requirements
       - install-xml-cli-tool
-      - install-maven
+      - install-java-maven
       - install-python3-requirements
       - run:
           name: START EHRBASE SERVER AND EXECUTE ROBOT TESTS
@@ -1383,7 +1454,7 @@ commands:
             if [ "${SUT}" != "TEST" ]; then
               EHRbase_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
               echo ${EHRbase_VERSION}
-              java -jar "application/target/application-${EHRbase_VERSION}.jar" \
+              java17 -jar "application/target/application-${EHRbase_VERSION}.jar" \
                    --system.allow-template-overwrite=<< parameters.allow-template-overwrite >> \
                    --server.nodename=<< parameters.nodename >> \
                    --cache.enabled=<< parameters.cache-enabled >> > log & app_pid=$!
@@ -1554,6 +1625,9 @@ executors:
     working_directory: ~/projects
     docker:
       - image: cimg/python:3.8.14-node
+    environment:
+      BASH_ENV: /etc/bash.bashrc
+    shell: /bin/bash -l -i -eo pipefail
 
   docker-py3-postgres:
     working_directory: ~/projects
@@ -1563,6 +1637,9 @@ executors:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+    environment:
+      BASH_ENV: /etc/bash.bashrc
+    shell: /bin/bash -l -i -eo pipefail
 
   machine-ubuntu-2004:
     description: |
@@ -1594,6 +1671,8 @@ executors:
     environment:                           #             SPEED IMPROVEMENT !!!
       PIPELINE_ID: << pipeline.id >>
       BRANCH_NAME: << pipeline.git.branch >>
+      BASH_ENV: /etc/bash.bashrc
+    shell: /bin/bash -l -i -eo pipefail
     machine:
       image: ubuntu-2004:202008-01
 
