@@ -57,7 +57,6 @@ import org.ehrbase.response.openehr.QueryResponseData;
 import org.ehrbase.response.openehr.StoredQueryResponseData;
 import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
-import org.json.JSONObject;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
@@ -249,9 +248,6 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("q", query.buildAql());
-
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + STORE_AQL_QUERY_PATH
@@ -263,8 +259,8 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             defaultRestClient.internalPut(
                     uriBuilder.build(),
                     Collections.emptyMap(),
-                    requestBody.toString(),
-                    ContentType.APPLICATION_JSON,
+                    query.buildAql(),
+                    ContentType.TEXT_PLAIN,
                     ContentType.APPLICATION_JSON.getMimeType());
 
         } catch (URISyntaxException e) {
