@@ -58,6 +58,8 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <!-- since we now have JDK17 in our pipeline, we make sure the correct lib versions are used -->
+        <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
