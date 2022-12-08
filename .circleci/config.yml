@@ -235,28 +235,28 @@ workflows:
 
 
   # WORKFLOW 2/6) Publish Git tags for SNAPSHOT releases
-  deploy-snapshot-release:
-    when:
-      and:
-        - equal: [ develop, << pipeline.git.branch >> ]
-        # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
-    jobs:
-      - publish-snapshot:
-          filters:
-            tags:
-              ignore:
-                # - /^v.*/
-                - /SNAPSHOT.*/
+#  deploy-snapshot-release:
+#    when:
+#      and:
+#        - equal: [ develop, << pipeline.git.branch >> ]
+#        # - equal: [ SNAPSHOT, << pipeline.git.tag >> ]
+#    jobs:
+#      - publish-snapshot:
+#          filters:
+#            tags:
+#              ignore:
+#                # - /^v.*/
+#                - /SNAPSHOT.*/
 
 
 
   # WORKFLOW 3/6) Publish Git tag for (stable) releases
-  deploy-stable-release:
-    when:
-      and:
-        - equal: [ release, << pipeline.git.branch >> ]
-    jobs:
-      - publish-release
+#  deploy-stable-release:
+#    when:
+#      and:
+#        - equal: [ release, << pipeline.git.branch >> ]
+#    jobs:
+#      - publish-release
 
 
 
