@@ -61,7 +61,6 @@ import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -600,7 +599,6 @@ public class AqlTestIT {
     }
 
     @Test
-    @Ignore
     public void testStoreAndRetrieveAqlQuery() {
 
         Query<Record2<UUID, Double>> query = Query.buildNativeQuery(
@@ -648,7 +646,6 @@ public class AqlTestIT {
     }
 
     @Test
-    @Ignore
     public void testExecuteStoredAqlQuery() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
@@ -695,7 +692,6 @@ public class AqlTestIT {
     }
 
     @Test
-    @Ignore
     public void testExecuteStoredAqlQueryFullParams() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
