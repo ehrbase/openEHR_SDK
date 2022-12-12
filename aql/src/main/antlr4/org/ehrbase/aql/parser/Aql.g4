@@ -135,11 +135,10 @@ identifiedEquality
         : OPEN_PAR* NOT? identifiedOperand COMPARABLEOPERATOR identifiedOperand CLOSE_PAR*
         | OPEN_PAR* NOT? identifiedOperand MATCHES OPEN_CURLY matchesOperand CLOSE_CURLY CLOSE_PAR*
         | OPEN_PAR* NOT? identifiedOperand MATCHES REGEXPATTERN CLOSE_PAR*
-        | OPEN_PAR* NOT? identifiedOperand LIKE STRING CLOSE_PAR*
-        | OPEN_PAR* NOT? identifiedOperand ILIKE STRING CLOSE_PAR*
+        | OPEN_PAR* NOT? identifiedOperand LIKE likeOperand CLOSE_PAR*
         | OPEN_PAR* NOT? identifiedOperand SIMILARTO STRING CLOSE_PAR*
         | OPEN_PAR* identifiedOperand NOT? IN OPEN_PAR  (identifiedOperand|matchesOperand) CLOSE_PAR CLOSE_PAR*
-        | OPEN_PAR* NOT? identifiedOperand (COMPARABLEOPERATOR|LIKE|ILIKE) (ANY|ALL|SOME) OPEN_PAR (identifiedOperand|matchesOperand) CLOSE_PAR CLOSE_PAR*
+        | OPEN_PAR* NOT? identifiedOperand (COMPARABLEOPERATOR|LIKE) (ANY|ALL|SOME) OPEN_PAR (identifiedOperand|matchesOperand) CLOSE_PAR CLOSE_PAR*
         | OPEN_PAR* identifiedOperand NOT? BETWEEN identifiedOperand AND identifiedOperand CLOSE_PAR*
         | OPEN_PAR* identifiedOperand IS NOT? NULL CLOSE_PAR*
         | OPEN_PAR* identifiedOperand IS NOT? UNKNOWN CLOSE_PAR*
@@ -148,6 +147,8 @@ identifiedEquality
         | OPEN_PAR* NOT? OPEN_PAR identifiedExpr CLOSE_PAR CLOSE_PAR*
         | OPEN_PAR* NOT? EXISTS identifiedPath CLOSE_PAR*
         | OPEN_PAR* NOT? EXISTS identifiedExpr CLOSE_PAR*;
+
+likeOperand: STRING|PARAMETER;
 
 identifiedOperand
         : operand
@@ -289,7 +290,6 @@ IN : I N ;
 MATCHES : M A T C H E S ;
 TERMINOLOGY : T E R M I N O L O G Y ;
 LIKE : L I K E ;
-ILIKE : I L I K E ;
 SIMILARTO: S I M I L A R ' ' T O;
 SELECT : S E L E C T ;
 TOP : T O P ;

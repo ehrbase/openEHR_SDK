@@ -20,32 +20,25 @@ package org.ehrbase.aql.dto.condition;
 import java.util.NoSuchElementException;
 
 public enum ConditionComparisonOperatorSymbol {
-    EQ("equal", "="),
-    NEQ("notEqual", "!="),
-    GT_EQ("greaterOrEqual", ">="),
-    GT("greaterThan", ">"),
-    LT_EQ("lessOrEqual", "<="),
-    LT("lessThan", "<");
+    EQ("="),
+    NEQ("!="),
+    GT_EQ(">="),
+    GT(">"),
+    LT_EQ("<="),
+    LT("<");
+    private final String symbol;
 
-    private final String javaName;
-    private final String symbole;
-
-    ConditionComparisonOperatorSymbol(String javaName, String symbole) {
-        this.javaName = javaName;
-        this.symbole = symbole;
+    ConditionComparisonOperatorSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
-    public String getJavaName() {
-        return javaName;
-    }
-
-    public String getSymbole() {
-        return symbole;
+    public String getSymbol() {
+        return symbol;
     }
 
     public static ConditionComparisonOperatorSymbol fromSymbol(CharSequence symbol) {
         for (ConditionComparisonOperatorSymbol s : values()) {
-            if (s.getSymbole().contentEquals(symbol)) {
+            if (s.getSymbol().contentEquals(symbol)) {
                 return s;
             }
         }
