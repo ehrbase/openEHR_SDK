@@ -33,15 +33,18 @@ import org.ehrbase.response.openehr.ContributionCreateDto;
 
 public class ContributionBuilder {
 
+    private static final String CONTRIBUTION_MUST_HAVE_AT_LEAST_ONE_VERSION_OBJECT =
+            "Invalid Contribution, must have at least one Version object.";
+    private static final String MISSING_ORIGINAL_VERSION = "Missing mandatory OriginalVersion Locatable.";
+    private static final String MISSING_MANDATORY_CONTRIBUTOR_AUDIT_DETAILS =
+            "Missing mandatory contributor AuditDetails.";
+    private static final String MISSING_MANDATORY_PRECEDING_VERSION_UID = "Missing mandatory precedingVersionUid.";
+    private static final String INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER =
+            "Input invalid. Composition can't be modified without pointer to precedingVersionUid in Version container.";
+
     public static ContributionBuilder builder(AuditDetails audit) {
         return new ContributionBuilder(audit);
     }
-
-    public static final String MANDATORY_CONTRIBUTOR_AUDIT_DETAILS = "Missing mandatory contributor AuditDetails.";
-
-    public static final String MISSING_MANDATORY_PRECEDING_VERSION_UID = "Missing mandatory precedingVersionUid.";
-    public static final String INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER =
-            "Input invalid. Composition can't be modified without pointer to precedingVersionUid in Version container.";
 
     private final ContributionCreateDto contributionCreateDto = new ContributionCreateDto();
 
@@ -117,7 +120,7 @@ public class ContributionBuilder {
             OriginalVersion<Locatable> originalVersion) {
 
         if (originalVersion == null) {
-            throw new IllegalArgumentException("Missing mandatory OriginalVersion Locatable.");
+            throw new IllegalArgumentException(MISSING_ORIGINAL_VERSION);
         }
 
         AuditDetails compositionAudit = getCompositionAudit();
@@ -147,7 +150,7 @@ public class ContributionBuilder {
         AuditDetails audit = this.contributionCreateDto.getAudit();
 
         if (audit == null) {
-            throw new IllegalArgumentException(MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
+            throw new IllegalArgumentException(MISSING_MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
         }
 
         return (AuditDetails) audit.clone();
@@ -220,7 +223,7 @@ public class ContributionBuilder {
     public ContributionCreateDto build() {
         if (contributionCreateDto.getVersions() == null
                 || contributionCreateDto.getVersions().isEmpty()) {
-            throw new IllegalArgumentException("Invalid Contribution, must have at least one Version object.");
+            throw new IllegalArgumentException(CONTRIBUTION_MUST_HAVE_AT_LEAST_ONE_VERSION_OBJECT);
         }
 
         return this.contributionCreateDto;
