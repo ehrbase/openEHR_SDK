@@ -17,11 +17,10 @@
  */
 package org.ehrbase.aql.binder;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
@@ -29,10 +28,13 @@ import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
+import org.ehrbase.aql.dto.condition.LikeOperatorDto;
 import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
 import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
+import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.client.aql.condition.ComparisonOperator;
 import org.ehrbase.client.aql.condition.Condition;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
@@ -46,22 +48,22 @@ public class WhereBinder {
         Condition condition;
         List<ParameterValue> parameterList = new ArrayList<>();
         if (dto instanceof ConditionComparisonOperatorDto) {
-
             Pair<Condition, List<ParameterValue>> pair =
                     handleComparisonOperator((ConditionComparisonOperatorDto) dto, containmentMap);
             condition = pair.getLeft();
             parameterList.addAll(pair.getRight());
-        } else if (dto instanceof ConditionLogicalOperatorDto) {
 
+        } else if (dto instanceof ConditionLogicalOperatorDto) {
             Pair<Condition, List<ParameterValue>> pair =
                     handleConditionLogicalOperator((ConditionLogicalOperatorDto) dto, containmentMap);
             condition = pair.getLeft();
             parameterList.addAll(pair.getRight());
+
         } else if (dto instanceof MatchesOperatorDto) {
             Object[] value = ((MatchesOperatorDto) dto)
                     .getValues().stream()
                             .filter(f -> f.getClass().equals(SimpleValue.class))
-                            .map(v -> (SimpleValue) v)
+                            .map(SimpleValue.class::cast)
                             .map(SimpleValue::getValue)
                             .toArray();
             if (value.length != ((MatchesOperatorDto) dto).getValues().size()) {
@@ -73,12 +75,19 @@ public class WhereBinder {
         } else if (dto instanceof ExistsConditionOperatorDto) {
             condition =
                     Condition.exists(selectBinder.bind(((ExistsConditionOperatorDto) dto).getValue(), containmentMap));
+
         } else if (dto instanceof NotConditionOperatorDto) {
             condition = Condition.not(bind(((NotConditionOperatorDto) dto).getConditionDto(), containmentMap)
                     .getLeft());
+
+        } else if (dto instanceof LikeOperatorDto) {
+            Pair<Condition, List<ParameterValue>> pair = handleLikeOperator((LikeOperatorDto) dto, containmentMap);
+            condition = pair.getLeft();
+            parameterList.addAll(pair.getRight());
+
         } else {
             throw new SdkException(
-                    String.format("Unexpected class: %s", dto.getClass().getSimpleName()));
+                    String.format("Unexpected class: %s", dto.getClass().getName()));
         }
 
         return new ImmutablePair<>(condition, parameterList);
@@ -97,39 +106,50 @@ public class WhereBinder {
             parameterList = subPair.getRight();
         }
 
-        return new ImmutablePair<>(condition, parameterList);
+        return Pair.of(condition, parameterList);
     }
 
-    public Pair<Condition, List<ParameterValue>> handleComparisonOperator(
+    private Pair<Condition, List<ParameterValue>> handleComparisonOperator(
             ConditionComparisonOperatorDto dto, Map<Integer, Containment> containmentMap) {
+        return handleComparisonOperator(
+                dto.getValue(), dto.getSymbol().getSymbol(), dto.getStatement(), dto.getClass(), containmentMap);
+    }
 
-        Condition condition;
-        final Class<?> valueClass;
-        final Object value;
-        List<ParameterValue> parameterList = new ArrayList<>();
-        if (dto.getValue() instanceof SimpleValue) {
-            valueClass = Object.class;
-            value = ((SimpleValue) dto.getValue()).getValue();
-        } else if (dto.getValue() instanceof ParameterValue) {
-            valueClass = Parameter.class;
-            value = new Parameter<>(((ParameterValue) dto.getValue()).getName());
-            parameterList.add(((ParameterValue) dto.getValue()));
+    private Pair<Condition, List<ParameterValue>> handleLikeOperator(
+            LikeOperatorDto dto, Map<Integer, Containment> containmentMap) {
+        return handleComparisonOperator(
+                dto.getValue(), LikeOperatorDto.SYMBOL, dto.getStatement(), dto.getClass(), containmentMap);
+    }
+
+    private Pair<Condition, List<ParameterValue>> handleComparisonOperator(
+            Object value,
+            String operatorSymbol,
+            SelectStatementDto statement,
+            Class<?> dtoClass,
+            Map<Integer, Containment> containmentMap) {
+
+        final Condition condition;
+        final List<ParameterValue> parameterList = new ArrayList<>();
+
+        SelectAqlField<Object> field = selectBinder.bind(statement, containmentMap);
+        if (value instanceof SimpleValue) {
+            SimpleValue simpleValue = (SimpleValue) value;
+            Object conditionValue = simpleValue.getValue();
+            condition = ComparisonOperator.valueComparison(field, operatorSymbol, conditionValue);
+
+        } else if (value instanceof ParameterValue) {
+            ParameterValue parameterValue = (ParameterValue) value;
+            Parameter<Object> conditionValue = new Parameter<>(parameterValue.getName());
+            condition = ComparisonOperator.parameterComparison(field, operatorSymbol, conditionValue);
+            parameterList.add(parameterValue);
+
         } else {
-            throw new SdkException(
-                    String.format("Unexpected class %s", dto.getClass().getSimpleName()));
+            throw new SdkException(String.format(
+                    "Unexpected value type %s in %s",
+                    Optional.of(value).map(Object::getClass).map(Class::getName).orElse("null"), dtoClass.getName()));
         }
-        Method method = null;
-        try {
-            method = Condition.class.getMethod(dto.getSymbol().getJavaName(), SelectAqlField.class, valueClass);
-        } catch (NoSuchMethodException e) {
-            throw new SdkException(e.getMessage(), e);
-        }
-        try {
-            condition = (Condition) method.invoke(null, selectBinder.bind(dto.getStatement(), containmentMap), value);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SdkException(e.getMessage(), e);
-        }
-        return new ImmutablePair<>(condition, parameterList);
+
+        return Pair.of(condition, parameterList);
     }
 
     private Pair<Condition, List<ParameterValue>> buildLogicalOperator(

@@ -22,31 +22,48 @@ import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.AqlValue;
 import org.ehrbase.client.aql.parameter.Parameter;
 
-public abstract class ComparisonOperator<T> implements Condition {
+public class ComparisonOperator<T> implements Condition {
     protected final SelectAqlField<T> field;
     protected final AqlValue value;
     protected final Parameter<T> parameter;
-    protected final SelectAqlField<T> compereField;
+    protected final SelectAqlField<T> compareField;
+    private final String symbol;
 
-    protected ComparisonOperator(SelectAqlField<T> field, T value) {
+    public ComparisonOperator(String symbol, SelectAqlField<T> field, T value) {
+        this.symbol = symbol;
         this.field = field;
         this.value = new AqlValue(value);
         this.parameter = null;
-        this.compereField = null;
+        this.compareField = null;
     }
 
-    protected ComparisonOperator(SelectAqlField<T> field, Parameter<T> parameter) {
+    public ComparisonOperator(String symbol, SelectAqlField<T> field, Parameter<T> parameter) {
+        this.symbol = symbol;
         this.field = field;
         this.parameter = parameter;
         this.value = null;
-        this.compereField = null;
+        this.compareField = null;
     }
 
-    protected ComparisonOperator(SelectAqlField<T> field, SelectAqlField<T> compereField) {
+    public ComparisonOperator(String symbol, SelectAqlField<T> field, SelectAqlField<T> compereField) {
+        this.symbol = symbol;
         this.field = field;
         this.value = null;
         this.parameter = null;
-        this.compereField = compereField;
+        this.compareField = compereField;
+    }
+
+    public static <T> Condition valueComparison(SelectAqlField<T> field, String symbol, T value) {
+        return new ComparisonOperator<>(symbol, field, value);
+    }
+
+    public static <T> Condition parameterComparison(SelectAqlField<T> field, String symbol, Parameter<T> parameter) {
+        return new ComparisonOperator<>(symbol, field, parameter);
+    }
+
+    public static <T> Condition fieldComparison(
+            SelectAqlField<T> field, String symbol, SelectAqlField<T> compareField) {
+        return new ComparisonOperator<>(symbol, field, compareField);
     }
 
     @Override
@@ -61,10 +78,12 @@ public abstract class ComparisonOperator<T> implements Condition {
         } else if (parameter != null) {
             sb.append(parameter.getAqlParameter());
         } else {
-            sb.append(compereField.buildAQL(ehrContainment));
+            sb.append(compareField.buildAQL(ehrContainment));
         }
         return sb.toString();
     }
 
-    protected abstract String getSymbol();
+    protected String getSymbol() {
+        return symbol;
+    }
 }
