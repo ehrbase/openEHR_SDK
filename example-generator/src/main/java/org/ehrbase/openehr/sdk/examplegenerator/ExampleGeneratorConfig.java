@@ -805,6 +805,10 @@ public class ExampleGeneratorConfig {
             return child.getMin() == 0;
         }
 
+        if (child.getRmType().equals(RmConstants.UID_BASED_ID)) {
+            return child.getMin() == 0;
+        }
+
         return UNSUPPORTED.contains(child.getRmType())
                 || child.getId().equals("name")
                 // If a Pathable is handled, all its attributes are handled there.

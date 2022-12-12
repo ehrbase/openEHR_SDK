@@ -32,209 +32,200 @@ import org.ehrbase.client.openehrclient.ContributionChangeType;
 import org.ehrbase.response.openehr.ContributionCreateDto;
 
 public class ContributionBuilder {
-    private final ContributionCreateDto contributionCreateDto;
 
-    public static ContributionBuilderDtoBuilder builder(AuditDetails audit) {
-        return new ContributionBuilderDtoBuilder(audit);
+    private static final String CONTRIBUTION_MUST_HAVE_AT_LEAST_ONE_VERSION_OBJECT =
+            "Invalid Contribution, must have at least one Version object.";
+    private static final String MISSING_ORIGINAL_VERSION = "Missing mandatory OriginalVersion Locatable.";
+    private static final String MISSING_MANDATORY_CONTRIBUTOR_AUDIT_DETAILS =
+            "Missing mandatory contributor AuditDetails.";
+    private static final String MISSING_MANDATORY_PRECEDING_VERSION_UID = "Missing mandatory precedingVersionUid.";
+    private static final String INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER =
+            "Input invalid. Composition can't be modified without pointer to precedingVersionUid in Version container.";
+
+    public static ContributionBuilder builder(AuditDetails audit) {
+        return new ContributionBuilder(audit);
     }
 
-    public ContributionBuilder(ContributionCreateDto contributionCreateDto) {
-        this.contributionCreateDto = contributionCreateDto;
+    private final ContributionCreateDto contributionCreateDto = new ContributionCreateDto();
+
+    /**
+     * Instantiates a new Contribution.
+     *
+     * @param audit The audit for contribution and compositions inside
+     */
+    ContributionBuilder(AuditDetails audit) {
+        this.contributionCreateDto.setAudit(audit);
     }
 
     /**
-     * Gets contribution dto.
+     * Add Composition creation change type to contribution.
      *
+     * @param composition Composition instance
      * @return the contribution create dto
      */
-    public ContributionCreateDto getContribution() {
-        return contributionCreateDto;
+    public ContributionBuilder addCompositionCreation(final Composition composition) {
+        updateContribution(composition, CREATION, null);
+
+        return this;
     }
 
-    public static class ContributionBuilderDtoBuilder {
+    /**
+     * Add composition modification change type to contribution.
+     *
+     * @param composition Locatable composition instance
+     * @return the contribution create dto
+     */
+    public ContributionBuilder addCompositionModification(final Composition composition) {
+        updateContribution(composition, MODIFICATION, null);
 
-        public static final String MANDATORY_CONTRIBUTOR_AUDIT_DETAILS = "Missing mandatory contributor AuditDetails.";
+        return this;
+    }
 
-        public static final String MISSING_MANDATORY_PRECEDING_VERSION_UID = "Missing mandatory precedingVersionUid.";
-        public static final String INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER =
-                "Input invalid. Composition can't be modified without pointer to precedingVersionUid in Version container.";
+    /**
+     * Add composition modification change type to contribution.
+     *
+     * @param composition         the composition
+     * @param precedingVersionUid the preceding version uid
+     * @return the contribution create dto
+     */
+    public ContributionBuilder addCompositionModification(
+            final Composition composition, final String precedingVersionUid) {
+        updateContribution(composition, MODIFICATION, precedingVersionUid);
 
-        private final ContributionCreateDto contributionCreateDto = new ContributionCreateDto();
+        return this;
+    }
 
-        /**
-         * Instantiates a new Contribution.
-         *
-         * @param audit The audit for contribution and compositions inside
-         */
-        ContributionBuilderDtoBuilder(AuditDetails audit) {
-            this.contributionCreateDto.setAudit(audit);
+    /**
+     * Add composition deletion change type to contribution.
+     * <p>
+     *
+     * @param precedingVersionUid the preceding version uid
+     * @return the contribution create dto
+     */
+    public ContributionBuilder addCompositionDeletion(final String precedingVersionUid) {
+        updateContribution(null, DELETED, precedingVersionUid);
+
+        return this;
+    }
+
+    private void updateContribution(
+            Locatable composition, ContributionChangeType type, @Nullable String precedingVersionUid) {
+        updateContribution(composition, type, precedingVersionUid, new OriginalVersion<>());
+    }
+
+    private void updateContribution(
+            @Nullable Locatable composition,
+            ContributionChangeType type,
+            @Nullable String precedingVersionUid,
+            OriginalVersion<Locatable> originalVersion) {
+
+        if (originalVersion == null) {
+            throw new IllegalArgumentException(MISSING_ORIGINAL_VERSION);
         }
 
-        /**
-         * Add Composition creation change type to contribution.
-         *
-         * @param composition Composition instance
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addCompositionCreation(final Composition composition) {
-            updateContribution(composition, CREATION, null);
-
-            return this;
+        AuditDetails compositionAudit = getCompositionAudit();
+        UIDBasedId versionId = null;
+        if (composition != null) {
+            versionId = composition.getUid();
         }
 
-        /**
-         * Add composition modification change type to contribution.
-         *
-         * @param composition Locatable composition instance
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addCompositionModification(final Composition composition) {
-            updateContribution(composition, MODIFICATION, null);
+        precedingVersionUid = updateCompositionChangeType(type, precedingVersionUid, compositionAudit, versionId);
 
-            return this;
+        if (isNotBlank(precedingVersionUid)) {
+            originalVersion.setPrecedingVersionUid(new ObjectVersionId(precedingVersionUid));
         }
 
-        /**
-         * Add composition modification change type to contribution.
-         *
-         * @param composition         the composition
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addCompositionModification(
-                final Composition composition, final String precedingVersionUid) {
-            updateContribution(composition, MODIFICATION, precedingVersionUid);
-
-            return this;
+        if (originalVersion.getData() == null) {
+            originalVersion.setData(composition);
         }
 
-        /**
-         * Add composition deletion change type to contribution.
-         * <p>
-         *
-         * @param precedingVersionUid the preceding version uid
-         * @return the contribution create dto
-         */
-        public ContributionBuilderDtoBuilder addCompositionDeletion(final String precedingVersionUid) {
-            updateContribution(null, DELETED, precedingVersionUid);
+        updateMetadataById(precedingVersionUid, originalVersion, compositionAudit);
 
-            return this;
+        originalVersion.setCommitAudit(compositionAudit);
+
+        this.contributionCreateDto.getVersions().add(originalVersion);
+    }
+
+    private AuditDetails getCompositionAudit() {
+        AuditDetails audit = this.contributionCreateDto.getAudit();
+
+        if (audit == null) {
+            throw new IllegalArgumentException(MISSING_MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
         }
 
-        private void updateContribution(
-                Locatable composition, ContributionChangeType type, @Nullable String precedingVersionUid) {
-            updateContribution(composition, type, precedingVersionUid, new OriginalVersion<>());
-        }
+        return (AuditDetails) audit.clone();
+    }
 
-        private void updateContribution(
-                @Nullable Locatable composition,
-                ContributionChangeType type,
-                @Nullable String precedingVersionUid,
-                OriginalVersion<Locatable> originalVersion) {
-
-            if (originalVersion == null) {
-                throw new IllegalArgumentException("Missing mandatory OriginalVersion Locatable.");
+    private static String updateCompositionChangeType(
+            ContributionChangeType type,
+            String precedingVersionUid,
+            AuditDetails compositionAudit,
+            UIDBasedId versionId) {
+        switch (type) {
+            case CREATION: {
+                modifyCompositionChangeType(compositionAudit, CREATION);
+                break;
             }
-
-            AuditDetails compositionAudit = getCompositionAudit();
-            UIDBasedId versionId = null;
-            if (composition != null) {
-                versionId = composition.getUid();
-            }
-
-            precedingVersionUid = updateCompositionChangeType(type, precedingVersionUid, compositionAudit, versionId);
-
-            if (isNotBlank(precedingVersionUid)) {
-                originalVersion.setPrecedingVersionUid(new ObjectVersionId(precedingVersionUid));
-            }
-
-            if (originalVersion.getData() == null) {
-                originalVersion.setData(composition);
-            }
-
-            updateMetadataById(precedingVersionUid, originalVersion, compositionAudit);
-
-            originalVersion.setCommitAudit(compositionAudit);
-
-            this.contributionCreateDto.getVersions().add(originalVersion);
-        }
-
-        private AuditDetails getCompositionAudit() {
-            AuditDetails audit = this.contributionCreateDto.getAudit();
-
-            if (audit == null) {
-                throw new IllegalArgumentException(MANDATORY_CONTRIBUTOR_AUDIT_DETAILS);
-            }
-
-            return (AuditDetails) audit.clone();
-        }
-
-        private static String updateCompositionChangeType(
-                ContributionChangeType type,
-                String precedingVersionUid,
-                AuditDetails compositionAudit,
-                UIDBasedId versionId) {
-            switch (type) {
-                case CREATION: {
-                    modifyCompositionChangeType(compositionAudit, CREATION);
-                    break;
+            case AMENDMENT:
+            case MODIFICATION: {
+                if (versionId != null && isNotBlank(versionId.getValue()) && isBlank(precedingVersionUid)) {
+                    precedingVersionUid = versionId.getValue();
                 }
-                case AMENDMENT:
-                case MODIFICATION: {
-                    if (versionId != null && isNotBlank(versionId.getValue()) && isBlank(precedingVersionUid)) {
-                        precedingVersionUid = versionId.getValue();
-                    }
-
-                    if (isBlank(precedingVersionUid)) {
-                        throw new IllegalArgumentException(MISSING_MANDATORY_PRECEDING_VERSION_UID);
-                    }
-
-                    modifyCompositionChangeType(compositionAudit, MODIFICATION);
-                    break;
-                }
-                case DELETED: {
-                    if (isBlank(precedingVersionUid)) {
-                        throw new IllegalArgumentException(MISSING_MANDATORY_PRECEDING_VERSION_UID);
-                    }
-
-                    modifyCompositionChangeType(compositionAudit, DELETED);
-                    break;
-                }
-                default: {
-                    modifyCompositionChangeType(compositionAudit, UNKNOWN);
-
-                    break;
-                }
-            }
-
-            return precedingVersionUid;
-        }
-
-        private static void updateMetadataById(
-                String precedingVersionUid, OriginalVersion<Locatable> originalVersion, AuditDetails compositionAudit) {
-            if (originalVersion.getData() == null) {
-                // version doesn't contain "data", so it is only a metadata one to,
-                // for instance, delete a specific object via ID regardless of type
-                modifyCompositionChangeType(compositionAudit, DELETED);
 
                 if (isBlank(precedingVersionUid)) {
-                    throw new IllegalArgumentException(INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER);
+                    throw new IllegalArgumentException(MISSING_MANDATORY_PRECEDING_VERSION_UID);
                 }
+
+                modifyCompositionChangeType(compositionAudit, MODIFICATION);
+                break;
+            }
+            case DELETED: {
+                if (isBlank(precedingVersionUid)) {
+                    throw new IllegalArgumentException(MISSING_MANDATORY_PRECEDING_VERSION_UID);
+                }
+
+                modifyCompositionChangeType(compositionAudit, DELETED);
+                break;
+            }
+            default: {
+                modifyCompositionChangeType(compositionAudit, UNKNOWN);
+
+                break;
             }
         }
 
-        private static void modifyCompositionChangeType(AuditDetails audit, ContributionChangeType type) {
-            audit.getChangeType().setValue(type.getName());
-            audit.getChangeType().getDefiningCode().setCodeString(String.valueOf(type.getCode()));
+        return precedingVersionUid;
+    }
+
+    private static void updateMetadataById(
+            String precedingVersionUid, OriginalVersion<Locatable> originalVersion, AuditDetails compositionAudit) {
+        if (originalVersion.getData() == null) {
+            // version doesn't contain "data", so it is only a metadata one to,
+            // for instance, delete a specific object via ID regardless of type
+            modifyCompositionChangeType(compositionAudit, DELETED);
+
+            if (isBlank(precedingVersionUid)) {
+                throw new IllegalArgumentException(INVALID_PRECEDING_VERSION_UID_IN_VERSION_CONTAINER);
+            }
+        }
+    }
+
+    private static void modifyCompositionChangeType(AuditDetails audit, ContributionChangeType type) {
+        audit.getChangeType().setValue(type.getName());
+        audit.getChangeType().getDefiningCode().setCodeString(String.valueOf(type.getCode()));
+    }
+
+    /**
+     * Build contribution.
+     *
+     * @return the contribution builder
+     */
+    public ContributionCreateDto build() {
+        if (contributionCreateDto.getVersions() == null
+                || contributionCreateDto.getVersions().isEmpty()) {
+            throw new IllegalArgumentException(CONTRIBUTION_MUST_HAVE_AT_LEAST_ONE_VERSION_OBJECT);
         }
 
-        /**
-         * Build contribution.
-         *
-         * @return the contribution builder
-         */
-        public ContributionBuilder build() {
-            return new ContributionBuilder(this.contributionCreateDto);
-        }
+        return this.contributionCreateDto;
     }
 }

@@ -39,4 +39,5 @@ public class RmConstants {
     public static final String POINT_EVENT = "POINT_EVENT";
     public static final String INTERVAL_EVENT = "INTERVAL_EVENT";
     public static final String FEEDER_AUDIT = "FEEDER_AUDIT";
+    public static final String UID_BASED_ID = "UID_BASED_ID";
 }

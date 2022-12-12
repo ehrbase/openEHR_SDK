@@ -100,7 +100,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         Composition unflattenSecondComposition = (Composition) cut.unflatten(proxyComposition);
         // Create contribution
-        ContributionBuilder contributionBuilder = ContributionBuilder.builder(createAuditDetails())
+        ContributionCreateDto contribution = ContributionBuilder.builder(createAuditDetails())
                 .addCompositionCreation(composition)
                 .addCompositionCreation(composition)
                 .addCompositionCreation(composition)
@@ -111,8 +111,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 .build();
 
         // Save Contribution
-        VersionUid versionUid =
-                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionBuilder.getContribution());
+        VersionUid versionUid = openEhrClient.contributionEndpoint(ehr).saveContribution(contribution);
 
         // Find Contribution
         Optional<Contribution> remoteContribution =
@@ -149,44 +148,41 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         AuditDetails audit = createAuditDetails();
 
         // 2 Create contribution with composition modification
-        ContributionBuilder contributionBuilderCompositionModification = ContributionBuilder.builder(audit)
+        ContributionCreateDto contribution = ContributionBuilder.builder(audit)
                 .addCompositionModification(composition)
                 .build();
 
         // 3 Save Contribution
-        VersionUid versionUid = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionBuilderCompositionModification.getContribution());
+        VersionUid versionUid = openEhrClient.contributionEndpoint(ehr).saveContribution(contribution);
 
         // 4 Find Contribution
-        Optional<Contribution> remoteContribution_ =
+        Optional<Contribution> remoteContribution =
                 openEhrClient.contributionEndpoint(ehr).find(versionUid.getUuid());
-        assertTrue(remoteContribution_.isPresent());
+        assertTrue(remoteContribution.isPresent());
 
         assertEquals(1L, getContributionVersion(versionUid));
-        assertEquals("2", getCompositionVersion(remoteContribution_.get()));
+        assertEquals("2", getCompositionVersion(remoteContribution.get()));
 
         // 5 Get previous composition version id
         String compositionPrecedingVersionUid =
-                remoteContribution_.get().getVersions().get(0).getId().getValue();
+                remoteContribution.get().getVersions().get(0).getId().getValue();
 
         // 6 Create contribution with composition deletion
-        ContributionBuilder contributionBuilderCompositionDeletion = ContributionBuilder.builder(audit)
+        ContributionCreateDto contributionWithCompositionDeletion = ContributionBuilder.builder(audit)
                 .addCompositionDeletion(compositionPrecedingVersionUid)
                 .build();
 
         // 7 Save Contribution
-        VersionUid versionUid1 = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionBuilderCompositionDeletion.getContribution());
+        VersionUid versionUid1 =
+                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionWithCompositionDeletion);
 
         // 8 Find Contribution
-        Optional<Contribution> remoteContribution =
+        Optional<Contribution> remoteContribution1 =
                 openEhrClient.contributionEndpoint(ehr).find(versionUid1.getUuid());
 
-        assertTrue(remoteContribution.isPresent());
+        assertTrue(remoteContribution1.isPresent());
         assertEquals(1L, getContributionVersion(versionUid));
-        assertEquals("3", getCompositionVersion(remoteContribution.get()));
+        assertEquals("3", getCompositionVersion(remoteContribution1.get()));
     }
 
     @Test
@@ -199,14 +195,12 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         AuditDetails audit = createAuditDetails();
 
         // 2 Create contribution with composition modification
-        ContributionBuilder contributionBuilderCompositionModification = ContributionBuilder.builder(audit)
+        ContributionCreateDto contribution = ContributionBuilder.builder(audit)
                 .addCompositionCreation(composition)
                 .build();
 
         // 3 Save Contribution
-        VersionUid versionUid = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionBuilderCompositionModification.getContribution());
+        VersionUid versionUid = openEhrClient.contributionEndpoint(ehr).saveContribution(contribution);
 
         // 4 Find Contribution
         Optional<Contribution> remoteContribution_ =
@@ -221,14 +215,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 remoteContribution_.get().getVersions().get(0).getId().getValue();
 
         // 6 Create contribution with composition modification
-        ContributionBuilder contributionBuilderCompositionModifiation = ContributionBuilder.builder(audit)
+        ContributionCreateDto contributionCompositionModification = ContributionBuilder.builder(audit)
                 .addCompositionModification(composition, compositionPrecedingVersionUid)
                 .build();
 
         // 7 Save Contribution
-        VersionUid versionUid1 = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionBuilderCompositionModifiation.getContribution());
+        VersionUid versionUid1 =
+                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionCompositionModification);
 
         // 8 Find Contribution
         Optional<Contribution> remoteContribution_1 =
@@ -243,14 +236,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 remoteContribution_1.get().getVersions().get(0).getId().getValue();
 
         // 10 Create contribution with composition deletion
-        ContributionBuilder contributionBuilderCompositionDeletion1 = ContributionBuilder.builder(audit)
+        ContributionCreateDto contributionWithCompositionDeletion1 = ContributionBuilder.builder(audit)
                 .addCompositionDeletion(compositionPrecedingVersionUid1)
                 .build();
 
         // 11 Save Contribution
-        VersionUid versionUid12 = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionBuilderCompositionDeletion1.getContribution());
+        VersionUid versionUid12 =
+                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionWithCompositionDeletion1);
 
         // 12 Find Contribution
         Optional<Contribution> remoteContribution =
@@ -272,14 +264,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         AuditDetails audit = createAuditDetails();
 
         // 2 Create contribution with composition modification
-        ContributionBuilder contributionCompositionModified = ContributionBuilder.builder(audit)
+        ContributionCreateDto contributionWithCompositionModified = ContributionBuilder.builder(audit)
                 .addCompositionModification(rmCompositionResponse)
                 .build();
 
         // 3 Save Contribution
-        VersionUid versionUid = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionCompositionModified.getContribution());
+        VersionUid versionUid =
+                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionWithCompositionModified);
 
         // 4 Find Contribution
         Optional<Contribution> remoteContribution_ =
@@ -294,14 +285,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 remoteContribution_.get().getVersions().get(0).getId().getValue();
 
         // 6 Create contribution with composition deletion
-        ContributionBuilder contributionBuilderCompositionDeletion = ContributionBuilder.builder(audit)
+        ContributionCreateDto contributionWithCompositionDeletion = ContributionBuilder.builder(audit)
                 .addCompositionDeletion(compositionPrecedingVersionUid)
                 .build();
 
         // 7 Save Contribution
-        VersionUid versionUid1 = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionBuilderCompositionDeletion.getContribution());
+        VersionUid versionUid1 =
+                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionWithCompositionDeletion);
 
         // 8 Confirm that composition no longer exist
         Optional<Composition> composition =
@@ -331,14 +321,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         compositionPrecedingVersionUid = rmCompositionResponse.getUid().getValue();
 
         // 2 Create contribution with composition modification
-        ContributionBuilder contributionCompositionModified = ContributionBuilder.builder(audit)
+        ContributionCreateDto contributionWithCompositionModified = ContributionBuilder.builder(audit)
                 .addCompositionModification(rmCompositionResponse, compositionPrecedingVersionUid)
                 .build();
 
         // 3 Save Contribution
-        VersionUid versionUid = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionCompositionModified.getContribution());
+        VersionUid versionUid =
+                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionWithCompositionModified);
 
         // 4 Find Contribution
         Optional<Contribution> remoteContribution_ =
@@ -353,14 +342,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 remoteContribution_.get().getVersions().get(0).getId().getValue();
 
         // 6 Create contribution with composition deletion
-        ContributionBuilder contributionBuilderCompositionDeletion = ContributionBuilder.builder(audit)
+        ContributionCreateDto contributionWithCompositionDeletion = ContributionBuilder.builder(audit)
                 .addCompositionDeletion(compositionPrecedingVersionUid)
                 .build();
 
         // 7 Save Contribution
-        VersionUid versionUid1 = openEhrClient
-                .contributionEndpoint(ehr)
-                .saveContribution(contributionBuilderCompositionDeletion.getContribution());
+        VersionUid versionUid1 =
+                openEhrClient.contributionEndpoint(ehr).saveContribution(contributionWithCompositionDeletion);
 
         // 8 Find Contribution
         Optional<Contribution> remoteContribution =
@@ -387,15 +375,24 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         ContributionCreateDto contributionDto =
                 new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
 
-        ContributionBuilder contributionBuilder = ContributionBuilder.builder(contributionDto.getAudit())
+        ContributionCreateDto contribution = ContributionBuilder.builder(contributionDto.getAudit())
                 .addCompositionCreation(proxyComposition)
                 .build();
 
         ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
-        VersionUid versionUid = contributionEndpoint.saveContribution(contributionBuilder.getContribution());
+        VersionUid versionUid = contributionEndpoint.saveContribution(contribution);
         Optional<Contribution> remoteContribution = contributionEndpoint.find(versionUid.getUuid());
 
         assertTrue(remoteContribution.isPresent());
+    }
+
+    @Test
+    public void testWhenNotProvidedCompositionOrCompositionDeletionPrecedentId() throws IOException {
+        ContributionBuilder builder = ContributionBuilder.builder(createAuditDetails());
+        Exception exception = assertThrows(IllegalArgumentException.class, builder::build);
+
+        String expectedMessage = "Invalid Contribution, must have at least one Version object.";
+        assertTrue(exception.getMessage().contains(expectedMessage));
     }
 
     private static long getContributionVersion(VersionUid versionUid) {
