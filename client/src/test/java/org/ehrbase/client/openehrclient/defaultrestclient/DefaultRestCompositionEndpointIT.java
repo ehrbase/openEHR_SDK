@@ -20,7 +20,9 @@ package org.ehrbase.client.openehrclient.defaultrestclient;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClientTestHelper.setupDefaultRestClientWithDefaultProvider;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
@@ -37,8 +39,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.client.Integration;
@@ -46,7 +46,12 @@ import org.ehrbase.client.TestData;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.client.classgenerator.examples.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
 import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
-import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.*;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureAnyEventPointEvent;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementChoice;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvCodedText;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureLocationOfMeasurementDvText;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.BodyTemperatureObservation;
+import org.ehrbase.client.classgenerator.examples.ehrbasemultioccurrencedev1composition.definition.LocationOfMeasurementDefiningCode;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.EpisodeOfCareComposition;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareAdminEntry;
 import org.ehrbase.client.classgenerator.examples.episodeofcarecomposition.definition.EpisodeofcareTeamElement;
@@ -79,6 +84,8 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
 
 @Category(Integration.class)
 public class DefaultRestCompositionEndpointIT {
@@ -202,7 +209,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testSaveCompositionEntityCgiProxy() {
+    public void testSaveCompositionEntitySpringCglibProxy() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
