@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
    - Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
+   - Added null verification and change gson to jackson ([#416](https://github.com/ehrbase/openEHR_SDK/pull/416))
    - Added stored query text plain request support ([#1021](https://github.com/ehrbase/ehrbase/pull/1021))
 
  ### Fixed 
