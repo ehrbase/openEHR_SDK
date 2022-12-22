@@ -22,10 +22,6 @@ import static org.ehrbase.client.openehrclient.defaultrestclient.DefaultRestClie
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
@@ -104,40 +100,42 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                     ContentType.APPLICATION_JSON,
                     ContentType.APPLICATION_JSON.getMimeType());
             String value = EntityUtils.toString(response.getEntity());
-            JsonObject asJsonObject = JsonParser.parseString(value).getAsJsonObject();
-            JsonArray rows = asJsonObject.get("rows").getAsJsonArray();
-            for (JsonElement jresult : rows) {
-                RecordImp record = new RecordImp(query.fields());
-                int i = 0;
-                for (AqlField<?> aqlField : query.fields()) {
-                    String valueAsString = ((JsonArray) jresult).get(i).toString();
+            QueryResponseData queryResponseData = AQL_OBJECT_MAPPER.readValue(value, QueryResponseData.class);
+            List<List<Object>> dataRows = queryResponseData.getRows();
 
-                    final Object object;
+            if (Objects.nonNull(dataRows)) {
+                for (List<Object> jresult : dataRows) {
+                    RecordImp record = new RecordImp(query.fields());
+                    int i = 0;
+                    for (AqlField<?> aqlField : query.fields()) {
+                        String valueAsString = AQL_OBJECT_MAPPER.writeValueAsString(jresult.get(i));
+                        final Object object;
 
-                    Class<?> aClass = aqlField.getValueClass();
-                    if (ListSelectAqlField.class.isAssignableFrom(aqlField.getClass())) {
-                        List list = new ArrayList();
-                        object = list;
-                        // @TODO how to handle list values results like
-                        // content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
-                        //      for (JsonElement element :
-                        // JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
-                        list.add(extractValue(valueAsString, ((ListSelectAqlField) aqlField).getInnerClass()));
-                        //    }
+                        Class<?> aClass = aqlField.getValueClass();
+                        if (ListSelectAqlField.class.isAssignableFrom(aqlField.getClass())) {
+                            List list = new ArrayList();
+                            object = list;
+                            // @TODO how to handle list values results like
+                            // content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
+                            //      for (JsonElement element :
+                            // JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
+                            list.add(extractValue(valueAsString, ((ListSelectAqlField) aqlField).getInnerClass()));
+                            //    }
 
-                    } else {
-                        object = extractValue(valueAsString, aClass);
+                        } else {
+                            object = extractValue(valueAsString, aClass);
+                        }
+
+                        record.putValue(i, object);
+                        i++;
                     }
-
-                    record.putValue(i, object);
-                    i++;
+                    result.add((T) record);
                 }
-                result.add((T) record);
             }
-
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
+
         return result;
     }
 

@@ -24,6 +24,5 @@ public enum CompositionFormat {
     XML,
     ECISFLAT,
     EXPANDED,
-    JSON,
-    TEXT;
+    JSON;
 }
