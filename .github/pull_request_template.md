@@ -12,10 +12,10 @@
 
 # Pre-Merge checklist
 
-- [] New code is tested
-- [] Present and new tests pass
-- [] Documentation is updated
-- [] The build is working without errors
-- [] No new Sonar issues introduced
-- [] Changelog is updated
-- [] Code has been reviewed 
+- [ ] New code is tested
+- [ ] Present and new tests pass
+- [ ] Documentation is updated
+- [ ] The build is working without errors
+- [ ] No new Sonar issues introduced
+- [ ] Changelog is updated
+- [ ] Code has been reviewed 
