@@ -17,11 +17,9 @@
  */
 package org.ehrbase.serialisation.jsonencoding;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvText;
@@ -39,15 +37,14 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 class DateTimeSerializerTest {
 
+    private static final ObjectMapper ASSERTION_OM = new ObjectMapper();
+
     @ParameterizedTest
     @EnumSource(DateTimeSerializerTestData.class)
     void serialize(DateTimeSerializerTestData data) throws IOException {
         StringWriter stringWriter = new StringWriter();
         JsonGenerator generator = JsonFactory.builder().build().createGenerator(stringWriter);
-        generator.setCodec(CanonicalJson.MARSHAL_OM
-                .copy()
-                .configure(SerializationFeature.INDENT_OUTPUT, false)
-                .setDefaultPrettyPrinter(null));
+        generator.setCodec(CanonicalJson.MARSHAL_OM);
         DateTimeSerializer cut = new DateTimeSerializer();
         if (data.shouldThrowException) {
             Assertions.assertEquals(
@@ -58,7 +55,9 @@ class DateTimeSerializerTest {
         } else {
             Assertions.assertDoesNotThrow(() -> cut.serialize(data.testData, generator, null));
             generator.flush();
-            assertThat(stringWriter.toString()).isEqualToIgnoringNewLines(data.expectedJson);
+            // The generates json should contain the same nodes
+            Assertions.assertEquals(
+                    ASSERTION_OM.readTree(data.expectedJson), ASSERTION_OM.readTree(stringWriter.toString()));
         }
     }
 
@@ -67,10 +66,7 @@ class DateTimeSerializerTest {
     void serializeWithType(DateTimeSerializerTestData data) throws IOException {
         StringWriter stringWriter = new StringWriter();
         JsonGenerator generator = JsonFactory.builder().build().createGenerator(stringWriter);
-        generator.setCodec(CanonicalJson.MARSHAL_OM
-                .copy()
-                .configure(SerializationFeature.INDENT_OUTPUT, false)
-                .setDefaultPrettyPrinter(null));
+        generator.setCodec(CanonicalJson.MARSHAL_OM);
         DateTimeSerializer cut = new DateTimeSerializer();
         if (data.shouldThrowException) {
             Assertions.assertEquals(
@@ -82,7 +78,9 @@ class DateTimeSerializerTest {
         } else {
             Assertions.assertDoesNotThrow(() -> cut.serializeWithType(data.testData, generator, null, null));
             generator.flush();
-            assertThat(stringWriter.toString()).isEqualToIgnoringNewLines(data.expectedJson);
+            // The generates json should contain the same nodes
+            Assertions.assertEquals(
+                    ASSERTION_OM.readTree(data.expectedJson), ASSERTION_OM.readTree(stringWriter.toString()));
         }
     }
 
