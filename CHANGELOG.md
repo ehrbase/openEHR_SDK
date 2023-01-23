@@ -6,6 +6,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  ### Added 
    - Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
    - Added null verification and change gson to jackson ([#416](https://github.com/ehrbase/openEHR_SDK/pull/416))
+   - Fix error when serializing partial DV_DATE_TIME without time component ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
 
  ### Fixed 
 
