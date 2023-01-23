@@ -31,7 +31,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DecimalStyle;
 import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.ehrbase.serialisation.exception.MarshalException;
 
 /**
  * custom serializer for DvDateTime instance with dot delimiter instead of comma
@@ -48,7 +50,7 @@ public class DateTimeSerializer extends JsonSerializer<DvDateTime> {
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(ChronoField.NANO_OF_SECOND, 3, 9, true)
+            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
@@ -85,10 +87,23 @@ public class DateTimeSerializer extends JsonSerializer<DvDateTime> {
     private void toJson(JsonGenerator jsonGenerator, DvDateTime dvDateTime) throws IOException {
 
         ObjectMapper mapper = (ObjectMapper) jsonGenerator.getCodec();
+        TemporalAccessor temporalAccessor = dvDateTime.getValue();
+        if (temporalAccessor == null) {
+            throw new MarshalException("DV_DATE_TIME is missing the mandatory time attribute");
+        }
 
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("_type", "DV_DATE_TIME");
-        jsonGenerator.writeStringField("value", ISO_8601_DATE_TIME.format(dvDateTime.getValue()));
+
+        final String value;
+        if (!temporalAccessor.isSupported(ChronoField.HOUR_OF_DAY)) {
+            // if our TemporalAccessor does not support hours, our DV_DATE_TIME does not contain a time component as the
+            // lowest precision with time requires only hours and higher precisions always include hours
+            value = ISO_8601_DATE.format(temporalAccessor);
+        } else {
+            value = ISO_8601_DATE_TIME.format(temporalAccessor);
+        }
+        jsonGenerator.writeStringField("value", value);
         writeDvTemporal(jsonGenerator, dvDateTime, mapper);
         jsonGenerator.writeEndObject();
     }
