@@ -50,7 +50,7 @@ public class DateTimeSerializer extends JsonSerializer<DvDateTime> {
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+            .appendFraction(ChronoField.NANO_OF_SECOND, 3, 9, true)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()

@@ -92,15 +92,18 @@ class DateTimeSerializerTest {
         TIME_ONLY_RESOLUTION_FULL(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123456789")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123456789\"}"),
+        TIME_ONLY_RESOLUTION_MILLISECONDS(
+                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123")),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123\"}"),
         TIME_ONLY_RESOLUTION_SECONDS(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10\"}"),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.000\"}"),
         TIME_ONLY_RESOLUTION_MINUTES(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:00\"}"),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:00.000\"}"),
         TIME_ONLY_RESOLUTION_HOURS(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:00:00\"}"),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:00:00.000\"}"),
         TIME_ONLY_RESOLUTION_DAY(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02\"}"),
