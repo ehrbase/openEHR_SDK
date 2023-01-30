@@ -22,6 +22,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.xml.JAXBUtil;
 import com.nedap.archie.xml.adapters.DateTimeXmlAdapter;
+import com.nedap.archie.xml.adapters.DateXmlAdapter;
+import com.nedap.archie.xml.adapters.TimeXmlAdapter;
 import java.io.IOException;
 import java.io.StringWriter;
 import javax.xml.XMLConstants;
@@ -73,6 +75,8 @@ public class CanonicalXML implements RMDataFormat {
         try {
             Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
             marshaller.setAdapter(DateTimeXmlAdapter.class, new WorkaroundDateTimeXmlAdapter());
+            marshaller.setAdapter(DateXmlAdapter.class, new WorkaroundDateXmlAdapter());
+            marshaller.setAdapter(TimeXmlAdapter.class, new WorkaroundTimeXmlAdapter());
             marshaller.setProperty("jaxb.fragment", !withHeader);
             if (rmObject.getClass().getAnnotation(XmlRootElement.class) == null) {
                 QName qName = new QName(null, new SnakeCase(rmObject.getClass().getSimpleName()).camelToSnake());

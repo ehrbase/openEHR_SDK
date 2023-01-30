@@ -30,7 +30,6 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DecimalStyle;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
@@ -73,7 +72,6 @@ public final class DateTimeHelpers {
             .optionalEnd()
             .append(ISO8601_TIME_ZONE)
             .toFormatter()
-            .withDecimalStyle(DecimalStyle.STANDARD.withDecimalSeparator('.'))
             .withResolverStyle(ResolverStyle.STRICT);
     public static final DateTimeFormatter ISO_8601_DATE_TIME_PARSER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
@@ -83,7 +81,6 @@ public final class DateTimeHelpers {
             .append(ISO_8601_TIME_PARSER)
             .optionalEnd()
             .toFormatter()
-            .withDecimalStyle(DecimalStyle.STANDARD.withDecimalSeparator('.'))
             .withResolverStyle(ResolverStyle.STRICT);
     // partial times are allowed in compact format but archie does not implement that
     public static final DateTimeFormatter ISO_8601_DATE_COMPACT_PARSER = new DateTimeFormatterBuilder()
@@ -110,7 +107,6 @@ public final class DateTimeHelpers {
             .optionalEnd()
             .append(ISO8601_TIME_ZONE)
             .toFormatter()
-            .withDecimalStyle(DecimalStyle.STANDARD.withDecimalSeparator('.'))
             .withResolverStyle(ResolverStyle.STRICT);
     // partial date-times are allowed in compact format but archie does not implement that
     public static final DateTimeFormatter ISO_8601_DATE_TIME_COMPACT_PARSER = new DateTimeFormatterBuilder()
@@ -121,7 +117,6 @@ public final class DateTimeHelpers {
             .append(ISO_8601_TIME_COMPACT_PARSER)
             .optionalEnd()
             .toFormatter()
-            .withDecimalStyle(DecimalStyle.STANDARD.withDecimalSeparator('.'))
             .withResolverStyle(ResolverStyle.STRICT);
 
     private DateTimeHelpers() {}
