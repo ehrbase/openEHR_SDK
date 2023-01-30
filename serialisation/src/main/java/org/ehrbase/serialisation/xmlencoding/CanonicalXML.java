@@ -21,10 +21,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.xml.JAXBUtil;
+import com.nedap.archie.xml.adapters.DateTimeXmlAdapter;
 import java.io.IOException;
 import java.io.StringWriter;
 import javax.xml.XMLConstants;
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,7 +48,11 @@ import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.util.SnakeCase;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLFilter;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.XMLFilterImpl;
 
@@ -63,6 +72,7 @@ public class CanonicalXML implements RMDataFormat {
         StringWriter stringWriter = new StringWriter();
         try {
             Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
+            marshaller.setAdapter(DateTimeXmlAdapter.class, new WorkaroundDateTimeXmlAdapter());
             marshaller.setProperty("jaxb.fragment", !withHeader);
             if (rmObject.getClass().getAnnotation(XmlRootElement.class) == null) {
                 QName qName = new QName(null, new SnakeCase(rmObject.getClass().getSimpleName()).camelToSnake());
