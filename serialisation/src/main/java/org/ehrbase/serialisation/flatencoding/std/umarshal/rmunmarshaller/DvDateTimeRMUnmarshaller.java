@@ -17,12 +17,12 @@
  */
 package org.ehrbase.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
-import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import java.time.*;
+import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Map;
 import java.util.Set;
+import org.ehrbase.serialisation.DateTimeHelpers;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -49,7 +49,7 @@ public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime>
                     if ("now".equals(s)) {
                         rmObject.setValue(OffsetDateTime.now());
                     } else if (s != null) {
-                        TemporalAccessor temp = DateTimeParsers.parseDateTimeValue(s);
+                        TemporalAccessor temp = DateTimeHelpers.parseDateTime(s);
                         rmObject.setValue(temp);
                     }
                 },
