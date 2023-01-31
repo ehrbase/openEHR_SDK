@@ -28,7 +28,6 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.SingleValuedDataValue;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rm.datavalues.quantity.ReferenceRange;
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTemporal;
 import java.io.IOException;
@@ -66,7 +65,7 @@ public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemp
                             result.setOtherReferenceRanges(ctxt.readTreeAsValue(
                                     nodeEntry.getValue(),
                                     ctxt.getTypeFactory()
-                                            .constructType(new TypeReference<List<ReferenceRange<DvDateTime>>>() {})));
+                                            .constructType(new TypeReference<List<ReferenceRange<T>>>() {})));
                             break;
                         case "magnitude_status":
                             result.setMagnitudeStatus(nodeEntry.getValue().textValue());
