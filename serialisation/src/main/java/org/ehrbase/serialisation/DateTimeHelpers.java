@@ -121,70 +121,88 @@ public final class DateTimeHelpers {
     private DateTimeHelpers() {}
 
     public static Temporal parseDate(String isoDate) {
-        TemporalAccessor parsed = parse(isoDate, ISO_8601_DATE_PARSER, ISO_8601_DATE_COMPACT_PARSER);
-        if (parsed == null) {
-            return null;
-        }
+        try {
+            TemporalAccessor parsed = parse(isoDate, ISO_8601_DATE_PARSER, ISO_8601_DATE_COMPACT_PARSER);
+            if (parsed == null) {
+                return null;
+            }
 
-        if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
-            return LocalDate.from(parsed);
-        }
+            if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
+                return LocalDate.from(parsed);
+            }
 
-        if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
-            return YearMonth.from(parsed);
-        }
+            if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
+                return YearMonth.from(parsed);
+            }
 
-        if (parsed.isSupported(ChronoField.YEAR)) {
-            return Year.from(parsed);
+            if (parsed.isSupported(ChronoField.YEAR)) {
+                return Year.from(parsed);
+            }
+        } catch (DateTimeException e2) {
+            // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
+            // behaviour
+            throw new IllegalArgumentException(e2.getMessage() + ":" + isoDate);
         }
-
-        throw new DateTimeException(isoDate + " does not provide any field required for the possible precisions");
+        throw new DateTimeException(
+                isoDate + " does not provide any field required for the possible precisions:" + isoDate);
     }
 
     public static TemporalAccessor parseTime(String isoTime) {
-        TemporalAccessor parsed = parse(isoTime, ISO_8601_TIME_PARSER, ISO_8601_TIME_COMPACT_PARSER);
-        if (parsed == null) {
-            return null;
-        }
+        try {
+            TemporalAccessor parsed = parse(isoTime, ISO_8601_TIME_PARSER, ISO_8601_TIME_COMPACT_PARSER);
+            if (parsed == null) {
+                return null;
+            }
 
-        if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
-            return OffsetTime.from(parsed);
-        }
+            if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
+                return OffsetTime.from(parsed);
+            }
 
-        if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
-            return LocalTime.from(parsed);
+            if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
+                return LocalTime.from(parsed);
+            }
+        } catch (DateTimeException e2) {
+            // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
+            // behaviour
+            throw new IllegalArgumentException(e2.getMessage() + ":" + isoTime);
         }
-
-        throw new DateTimeException(isoTime + " does not provide any field required for the possible precisions");
+        throw new DateTimeException(
+                isoTime + " does not provide any field required for the possible precisions:" + isoTime);
     }
 
     public static TemporalAccessor parseDateTime(String isoDateTime) {
-        TemporalAccessor parsed = parse(isoDateTime, ISO_8601_DATE_TIME_PARSER, ISO_8601_DATE_TIME_COMPACT_PARSER);
-        if (parsed == null) {
-            return null;
-        }
+        try {
+            TemporalAccessor parsed = parse(isoDateTime, ISO_8601_DATE_TIME_PARSER, ISO_8601_DATE_TIME_COMPACT_PARSER);
+            if (parsed == null) {
+                return null;
+            }
 
-        if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
-            return OffsetDateTime.from(parsed);
-        }
+            if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
+                return OffsetDateTime.from(parsed);
+            }
 
-        if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
-            return LocalDateTime.from(parsed);
-        }
+            if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
+                return LocalDateTime.from(parsed);
+            }
 
-        if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
-            return LocalDate.from(parsed);
-        }
+            if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
+                return LocalDate.from(parsed);
+            }
 
-        if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
-            return YearMonth.from(parsed);
-        }
+            if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
+                return YearMonth.from(parsed);
+            }
 
-        if (parsed.isSupported(ChronoField.YEAR)) {
-            return Year.from(parsed);
+            if (parsed.isSupported(ChronoField.YEAR)) {
+                return Year.from(parsed);
+            }
+        } catch (DateTimeException e2) {
+            // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
+            // behaviour
+            throw new IllegalArgumentException(e2.getMessage() + ":" + isoDateTime);
         }
-
-        throw new DateTimeException(isoDateTime + " does not provide any field required for the possible precisions");
+        throw new DateTimeException(
+                isoDateTime + " does not provide any field required for the possible precisions:" + isoDateTime);
     }
 
     private static TemporalAccessor parse(
