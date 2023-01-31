@@ -137,7 +137,7 @@ public class CanonicalJson implements RMDataFormat {
     @Override
     public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
         try {
-            return ArchieObjectMapperProvider.getObjectMapper().readValue(value, clazz);
+            return MARSHAL_OM.readValue(value, clazz);
         } catch (IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }
