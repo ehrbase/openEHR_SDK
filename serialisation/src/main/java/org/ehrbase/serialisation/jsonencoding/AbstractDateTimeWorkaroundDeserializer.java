@@ -73,6 +73,8 @@ public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemp
                 case "value":
                     result.setValue(parseValue(nodeEntry.getValue().textValue()));
                     break;
+                case "magnitude":
+                    // is a calculated property
                 case "_type":
                     // not part of RM, specific to openEHR JSON
                     break;
