@@ -20,6 +20,7 @@ package org.ehrbase.serialisation.jsonencoding;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -79,8 +80,10 @@ public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemp
                     // not part of RM, specific to openEHR JSON
                     break;
                 default:
-                    throw new JsonMappingException(
-                            "Property \"" + nodeEntry.getKey() + "\" is not part of DV_DATE_TIME");
+                    if (ctxt.isEnabled(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)) {
+                        throw new JsonMappingException(
+                                "Property \"" + nodeEntry.getKey() + "\" is not part of DV_DATE_TIME");
+                    }
             }
         }
         return result;
