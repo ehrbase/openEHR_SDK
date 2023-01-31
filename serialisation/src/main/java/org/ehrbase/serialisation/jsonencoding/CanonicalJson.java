@@ -38,7 +38,9 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 import com.nedap.archie.rminfo.ArchieAOMInfoLookup;
@@ -71,6 +73,9 @@ public class CanonicalJson implements RMDataFormat {
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(DvDateTime.class, new DateTimeSerializer());
+        module.addDeserializer(DvDateTime.class, new DateTimeDeserializer());
+        module.addDeserializer(DvTime.class, new TimeDeserializer());
+        module.addDeserializer(DvDate.class, new DateDeserializer());
         MARSHAL_OM.registerModule(module);
 
         // Global configuration to not include empty lists in the JSON
