@@ -34,7 +34,6 @@ import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalQuery;
 
 /**
  * This helper class is used to work around some Archie issues with date/time parsing accepting invalid years or not following the specified format fully (i.e. 2023-13, ignoring leap years)
@@ -122,57 +121,85 @@ public final class DateTimeHelpers {
     private DateTimeHelpers() {}
 
     public static Temporal parseDate(String isoDate) {
-        return (Temporal) parse(
-                isoDate,
-                ISO_8601_DATE_PARSER,
-                ISO_8601_DATE_COMPACT_PARSER,
-                LocalDate::from,
-                YearMonth::from,
-                Year::from);
+        TemporalAccessor parsed = parse(isoDate, ISO_8601_DATE_PARSER, ISO_8601_DATE_COMPACT_PARSER);
+        if (parsed == null) {
+            return null;
+        }
+
+        if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
+            return LocalDate.from(parsed);
+        }
+
+        if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
+            return YearMonth.from(parsed);
+        }
+
+        if (parsed.isSupported(ChronoField.YEAR)) {
+            return Year.from(parsed);
+        }
+
+        throw new DateTimeException(isoDate + " does not provide any field required for the possible precisions");
     }
 
     public static TemporalAccessor parseTime(String isoTime) {
-        return parse(isoTime, ISO_8601_TIME_PARSER, ISO_8601_TIME_COMPACT_PARSER, OffsetTime::from, LocalTime::from);
+        TemporalAccessor parsed = parse(isoTime, ISO_8601_TIME_PARSER, ISO_8601_TIME_COMPACT_PARSER);
+        if (parsed == null) {
+            return null;
+        }
+
+        if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
+            return OffsetTime.from(parsed);
+        }
+
+        if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
+            return LocalTime.from(parsed);
+        }
+
+        throw new DateTimeException(isoTime + " does not provide any field required for the possible precisions");
     }
 
     public static TemporalAccessor parseDateTime(String isoDateTime) {
-        return parse(
-                isoDateTime,
-                ISO_8601_DATE_TIME_PARSER,
-                ISO_8601_DATE_TIME_COMPACT_PARSER,
-                OffsetDateTime::from,
-                LocalDateTime::from,
-                LocalDate::from,
-                YearMonth::from,
-                Year::from);
+        TemporalAccessor parsed = parse(isoDateTime, ISO_8601_DATE_TIME_PARSER, ISO_8601_DATE_TIME_COMPACT_PARSER);
+        if (parsed == null) {
+            return null;
+        }
+
+        if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
+            return OffsetDateTime.from(parsed);
+        }
+
+        if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
+            return LocalDateTime.from(parsed);
+        }
+
+        if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
+            return LocalDate.from(parsed);
+        }
+
+        if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
+            return YearMonth.from(parsed);
+        }
+
+        if (parsed.isSupported(ChronoField.YEAR)) {
+            return Year.from(parsed);
+        }
+
+        throw new DateTimeException(isoDateTime + " does not provide any field required for the possible precisions");
     }
 
-    public static TemporalAccessor parse(
-            String isoString,
-            DateTimeFormatter extendedFormatter,
-            DateTimeFormatter compactFormatter,
-            TemporalQuery<?>... types) {
+    private static TemporalAccessor parse(
+            String isoString, DateTimeFormatter extendedFormatter, DateTimeFormatter compactFormatter) {
         if (isoString == null) {
             return null;
         }
 
-        TemporalAccessor parsed;
+        // Using parseBest is not an option as it will fall back to a lower precision if the given precision is an
+        // invalid date and/or time
         try {
-            // We assume that extended format is used most of the time -> try that first
-            parsed = extendedFormatter.parseBest(isoString, types);
+            // Assume that extended format is used most of the time -> try that first
+            return extendedFormatter.parse(isoString);
         } catch (DateTimeException e) {
-            parsed = compactFormatter.parseBest(isoString, types);
+            return compactFormatter.parse(isoString);
         }
-
-        // The partial date implementations sometimes do not check ranges of the fields even with strict parsing
-        // -> do it manually
-        if (ChronoField.YEAR.isSupportedBy(parsed)) {
-            ChronoField.YEAR.checkValidValue(parsed.get(ChronoField.YEAR));
-        }
-        if (ChronoField.MONTH_OF_YEAR.isSupportedBy(parsed)) {
-            ChronoField.MONTH_OF_YEAR.checkValidValue(parsed.get(ChronoField.MONTH_OF_YEAR));
-        }
-
-        return parsed;
     }
 }
