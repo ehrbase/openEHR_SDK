@@ -54,38 +54,43 @@ public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemp
             while (fieldsIterator.hasNext()) {
                 Map.Entry<String, JsonNode> nodeEntry = fieldsIterator.next();
                 if (!nodeEntry.getValue().isNull()) {
-                    switch (nodeEntry.getKey()) {
-                        case "normal_status":
-                            result.setNormalStatus(ctxt.readTreeAsValue(nodeEntry.getValue(), CodePhrase.class));
-                            break;
-                        case "normal_range":
-                            result.setNormalRange(ctxt.readTreeAsValue(nodeEntry.getValue(), DvInterval.class));
-                            break;
-                        case "other_reference_ranges":
-                            result.setOtherReferenceRanges(ctxt.readTreeAsValue(
-                                    nodeEntry.getValue(),
-                                    ctxt.getTypeFactory()
-                                            .constructType(new TypeReference<List<ReferenceRange<T>>>() {})));
-                            break;
-                        case "magnitude_status":
-                            result.setMagnitudeStatus(nodeEntry.getValue().textValue());
-                            break;
-                        case "accuracy":
-                            result.setAccuracy(ctxt.readTreeAsValue(nodeEntry.getValue(), DvDuration.class));
-                            break;
-                        case "value":
-                            result.setValue(parseValue(nodeEntry.getValue().textValue()));
-                            break;
-                        case "magnitude":
-                            // is a calculated property
-                        case "_type":
-                            // not part of RM, specific to openEHR JSON
-                            break;
-                        default:
-                            if (ctxt.isEnabled(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)) {
-                                throw new JsonMappingException(
-                                        "Property \"" + nodeEntry.getKey() + "\" is not part of DV_DATE_TIME");
-                            }
+                    try {
+                        switch (nodeEntry.getKey()) {
+                            case "normal_status":
+                                result.setNormalStatus(ctxt.readTreeAsValue(nodeEntry.getValue(), CodePhrase.class));
+                                break;
+                            case "normal_range":
+                                result.setNormalRange(ctxt.readTreeAsValue(nodeEntry.getValue(), DvInterval.class));
+                                break;
+                            case "other_reference_ranges":
+                                result.setOtherReferenceRanges(ctxt.readTreeAsValue(
+                                        nodeEntry.getValue(),
+                                        ctxt.getTypeFactory()
+                                                .constructType(new TypeReference<List<ReferenceRange<T>>>() {})));
+                                break;
+                            case "magnitude_status":
+                                result.setMagnitudeStatus(nodeEntry.getValue().textValue());
+                                break;
+                            case "accuracy":
+                                result.setAccuracy(ctxt.readTreeAsValue(nodeEntry.getValue(), DvDuration.class));
+                                break;
+                            case "value":
+                                result.setValue(parseValue(nodeEntry.getValue().textValue()));
+                                break;
+                            case "magnitude":
+                                // is a calculated property
+                            case "_type":
+                                // not part of RM, specific to openEHR JSON
+                                break;
+                            default:
+                                if (ctxt.isEnabled(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)) {
+                                    throw new JsonMappingException(
+                                            "Property \"" + nodeEntry.getKey() + "\" is not part of DV_DATE_TIME");
+                                }
+                        }
+                    } catch (Exception e) {
+                        // we wrap the Exception to make sure the path to the property is provided accurately by jackson
+                        throw JsonMappingException.wrapWithPath(e, result, nodeEntry.getKey());
                     }
                 }
             }
