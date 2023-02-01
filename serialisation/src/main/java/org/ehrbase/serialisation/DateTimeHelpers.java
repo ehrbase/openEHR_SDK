@@ -138,10 +138,10 @@ public final class DateTimeHelpers {
             if (parsed.isSupported(ChronoField.YEAR)) {
                 return Year.from(parsed);
             }
-        } catch (DateTimeException e2) {
+        } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
-            throw new IllegalArgumentException(e2.getMessage() + ":" + isoDate);
+            throw new IllegalArgumentException(e.getMessage() + ":" + isoDate, e);
         }
         throw new DateTimeException(
                 isoDate + " does not provide any field required for the possible precisions:" + isoDate);
@@ -161,10 +161,10 @@ public final class DateTimeHelpers {
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
                 return LocalTime.from(parsed);
             }
-        } catch (DateTimeException e2) {
+        } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
-            throw new IllegalArgumentException(e2.getMessage() + ":" + isoTime);
+            throw new IllegalArgumentException(e.getMessage() + ":" + isoTime, e);
         }
         throw new DateTimeException(
                 isoTime + " does not provide any field required for the possible precisions:" + isoTime);
@@ -196,10 +196,10 @@ public final class DateTimeHelpers {
             if (parsed.isSupported(ChronoField.YEAR)) {
                 return Year.from(parsed);
             }
-        } catch (DateTimeException e2) {
+        } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
-            throw new IllegalArgumentException(e2.getMessage() + ":" + isoDateTime);
+            throw new IllegalArgumentException(e.getMessage() + ":" + isoDateTime, e);
         }
         throw new DateTimeException(
                 isoDateTime + " does not provide any field required for the possible precisions:" + isoDateTime);

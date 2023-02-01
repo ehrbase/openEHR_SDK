@@ -97,8 +97,14 @@ public class FlatJsonUnmarshaller {
             }
 
             return generate;
-        } catch (JsonProcessingException | DateTimeException e) {
+        } catch (JsonProcessingException e) {
             throw new UnmarshalException(e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            if (e.getCause() instanceof DateTimeException) {
+                throw new UnmarshalException(e.getMessage(), e);
+            } else {
+                throw e;
+            }
         }
     }
 
