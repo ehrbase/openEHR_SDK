@@ -17,23 +17,44 @@
  */
 package org.ehrbase.serialisation.walker;
 
-import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_4_0;
+import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_0_4;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Archetyped;
 import com.nedap.archie.rm.archetyped.FeederAuditDetails;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.TemplateId;
-import com.nedap.archie.rm.composition.*;
-import com.nedap.archie.rm.datastructures.*;
+import com.nedap.archie.rm.composition.Action;
+import com.nedap.archie.rm.composition.AdminEntry;
+import com.nedap.archie.rm.composition.CareEntry;
+import com.nedap.archie.rm.composition.Evaluation;
+import com.nedap.archie.rm.composition.EventContext;
+import com.nedap.archie.rm.composition.InstructionDetails;
+import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.datastructures.Cluster;
+import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datastructures.Item;
+import com.nedap.archie.rm.datastructures.ItemList;
+import com.nedap.archie.rm.datastructures.ItemSingle;
+import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.datastructures.ItemTable;
+import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
 import org.ehrbase.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.parser.NodeId;
 import org.slf4j.Logger;
@@ -56,7 +77,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
             if (nodeId.isArchetypeId()) {
                 Archetyped archetyped = new Archetyped();
                 archetyped.setArchetypeId(new ArchetypeID(nodeId.getNodeId()));
-                archetyped.setRmVersion(RM_VERSION_1_4_0);
+                archetyped.setRmVersion(RM_VERSION_1_0_4);
                 TemplateId templateId = new TemplateId();
                 templateId.setValue(context.getTemplateId());
                 archetyped.setTemplateId(templateId);
@@ -287,8 +308,8 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
             boolean isChoice = choices.containsKey(childNode.getAqlPath());
 
-            if (currentNode.getRmType().equals("ELEMENT")
-                    && childNode.getRmType().equals("DV_CODED_TEXT")
+            if (currentNode.getRmType().equals(RmConstants.ELEMENT)
+                    && childNode.getRmType().equals(RmConstants.DV_CODED_TEXT)
                     && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
                 isChoice = true;
             }

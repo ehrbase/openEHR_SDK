@@ -104,7 +104,6 @@ public class OPTParser {
     public static final String PATH_DIVIDER = "/";
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
     public static final String CAREFLOW_STEP = "careflow_step";
-    public static final String DV_CODED_TEXT = "DV_CODED_TEXT";
     public static final String CODED_TEXT = "CODED_TEXT";
     public static final String OPENEHR = "openehr";
     public static final String CURRENT_STATE = "current_state";
@@ -458,7 +457,7 @@ public class OPTParser {
             }
 
             List<WebTemplateNode> ismTransitionList = newChildren.stream()
-                    .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                    .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
                     .collect(Collectors.toList());
             if (!ismTransitionList.isEmpty()) {
                 WebTemplateNode firstChild = ismTransitionList.get(0);
@@ -467,7 +466,7 @@ public class OPTParser {
                 ismTransition.setId(buildId(cattribute.getRmAttributeName()));
                 ismTransition.setMin(firstChild.getMin());
                 ismTransition.setMax(firstChild.getMax());
-                ismTransition.setRmType("ISM_TRANSITION");
+                ismTransition.setRmType(RmConstants.ISM_TRANSITION);
                 ismTransition.setInContext(true);
                 ismTransition.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName()));
 
@@ -479,7 +478,7 @@ public class OPTParser {
                 careflowStep.setMax(careflowStepProto.getMin());
                 careflowStep.setName("Careflow_step");
                 careflowStep.setId(CAREFLOW_STEP);
-                careflowStep.setRmType(DV_CODED_TEXT);
+                careflowStep.setRmType(RmConstants.DV_CODED_TEXT);
                 careflowStep.setInContext(true);
                 careflowStep.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), CAREFLOW_STEP));
                 WebTemplateInput code = new WebTemplateInput();
@@ -508,7 +507,7 @@ public class OPTParser {
                         firstChild.findChildById(CURRENT_STATE).orElseThrow();
                 currentState.setMin(currentStateProto.getMin());
                 currentState.setMax(currentStateProto.getMin());
-                currentState.setRmType(DV_CODED_TEXT);
+                currentState.setRmType(RmConstants.DV_CODED_TEXT);
                 currentState.setName("Current_state");
                 currentState.setId(CURRENT_STATE);
                 currentState.setInContext(true);
@@ -573,28 +572,28 @@ public class OPTParser {
         values.stream().flatMap(List::stream).forEach(this::updateChoiceId);
 
         // Inherit name for Element values
-        if (node.getRmType().equals("ELEMENT")) {
+        if (node.getRmType().equals(RmConstants.ELEMENT)) {
             // Is any Node
             if (node.getChildren().isEmpty()) {
 
                 Stream.of(
                                 RmConstants.DV_TEXT,
                                 RmConstants.DV_CODED_TEXT,
-                                "DV_MULTIMEDIA",
-                                "DV_PARSABLE",
-                                "DV_STATE",
-                                "DV_BOOLEAN",
-                                "DV_IDENTIFIER",
-                                "DV_URI",
-                                "DV_EHR_URI",
+                                RmConstants.DV_MULTIMEDIA,
+                                RmConstants.DV_PARSABLE,
+                                RmConstants.DV_STATE,
+                                RmConstants.DV_BOOLEAN,
+                                RmConstants.DV_IDENTIFIER,
+                                RmConstants.DV_URI,
+                                RmConstants.DV_EHR_URI,
                                 RmConstants.DV_DURATION,
-                                "DV_QUANTITY",
-                                "DV_COUNT",
-                                "DV_PROPORTION",
-                                "DV_DATE_TIME",
-                                "DV_TIME",
-                                "DV_ORDINAL",
-                                "DV_DATE")
+                                RmConstants.DV_QUANTITY,
+                                RmConstants.DV_COUNT,
+                                RmConstants.DV_PROPORTION,
+                                RmConstants.DV_DATE_TIME,
+                                RmConstants.DV_TIME,
+                                RmConstants.DV_ORDINAL,
+                                RmConstants.DV_DATE)
                         .forEach(t -> addAnyNode(node, t, inputMap));
 
             } else {
@@ -614,9 +613,9 @@ public class OPTParser {
         }
 
         // Push inputs for DV_CODED_TEXT up
-        if (node.getRmType().equals(DV_CODED_TEXT)) {
+        if (node.getRmType().equals(RmConstants.DV_CODED_TEXT)) {
             List<WebTemplateNode> matching =
-                    node.findMatching(n -> n.getRmType().equals("CODE_PHRASE"));
+                    node.findMatching(n -> n.getRmType().equals(RmConstants.CODE_PHRASE));
             if (!matching.isEmpty()) {
                 node.getInputs().addAll(matching.get(0).getInputs());
 

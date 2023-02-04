@@ -20,12 +20,19 @@ package org.ehrbase.client.classgenerator;
 import com.google.common.base.CharMatcher;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.*;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.util.SnakeCase;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -35,7 +42,6 @@ public class DefaultNamingStrategy implements NamingStrategy {
     public static final String TERM_DIVIDER = "_";
     public static final String VALUE = "value";
     public static final String NULL_FLAVOUR = "null_flavour";
-    public static final String ELEMENT = "ELEMENT";
     private ClassGeneratorConfig config;
 
     public DefaultNamingStrategy(ClassGeneratorConfig config) {
@@ -62,7 +68,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
         }
         if (isChoice) {
             name = name + TERM_DIVIDER + "choice";
-        } else if (node.getRmType().equals("DV_CODED_TEXT") && isEnum) {
+        } else if (node.getRmType().equals(RmConstants.DV_CODED_TEXT) && isEnum) {
             name = name + TERM_DIVIDER + "defining_code";
         } else {
             name = name + TERM_DIVIDER + node.getRmType();
@@ -89,7 +95,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
         if (parent.getChildren().stream()
                 .anyMatch(n -> replaceElementName(context, n).equals(finalName)
                         && !Objects.equals(node.getAqlPath(), n.getAqlPath()))) {
-            if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), ELEMENT)) {
+            if (!Objects.equals(context.unFilteredNodeDeque.peek().getRmType(), RmConstants.ELEMENT)) {
                 if (config.getOptimizerSetting().equals(OptimizerSetting.ALL)
                         && !context.unFilteredNodeDeque.isEmpty()) {
                     name = findLastArchetype(context.unFilteredNodeDeque)
@@ -123,7 +129,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
         String name = node.getName();
         Optional<WebTemplateNode> trueParent =
                 Optional.ofNullable(context.webTemplate.findFiltersNodes(node)).map(Deque::peek);
-        if (Objects.equals(trueParent.map(WebTemplateNode::getRmType).orElse(null), ELEMENT)) {
+        if (Objects.equals(trueParent.map(WebTemplateNode::getRmType).orElse(null), RmConstants.ELEMENT)) {
             if (name.equals(NULL_FLAVOUR)) {
                 name = trueParent.map(WebTemplateNode::getName).orElse("") + TERM_DIVIDER + NULL_FLAVOUR;
             } else {
@@ -166,9 +172,15 @@ public class DefaultNamingStrategy implements NamingStrategy {
         StringJoiner joiner = new StringJoiner("/");
         for (Iterator<WebTemplateNode> it = context.unFilteredNodeDeque.descendingIterator(); it.hasNext(); ) {
             WebTemplateNode n = it.next();
-            if (!List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
+            if (!List.of(
+                                            RmConstants.HISTORY,
+                                            RmConstants.ITEM_TREE,
+                                            RmConstants.ITEM_LIST,
+                                            RmConstants.ITEM_SINGLE,
+                                            RmConstants.ITEM_TABLE,
+                                            RmConstants.ITEM_STRUCTURE)
                                     .contains(n.getRmType())
-                            && (!n.getRmType().equals(ELEMENT))
+                            && (!n.getRmType().equals(RmConstants.ELEMENT))
                     || node.getName().equals(NULL_FLAVOUR)) {
                 joiner.add(n.getName());
             }
@@ -214,7 +226,7 @@ public class DefaultNamingStrategy implements NamingStrategy {
         if (name.equals(VALUE)) {
             name = context.nodeDeque.peek().getName();
         }
-        if (context.nodeDeque.peek().getRmType().equals(ELEMENT) && !name.equals("feeder_audit")) {
+        if (context.nodeDeque.peek().getRmType().equals(RmConstants.ELEMENT) && !name.equals("feeder_audit")) {
             name = VALUE;
         }
 
