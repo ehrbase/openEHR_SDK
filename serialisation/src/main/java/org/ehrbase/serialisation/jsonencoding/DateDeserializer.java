@@ -19,7 +19,7 @@ package org.ehrbase.serialisation.jsonencoding;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import java.time.temporal.Temporal;
-import org.ehrbase.serialisation.DateTimeHelpers;
+import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
 
 /**
  * Workaround for archie date-time parsing issues
@@ -35,6 +35,6 @@ public class DateDeserializer extends AbstractDateTimeWorkaroundDeserializer<Tem
 
     @Override
     Temporal parseValue(String valueString) {
-        return DateTimeHelpers.parseDate(valueString);
+        return OpenEHRDateTimeParseUtils.parseDate(valueString);
     }
 }

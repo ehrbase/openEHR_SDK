@@ -22,7 +22,7 @@ import java.time.OffsetTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Map;
 import java.util.Set;
-import org.ehrbase.serialisation.DateTimeHelpers;
+import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -49,7 +49,7 @@ public class DvTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvTime> {
                     if ("now".equals(s)) {
                         rmObject.setValue(OffsetTime.now());
                     } else if (s != null) {
-                        TemporalAccessor temp = DateTimeHelpers.parseTime(s);
+                        TemporalAccessor temp = OpenEHRDateTimeParseUtils.parseTime(s);
                         rmObject.setValue(temp);
                     }
                 },

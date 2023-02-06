@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Set;
-import org.ehrbase.serialisation.DateTimeHelpers;
+import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -49,7 +49,7 @@ public class DvDateRMUnmarshaller extends AbstractRMUnmarshaller<DvDate> {
                     if ("now".equals(s)) {
                         rmObject.setValue(LocalDate.now());
                     } else if (s != null) {
-                        Temporal temp = DateTimeHelpers.parseDate(s);
+                        Temporal temp = OpenEHRDateTimeParseUtils.parseDate(s);
                         rmObject.setValue(temp);
                     }
                 },

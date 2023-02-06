@@ -34,13 +34,14 @@ import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.function.Predicate;
 
 /**
  * This helper class is used to work around some Archie issues with date/time parsing accepting invalid years or not following the specified format fully (i.e. 2023-13, ignoring leap years)
  * @deprecated TODO: this should be removed when the issue is fixed in archie
  */
 @Deprecated
-public final class DateTimeHelpers {
+public final class OpenEHRDateTimeParseUtils {
 
     // archie version does not specify width of YEAR field (YYYY)
     public static final DateTimeFormatter ISO_8601_DATE_PARSER = new DateTimeFormatterBuilder()
@@ -81,7 +82,7 @@ public final class DateTimeHelpers {
             .optionalEnd()
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
-    // partial times are allowed in compact format but archie does not implement that
+    // partial dates are allowed in compact format but archie does not implement that
     public static final DateTimeFormatter ISO_8601_DATE_COMPACT_PARSER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendValue(ChronoField.YEAR, 4)
@@ -118,13 +119,21 @@ public final class DateTimeHelpers {
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
 
-    private DateTimeHelpers() {}
+    private static final Predicate<String> COMPACT_DATE_PREDICATE = s -> s.length() > 4 && s.charAt(4) != '-';
+    private static final Predicate<String> COMPACT_TIME_PREDICATE = s -> s.length() > 2 && s.charAt(2) != ':';
+
+    private OpenEHRDateTimeParseUtils() {}
 
     public static Temporal parseDate(String isoDate) {
+        if (isoDate == null) {
+            return null;
+        }
         try {
-            TemporalAccessor parsed = parse(isoDate, ISO_8601_DATE_PARSER, ISO_8601_DATE_COMPACT_PARSER);
-            if (parsed == null) {
-                return null;
+            final TemporalAccessor parsed;
+            if (COMPACT_DATE_PREDICATE.test(isoDate)) {
+                parsed = ISO_8601_DATE_COMPACT_PARSER.parse(isoDate);
+            } else {
+                parsed = ISO_8601_DATE_PARSER.parse(isoDate);
             }
 
             if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
@@ -138,20 +147,26 @@ public final class DateTimeHelpers {
             if (parsed.isSupported(ChronoField.YEAR)) {
                 return Year.from(parsed);
             }
+            throw new DateTimeException(
+                    isoDate + " does not provide any field required for the possible precisions:" + isoDate);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
             throw new IllegalArgumentException(e.getMessage() + ":" + isoDate, e);
         }
-        throw new DateTimeException(
-                isoDate + " does not provide any field required for the possible precisions:" + isoDate);
     }
 
     public static TemporalAccessor parseTime(String isoTime) {
+        if (isoTime == null) {
+            return null;
+        }
         try {
-            TemporalAccessor parsed = parse(isoTime, ISO_8601_TIME_PARSER, ISO_8601_TIME_COMPACT_PARSER);
-            if (parsed == null) {
-                return null;
+
+            final TemporalAccessor parsed;
+            if (COMPACT_TIME_PREDICATE.test(isoTime)) {
+                parsed = ISO_8601_TIME_COMPACT_PARSER.parse(isoTime);
+            } else {
+                parsed = ISO_8601_TIME_PARSER.parse(isoTime);
             }
 
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
@@ -161,20 +176,26 @@ public final class DateTimeHelpers {
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
                 return LocalTime.from(parsed);
             }
+            throw new DateTimeException(
+                    isoTime + " does not provide any field required for the possible precisions:" + isoTime);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
-            // behaviour
+            // behaviour to avoid breaking stuff
             throw new IllegalArgumentException(e.getMessage() + ":" + isoTime, e);
         }
-        throw new DateTimeException(
-                isoTime + " does not provide any field required for the possible precisions:" + isoTime);
     }
 
     public static TemporalAccessor parseDateTime(String isoDateTime) {
+        if (isoDateTime == null) {
+            return null;
+        }
         try {
-            TemporalAccessor parsed = parse(isoDateTime, ISO_8601_DATE_TIME_PARSER, ISO_8601_DATE_TIME_COMPACT_PARSER);
-            if (parsed == null) {
-                return null;
+            final TemporalAccessor parsed;
+            // We can use the date predicate as a date-time will always start with a date
+            if (COMPACT_DATE_PREDICATE.test(isoDateTime)) {
+                parsed = ISO_8601_DATE_TIME_COMPACT_PARSER.parse(isoDateTime);
+            } else {
+                parsed = ISO_8601_DATE_TIME_PARSER.parse(isoDateTime);
             }
 
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
@@ -196,28 +217,12 @@ public final class DateTimeHelpers {
             if (parsed.isSupported(ChronoField.YEAR)) {
                 return Year.from(parsed);
             }
+            throw new DateTimeException(
+                    isoDateTime + " does not provide any field required for the possible precisions:" + isoDateTime);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
             throw new IllegalArgumentException(e.getMessage() + ":" + isoDateTime, e);
-        }
-        throw new DateTimeException(
-                isoDateTime + " does not provide any field required for the possible precisions:" + isoDateTime);
-    }
-
-    private static TemporalAccessor parse(
-            String isoString, DateTimeFormatter extendedFormatter, DateTimeFormatter compactFormatter) {
-        if (isoString == null) {
-            return null;
-        }
-
-        // Using parseBest is not an option as it will fall back to a lower precision if the given precision is an
-        // invalid date and/or time
-        try {
-            // Assume that extended format is used most of the time -> try that first
-            return extendedFormatter.parse(isoString);
-        } catch (DateTimeException e) {
-            return compactFormatter.parse(isoString);
         }
     }
 }
