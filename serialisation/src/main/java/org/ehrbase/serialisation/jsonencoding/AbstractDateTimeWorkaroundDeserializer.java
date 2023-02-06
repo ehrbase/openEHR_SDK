@@ -98,6 +98,7 @@ public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemp
                                             "Property \"" + nodeEntry.getKey() + "\" is not part of "
                                                     + result.getClass().getSimpleName());
                                 }
+                                break;
                         }
                     } catch (Exception e) {
                         // we wrap the Exception to make sure the path to the property is provided accurately by jackson
