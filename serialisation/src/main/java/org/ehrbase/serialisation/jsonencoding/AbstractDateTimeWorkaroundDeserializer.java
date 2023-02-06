@@ -38,8 +38,8 @@ import java.util.Map;
 /**
  * Base class for archie date-time parsing workarounds
  *
- * @param <V>
- * @param <T>
+ * @param <V> type of /value attribute
+ * @param <T> DV_TEMPORAL subtype that is parsed
  * @deprecated TODO remove when archie parser rejects invalid values and adjusts to match the spec
  */
 @Deprecated
@@ -68,7 +68,9 @@ public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemp
                                 result.setNormalStatus(ctxt.readTreeAsValue(nodeEntry.getValue(), CodePhrase.class));
                                 break;
                             case "normal_range":
-                                result.setNormalRange(ctxt.readTreeAsValue(nodeEntry.getValue(), DvInterval.class));
+                                result.setNormalRange(ctxt.readTreeAsValue(
+                                        nodeEntry.getValue(),
+                                        ctxt.getTypeFactory().constructType(new TypeReference<DvInterval<T>>() {})));
                                 break;
                             case "other_reference_ranges":
                                 result.setOtherReferenceRanges(ctxt.readTreeAsValue(
