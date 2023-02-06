@@ -18,6 +18,7 @@
 package org.ehrbase.serialisation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ class OpenEHRDateTimeParseUtilsTest {
 
     @Test
     void parseDateExtended() {
+        assertNull(OpenEHRDateTimeParseUtils.parseDate(null));
         assertEquals(LocalDate.of(2023, 1, 21), OpenEHRDateTimeParseUtils.parseDate("2023-01-21"));
         assertEquals(YearMonth.of(2023, 1), OpenEHRDateTimeParseUtils.parseDate("2023-01"));
         assertEquals(Year.of(2023), OpenEHRDateTimeParseUtils.parseDate("2023"));
@@ -59,10 +61,16 @@ class OpenEHRDateTimeParseUtilsTest {
                 () -> OpenEHRDateTimeParseUtils.parseDate("2023-01-30T12:13:14.123456789+01:00"));
         assertThrows(
                 IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate("12:13:14.123456789+01:00"));
+
+        // string not using openEHR date/time format
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate("31th of January 2023"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate("foobar"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate(""));
     }
 
     @Test
     void parseDateCompact() {
+        assertNull(OpenEHRDateTimeParseUtils.parseDate(null));
         assertEquals(LocalDate.of(2023, 1, 21), OpenEHRDateTimeParseUtils.parseDate("20230121"));
         assertEquals(YearMonth.of(2023, 1), OpenEHRDateTimeParseUtils.parseDate("202301"));
         assertEquals(Year.of(2023), OpenEHRDateTimeParseUtils.parseDate("2023"));
@@ -88,10 +96,16 @@ class OpenEHRDateTimeParseUtilsTest {
                 () -> OpenEHRDateTimeParseUtils.parseDate("20230130T121314.123456789+0100"));
         assertThrows(
                 IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate("121314.123456789+0100"));
+
+        // string not using openEHR date/time format
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate("31th of January 2023"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate("foobar"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDate(""));
     }
 
     @Test
     void parseTimeExtended() {
+        assertNull(OpenEHRDateTimeParseUtils.parseTime(null));
         // With offset
         assertEquals(
                 OffsetTime.of(13, 14, 15, 987654321, ZoneOffset.ofHoursMinutes(1, 30)),
@@ -149,10 +163,16 @@ class OpenEHRDateTimeParseUtilsTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> OpenEHRDateTimeParseUtils.parseTime("2023-01-30T12:13:14.123456789+01:00"));
+
+        // string not using openEHR date/time format
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseTime("1:30 pm UTC"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseTime("foobar"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseTime(""));
     }
 
     @Test
     void parseTimeCompact() {
+        assertNull(OpenEHRDateTimeParseUtils.parseTime(null));
         // With offset
         assertEquals(
                 OffsetTime.of(13, 14, 15, 987654321, ZoneOffset.ofHoursMinutes(1, 30)),
@@ -204,10 +224,16 @@ class OpenEHRDateTimeParseUtilsTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> OpenEHRDateTimeParseUtils.parseTime("20230130T121314.123456789+0100"));
+
+        // string not using openEHR date/time format
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseTime("1:30 pm UTC"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseTime("foobar"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseTime(""));
     }
 
     @Test
     void parseDateTimeExtended() {
+        assertNull(OpenEHRDateTimeParseUtils.parseDateTime(null));
         // With offset
         assertEquals(
                 OffsetDateTime.of(2023, 1, 30, 13, 14, 15, 987654321, ZoneOffset.ofHoursMinutes(1, 30)),
@@ -300,10 +326,17 @@ class OpenEHRDateTimeParseUtilsTest {
                 IllegalArgumentException.class,
                 () -> OpenEHRDateTimeParseUtils.parseDateTime("13:14:15.987654321+01:30"));
         assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime("2023-01-30T"));
+
+        // string not using openEHR date/time format
+        assertThrows(
+                IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime("31th of January 2023"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime("foobar"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime(""));
     }
 
     @Test
     void parseDateTimeCompact() {
+        assertNull(OpenEHRDateTimeParseUtils.parseDateTime(null));
         // With offset
         assertEquals(
                 OffsetDateTime.of(2023, 1, 30, 13, 14, 15, 987654321, ZoneOffset.ofHoursMinutes(1, 30)),
@@ -384,5 +417,11 @@ class OpenEHRDateTimeParseUtilsTest {
         assertThrows(
                 IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime("131415.987654321+0130"));
         assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime("20230130T"));
+
+        // string not using openEHR date/time format
+        assertThrows(
+                IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime("31th of January 2023"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime("foobar"));
+        assertThrows(IllegalArgumentException.class, () -> OpenEHRDateTimeParseUtils.parseDateTime(""));
     }
 }
