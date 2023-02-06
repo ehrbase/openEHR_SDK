@@ -35,6 +35,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Base class for archie date-time parsing workarounds
+ *
+ * @param <V>
+ * @param <T>
+ * @deprecated TODO remove when archie parser rejects invalid values and adjusts to match the spec
+ */
+@Deprecated
 public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemporal<T, ?> & SingleValuedDataValue<V>>
         extends JsonDeserializer<T> {
 
@@ -85,7 +93,8 @@ public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemp
                             default:
                                 if (ctxt.isEnabled(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)) {
                                     throw new JsonMappingException(
-                                            "Property \"" + nodeEntry.getKey() + "\" is not part of DV_DATE_TIME");
+                                            "Property \"" + nodeEntry.getKey() + "\" is not part of "
+                                                    + result.getClass().getSimpleName());
                                 }
                         }
                     } catch (Exception e) {
