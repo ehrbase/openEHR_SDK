@@ -19,7 +19,12 @@ package org.ehrbase.client.classgenerator;
 
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.util.*;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.SetUtils;
 import org.ehrbase.serialisation.util.SnakeCase;
@@ -104,9 +109,9 @@ public class FlattFilter extends Filter {
 
         switch (config.getOptimizerSetting()) {
             case ALL:
-                return !node.getRmType().equals("COMPOSITION");
+                return !node.getRmType().equals(RmConstants.COMPOSITION);
             case SECTION:
-                return (!node.isArchetype() || node.getRmType().equals("SECTION"));
+                return (!node.isArchetype() || node.getRmType().equals(RmConstants.SECTION));
             default:
                 return !node.isArchetype();
         }

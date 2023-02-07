@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DecimalStyle;
 import java.time.temporal.ChronoField;
 import org.apache.commons.collections4.CollectionUtils;
+import org.ehrbase.util.rmconstants.RmConstants;
 
 /**
  * custom serializer for DvDateTime instance with dot delimiter instead of comma
@@ -87,7 +88,7 @@ public class DateTimeSerializer extends JsonSerializer<DvDateTime> {
         ObjectMapper mapper = (ObjectMapper) jsonGenerator.getCodec();
 
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("_type", "DV_DATE_TIME");
+        jsonGenerator.writeStringField("_type", RmConstants.DV_DATE_TIME);
         jsonGenerator.writeStringField("value", ISO_8601_DATE_TIME.format(dvDateTime.getValue()));
         writeDvTemporal(jsonGenerator, dvDateTime, mapper);
         jsonGenerator.writeEndObject();

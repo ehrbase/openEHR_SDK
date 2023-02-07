@@ -43,6 +43,7 @@ import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.interpreter.Interpreter;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -55,21 +56,21 @@ public class MatrixToCompositionWalker extends ToCompositionWalker<List<ToWalker
     // These subparts are saved as arrays.
     public static final List<Pair<AqlPath, String>> ARRAY_ELEMENTS = List.of(
             Pair.of(AqlPath.parse("mappings"), DV_TEXT),
-            Pair.of(AqlPath.parse("mappings"), "DV_CODED_TEXT"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_QUANTITY"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_DURATION"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_ORDINAL"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_PROPORTION"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_COUNT"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_DATE"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_DATE_TIME"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_TIME"),
-            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), "DV_CODED_TEXT"),
+            Pair.of(AqlPath.parse("mappings"), RmConstants.DV_CODED_TEXT),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_QUANTITY),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_DURATION),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_ORDINAL),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_PROPORTION),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_COUNT),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_DATE),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_DATE_TIME),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_TIME),
+            Pair.of(AqlPath.parse(OTHER_REFERENCE_RANGES), RmConstants.DV_CODED_TEXT),
             Pair.of(AqlPath.parse("feeder_system_item_ids"), FEEDER_AUDIT),
             Pair.of(AqlPath.parse("originating_system_item_ids"), FEEDER_AUDIT),
             Pair.of(AqlPath.parse("performer/identifiers"), "PARTICIPATION"),
-            Pair.of(AqlPath.parse("identifiers"), "PARTY_IDENTIFIED"),
-            Pair.of(AqlPath.parse("identifiers"), "PARTY_RELATED"),
+            Pair.of(AqlPath.parse("identifiers"), RmConstants.PARTY_IDENTIFIED),
+            Pair.of(AqlPath.parse("identifiers"), RmConstants.PARTY_RELATED),
             Pair.of(AqlPath.parse("originating_system_audit/provider/identifiers"), FEEDER_AUDIT),
             Pair.of(AqlPath.parse("originating_system_audit/subject/identifiers"), FEEDER_AUDIT),
             Pair.of(AqlPath.parse("feeder_system_audit/provider/identifiers"), FEEDER_AUDIT),

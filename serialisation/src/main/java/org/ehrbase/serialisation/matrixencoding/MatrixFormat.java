@@ -45,6 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.RMDataFormat;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
 
 /**
@@ -99,7 +100,7 @@ public class MatrixFormat implements RMDataFormat {
         Entity currentEntity = new Entity();
         currentEntity.setPathFromRoot(AqlPath.ROOT_PATH);
         currentEntity.setArchetypeId(composition.getArchetypeNodeId());
-        currentEntity.setRmType("COMPOSITION");
+        currentEntity.setRmType(RmConstants.COMPOSITION);
         FromWalkerDto fromWalkerDto = new FromWalkerDto();
         fromWalkerDto.updateEntity(currentEntity);
         new CompositionToMatrixWalker()
