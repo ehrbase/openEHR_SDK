@@ -17,7 +17,14 @@
  */
 package org.ehrbase.serialisation.flatencoding.std.umarshal;
 
-import static org.ehrbase.util.rmconstants.RmConstants.*;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.util.rmconstants.RmConstants.ELEMENT;
+import static org.ehrbase.util.rmconstants.RmConstants.INTERVAL_EVENT;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_IDENTIFIED;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_RELATED;
+import static org.ehrbase.util.rmconstants.RmConstants.PARTY_SELF;
+import static org.ehrbase.util.rmconstants.RmConstants.POINT_EVENT;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +37,14 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartyRelated;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -50,6 +64,7 @@ import org.ehrbase.serialisation.walker.ToCompositionWalker;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
@@ -374,7 +389,8 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
     @Override
     protected void handleInheritance(WebTemplateNode currentNode) {
-        if (currentNode.getRmType().equals("ELEMENT") && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
+        if (currentNode.getRmType().equals(RmConstants.ELEMENT)
+                && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
             handleDVTextInternal(currentNode);
         } else {
             super.handleInheritance(currentNode);

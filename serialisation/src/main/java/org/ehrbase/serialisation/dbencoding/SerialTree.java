@@ -25,6 +25,7 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import java.util.Map;
 import org.apache.commons.collections4.map.PredicatedMap;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,9 @@ public class SerialTree {
             return map;
         }
 
-        if (addStructure instanceof Map && ((Map) addStructure).size() == 0 && !clazz.equalsIgnoreCase("COMPOSITION")) {
+        if (addStructure instanceof Map
+                && ((Map) addStructure).size() == 0
+                && !clazz.equalsIgnoreCase(RmConstants.COMPOSITION)) {
             return map;
         }
 

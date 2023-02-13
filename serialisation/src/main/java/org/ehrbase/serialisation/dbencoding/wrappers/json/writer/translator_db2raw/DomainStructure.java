@@ -18,6 +18,7 @@
 package org.ehrbase.serialisation.dbencoding.wrappers.json.writer.translator_db2raw;
 
 import org.ehrbase.serialisation.dbencoding.CompositionSerializer;
+import org.ehrbase.util.rmconstants.RmConstants;
 
 /**
  * Created by christian on 4/26/2018.
@@ -44,7 +45,7 @@ public class DomainStructure {
 
         String type = "*UNDEF*";
 
-        if (nodeIdentifier.equals(CompositionSerializer.TAG_EVENTS)) type = "POINT_EVENT";
+        if (nodeIdentifier.equals(CompositionSerializer.TAG_EVENTS)) type = RmConstants.POINT_EVENT;
         else if (nodeIdentifier.equals(CompositionSerializer.TAG_ACTIVITIES)) type = "ACTIVITY";
         else if (nodeIdentifier.contains(OPEN_EHR_EHR))
             type = nodeIdentifier.substring(OPEN_EHR_EHR.length(), nodeIdentifier.indexOf("."));
