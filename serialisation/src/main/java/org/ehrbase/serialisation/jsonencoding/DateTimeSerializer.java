@@ -20,6 +20,7 @@ package org.ehrbase.serialisation.jsonencoding;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.time.temporal.TemporalAccessor;
 import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
+import org.ehrbase.util.rmconstants.RmConstants;
 
 /**
  * custom serializer delegating to a custom date-time formatter using '.' as decimal separator and supporting all partial resolutions properly
@@ -28,7 +29,7 @@ public class DateTimeSerializer extends AbstractDvTemporalSerializer<TemporalAcc
 
     @Override
     protected String typeName() {
-        return "DV_DATE_TIME";
+        return RmConstants.DV_DATE_TIME;
     }
 
     @Override
