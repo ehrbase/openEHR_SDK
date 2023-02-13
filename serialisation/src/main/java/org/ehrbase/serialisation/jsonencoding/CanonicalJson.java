@@ -65,11 +65,11 @@ public class CanonicalJson implements RMDataFormat {
 
     static {
         // Configuration to ignore methods that are not part of the RM
-
-        MARSHAL_OM.addMixInAnnotations(ArchetypeID.class, ObjectIdMixIn.class);
-        MARSHAL_OM.addMixInAnnotations(Locatable.class, LocatableMixIn.class);
-        MARSHAL_OM.addMixInAnnotations(Pathable.class, PathableMixIn.class);
-        MARSHAL_OM.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
+        MARSHAL_OM
+                .addMixIn(ArchetypeID.class, ObjectIdMixIn.class)
+                .addMixIn(Locatable.class, LocatableMixIn.class)
+                .addMixIn(Pathable.class, PathableMixIn.class)
+                .addMixIn(UIDBasedId.class, UIDBasedIdMixIn.class);
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(DvDateTime.class, new DateTimeSerializer());
@@ -79,7 +79,6 @@ public class CanonicalJson implements RMDataFormat {
         MARSHAL_OM.registerModule(module);
 
         // Global configuration to not include empty lists in the JSON
-
         MARSHAL_OM.setDefaultPropertyInclusion(JsonInclude.Value.construct(
                 Include.CUSTOM,
                 Include.CUSTOM,
