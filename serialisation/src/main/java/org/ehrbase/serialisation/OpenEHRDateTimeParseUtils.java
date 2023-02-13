@@ -213,7 +213,7 @@ public final class OpenEHRDateTimeParseUtils {
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour to avoid breaking stuff
-            throw new IllegalArgumentException(e.getMessage() + ":" + isoTime);
+            throw new IllegalArgumentException(e.getMessage() + ":" + isoTime, e);
         }
     }
 

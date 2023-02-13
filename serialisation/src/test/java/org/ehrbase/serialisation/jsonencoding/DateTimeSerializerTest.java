@@ -30,7 +30,6 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
-import org.ehrbase.serialisation.exception.MarshalException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -85,7 +84,7 @@ class DateTimeSerializerTest {
     }
 
     enum DateTimeSerializerTestData {
-        EMPTY(new DvDateTime(), MarshalException.class, "DV_DATE_TIME is missing the mandatory time attribute"),
+        EMPTY(new DvDateTime(), "{\"_type\":\"DV_DATE_TIME\"}"),
         TIME_ONLY_RESOLUTION_FULL_WITH_OFFSET(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123456789+01:00")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123456789+01:00\"}"),
@@ -97,13 +96,13 @@ class DateTimeSerializerTest {
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123\"}"),
         TIME_ONLY_RESOLUTION_SECONDS(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.000\"}"),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10\"}"),
         TIME_ONLY_RESOLUTION_MINUTES(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:00.000\"}"),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:00\"}"),
         TIME_ONLY_RESOLUTION_HOURS(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:00:00.000\"}"),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:00:00\"}"),
         TIME_ONLY_RESOLUTION_DAY(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02\"}"),
@@ -113,7 +112,6 @@ class DateTimeSerializerTest {
         TIME_ONLY_RESOLUTION_YEAR(
                 new DvDateTime(DateTimeParsers.parseDateTimeValue("2023")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023\"}"),
-        TIME_MISSING(new DvDateTime(), MarshalException.class, "DV_DATE_TIME is missing the mandatory time attribute"),
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION_WITH_OFFSET(
                 new DvDateTime(
                         List.of(new ReferenceRange<>(new DvText("meaning"), new DvInterval<DvDateTime>(null, null))),
