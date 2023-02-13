@@ -74,9 +74,9 @@ public class CanonicalXML implements RMDataFormat {
         StringWriter stringWriter = new StringWriter();
         try {
             Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
-            marshaller.setAdapter(DateTimeXmlAdapter.class, new WorkaroundDateTimeXmlAdapter());
-            marshaller.setAdapter(DateXmlAdapter.class, new WorkaroundDateXmlAdapter());
-            marshaller.setAdapter(TimeXmlAdapter.class, new WorkaroundTimeXmlAdapter());
+            marshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
+            marshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
+            marshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
             marshaller.setProperty("jaxb.fragment", !withHeader);
             if (rmObject.getClass().getAnnotation(XmlRootElement.class) == null) {
                 QName qName = new QName(null, new SnakeCase(rmObject.getClass().getSimpleName()).camelToSnake());

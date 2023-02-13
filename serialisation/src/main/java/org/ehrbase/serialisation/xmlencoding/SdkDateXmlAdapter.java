@@ -19,11 +19,16 @@ package org.ehrbase.serialisation.xmlencoding;
 
 import java.time.temporal.Temporal;
 import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
+import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
 
 /**
  * This JAXB adapter is used to work around archie parsing date-time values that contain invalid dates (i.e. 2023-13, ignoring leap years)
  */
-public class WorkaroundDateXmlAdapter extends com.nedap.archie.xml.adapters.DateXmlAdapter {
+public class SdkDateXmlAdapter extends com.nedap.archie.xml.adapters.DateXmlAdapter {
+    @Override
+    public String marshal(Temporal value) {
+        return OpenEHRDateTimeSerializationUtils.formatDate(value);
+    }
 
     @Override
     public Temporal unmarshal(String stringValue) {
