@@ -28,6 +28,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
@@ -75,10 +76,28 @@ public final class OpenEHRDateTimeParseUtils {
             .withResolverStyle(ResolverStyle.STRICT);
     public static final DateTimeFormatter ISO_8601_DATE_TIME_PARSER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .append(ISO_8601_DATE_PARSER)
+            .appendValue(ChronoField.YEAR, 4)
+            .optionalStart()
+            .appendLiteral('-')
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .optionalStart()
+            .appendLiteral('-')
+            .appendValue(ChronoField.DAY_OF_MONTH, 2)
             .optionalStart()
             .appendLiteral('T')
-            .append(ISO_8601_TIME_PARSER)
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .optionalStart()
+            .appendLiteral(':')
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .optionalStart()
+            .appendLiteral(':')
+            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .append(ISO8601_OPTIONAL_NANOSECONDS)
+            .optionalEnd()
+            .optionalEnd()
+            .append(ISO8601_TIME_ZONE)
+            .optionalEnd()
+            .optionalEnd()
             .optionalEnd()
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
@@ -111,10 +130,24 @@ public final class OpenEHRDateTimeParseUtils {
     // partial date-times are allowed in compact format but archie does not implement that
     public static final DateTimeFormatter ISO_8601_DATE_TIME_COMPACT_PARSER = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .append(ISO_8601_DATE_COMPACT_PARSER)
+            .appendValue(ChronoField.YEAR, 4)
+            .optionalStart()
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .optionalStart()
+            .appendValue(ChronoField.DAY_OF_MONTH, 2)
             .optionalStart()
             .appendLiteral('T')
-            .append(ISO_8601_TIME_COMPACT_PARSER)
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .optionalStart()
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .optionalStart()
+            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .append(ISO8601_OPTIONAL_NANOSECONDS)
+            .optionalEnd()
+            .optionalEnd()
+            .append(ISO8601_TIME_ZONE)
+            .optionalEnd()
+            .optionalEnd()
             .optionalEnd()
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
@@ -170,7 +203,8 @@ public final class OpenEHRDateTimeParseUtils {
             }
 
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
-                return OffsetTime.from(parsed);
+                // Do not use OffsetTime::from, so we do not have to unwrap exceptions to get meaningful messages
+                return OffsetTime.of(LocalTime.from(parsed), ZoneOffset.from(parsed));
             }
 
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
@@ -181,7 +215,7 @@ public final class OpenEHRDateTimeParseUtils {
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour to avoid breaking stuff
-            throw new IllegalArgumentException(e.getMessage() + ":" + isoTime, e);
+            throw new IllegalArgumentException(e.getMessage() + ":" + isoTime);
         }
     }
 
@@ -198,12 +232,13 @@ public final class OpenEHRDateTimeParseUtils {
                 parsed = ISO_8601_DATE_TIME_PARSER.parse(isoDateTime);
             }
 
-            if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
-                return OffsetDateTime.from(parsed);
-            }
-
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
-                return LocalDateTime.from(parsed);
+                // Do not use OffsetTime::from, so we do not have to unwrap exceptions to get meaningful messages
+                if (parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
+                    return OffsetDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed), ZoneOffset.from(parsed));
+                } else {
+                    return LocalDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed));
+                }
             }
 
             if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
