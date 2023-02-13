@@ -73,6 +73,8 @@ public class CanonicalJson implements RMDataFormat {
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(DvDateTime.class, new DateTimeSerializer());
+        module.addSerializer(DvTime.class, new TimeSerializer());
+        module.addSerializer(DvDate.class, new DateSerializer());
         module.addDeserializer(DvDateTime.class, new DateTimeDeserializer());
         module.addDeserializer(DvTime.class, new TimeDeserializer());
         module.addDeserializer(DvDate.class, new DateDeserializer());
