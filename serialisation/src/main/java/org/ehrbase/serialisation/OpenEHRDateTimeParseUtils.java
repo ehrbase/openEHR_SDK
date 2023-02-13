@@ -39,9 +39,7 @@ import java.util.function.Predicate;
 
 /**
  * This helper class is used to work around some Archie issues with date/time parsing accepting invalid years or not following the specified format fully (i.e. 2023-13, ignoring leap years)
- * @deprecated TODO: this should be removed when the issue is fixed in archie
  */
-@Deprecated
 public final class OpenEHRDateTimeParseUtils {
 
     // archie version does not specify width of YEAR field (YYYY)

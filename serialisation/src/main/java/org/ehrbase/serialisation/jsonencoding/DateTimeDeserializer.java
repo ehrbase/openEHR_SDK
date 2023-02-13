@@ -23,10 +23,8 @@ import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
 
 /**
  * Workaround for archie date-time parsing issues
- * @deprecated TODO remove when archie parser rejects invalid values and adjusts to match the spec
  */
-@Deprecated
-public class DateTimeDeserializer extends AbstractDateTimeWorkaroundDeserializer<TemporalAccessor, DvDateTime> {
+public class DateTimeDeserializer extends AbstractDvTemporalDeserializer<TemporalAccessor, DvDateTime> {
 
     @Override
     DvDateTime createInstance() {

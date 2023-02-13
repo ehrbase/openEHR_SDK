@@ -40,10 +40,8 @@ import java.util.Map;
  *
  * @param <V> type of /value attribute
  * @param <T> DV_TEMPORAL subtype that is parsed
- * @deprecated TODO remove when archie parser rejects invalid values and adjusts to match the spec
  */
-@Deprecated
-public abstract class AbstractDateTimeWorkaroundDeserializer<V, T extends DvTemporal<T, ?> & SingleValuedDataValue<V>>
+public abstract class AbstractDvTemporalDeserializer<V, T extends DvTemporal<T, ?> & SingleValuedDataValue<V>>
         extends JsonDeserializer<T> {
 
     abstract T createInstance();
