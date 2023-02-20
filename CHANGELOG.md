@@ -7,7 +7,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
 - Added null verification and change gson to jackson ([#416](https://github.com/ehrbase/openEHR_SDK/pull/416))
  ### Changed
-- Update vulnerable libraries ([#422](https://github.com/ehrbase/openEHR_SDK/pull/422))
+- Update libraries ([#422](https://github.com/ehrbase/openEHR_SDK/pull/422))
 
  ### Fixed 
 
