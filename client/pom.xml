@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>root</artifactId>
-        <version>1.23.0</version>
+        <version>1.24.0</version>
     </parent>
 
     <artifactId>client</artifactId>
@@ -153,13 +153,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
+        </dependency>
+        <!-- to get jdk17 compatible cglib -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.3.23</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

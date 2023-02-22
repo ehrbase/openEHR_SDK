@@ -31,6 +31,7 @@ import org.ehrbase.serialisation.flatencoding.std.umarshal.StdToCompositionWalke
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.util.reflection.ReflectionHelper;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.util.WebTemplateUtils;
 
@@ -104,7 +105,8 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
 
     @Override
     protected void handleInheritance(WebTemplateNode currentNode) {
-        if (currentNode.getRmType().equals("ELEMENT") && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
+        if (currentNode.getRmType().equals(RmConstants.ELEMENT)
+                && WebTemplateUtils.isChoiceDvCodedTextAndDvText(currentNode)) {
             handleDVTextInternal(currentNode);
         } else {
             super.handleInheritance(currentNode);

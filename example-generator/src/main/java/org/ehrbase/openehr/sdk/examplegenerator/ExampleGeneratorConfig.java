@@ -266,8 +266,8 @@ public class ExampleGeneratorConfig {
 
         static void handleInstructionDetails(InstructionDetails value, WebTemplateNode node) {
             value.setActivityId("activities[at0001]");
-            value.setInstructionId(
-                    new LocatableRef(new HierObjectId(generateUuid(node).toString()), "unknown", "INSTRUCTION", ""));
+            value.setInstructionId(new LocatableRef(
+                    new HierObjectId(generateUuid(node).toString()), "unknown", RmConstants.INSTRUCTION, ""));
         }
 
         private static Set<Pair<String, WebTemplateInputValue>> filterCareflowSteps(
@@ -802,6 +802,10 @@ public class ExampleGeneratorConfig {
         }
 
         if (child.getRmType().equals(RmConstants.CODE_PHRASE)) {
+            return child.getMin() == 0;
+        }
+
+        if (child.getRmType().equals(RmConstants.UID_BASED_ID)) {
             return child.getMin() == 0;
         }
 

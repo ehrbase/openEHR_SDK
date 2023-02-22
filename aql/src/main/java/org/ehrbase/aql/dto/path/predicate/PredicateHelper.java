@@ -52,7 +52,7 @@ public class PredicateHelper {
 
     private static final AqlPathHelper.PrefixMatcher OPERATOR_SYMBOLS =
             AqlPathHelper.PrefixMatcher.forStrings(Arrays.stream(ConditionComparisonOperatorSymbol.values())
-                    .map(ConditionComparisonOperatorSymbol::getSymbole)
+                    .map(ConditionComparisonOperatorSymbol::getSymbol)
                     .toArray(String[]::new));
 
     private static final PredicateComparisonOperatorDto NO_PREDICATE =
@@ -265,7 +265,7 @@ public class PredicateHelper {
             format(predicateDto.getStatement(), sb, predicateDto.getValue());
         } else if (!isNone(predicateDto, otherPredicatesFormat)) {
             sb.append(predicateDto.getStatement())
-                    .append(predicateDto.getSymbol().getSymbole());
+                    .append(predicateDto.getSymbol().getSymbol());
             format(predicateDto.getStatement(), sb, predicateDto.getValue());
         }
     }

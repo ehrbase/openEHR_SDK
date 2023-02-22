@@ -5,7 +5,7 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>org.ehrbase.openehr.sdk</groupId>
-        <version>1.23.0</version>
+        <version>1.24.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,9 +13,6 @@
 
     <properties>
         <license-header.dir>../</license-header.dir>
-
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <dependencies>

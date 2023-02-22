@@ -17,8 +17,6 @@
  */
 package org.ehrbase.webtemplate.filter;
 
-import static org.ehrbase.webtemplate.parser.OPTParser.DV_CODED_TEXT;
-
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
@@ -99,14 +97,14 @@ public class Filter implements WebTemplateFilter {
     protected void preHandle(WebTemplateNode node) {
 
         List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
-                .filter(n -> "ISM_TRANSITION".equals(n.getRmType()))
+                .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
                 .collect(Collectors.toList());
         if (!ismTransitionList.isEmpty()) {
             node.getChildren().removeAll(ismTransitionList);
             node.getChildren().add(ismTransitionList.get(0));
         }
 
-        if (node.getRmType().equals("ELEMENT")) {
+        if (node.getRmType().equals(RmConstants.ELEMENT)) {
             if (WebTemplateUtils.isChoiceDvCodedTextAndDvText(node)) {
                 WebTemplateNode merged = mergeDVText(node);
                 merged.setId(node.getId());
@@ -136,7 +134,7 @@ public class Filter implements WebTemplateFilter {
         merged.setName(node.getName());
         merged.setMax(node.getMax());
         merged.setMin(node.getMin());
-        merged.setRmType(DV_CODED_TEXT);
+        merged.setRmType(RmConstants.DV_CODED_TEXT);
         WebTemplateNode codedTextValue = node.findChildById("coded_text_value").orElseThrow();
         merged.getInputs().addAll(codedTextValue.getInputs());
         merged.setAqlPath(codedTextValue.getAqlPathDto());
@@ -163,12 +161,18 @@ public class Filter implements WebTemplateFilter {
             return true;
         }
 
-        if (Set.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
+        if (Set.of(
+                        RmConstants.HISTORY,
+                        RmConstants.ITEM_TREE,
+                        RmConstants.ITEM_LIST,
+                        RmConstants.ITEM_SINGLE,
+                        RmConstants.ITEM_TABLE,
+                        RmConstants.ITEM_STRUCTURE)
                 .contains(node.getRmType())) {
             return true;
         } else if (parent != null && isEvent(node)) {
             return parent.getChildren().stream().filter(this::isEvent).count() == 1 && node.getMax() == 1;
-        } else if (node.getRmType().equals("ELEMENT")) {
+        } else if (node.getRmType().equals(RmConstants.ELEMENT)) {
             return node.getChildren().size() == 1;
         } else if (node.getRmType().equals(RmConstants.CODE_PHRASE) && parent != null) {
             return parent.getRmType().equals(RmConstants.DV_CODED_TEXT);
@@ -194,12 +198,14 @@ public class Filter implements WebTemplateFilter {
                         "upper_unbounded",
                         "lower_unbounded")
                 .contains(node.getName());
-        boolean nonMandatoryInWebTemplate = typeInfo.getRmName().equals("ACTIVITY")
-                        && node.getName().equals("timing")
-                || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
-                || typeInfo.getRmName().equals("ISM_TRANSITION")
-                        && node.getName().equals("transition")
-                || typeInfo.getRmName().equals("COMPOSITION") && node.getName().equals("context");
+        boolean nonMandatoryInWebTemplate =
+                typeInfo.getRmName().equals("ACTIVITY") && node.getName().equals("timing")
+                        || typeInfo.getRmName().equals(RmConstants.INSTRUCTION)
+                                && node.getName().equals("expiry_time")
+                        || typeInfo.getRmName().equals(RmConstants.ISM_TRANSITION)
+                                && node.getName().equals("transition")
+                        || typeInfo.getRmName().equals(RmConstants.COMPOSITION)
+                                && node.getName().equals("context");
 
         return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
     }

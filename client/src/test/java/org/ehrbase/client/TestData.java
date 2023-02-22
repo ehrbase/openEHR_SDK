@@ -79,6 +79,7 @@ import org.ehrbase.client.classgenerator.shareddefinition.MathFunction;
 import org.ehrbase.client.classgenerator.shareddefinition.Setting;
 import org.ehrbase.client.classgenerator.shareddefinition.Territory;
 import org.ehrbase.client.flattener.BloodpressureListDe;
+import org.ehrbase.client.openehrclient.defaultrestclient.ProxyEhrbaseBloodPressureSimpleDeV0Composition;
 
 public class TestData {
     private TestData() {}
@@ -115,6 +116,30 @@ public class TestData {
         evaluation.setLowerMagnitude(10l);
 
         return composition;
+    }
+
+    public static ProxyEhrbaseBloodPressureSimpleDeV0Composition buildProxyEhrbaseBloodPressureSimpleDeV0Composition() {
+        ProxyEhrbaseBloodPressureSimpleDeV0Composition proxy = new ProxyEhrbaseBloodPressureSimpleDeV0Composition();
+
+        proxy.dummy = "dummy";
+
+        proxy.setStartTimeValue(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+        proxy.setEndTimeValue(OffsetDateTime.now());
+        proxy.setBloodPressureTrainingSample(new ArrayList<>());
+        proxy.setLanguage(Language.DE);
+        proxy.setTerritory(Territory.DE);
+        proxy.setCategoryDefiningCode(org.ehrbase.client.classgenerator.shareddefinition.Category.EVENT);
+        proxy.setSettingDefiningCode(Setting.NURSING_HOME_CARE);
+        proxy.setComposer(new PartyIdentified(null, "Test", null));
+        proxy.setParticipations(new ArrayList<>());
+        proxy.getParticipations()
+                .add(new Participation(new PartyIdentified(null, "Test", null), new DvText("Pos1"), null, null));
+        proxy.getParticipations()
+                .add(new Participation(new PartyIdentified(null, "Test2", null), new DvText("Pos2"), null, null));
+
+        proxy.setBloodPressureTrainingSample(
+                buildEhrbaseBloodPressureSimpleDeV0().getBloodPressureTrainingSample());
+        return proxy;
     }
 
     public static EhrbaseBloodPressureSimpleDeV0Composition buildEhrbaseBloodPressureSimpleDeV0() {

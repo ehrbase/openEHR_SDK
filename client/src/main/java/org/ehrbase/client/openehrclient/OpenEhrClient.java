@@ -36,6 +36,14 @@ public interface OpenEhrClient {
      */
     CompositionEndpoint compositionEndpoint(UUID ehrId);
 
+    /**
+     * Get the {@link ContributionEndpoint} for ehr with Id {@code ehrId}
+     *
+     * @param ehrId ehrId of ehr for which to revive contributions
+     * @return
+     */
+    ContributionEndpoint contributionEndpoint(UUID ehrId);
+
     FolderDAO folder(UUID ehrId, String path);
 
     /**

@@ -52,6 +52,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplate;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -247,7 +248,7 @@ public abstract class Walker<T> {
                 WebTemplateNode width = new WebTemplateNode();
                 width.setId("width");
                 width.setName("width");
-                width.setRmType("DV_DURATION");
+                width.setRmType(RmConstants.DV_DURATION);
                 width.setMax(1);
                 width.setMin(1);
                 width.setAqlPath(intervalEvent.getAqlPathDto().addEnd("width"));
@@ -387,13 +388,13 @@ public abstract class Walker<T> {
         public EventHelper invoke() {
             pointEvent = new WebTemplateNode(event);
             intervalEvent = new WebTemplateNode(event);
-            pointEvent.setRmType("POINT_EVENT");
-            intervalEvent.setRmType("INTERVAL_EVENT");
+            pointEvent.setRmType(RmConstants.POINT_EVENT);
+            intervalEvent.setRmType(RmConstants.INTERVAL_EVENT);
 
             WebTemplateNode width = new WebTemplateNode();
             width.setId("width");
             width.setName("width");
-            width.setRmType("DV_DURATION");
+            width.setRmType(RmConstants.DV_DURATION);
             width.setMax(1);
             width.setMin(1);
             width.setAqlPath(event.getAqlPathDto().addEnd("width"));

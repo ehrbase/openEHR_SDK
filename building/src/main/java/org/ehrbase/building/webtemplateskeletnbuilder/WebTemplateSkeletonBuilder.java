@@ -18,7 +18,7 @@
 package org.ehrbase.building.webtemplateskeletnbuilder;
 
 import static org.ehrbase.util.rmconstants.RmConstants.DV_CODED_TEXT;
-import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_4_0;
+import static org.ehrbase.util.rmconstants.RmConstants.RM_VERSION_1_0_4;
 
 import com.nedap.archie.aom.CComplexObject;
 import com.nedap.archie.creation.RMObjectCreator;
@@ -41,7 +41,11 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplate;
@@ -64,7 +68,7 @@ public class WebTemplateSkeletonBuilder {
         composition.setArchetypeDetails(archetypeDetails);
         archetypeDetails.setTemplateId(new TemplateId());
         archetypeDetails.getTemplateId().setValue(template.getTemplateId());
-        archetypeDetails.setRmVersion(RM_VERSION_1_4_0);
+        archetypeDetails.setRmVersion(RM_VERSION_1_0_4);
         archetypeDetails.setArchetypeId(new ArchetypeID(composition.getArchetypeNodeId()));
 
         return composition;
@@ -80,10 +84,10 @@ public class WebTemplateSkeletonBuilder {
         Object skeleton;
 
         switch (rmClass) {
-            case "UID_BASED_ID":
+            case RmConstants.UID_BASED_ID:
                 skeleton = new HierObjectId();
                 break;
-            case "PARTY_PROXY":
+            case RmConstants.PARTY_PROXY:
                 skeleton = new PartyIdentified();
                 break;
             case "STRING":

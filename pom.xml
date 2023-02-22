@@ -25,13 +25,13 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>bom</artifactId>
-        <version>1.23.0</version>
+        <version>1.24.0</version>
         <relativePath>./bom/pom.xml</relativePath>
     </parent>
 
     <groupId>org.ehrbase.openehr.sdk</groupId>
     <artifactId>root</artifactId>
-    <version>1.23.0</version>
+    <version>1.24.0</version>
     <packaging>pom</packaging>
 
 
@@ -58,6 +58,8 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <!-- since we now have JDK17 in our pipeline, we make sure the correct lib versions are used -->
+        <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
@@ -156,6 +158,7 @@
                                 <exclude>io.swagger</exclude>
                             </excludes>
                             <includes>
+                                <include>org.springframework:*:*:jar:test</include>
                                 <include>org.slf4j:slf4j-api</include>
                                 <include>org.slf4j:slf4j-simple:*:jar</include>
                             </includes>

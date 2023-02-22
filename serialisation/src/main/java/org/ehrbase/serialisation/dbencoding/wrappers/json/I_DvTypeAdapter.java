@@ -17,6 +17,8 @@
  */
 package org.ehrbase.serialisation.dbencoding.wrappers.json;
 
+import org.ehrbase.util.rmconstants.RmConstants;
+
 /**
  * Created by christian on 10/6/2016.
  */
@@ -41,5 +43,5 @@ public interface I_DvTypeAdapter {
     String ITEMS = "items";
     String EVENTS = "events";
     String VALUE = "value";
-    String ELEMENT = "ELEMENT";
+    String ELEMENT = RmConstants.ELEMENT;
 }
