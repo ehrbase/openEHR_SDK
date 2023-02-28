@@ -1633,7 +1633,7 @@ executors:
     working_directory: ~/projects
     docker:
       - image: cimg/python:3.8.14-node
-      - image: ehrbase/ehrbase-postgres:13.4
+      - image: ehrbase/ehrbase-postgres:13.4.v2
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
