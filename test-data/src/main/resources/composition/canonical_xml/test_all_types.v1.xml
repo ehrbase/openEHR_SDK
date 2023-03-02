@@ -261,6 +261,22 @@
                             <precision>1</precision>
                         </value>
                     </items>
+                    <items archetype_node_id="at0023" xsi:type="ELEMENT">
+                        <name>
+                            <value>time</value>
+                        </name>
+                        <value xsi:type="DV_TIME">
+                            <value>1837</value>
+                        </value>
+                    </items>
+                    <items archetype_node_id="at0024" xsi:type="ELEMENT">
+                        <name>
+                            <value>date</value>
+                        </name>
+                        <value xsi:type="DV_DATE">
+                            <value>201901</value>
+                        </value>
+                    </items>
                 </data>
             </events>
         </data>

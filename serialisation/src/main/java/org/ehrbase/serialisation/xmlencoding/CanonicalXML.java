@@ -127,7 +127,10 @@ public class CanonicalXML implements RMDataFormat {
         T composition;
         try {
             Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
-            // Set the parent XMLReader on the XMLFilter
+            unmarshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
+            unmarshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
+            unmarshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
+            // Set the parentss XMLReader on the XMLFilter
             SAXParserFactory spf = SAXParserFactory.newInstance();
             // disable external entities
             spf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
