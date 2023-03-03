@@ -19,15 +19,25 @@ package org.ehrbase.openehr.sdk.examplegenerator;
 
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.junit.jupiter.api.Test;
 
 class RmTypesInspection {
@@ -153,7 +163,7 @@ class RmTypesInspection {
 
             Set<RMTypeInfo> todoDecendents = new LinkedHashSet<>();
 
-            RMTypeInfo observation = rmInfoLookup.getTypeInfo("OBSERVATION");
+            RMTypeInfo observation = rmInfoLookup.getTypeInfo(RmConstants.OBSERVATION);
             todo.push(observation);
 
             Boolean includeSubclasses = true;

@@ -1305,7 +1305,7 @@ commands:
           command: |
             sudo killall -9 apt-get || true
             if [ ! -d "/usr/lib/maven/apache-maven-3.8.7" ]; then
-              wget https://dlcdn.apache.org/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz -O /tmp/maven.tar.gz
+              wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz -O /tmp/maven.tar.gz
               sudo mkdir -p /usr/lib/maven
               sudo tar xfvz /tmp/maven.tar.gz --directory /usr/lib/maven
               rm -f /tmp/maven.tar.gz
@@ -1633,7 +1633,7 @@ executors:
     working_directory: ~/projects
     docker:
       - image: cimg/python:3.8.14-node
-      - image: ehrbase/ehrbase-postgres:13.4
+      - image: ehrbase/ehrbase-postgres:13.4.v2
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres

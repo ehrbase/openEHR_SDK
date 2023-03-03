@@ -4,8 +4,14 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
-   - Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
-   - Added null verification and change gson to jackson ([#416](https://github.com/ehrbase/openEHR_SDK/pull/416))
+ ### Fixed 
+
+## [1.24.0]
+ ### Added 
+- Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
+- Added null verification and change gson to jackson ([#416](https://github.com/ehrbase/openEHR_SDK/pull/416))
+ ### Changed
+- Update libraries ([#422](https://github.com/ehrbase/openEHR_SDK/pull/422))
 
  ### Fixed 
 
@@ -218,4 +224,5 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...v1.21.0
 [1.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...v1.22.0
 [1.23.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.22.0...v1.23.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.23.0...HEAD
+[1.24.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.23.0...v1.24.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.24.0...HEAD

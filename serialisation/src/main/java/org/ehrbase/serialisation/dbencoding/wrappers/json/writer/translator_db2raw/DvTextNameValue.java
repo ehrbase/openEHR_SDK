@@ -21,6 +21,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+import org.ehrbase.util.rmconstants.RmConstants;
 
 public class DvTextNameValue implements I_NameValueHandler {
 
@@ -52,7 +53,7 @@ public class DvTextNameValue implements I_NameValueHandler {
         writer.name(I_DvTypeAdapter.NAME);
         writer.beginObject();
         writer.name(I_DvTypeAdapter.VALUE).value(value);
-        writer.name(I_DvTypeAdapter.AT_TYPE).value("DV_TEXT");
+        writer.name(I_DvTypeAdapter.AT_TYPE).value(RmConstants.DV_TEXT);
         writer.endObject();
     }
 }

@@ -48,6 +48,7 @@ import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateInput;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.templateprovider.TemplateProvider;
@@ -171,10 +172,10 @@ public class Interpreter {
         Containment containment = new Containment();
 
         // COMPOSITION has path '\' and thus must be dealt with extra.
-        if ("COMPOSITION".equals(n.getRmType())) {
+        if (RmConstants.COMPOSITION.equals(n.getRmType())) {
 
             containment.setArchetypeId(n.getNodeId());
-            containment.setType("COMPOSITION");
+            containment.setType(RmConstants.COMPOSITION);
             containment.setOtherPredicates(new PredicateLogicalAndOperation(
                     new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new SimpleValue(n.getNodeId()))));
 

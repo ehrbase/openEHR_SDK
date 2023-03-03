@@ -22,6 +22,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.Map;
 import org.ehrbase.serialisation.dbencoding.wrappers.json.I_DvTypeAdapter;
+import org.ehrbase.util.rmconstants.RmConstants;
 
 public class DvCodedTextNameValue implements I_NameValueHandler {
 
@@ -59,7 +60,7 @@ public class DvCodedTextNameValue implements I_NameValueHandler {
         writer.name(I_DvTypeAdapter.VALUE).value(value);
 
         if (codeString != null) {
-            writer.name(I_DvTypeAdapter.AT_TYPE).value("DV_CODED_TEXT");
+            writer.name(I_DvTypeAdapter.AT_TYPE).value(RmConstants.DV_CODED_TEXT);
             writer.name("defining_code");
 
             writer.beginObject();
@@ -71,7 +72,7 @@ public class DvCodedTextNameValue implements I_NameValueHandler {
             writer.endObject();
 
             writer.endObject();
-        } else writer.name(I_DvTypeAdapter.AT_TYPE).value("DV_TEXT");
+        } else writer.name(I_DvTypeAdapter.AT_TYPE).value(RmConstants.DV_TEXT);
 
         writer.endObject();
     }

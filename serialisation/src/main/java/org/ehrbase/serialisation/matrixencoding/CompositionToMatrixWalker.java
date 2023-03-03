@@ -44,11 +44,13 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.serialisation.walker.RmPrimitive;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.interpreter.Interpreter;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 
@@ -58,8 +60,13 @@ import org.ehrbase.webtemplate.model.WebTemplateNode;
 public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerDto> {
 
     public static final String MAGNITUDE = "/magnitude";
-    private List<String> resolveTo =
-            List.of("OBSERVATION", "EVALUATION", "INSTRUCTION", "ACTION", "ADMIN_ENTRY", "SECTION");
+    private Set<String> resolveTo = Set.of(
+            RmConstants.OBSERVATION,
+            RmConstants.EVALUATION,
+            RmConstants.INSTRUCTION,
+            RmConstants.ACTION,
+            RmConstants.ADMIN_ENTRY,
+            RmConstants.SECTION);
 
     @Override
     protected FromWalkerDto extract(
@@ -75,7 +82,7 @@ public class CompositionToMatrixWalker extends FromCompositionWalker<FromWalkerD
 
         // this belongs to composition thus COMPOSITION is the root
         if (List.of("context", "links", "feeder_audit").contains(child.getId())
-                && context.getNodeDeque().peek().getRmType().equals("COMPOSITION")) {
+                && context.getNodeDeque().peek().getRmType().equals(RmConstants.COMPOSITION)) {
             next.setRootFound(true);
         }
 

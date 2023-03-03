@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
 public class InstructionDetailsRMUnmarshaller extends AbstractRMUnmarshaller<InstructionDetails> {
@@ -62,7 +63,7 @@ public class InstructionDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Ins
 
         rmObject.setInstructionId(new LocatableRef());
         rmObject.getInstructionId().setNamespace("local");
-        rmObject.getInstructionId().setType("INSTRUCTION");
+        rmObject.getInstructionId().setType(RmConstants.INSTRUCTION);
 
         setValue(
                 currentTerm,

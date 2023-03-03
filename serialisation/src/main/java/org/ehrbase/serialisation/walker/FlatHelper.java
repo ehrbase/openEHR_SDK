@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.util.exception.SdkException;
+import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
@@ -224,7 +225,13 @@ public class FlatHelper<T> {
             return true;
         }
 
-        if (List.of("HISTORY", "ITEM_TREE", "ITEM_LIST", "ITEM_SINGLE", "ITEM_TABLE", "ITEM_STRUCTURE")
+        if (List.of(
+                        RmConstants.HISTORY,
+                        RmConstants.ITEM_TREE,
+                        RmConstants.ITEM_LIST,
+                        RmConstants.ITEM_SINGLE,
+                        RmConstants.ITEM_TABLE,
+                        RmConstants.ITEM_STRUCTURE)
                 .contains(node.getRmType())) {
             return true;
         } else if (parent != null && isEvent(node)) {
@@ -273,10 +280,11 @@ public class FlatHelper<T> {
                 .contains(node.getName());
         boolean nonMandatoryInWebTemplate = typeInfo.getRmName().equals("ACTIVITY")
                         && node.getName().equals("timing")
-                || typeInfo.getRmName().equals("INSTRUCTION") && node.getName().equals("expiry_time")
-                || typeInfo.getRmName().equals("INTERVAL_EVENT")
+                || typeInfo.getRmName().equals(RmConstants.INSTRUCTION)
+                        && node.getName().equals("expiry_time")
+                || typeInfo.getRmName().equals(RmConstants.INTERVAL_EVENT)
                         && node.getName().equals("width")
-                || typeInfo.getRmName().equals("INTERVAL_EVENT")
+                || typeInfo.getRmName().equals(RmConstants.INTERVAL_EVENT)
                         && node.getName().equals("math_function")
                 || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
 
