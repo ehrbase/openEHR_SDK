@@ -1,8 +1,8 @@
 version: "1"
 rules:
   - base: master
-    upstream: ehrbase:master
+    upstream: openEHR_SDK:master
     mergeMethod: hardreset
   - base: develop
-    upstream: ehrbase:develop
+    upstream: openEHR_SDK:develop
     mergeMethod: hardreset
