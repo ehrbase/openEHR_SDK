@@ -33,7 +33,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 class OpenEHRDateTimeParseUtilsTest {
-    enum DateParsingTestData {
+    enum DateTestData {
         NULL_INPUT(null, (TemporalAccessor) null),
 
         // ------Extended valid format and values
@@ -125,7 +125,7 @@ class OpenEHRDateTimeParseUtilsTest {
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
-        DateParsingTestData(String input, TemporalAccessor expected) {
+        DateTestData(String input, TemporalAccessor expected) {
             this.input = input;
             this.expected = expected;
             this.shouldThrowException = false;
@@ -133,12 +133,11 @@ class OpenEHRDateTimeParseUtilsTest {
             this.expectedExceptionMessage = null;
         }
 
-        DateParsingTestData(String input, Class<? extends Exception> expectedExceptionType) {
+        DateTestData(String input, Class<? extends Exception> expectedExceptionType) {
             this(input, expectedExceptionType, null);
         }
 
-        DateParsingTestData(
-                String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
+        DateTestData(String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
             this.shouldThrowException = true;
@@ -148,8 +147,8 @@ class OpenEHRDateTimeParseUtilsTest {
     }
 
     @ParameterizedTest
-    @EnumSource(DateParsingTestData.class)
-    void parseDate(DateParsingTestData data) {
+    @EnumSource(DateTestData.class)
+    void parseDate(DateTestData data) {
         if (data.shouldThrowException) {
             Exception exception =
                     assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeParseUtils.parseDate(data.input));
@@ -161,7 +160,7 @@ class OpenEHRDateTimeParseUtilsTest {
         }
     }
 
-    enum TimeParsingTestData {
+    enum TimeTestData {
         NULL_INPUT(null, (TemporalAccessor) null),
 
         // ------Extended valid format and values
@@ -293,7 +292,7 @@ class OpenEHRDateTimeParseUtilsTest {
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
-        TimeParsingTestData(String input, TemporalAccessor expected) {
+        TimeTestData(String input, TemporalAccessor expected) {
             this.input = input;
             this.expected = expected;
             this.shouldThrowException = false;
@@ -301,12 +300,11 @@ class OpenEHRDateTimeParseUtilsTest {
             this.expectedExceptionMessage = null;
         }
 
-        TimeParsingTestData(String input, Class<? extends Exception> expectedExceptionType) {
+        TimeTestData(String input, Class<? extends Exception> expectedExceptionType) {
             this(input, expectedExceptionType, null);
         }
 
-        TimeParsingTestData(
-                String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
+        TimeTestData(String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
             this.shouldThrowException = true;
@@ -316,8 +314,8 @@ class OpenEHRDateTimeParseUtilsTest {
     }
 
     @ParameterizedTest
-    @EnumSource(TimeParsingTestData.class)
-    void parseTime(TimeParsingTestData data) {
+    @EnumSource(TimeTestData.class)
+    void parseTime(TimeTestData data) {
         if (data.shouldThrowException) {
             Exception exception =
                     assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeParseUtils.parseTime(data.input));
@@ -329,7 +327,7 @@ class OpenEHRDateTimeParseUtilsTest {
         }
     }
 
-    enum DateTimeParsingTestData {
+    enum DateTimeTestData {
         NULL_INPUT(null, (TemporalAccessor) null),
 
         // Extended valid format and values
@@ -536,7 +534,7 @@ class OpenEHRDateTimeParseUtilsTest {
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
-        DateTimeParsingTestData(String input, TemporalAccessor expected) {
+        DateTimeTestData(String input, TemporalAccessor expected) {
             this.input = input;
             this.expected = expected;
             this.shouldThrowException = false;
@@ -544,11 +542,11 @@ class OpenEHRDateTimeParseUtilsTest {
             this.expectedExceptionMessage = null;
         }
 
-        DateTimeParsingTestData(String input, Class<? extends Exception> expectedExceptionType) {
+        DateTimeTestData(String input, Class<? extends Exception> expectedExceptionType) {
             this(input, expectedExceptionType, null);
         }
 
-        DateTimeParsingTestData(
+        DateTimeTestData(
                 String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
@@ -559,8 +557,8 @@ class OpenEHRDateTimeParseUtilsTest {
     }
 
     @ParameterizedTest
-    @EnumSource(DateTimeParsingTestData.class)
-    void parseDateTime(DateTimeParsingTestData data) {
+    @EnumSource(DateTimeTestData.class)
+    void parseDateTime(DateTimeTestData data) {
         if (data.shouldThrowException) {
             Exception exception =
                     assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeParseUtils.parseDateTime(data.input));
