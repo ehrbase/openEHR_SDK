@@ -25,7 +25,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
@@ -101,9 +109,8 @@ public class StructuredHelper {
         Map<FlatPathDto, Map<FlatPathDto, JsonNode>> sharedStartMap = flatMap.entrySet().stream()
                 .collect(Collectors.groupingBy(
                         e -> {
-                            FlatPathDto startFlatPathDto = new FlatPathDto();
-                            startFlatPathDto.setName(e.getKey().getName());
-                            startFlatPathDto.setCount(e.getKey().getCount());
+                            FlatPathDto startFlatPathDto = new FlatPathDto(
+                                    e.getKey().getName(), null, e.getKey().getCount(), null);
                             return startFlatPathDto;
                         },
                         LinkedHashMap::new,
@@ -112,30 +119,18 @@ public class StructuredHelper {
         Map<String, Object> structured = new LinkedHashMap<>();
 
         sharedStartMap.forEach((k, v) -> {
-            if (!structured.containsKey(k.getName())) {
-                structured.put(k.getName(), new ArrayList<>());
-            }
-
-            List<Object> values = (List<Object>) structured.get(k.getName());
-
-            LinkedHashMap<String, Object> subMap = new LinkedHashMap<>();
 
             // find sub entries
-            Map<String, Object> subEntriesMap =
-                    convertFlatToStructured((Map<FlatPathDto, JsonNode>) v.entrySet().stream()
-                            .filter(e -> e.getKey().getChild() != null)
-                            .collect(Collectors.toMap(
-                                    e -> FlatPathDto.removeStart(e.getKey(), new FlatPathDto(k)),
-                                    Map.Entry::getValue,
-                                    (u, t) -> u,
-                                    LinkedHashMap::new)));
-
-            if (!subEntriesMap.isEmpty()) {
-                subMap.putAll(subEntriesMap);
-            }
+            Map<String, Object> subMap = convertFlatToStructured((Map<FlatPathDto, JsonNode>) v.entrySet().stream()
+                    .filter(e -> e.getKey().getChild() != null)
+                    .collect(Collectors.toMap(
+                            e -> FlatPathDto.removeStart(e.getKey(), k),
+                            Map.Entry::getValue,
+                            (u, t) -> u,
+                            LinkedHashMap::new)));
 
             // find attributes
-            Map<String, Object> collect = v.entrySet().stream()
+            Map<String, Object> attributes = v.entrySet().stream()
                     .filter(e -> e.getKey().getChild() == null)
                     .collect(Collectors.toMap(
                             e -> Optional.ofNullable(e.getKey().getAttributeName())
@@ -145,19 +140,18 @@ public class StructuredHelper {
                             (u, j) -> u,
                             LinkedHashMap::new));
 
-            // singe valued Attributes have no name
-            if (collect.size() == 1 && collect.containsKey("") && subMap.isEmpty()) {
-                values.add(collect.entrySet().stream()
-                        .findAny()
-                        .map(Map.Entry::getValue)
-                        .orElse(""));
-            } else if (!collect.isEmpty()) {
+            List<Object> values = (List<Object>) structured.computeIfAbsent(k.getName(), n -> new ArrayList<>());
 
-                if (collect.containsKey("")) {
-                    collect.put("|value", collect.get(""));
-                    collect.remove("");
+            // singe valued Attributes have no name
+            if (attributes.size() == 1 && attributes.containsKey("") && subMap.isEmpty()) {
+                values.add(attributes.values().stream().findAny().orElse(""));
+
+            } else {
+                if (attributes.containsKey("")) {
+                    subMap.put("|value", attributes.get(""));
+                    attributes.remove("");
                 }
-                subMap.putAll(collect);
+                subMap.putAll(attributes);
             }
 
             if (!subMap.isEmpty()) {

@@ -22,12 +22,16 @@ import static org.ehrbase.aql.util.CharSequenceHelper.splitFirst;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class FlatPathParser {
+public final class FlatPathParser {
 
     private FlatPathParser() {}
 
     public static FlatPathDto parse(CharSequence path) {
-        FlatPathDto dto = new FlatPathDto();
+
+        String name;
+        FlatPathDto child = null;
+        String attributeName = null;
+        Integer count = null;
 
         if (!StringUtils.equals("/", path)) {
             CharSequence[] tempSplit;
@@ -38,7 +42,7 @@ public class FlatPathParser {
             tempSubPath = tempSplit[0];
 
             if (tempSplit.length > 1) {
-                dto.setChild(parse(tempSplit[1]));
+                child = parse(tempSplit[1]);
             }
 
             // extract AttributeName
@@ -46,7 +50,7 @@ public class FlatPathParser {
             tempSubPath = tempSplit[0];
 
             if (tempSplit.length > 1) {
-                dto.setAttributeName(tempSplit[1].toString());
+                attributeName = tempSplit[1].toString();
             }
 
             // extract Count
@@ -54,12 +58,16 @@ public class FlatPathParser {
             tempSubPath = tempSplit[0];
 
             if (tempSplit.length > 1) {
-                dto.setCount(Integer.valueOf(tempSplit[1].toString()));
+                count = Integer.valueOf(tempSplit[1].toString());
             }
 
             // Rest is the name
-            dto.setName(tempSubPath.toString());
+            name = tempSubPath.toString();
+        } else {
+            name = null;
         }
+
+        FlatPathDto dto = new FlatPathDto(name, child, count, attributeName);
 
         return dto;
     }
