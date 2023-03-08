@@ -258,8 +258,8 @@ public final class FlatPathDto {
         }
 
         if (!ignoreCount
-                && Optional.ofNullable(me.getCount()).orElse(0)
-                        != Optional.ofNullable(other.getCount()).orElse(0)) {
+                && Optional.ofNullable(me.getCount()).orElse(0).intValue()
+                        != Optional.ofNullable(other.getCount()).orElse(0).intValue()) {
             return false;
         }
 
@@ -283,10 +283,11 @@ public final class FlatPathDto {
     }
 
     public static <T> Map.Entry<FlatPathDto, T> get(Map<FlatPathDto, T> map, String otherPath) {
+        FlatPathDto other = FlatPathParser.parse(otherPath);
 
         return map.entrySet().stream()
-                .filter(d -> d.getKey().isEqualTo(otherPath))
+                .filter(d -> d.getKey().isEqualTo(other, false, false))
                 .findAny()
-                .orElse(new AbstractMap.SimpleEntry<>(null, null));
+                .orElseGet(() -> new AbstractMap.SimpleEntry<>(null, null));
     }
 }
