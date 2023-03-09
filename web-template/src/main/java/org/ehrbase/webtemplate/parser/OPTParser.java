@@ -17,8 +17,6 @@
  */
 package org.ehrbase.webtemplate.parser;
 
-import static org.ehrbase.util.rmconstants.RmConstants.DV_SCALE;
-
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.composition.Activity;
@@ -885,9 +883,9 @@ public class OPTParser {
         }
 
         // this validation must be removed after xsd will be updated and DV_SCALE will be implemented
-        if (DV_SCALE.equals(cobject.getRmTypeName())) {
+        if ("DV_SCALE".equals(cobject.getRmTypeName())) {
             throw new IllegalArgumentException(
-                    MessageFormat.format("The supplied template is not supported {0} type", DV_SCALE));
+                    MessageFormat.format("The supplied template is not supported {0} type", "DV_SCALE"));
         }
 
         return null;
