@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.util.exception.SdkException;
@@ -129,25 +131,29 @@ public class FlatHelper<T> {
 
     public static boolean isExactlyPartySelf(Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
 
-        if (node != null && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_SELF).contains(node.getRmType())) {
+        if (node != null && !rmTypeMatches(node, RM_OBJECT, PARTY_PROXY, PARTY_SELF)) {
             return false;
         }
-        FlatPathDto flatPath = FlatPathParser.parse(path);
-        FlatPathDto namePath = flatPath.pathWithAttributeName("name");
-        FlatPathDto idPath = flatPath.pathWithAttributeName("id");
-        FlatPathDto relationshipPath = flatPath.pathWithChild(FlatPathParser.parse("relationship"));
-        FlatPathDto identifierPath = flatPath.pathWithChild(FlatPathParser.parse("_identifier"));
-        FlatPathDto typePath = flatPath.pathWithChild(FlatPathParser.parse("_type"));
 
-        return values.keySet().stream()
-                        .noneMatch(k -> k.startsWith(path)
-                                && (k.isEqualTo(namePath)
-                                        || k.isEqualTo(idPath)
-                                        || k.startsWith(relationshipPath)
-                                        || k.startsWith(identifierPath)))
-                || values.entrySet().stream()
-                        .anyMatch(e -> e.getKey().isEqualTo(typePath)
-                                && PARTY_SELF.equals(StringUtils.unwrap(e.getValue(), '"')));
+        FlatPathDto pathDto = FlatPathParser.parse(path);
+
+        boolean typeMatches =
+                getRmType(values, pathDto).filter(PARTY_SELF::equals).isPresent();
+        if (typeMatches) {
+            return true;
+        }
+
+        boolean hasAttributeFromPartyIdentified =
+                Stream.of("name", "id").map(pathDto::pathWithAttributeName).anyMatch(values::containsKey);
+        if (hasAttributeFromPartyIdentified) {
+            return false;
+        }
+
+        // has sub-path from PartyIdentified or PartyRelated?
+        FlatPathDto relationshipPath = pathDto.pathWithChild(FlatPathParser.parse("relationship"));
+        FlatPathDto identifierPath = pathDto.pathWithChild(FlatPathParser.parse("_identifier"));
+
+        return values.keySet().stream().noneMatch(k -> k.startsWith(relationshipPath) || k.startsWith(identifierPath));
     }
 
     /**
@@ -158,35 +164,59 @@ public class FlatHelper<T> {
      * @return
      */
     public static boolean isExactlyPartyRelated(Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
-        if (node != null
-                && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED, PARTY_RELATED)
-                        .contains(node.getRmType())) {
+
+        if (node != null && !rmTypeMatches(node, RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED, PARTY_RELATED)) {
             return false;
         }
+        FlatPathDto pathDto = FlatPathParser.parse(path);
 
-        return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/relationship"));
+        boolean typeMatches =
+                getRmType(values, pathDto).filter(PARTY_RELATED::equals).isPresent();
+        if (typeMatches) {
+            return true;
+        }
+
+        FlatPathDto relationshipPath = pathDto.pathWithChild(FlatPathParser.parse("relationship"));
+
+        return values.keySet().stream().anyMatch(e -> e.startsWith(relationshipPath));
+    }
+
+    private static Optional<String> getRmType(Map<FlatPathDto, String> values, FlatPathDto pathDto) {
+        return Optional.of(pathDto.pathWithAttributeName("_type"))
+                .map(values::get)
+                .map(t -> StringUtils.unwrap(t, '"'));
     }
 
     public static boolean isExactlyPartyIdentified(Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
 
-        if (node != null && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED).contains(node.getRmType())) {
-
+        if (node != null && !rmTypeMatches(node, RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED)) {
             return false;
         }
 
         FlatPathDto pathDto = FlatPathParser.parse(path);
-        FlatPathDto relationshipPath = pathDto.pathWithChild(new FlatPathDto("relationship", null, null, null));
-        FlatPathDto typePath = pathDto.pathWithAttributeName("_type");
-        FlatPathDto namePath = pathDto.pathWithAttributeName("name");
-        FlatPathDto idPath = pathDto.pathWithAttributeName("id");
-        FlatPathDto identifierPath = pathDto.pathWithChild(new FlatPathDto("_identifier", null, null, null));
+        boolean isPartySelf =
+                getRmType(values, pathDto).filter(PARTY_SELF::equals).isPresent();
+        if (isPartySelf) {
+            return false;
+        }
 
-        return values.entrySet().stream().noneMatch(e -> e.getKey().startsWith(relationshipPath))
-                && values.entrySet().stream()
-                        .noneMatch(e -> e.getKey().isEqualTo(typePath)
-                                && PARTY_SELF.equals(StringUtils.unwrap(e.getValue(), '"')))
-                && values.keySet().stream()
-                        .anyMatch(k -> k.isEqualTo(namePath) || k.isEqualTo(idPath) || k.startsWith(identifierPath));
+        boolean hasAttributeFromType =
+                Stream.of("name", "id").map(pathDto::pathWithAttributeName).anyMatch(values::containsKey);
+        if (!hasAttributeFromType) {
+
+            FlatPathDto identifierPath = pathDto.pathWithChild(new FlatPathDto("_identifier", null, null, null));
+            if (values.keySet().stream().noneMatch(k -> k.startsWith(identifierPath))) {
+                return false;
+            }
+        }
+
+        // lacks sub-path from parent class?
+        FlatPathDto relationshipPath = pathDto.pathWithChild(new FlatPathDto("relationship", null, null, null));
+        return values.keySet().stream().noneMatch(k -> k.startsWith(relationshipPath));
+    }
+
+    private static boolean rmTypeMatches(WebTemplateNode node, String... rmTypNames) {
+        return ArrayUtils.contains(rmTypNames, node.getRmType());
     }
 
     public static boolean isExactlyIntervalEvent(Map<FlatPathDto, String> values, String path) {
@@ -218,14 +248,14 @@ public class FlatHelper<T> {
             return true;
         }
 
-        if (List.of(
-                        RmConstants.HISTORY,
-                        RmConstants.ITEM_TREE,
-                        RmConstants.ITEM_LIST,
-                        RmConstants.ITEM_SINGLE,
-                        RmConstants.ITEM_TABLE,
-                        RmConstants.ITEM_STRUCTURE)
-                .contains(node.getRmType())) {
+        if (rmTypeMatches(
+                node,
+                RmConstants.HISTORY,
+                RmConstants.ITEM_TREE,
+                RmConstants.ITEM_LIST,
+                RmConstants.ITEM_SINGLE,
+                RmConstants.ITEM_TABLE,
+                RmConstants.ITEM_STRUCTURE)) {
             return true;
         } else if (parent != null && isEvent(node)) {
             // a corresponding  RM-tree would contain at maximum 1 event.
