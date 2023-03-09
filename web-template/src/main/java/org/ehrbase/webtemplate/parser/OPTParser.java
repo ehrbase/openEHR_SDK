@@ -17,6 +17,8 @@
  */
 package org.ehrbase.webtemplate.parser;
 
+import static org.ehrbase.util.rmconstants.RmConstants.DV_SCALE;
+
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.composition.Activity;
@@ -32,6 +34,7 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMAttributeInfo;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -880,6 +883,13 @@ public class OPTParser {
             return Collections.singletonList(
                     parseARCHETYPESLOT((ARCHETYPESLOT) cobject, pathLoop, termDefinitionMap, rmAttributeName));
         }
+
+        // this validation must be removed after xsd will be updated and DV_SCALE will be implemented
+        if (DV_SCALE.equals(cobject.getRmTypeName())) {
+            throw new IllegalArgumentException(
+                    MessageFormat.format("The supplied template is not supported {0} type", DV_SCALE));
+        }
+
         return null;
     }
 

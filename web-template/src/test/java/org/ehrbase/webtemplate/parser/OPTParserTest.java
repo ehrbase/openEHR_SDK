@@ -17,8 +17,8 @@
  */
 package org.ehrbase.webtemplate.parser;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
+import static org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData.OPERATIONALTEMPLATE_PATH_SEGMENT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -38,6 +38,7 @@ import org.ehrbase.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.webtemplate.filter.Filter;
 import org.ehrbase.webtemplate.model.*;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
@@ -209,6 +210,19 @@ public class OPTParserTest {
                                 .noneMatch(e::startsWith))
                         .collect(Collectors.toList()),
                 new String[] {});
+    }
+
+    @Test
+    public void testUnsupportedDataTypes() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(getClass()
+                        .getResourceAsStream(
+                                "/" + OPERATIONALTEMPLATE_PATH_SEGMENT + "/unsupported_data_type_dv_scale.opt"))
+                .getTemplate();
+
+        OPTParser cut = new OPTParser(template);
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, cut::parse);
+
+        Assertions.assertEquals("The supplied template is not supported DV_SCALE type", exception.getMessage());
     }
 
     @Test

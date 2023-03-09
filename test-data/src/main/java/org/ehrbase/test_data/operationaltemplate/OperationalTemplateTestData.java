@@ -103,6 +103,7 @@ public enum OperationalTemplateTestData {
             "used-item-archetype-slot");
     //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
 
+    public static final String OPERATIONALTEMPLATE_PATH_SEGMENT = "operationaltemplate";
     private final String filename;
     private final String templateId;
     private final String description;
@@ -114,7 +115,7 @@ public enum OperationalTemplateTestData {
     }
 
     public InputStream getStream() {
-        return getClass().getResourceAsStream("/operationaltemplate/" + filename);
+        return getClass().getResourceAsStream("/" + OPERATIONALTEMPLATE_PATH_SEGMENT + "/" + filename);
     }
 
     public static OperationalTemplateTestData findByTemplateId(String templateId) {
