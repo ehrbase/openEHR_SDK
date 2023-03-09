@@ -123,7 +123,7 @@ public class FlatHelper<T> {
     }
 
     public static boolean isExactlyDvCodedText(Map<FlatPathDto, String> values, String path) {
-        FlatPathDto codeAtt = FlatPathParser.parse(path).nodeWithAttributeName("code");
+        FlatPathDto codeAtt = FlatPathParser.parse(path).pathWithAttributeName("code");
         return values.keySet().stream().anyMatch(e -> e.isEqualTo(codeAtt));
     }
 
@@ -313,7 +313,7 @@ public class FlatHelper<T> {
         if (childTerm == null) {
             otherPath = currentTermDto;
         } else {
-            otherPath = currentTermDto.nodeWithChild(FlatPathParser.parse(childTerm));
+            otherPath = currentTermDto.pathWithChild(FlatPathParser.parse(childTerm));
         }
         return values.entrySet().stream()
                 .filter(s -> s.getKey().startsWith(otherPath))
