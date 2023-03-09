@@ -90,7 +90,7 @@ public final class FlatPathDto {
      * @return
      */
     public FlatPathDto nodeWithAttributeName(String attributeName) {
-        if (child == null) {
+        if (child != null) {
             throw new IllegalStateException("attributeName can only be set for leaf nodes");
         }
         return new FlatPathDto(name, child, count, attributeName);
