@@ -222,7 +222,8 @@ public class OPTParserTest {
         OPTParser cut = new OPTParser(template);
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, cut::parse);
 
-        Assertions.assertEquals("The supplied template is not supported: Unsupported type DV_SCALE.", exception.getMessage());
+        Assertions.assertEquals(
+                "The supplied template is not supported: Unsupported type DV_SCALE.", exception.getMessage());
     }
 
     @Test
