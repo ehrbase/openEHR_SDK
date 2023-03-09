@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 import org.apache.commons.lang3.ObjectUtils;
 
 public final class FlatPathDto {
@@ -59,24 +60,72 @@ public final class FlatPathDto {
         return child;
     }
 
-    public FlatPathDto withChild(FlatPathDto child) {
+    /**
+     * Clones this node and appends the child
+     *
+     * @param child
+     * @return
+     */
+    public FlatPathDto nodeWithChild(FlatPathDto child) {
         return new FlatPathDto(name, child, count, attributeName);
+    }
+
+    /**
+     * Appends the child to a clone of this path
+     * @param child
+     * @return
+     */
+    public FlatPathDto pathWithChild(FlatPathDto child) {
+        return replaceEnd(this, n -> n.nodeWithChild(child));
     }
 
     public String getAttributeName() {
         return attributeName;
     }
 
-    public FlatPathDto withAttributeName(String attributeName) {
+    /**
+     * Clones this node and sets the attributeName property
+     *
+     * @param attributeName
+     * @return
+     */
+    public FlatPathDto nodeWithAttributeName(String attributeName) {
+        if (child == null) {
+            throw new IllegalStateException("attributeName can only be set for leaf nodes");
+        }
         return new FlatPathDto(name, child, count, attributeName);
+    }
+
+    /**
+     * Clones the whole path and sets the attributeName property of the trailing node
+     * @param attributeName
+     * @return
+     */
+    public FlatPathDto pathWithAttributeName(String attributeName) {
+        return replaceEnd(this, n -> n.nodeWithAttributeName(attributeName));
     }
 
     public Integer getCount() {
         return count;
     }
 
-    public FlatPathDto withCount(Integer count) {
+    /**
+     * Clones this node and sets the count property
+     *
+     * @param count
+     * @return
+     */
+    public FlatPathDto nodeWithCount(Integer count) {
         return new FlatPathDto(name, child, count, attributeName);
+    }
+
+    /**
+     * Clones the whole path and sets the count property of the trailing node
+     * @param count
+     * @return
+     */
+    public FlatPathDto pathWithCount(Integer count) {
+        return replaceEnd(this, n -> n.nodeWithCount(count));
     }
 
     public String format() {
@@ -146,6 +195,27 @@ public final class FlatPathDto {
         return newPath;
     }
 
+    public static FlatPathDto replaceEnd(FlatPathDto path, UnaryOperator<FlatPathDto> replacement) {
+
+        if (path == null) {
+            return null;
+        }
+
+        Deque<FlatPathDto> nodes = new LinkedList<>();
+        for (FlatPathDto n = path; n != null; n = n.getChild()) {
+            nodes.add(n);
+        }
+
+        Iterator<FlatPathDto> nIt = nodes.descendingIterator();
+
+        FlatPathDto node = replacement.apply(nIt.next());
+
+        while (nIt.hasNext()) {
+            node = nIt.next().nodeWithChild(node);
+        }
+        return node;
+    }
+
     public static boolean isNodeEqual(FlatPathDto me, FlatPathDto other) {
         return isNodeEqual(me, other, false, false);
     }
@@ -197,7 +267,7 @@ public final class FlatPathDto {
         FlatPathDto child = add;
         Iterator<FlatPathDto> it = nodes.descendingIterator();
         while (it.hasNext()) {
-            child = it.next().withChild(child);
+            child = it.next().nodeWithChild(child);
         }
         return child;
     }
@@ -237,6 +307,10 @@ public final class FlatPathDto {
      */
     public boolean isEqualTo(CharSequence otherPath) {
         return isEqualTo(this, FlatPathParser.parse(otherPath), false, false);
+    }
+
+    public boolean isEqualTo(FlatPathDto otherPath) {
+        return isEqualTo(this, otherPath, false, false);
     }
 
     public boolean isEqualTo(FlatPathDto otherPath, boolean ignoreCount, boolean ignoreAttribute) {
