@@ -60,7 +60,7 @@ public final class FlatPathParser {
         tempSubPath = tempSplit[0];
 
         if (tempSplit.length > 1) {
-            count = Integer.valueOf(tempSplit[1].toString());
+            count = Integer.parseUnsignedInt(tempSplit[1], 0, tempSplit[1].length(), 10);
         }
 
         // Rest is the name
