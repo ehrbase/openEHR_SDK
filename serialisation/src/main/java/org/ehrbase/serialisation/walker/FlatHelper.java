@@ -57,7 +57,6 @@ public class FlatHelper<T> {
 
     public String buildNamePath(Context<T> context, boolean addCount) {
         StringBuilder namePathBuilder = new StringBuilder();
-
         List<String> nodeIdPath = new ArrayList<>();
 
         WebTemplateNode child = null;
@@ -91,11 +90,11 @@ public class FlatHelper<T> {
                 }
 
                 appendCount(node, context, addCount, namePathBuilder);
-            }
 
-            Map<List<String>, Integer> map =
-                    pathCountMap.computeIfAbsent(namePathBuilder.toString(), l -> new HashMap<>());
-            map.computeIfAbsent(nodeIdPath, k -> 1 + maxValue(map));
+                Map<List<String>, Integer> map =
+                        pathCountMap.computeIfAbsent(namePathBuilder.toString(), l -> new HashMap<>());
+                map.computeIfAbsent(nodeIdPath, k -> 1 + maxValue(map));
+            }
         }
 
         return namePathBuilder.toString();
@@ -147,12 +146,15 @@ public class FlatHelper<T> {
         boolean hasAttributeFromDifferentType = false;
         while (valueIt.hasNext()) {
             Map.Entry<FlatPathDto, String> e = valueIt.next();
-            if (keyAndValueMatches(e, typePath, PARTY_SELF) ) {
+            if (keyAndValueMatches(e, typePath, PARTY_SELF)) {
                 return true;
             }
             FlatPathDto key = e.getKey();
             if (!hasAttributeFromDifferentType) {
-                hasAttributeFromDifferentType = key.isEqualTo(namePath) || key.isEqualTo(idPath) || key.startsWith(relationshipPath) || key.startsWith(identifierPath);
+                hasAttributeFromDifferentType = key.isEqualTo(namePath)
+                        || key.isEqualTo(idPath)
+                        || key.startsWith(relationshipPath)
+                        || key.startsWith(identifierPath);
             }
         }
         return !hasAttributeFromDifferentType;
@@ -189,7 +191,6 @@ public class FlatHelper<T> {
         FlatPathDto idPath = pathDto.pathWithAttributeName("id");
         FlatPathDto identifierPath = pathDto.pathWithChild(new FlatPathDto("_identifier", null, null, null));
 
-
         var valueIt = subEntries(values, path).iterator();
         boolean hasAttributeFromType = false;
         while (valueIt.hasNext()) {
@@ -199,7 +200,8 @@ public class FlatHelper<T> {
                 return false;
             }
             if (!hasAttributeFromType) {
-                hasAttributeFromType = key.isEqualTo(namePath) || key.isEqualTo(idPath) || key.startsWith(identifierPath);
+                hasAttributeFromType =
+                        key.isEqualTo(namePath) || key.isEqualTo(idPath) || key.startsWith(identifierPath);
             }
         }
         return hasAttributeFromType;
@@ -209,8 +211,14 @@ public class FlatHelper<T> {
         return values.entrySet().stream().filter(e -> e.getKey().startsWith(path));
     }
 
-    private static boolean keyAndValueMatches(Map.Entry<FlatPathDto, String> entry, FlatPathDto typePath, String value) {
-        return entry.getKey().isEqualTo(typePath) && Optional.of(entry).map(Map.Entry::getValue).map(v -> StringUtils.unwrap(v, '"')).filter(value::equals).isPresent();
+    private static boolean keyAndValueMatches(
+            Map.Entry<FlatPathDto, String> entry, FlatPathDto typePath, String value) {
+        return entry.getKey().isEqualTo(typePath)
+                && Optional.of(entry)
+                        .map(Map.Entry::getValue)
+                        .map(v -> StringUtils.unwrap(v, '"'))
+                        .filter(value::equals)
+                        .isPresent();
     }
 
     private static boolean rmTypeMatches(WebTemplateNode node, String... rmTypNames) {
@@ -361,6 +369,7 @@ public class FlatHelper<T> {
      * @return a new map with the filtered entries
      */
     public static Map<FlatPathDto, String> filter(Map<FlatPathDto, String> values, String path, boolean includeRaw) {
+
         return values.entrySet().stream()
                 .filter(e -> e.getKey().startsWith(path))
                 .filter(e -> includeRaw || !"raw".equals(e.getKey().getLast().getAttributeName()))
