@@ -3,8 +3,12 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
- ### Fixed 
+### Added
+### Changed
+
+- FlatPathDto is now immutable ([#425](https://github.com/ehrbase/openEHR_SDK/pull/425))
+
+### Fixed
 
 ## [1.24.0]
  ### Added 
