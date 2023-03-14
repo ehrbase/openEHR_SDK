@@ -22,45 +22,50 @@ import static org.ehrbase.aql.util.CharSequenceHelper.splitFirst;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class FlatPathParser {
+public final class FlatPathParser {
 
     private FlatPathParser() {}
 
     public static FlatPathDto parse(CharSequence path) {
-        FlatPathDto dto = new FlatPathDto();
-
-        if (!StringUtils.equals("/", path)) {
-            CharSequence[] tempSplit;
-            CharSequence tempSubPath;
-
-            // extract Children
-            tempSplit = splitFirst(removeStart(path, "/"), '/');
-            tempSubPath = tempSplit[0];
-
-            if (tempSplit.length > 1) {
-                dto.setChild(parse(tempSplit[1]));
-            }
-
-            // extract AttributeName
-            tempSplit = splitFirst(tempSubPath, '|');
-            tempSubPath = tempSplit[0];
-
-            if (tempSplit.length > 1) {
-                dto.setAttributeName(tempSplit[1].toString());
-            }
-
-            // extract Count
-            tempSplit = splitFirst(tempSubPath, ':');
-            tempSubPath = tempSplit[0];
-
-            if (tempSplit.length > 1) {
-                dto.setCount(Integer.valueOf(tempSplit[1].toString()));
-            }
-
-            // Rest is the name
-            dto.setName(tempSubPath.toString());
+        if (StringUtils.equals("/", path)) {
+            return new FlatPathDto(null, null, null, null);
         }
 
-        return dto;
+        String name;
+        FlatPathDto child = null;
+        String attributeName = null;
+        Integer count = null;
+
+        CharSequence[] tempSplit;
+        CharSequence tempSubPath;
+
+        // extract Children
+        tempSplit = splitFirst(removeStart(path, "/"), '/');
+        tempSubPath = tempSplit[0];
+
+        if (tempSplit.length > 1) {
+            child = parse(tempSplit[1]);
+        }
+
+        // extract AttributeName
+        tempSplit = splitFirst(tempSubPath, '|');
+        tempSubPath = tempSplit[0];
+
+        if (tempSplit.length > 1) {
+            attributeName = tempSplit[1].toString();
+        }
+
+        // extract Count
+        tempSplit = splitFirst(tempSubPath, ':');
+        tempSubPath = tempSplit[0];
+
+        if (tempSplit.length > 1) {
+            count = Integer.parseUnsignedInt(tempSplit[1], 0, tempSplit[1].length(), 10);
+        }
+
+        // Rest is the name
+        name = tempSubPath.toString();
+
+        return new FlatPathDto(name, child, count, attributeName);
     }
 }

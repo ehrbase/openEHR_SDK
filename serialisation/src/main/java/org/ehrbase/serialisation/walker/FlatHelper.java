@@ -27,13 +27,13 @@ import static org.ehrbase.util.rmconstants.RmConstants.PARTY_PROXY;
 import static org.ehrbase.util.rmconstants.RmConstants.PARTY_RELATED;
 import static org.ehrbase.util.rmconstants.RmConstants.PARTY_SELF;
 import static org.ehrbase.util.rmconstants.RmConstants.RM_OBJECT;
-import static org.ehrbase.webtemplate.parser.OPTParser.PATH_DIVIDER;
 import static org.ehrbase.webtemplate.parser.OPTParser.buildId;
 
 import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,173 +41,202 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.client.classgenerator.EnumValueSet;
 import org.ehrbase.util.exception.SdkException;
 import org.ehrbase.util.rmconstants.RmConstants;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
+import org.ehrbase.webtemplate.path.flat.FlatPathParser;
 
 public class FlatHelper<T> {
 
-    private Map<String, Map<String, Integer>> pathCountMap = new HashMap<>();
+    private final Map<String, Map<List<String>, Integer>> pathCountMap = new HashMap<>();
 
     public String buildNamePath(Context<T> context, boolean addCount) {
-        StringBuilder sb = new StringBuilder();
-        StringBuilder fullPath = new StringBuilder();
-        WebTemplateNode node = null;
-        for (Iterator<WebTemplateNode> iterator = context.getNodeDeque().descendingIterator(); iterator.hasNext(); ) {
-            WebTemplateNode parent = node;
-            node = iterator.next();
-            boolean skip = skip(node, parent);
-            boolean parentIsSkippedElement = parent != null && ELEMENT.equals(parent.getRmType()) && skip(parent, null);
+        StringBuilder namePathBuilder = new StringBuilder();
+        List<String> nodeIdPath = new ArrayList<>();
 
-            if (parentIsSkippedElement) {
-                fullPath.append(parent.getId());
-            } else {
-                fullPath.append(node.getId());
-            }
+        WebTemplateNode child = null;
+        for (Iterator<WebTemplateNode> iterator = context.getNodeDeque().descendingIterator(); iterator.hasNext(); ) {
+            WebTemplateNode parent = child;
+            child = iterator.next();
+            boolean skip = skip(child, parent);
+
+            boolean parentIsSkippedElement = parent != null && ELEMENT.equals(parent.getRmType()) && skip(parent, null);
+            WebTemplateNode node = parentIsSkippedElement ? parent : child;
+
+            nodeIdPath.add(node.getId(true));
 
             if (!skip) {
-                String key;
-
-                if (parentIsSkippedElement) {
-                    key = sb + "/" + parent.getId(false);
-                } else {
-
-                    key = sb + "/" + node.getId(false);
-                }
-                if (!pathCountMap.containsKey(key)) {
-                    pathCountMap.put(key, new HashMap<>());
+                if (namePathBuilder.length() > 0) {
+                    namePathBuilder.append('/');
                 }
 
-                if (!pathCountMap.get(key).containsKey(fullPath.toString())) {
-                    pathCountMap
-                            .get(key)
-                            .put(
-                                    fullPath.toString(),
-                                    pathCountMap.get(key).values().stream()
-                                            .max(Comparator.naturalOrder())
-                                            .map(i -> i + 1)
-                                            .orElse(1));
+                // Value inherits id of skipped Element, if applicable
+                namePathBuilder.append(node.getId(false));
+
+                // Note: the key is still without pathCount and count
+                String key = namePathBuilder.toString();
+
+                Map<List<String>, Integer> pathCounts = pathCountMap.computeIfAbsent(key, l -> new HashMap<>());
+
+                List<String> nodeIdPathKey = List.copyOf(nodeIdPath);
+                int pathCount = pathCounts.computeIfAbsent(nodeIdPathKey, k -> 1 + maxValue(pathCounts));
+                if (pathCount != 1) {
+                    namePathBuilder.append(pathCount);
                 }
 
-                Integer integer = Optional.ofNullable(pathCountMap.get(key))
-                        .map(m -> m.get(fullPath.toString()))
-                        .orElse(1);
+                appendCount(node, context, addCount, namePathBuilder);
 
-                if (integer != 1) {
-                    if (parentIsSkippedElement) {
-                        // Value inherits id of skipped Element
-                        sb.append(parent.getId(false) + integer);
-                    } else {
-                        sb.append(node.getId(false) + integer);
-                    }
-                } else {
-                    if (parentIsSkippedElement) {
-                        // Value inherits id of skipped Element
-                        sb.append(parent.getId(false));
-                    } else {
-                        sb.append(node.getId(false));
-                    }
-                }
-            }
-
-            if (parentIsSkippedElement) {
-                addCount(context, addCount, sb, parent, skip);
-            } else {
-                addCount(context, addCount, sb, node, skip);
-            }
-            if (!skip && iterator.hasNext()) {
-                sb.append("/");
-            }
-
-            if (!pathCountMap.containsKey(sb.toString())) {
-                pathCountMap.put(sb.toString(), new HashMap<>());
-            }
-
-            if (!pathCountMap.get(sb.toString()).containsKey(fullPath.toString())) {
-                pathCountMap
-                        .get(sb.toString())
-                        .put(
-                                fullPath.toString(),
-                                pathCountMap.get(sb.toString()).values().stream()
-                                        .max(Comparator.naturalOrder())
-                                        .map(i -> i + 1)
-                                        .orElse(1));
+                Map<List<String>, Integer> map =
+                        pathCountMap.computeIfAbsent(namePathBuilder.toString(), l -> new HashMap<>());
+                map.computeIfAbsent(nodeIdPath, k -> 1 + maxValue(map));
             }
         }
-        return StringUtils.removeEnd(sb.toString(), "/");
+
+        return namePathBuilder.toString();
     }
 
-    private void addCount(Context<T> context, boolean addCount, StringBuilder sb, WebTemplateNode node, boolean skip) {
-        if (!skip
-                && node.getMax() != 1
-                && context.getCountMap().containsKey(new NodeId(node))
-                && (addCount || context.getCountMap().get(new NodeId(node)) != 0)) {
-            sb.append(":").append(context.getCountMap().get(new NodeId(node)));
+    private static int maxValue(Map<?, Integer> map) {
+        return map.values().stream().mapToInt(Integer::intValue).max().orElse(0);
+    }
+
+    /**
+     * For {@code nodes} with {@code max} != 0 and {@code count} != 0 or {@code forceAppend}' the count from the {@code context}, prefixed with ':', is added to the {@code StringBuilder}
+     *
+     * @param node
+     * @param context
+     * @param forceAppend
+     * @param sb
+     */
+    private static void appendCount(WebTemplateNode node, Context<?> context, boolean forceAppend, StringBuilder sb) {
+        if (node.getMax() == 1) {
+            return;
         }
+        Optional.of(node)
+                .map(NodeId::new)
+                .map(context.getCountMap()::get)
+                .filter(c -> forceAppend || c != 0)
+                .ifPresent(c -> sb.append(":").append(c));
     }
 
     public static boolean isExactlyDvCodedText(Map<FlatPathDto, String> values, String path) {
-        return values.keySet().stream().anyMatch(e -> e.isEqualTo(path + "|code"));
+        FlatPathDto codeAtt = FlatPathParser.parse(path).pathWithAttributeName("code");
+        return values.keySet().stream().anyMatch(e -> e.isEqualTo(codeAtt));
     }
 
     public static boolean isExactlyPartySelf(Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
-
-        if (node != null && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_SELF).contains(node.getRmType())) {
-
+        if (node != null && !rmTypeMatches(node, RM_OBJECT, PARTY_PROXY, PARTY_SELF)) {
             return false;
         }
-        return values.entrySet().stream()
-                        .noneMatch(e -> e.getKey().isEqualTo(path + "|name")
-                                || e.getKey().isEqualTo(path + "|id")
-                                || e.getKey().startsWith(path + "/relationship")
-                                || e.getKey().startsWith(path + "/_identifier"))
-                || values.entrySet().stream()
-                        .anyMatch(e -> e.getKey().isEqualTo(path + "|_type")
-                                && PARTY_SELF.equals(StringUtils.unwrap(e.getValue(), '"')));
+
+        FlatPathDto pathDto = FlatPathParser.parse(path);
+        FlatPathDto typePath = pathDto.pathWithAttributeName("_type");
+        // attributes from PartyIdentified
+        FlatPathDto namePath = pathDto.pathWithAttributeName("name");
+        FlatPathDto idPath = pathDto.pathWithAttributeName("id");
+        // has sub-path from PartyIdentified or PartyRelated?
+        FlatPathDto relationshipPath = pathDto.pathWithChild(FlatPathParser.parse("relationship"));
+        FlatPathDto identifierPath = pathDto.pathWithChild(FlatPathParser.parse("_identifier"));
+
+        var valueIt = subEntries(values, path).iterator();
+        boolean hasAttributeFromDifferentType = false;
+        while (valueIt.hasNext()) {
+            Map.Entry<FlatPathDto, String> e = valueIt.next();
+            if (keyAndValueMatches(e, typePath, PARTY_SELF)) {
+                return true;
+            }
+            FlatPathDto key = e.getKey();
+            if (!hasAttributeFromDifferentType) {
+                hasAttributeFromDifferentType = key.isEqualTo(namePath)
+                        || key.isEqualTo(idPath)
+                        || key.startsWith(relationshipPath)
+                        || key.startsWith(identifierPath);
+            }
+        }
+        return !hasAttributeFromDifferentType;
     }
 
+    /**
+     *
+     * @param values
+     * @param path
+     * @param node if given, the rmType is also checked
+     * @return
+     */
     public static boolean isExactlyPartyRelated(Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
-
-        if (node != null
-                && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED, PARTY_RELATED)
-                        .contains(node.getRmType())) {
-
+        if (node != null && !rmTypeMatches(node, RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED, PARTY_RELATED)) {
             return false;
         }
 
-        return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/relationship"));
+        FlatPathDto pathDto = FlatPathParser.parse(path);
+        FlatPathDto relationshipPath = pathDto.pathWithChild(FlatPathParser.parse("relationship"));
+
+        return subEntries(values, path).anyMatch(e -> e.getKey().startsWith(relationshipPath));
     }
 
     public static boolean isExactlyPartyIdentified(Map<FlatPathDto, String> values, String path, WebTemplateNode node) {
-
-        if (node != null && !List.of(RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED).contains(node.getRmType())) {
-
+        if (node != null && !rmTypeMatches(node, RM_OBJECT, PARTY_PROXY, PARTY_IDENTIFIED)) {
             return false;
         }
 
-        return values.entrySet().stream().noneMatch(e -> e.getKey().startsWith(path + "/relationship"))
-                && values.entrySet().stream()
-                        .noneMatch(e -> e.getKey().isEqualTo(path + "|_type")
-                                && PARTY_SELF.equals(StringUtils.unwrap(e.getValue(), '"')))
-                && values.entrySet().stream()
-                        .anyMatch(e -> e.getKey().isEqualTo(path + "|name")
-                                || (e.getKey().isEqualTo(path + "|id"))
-                                || e.getKey().startsWith(path + "/_identifier"));
+        FlatPathDto pathDto = FlatPathParser.parse(path);
+        FlatPathDto typePath = pathDto.pathWithAttributeName("_type");
+        // is sub-path from subclass?
+        FlatPathDto relationshipPath = pathDto.pathWithChild(new FlatPathDto("relationship", null, null, null));
+        FlatPathDto namePath = pathDto.pathWithAttributeName("name");
+        FlatPathDto idPath = pathDto.pathWithAttributeName("id");
+        FlatPathDto identifierPath = pathDto.pathWithChild(new FlatPathDto("_identifier", null, null, null));
+
+        var valueIt = subEntries(values, path).iterator();
+        boolean hasAttributeFromType = false;
+        while (valueIt.hasNext()) {
+            Map.Entry<FlatPathDto, String> e = valueIt.next();
+            FlatPathDto key = e.getKey();
+            if (keyAndValueMatches(e, typePath, PARTY_SELF) || key.startsWith(relationshipPath)) {
+                return false;
+            }
+            if (!hasAttributeFromType) {
+                hasAttributeFromType =
+                        key.isEqualTo(namePath) || key.isEqualTo(idPath) || key.startsWith(identifierPath);
+            }
+        }
+        return hasAttributeFromType;
+    }
+
+    private static Stream<Map.Entry<FlatPathDto, String>> subEntries(Map<FlatPathDto, String> values, String path) {
+        return values.entrySet().stream().filter(e -> e.getKey().startsWith(path));
+    }
+
+    private static boolean keyAndValueMatches(
+            Map.Entry<FlatPathDto, String> entry, FlatPathDto typePath, String value) {
+        return entry.getKey().isEqualTo(typePath)
+                && Optional.of(entry)
+                        .map(Map.Entry::getValue)
+                        .map(v -> StringUtils.unwrap(v, '"'))
+                        .filter(value::equals)
+                        .isPresent();
+    }
+
+    private static boolean rmTypeMatches(WebTemplateNode node, String... rmTypNames) {
+        return ArrayUtils.contains(rmTypNames, node.getRmType());
     }
 
     public static boolean isExactlyIntervalEvent(Map<FlatPathDto, String> values, String path) {
-        return values.keySet().stream().anyMatch(e -> e.startsWith(path + "/math_function"));
+        FlatPathDto mathFunctionPath =
+                FlatPathParser.parse(path).pathWithChild(new FlatPathDto("math_function", null, null, null));
+        return values.keySet().stream().anyMatch(k -> k.startsWith(mathFunctionPath));
     }
 
     public boolean skip(Context<T> context) {
-        WebTemplateNode node = context.getNodeDeque().poll();
-        WebTemplateNode parent = context.getNodeDeque().peek();
-        context.getNodeDeque().push(node);
-        boolean skip = skip(node, parent);
-        return skip;
+        Deque<WebTemplateNode> nodes = context.getNodeDeque();
+        WebTemplateNode node = nodes.poll();
+        WebTemplateNode parent = nodes.peek();
+        nodes.push(node);
+        return skip(node, parent);
     }
 
     public boolean skip(WebTemplateNode node, WebTemplateNode parent) {
@@ -225,14 +254,14 @@ public class FlatHelper<T> {
             return true;
         }
 
-        if (List.of(
-                        RmConstants.HISTORY,
-                        RmConstants.ITEM_TREE,
-                        RmConstants.ITEM_LIST,
-                        RmConstants.ITEM_SINGLE,
-                        RmConstants.ITEM_TABLE,
-                        RmConstants.ITEM_STRUCTURE)
-                .contains(node.getRmType())) {
+        if (rmTypeMatches(
+                node,
+                RmConstants.HISTORY,
+                RmConstants.ITEM_TREE,
+                RmConstants.ITEM_LIST,
+                RmConstants.ITEM_SINGLE,
+                RmConstants.ITEM_TABLE,
+                RmConstants.ITEM_STRUCTURE)) {
             return true;
         } else if (parent != null && isEvent(node)) {
             // a corresponding  RM-tree would contain at maximum 1 event.
@@ -267,7 +296,8 @@ public class FlatHelper<T> {
 
     public boolean isNonMandatoryRmAttribute(WebTemplateNode node, WebTemplateNode parent) {
         RMTypeInfo typeInfo = Walker.ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
-        boolean nonMandatoryRmAttribute = typeInfo.getAttributes().containsKey(node.getName()) && node.getMin() == 0;
+        String nodeName = node.getName();
+        boolean nonMandatoryRmAttribute = typeInfo.getAttributes().containsKey(nodeName) && node.getMin() == 0;
         boolean mandatoryNotInWebTemplate = List.of(
                         "name",
                         "archetype_node_id",
@@ -277,16 +307,13 @@ public class FlatHelper<T> {
                         "lower_included",
                         "upper_unbounded",
                         "lower_unbounded")
-                .contains(node.getName());
-        boolean nonMandatoryInWebTemplate = typeInfo.getRmName().equals("ACTIVITY")
-                        && node.getName().equals("timing")
-                || typeInfo.getRmName().equals(RmConstants.INSTRUCTION)
-                        && node.getName().equals("expiry_time")
-                || typeInfo.getRmName().equals(RmConstants.INTERVAL_EVENT)
-                        && node.getName().equals("width")
-                || typeInfo.getRmName().equals(RmConstants.INTERVAL_EVENT)
-                        && node.getName().equals("math_function")
-                || typeInfo.getRmName().equals(ISM_TRANSITION) && node.getName().equals("transition");
+                .contains(nodeName);
+        String rmName = typeInfo.getRmName();
+        boolean nonMandatoryInWebTemplate = rmName.equals(RmConstants.ACTIVITY) && nodeName.equals("timing")
+                || rmName.equals(RmConstants.INSTRUCTION) && nodeName.equals("expiry_time")
+                || rmName.equals(RmConstants.INTERVAL_EVENT) && nodeName.equals("width")
+                || rmName.equals(RmConstants.INTERVAL_EVENT) && nodeName.equals("math_function")
+                || rmName.equals(ISM_TRANSITION) && nodeName.equals("transition");
 
         return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
     }
@@ -317,22 +344,30 @@ public class FlatHelper<T> {
      */
     public static Map<Integer, Map<FlatPathDto, String>> extractMultiValued(
             String currentTerm, String childTerm, Map<FlatPathDto, String> values) {
-        final String otherPath;
-        if (childTerm != null) {
-
-            otherPath = currentTerm + PATH_DIVIDER + childTerm;
+        FlatPathDto currentTermDto = new FlatPathDto(currentTerm);
+        final FlatPathDto otherPath;
+        if (childTerm == null) {
+            otherPath = currentTermDto;
         } else {
-            otherPath = currentTerm;
+            otherPath = currentTermDto.pathWithChild(FlatPathParser.parse(childTerm));
         }
         return values.entrySet().stream()
                 .filter(s -> s.getKey().startsWith(otherPath))
                 .collect(Collectors.groupingBy(
-                        e -> Optional.ofNullable(FlatPathDto.removeStart(e.getKey(), new FlatPathDto(currentTerm))
+                        e -> Optional.ofNullable(FlatPathDto.removeStart(e.getKey(), currentTermDto)
                                         .getCount())
                                 .orElse(0),
                         Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
+    /**
+     * Filter map by path prefix (string comparison)
+     *
+     * @param values
+     * @param path filter path
+     * @param includeRaw if raw nodes should be included
+     * @return a new map with the filtered entries
+     */
     public static Map<FlatPathDto, String> filter(Map<FlatPathDto, String> values, String path, boolean includeRaw) {
 
         return values.entrySet().stream()
@@ -343,29 +378,22 @@ public class FlatHelper<T> {
 
     public static Map<FlatPathDto, String> convertAttributeToFlat(
             Map<FlatPathDto, String> values, String path, String attr, String node) {
-        Map<FlatPathDto, String> map;
+        FlatPathDto pathDto = FlatPathParser.parse(path);
+        String attrPostfix = attr + "_";
 
-        map = values.entrySet().stream()
+        return values.entrySet().stream()
                 .collect(Collectors.toMap(
                         e1 -> {
                             String attributeName = e1.getKey().getLast().getAttributeName();
-                            if (StringUtils.contains(attributeName, attr + "_")) {
-                                Integer integer = Integer.valueOf(StringUtils.substringAfter(attributeName, ":"));
-
-                                return new FlatPathDto(path
-                                        + "/"
-                                        + node
-                                        + ":"
-                                        + integer
-                                        + "|"
-                                        + StringUtils.substringBetween(attributeName, attr + "_", ":"));
+                            if (StringUtils.contains(attributeName, attrPostfix)) {
+                                Integer count = Integer.valueOf(StringUtils.substringAfter(attributeName, ":"));
+                                String attribute = StringUtils.substringBetween(attributeName, attrPostfix, ":");
+                                return pathDto.pathWithChild(new FlatPathDto(node, null, count, attribute));
                             } else {
                                 return e1.getKey();
                             }
                         },
                         Map.Entry::getValue));
-
-        return map;
     }
 
     public static <E extends EnumValueSet> E findEnumValueOrThrow(String value, Class<E> clazz) {
