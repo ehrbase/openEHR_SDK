@@ -51,6 +51,7 @@ public class RmConstants {
     public static final String ITEM_TABLE = "ITEM_TABLE";
     public static final String ITEM_STRUCTURE = "ITEM_STRUCTURE";
 
+    public static final String ACTIVITY = "ACTIVITY";
     public static final String ISM_TRANSITION = "ISM_TRANSITION";
     public static final String ELEMENT = "ELEMENT";
     public static final String CODE_PHRASE = "CODE_PHRASE";

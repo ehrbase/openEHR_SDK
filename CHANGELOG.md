@@ -7,6 +7,14 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Fix error when serializing partial DV_DATE_TIME without time component ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
  ### Fixed 
 
+## [1.25.0]
+### Added
+### Changed
+
+- FlatPathDto is now immutable ([#425](https://github.com/ehrbase/openEHR_SDK/pull/425))
+
+### Fixed
+
 ## [1.24.0]
  ### Added 
 - Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
@@ -226,4 +234,5 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...v1.22.0
 [1.23.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.22.0...v1.23.0
 [1.24.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.23.0...v1.24.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.24.0...HEAD
+[1.25.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.24.0...v1.25.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.25.0...HEAD

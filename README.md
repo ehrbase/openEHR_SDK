@@ -1,44 +1,45 @@
-# EHRBase SDK 
+# openEHR SDK ![Maven Central](https://img.shields.io/maven-central/v/org.ehrbase.openehr.sdk/root) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ehrbase_openEHR_SDK&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ehrbase_openEHR_SDK) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-## client (mostly Beta)
 
-Generic openEHR Client and Objekt-mapper:
+## Features of the SDK
 
+### client (mostly Beta)
+
+Generic openEHR Client and Object-mapper:
 * Define entity classes for openEHR-Templates (v1.4) in a jpa like way
 * Map entity <-> Archie RM objekts.
 * RestClient for openEHR Rest-API
 * AQL-Query generator (Alpha)
 
-## generator (Beta)
+### generator (Beta)
 
-* Autogenerate entity classes from template
+Autogenerate entity classes from template
 
-## opt-1.4 (Beta)
+### opt-1.4 (Beta)
 
-* Opt 1.4 xmlbeans
+Opt 1.4 xmlbeans
 
-## response-dto (Beta)
+### response-dto (Beta)
 
-* DTO's representing the response for the ehrsacpe and openEHR Rest API
+DTO's representing the response for the ehrscape and openEHR Rest API
 
-## terminologie (Beta)
+### terminology (Beta)
 
-* Mini openEHR terminologie implementation
+Mini openEHR terminology implementation
 
-## validation (Beta)
+### validation (Beta)
 
-* Validation of Compositions against templates
+Validation of Compositions against templates
 
-## test-data (Beta)
+### test-data (Beta)
 
-* Example templates and Composition for tests
+Example templates and Composition for tests
 
-## serialisation (Beta)
+### serialisation (Beta)
 
-* map Compositions from and to JSON;XML
+Map Compositions from and to JSON;XML
 
-## aql (Beta)
-
+### aql (Beta)
 * Map an Aql-String from and to an Aql-Dto-Model.
 * Not supported right now:
     - XOR
@@ -47,26 +48,9 @@ Generic openEHR Client and Objekt-mapper:
     - like
     - compare path to path expressions 
     
-## Release Notes (v1.0.0)
+## Release Notes
 
-* Support web-templates and flat-format
-* New Dto generator and Dto mapper
-
-
-## Release Notes (v0.3.6)
-
-* CircleCI pipeline w/ Jacoco code coverage and sonarcloud.io analysis
-* semi automated version updating via [major] / [minor] / [patch] flags in merge commit title of Github PR
-* updated test dependencies to use Junit5
-
-## Release Notes (v0.3.0)
-
-* RestClient for DIRECTORY endpoint
-* Improved clean-up of empty elements
-* Improved generation of EVENT classes
-* Automated generation of PARTICIPATION classes
-* Added support for PARTY_PROXY
-* Moved to EHRbase 11
+Please check the [CHANGELOG](CHANGELOG.md)
 
 ## Installation
 
@@ -74,7 +58,7 @@ Generic openEHR Client and Objekt-mapper:
 
 Use one of the options below to build the project.
 
-#### Option 1) -  Build w/o integration tets
+#### Option 1) -  Build w/o integration tests
 
 This option skipps integration tests. Code coverage report is based on unit tests only.
 
@@ -88,8 +72,6 @@ mvn clean verify
 mvn clean package
 ...
 ```
-
-
 
 #### Option 2) - Build with unit & integration tests
 This option includes unit as well as integration tests. Three coverage reports are generated: unit test report, integration test report and overall coverage report. 
@@ -134,22 +116,22 @@ To generate an entity class from a template use
 
 In the optional config file you can define
 
-Parameter        | Default                         | Description
- -----------     | ---------                       | ------------- 
-optimizerSetting | SECTION                         | Defines if nodes which belong to are archetype but are single valued generate a new class: <ul><li>NONE: Always generate a class for nodes which belong to a archetype</li><li>SECTION: Do not generate a class for nodes which have rm-type section and are single valued</li><li>ALL: Do not generate a class for nodes which are single valued</li></ul>
-addNullFlavor    | true                            | Whether or not to generate null flavor fields for Elements.
-generateChoicesForSingleEvent    | false                           | Whether or not to generate Choices (POINT_EVENT & INTERVAL_EVENT) fields for a single EVENT. If "false" only POINT_EVENT will be generated.
-replaceChars     | German and Norwegian Characters | Map to define Characters in the Node name to be replaced. 
+| Parameter                     | Default                          | Description                                                                                                                                                                                                                                                                                                                                                 |
+|-------------------------------|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| optimizerSetting              | SECTION                          | Defines if nodes which belong to are archetype but are single valued generate a new class: <ul><li>NONE: Always generate a class for nodes which belong to a archetype</li><li>SECTION: Do not generate a class for nodes which have rm-type section and are single valued</li><li>ALL: Do not generate a class for nodes which are single valued</li></ul> |
+| addNullFlavor                 | true                             | Whether or not to generate null flavor fields for Elements.                                                                                                                                                                                                                                                                                                 |
+| generateChoicesForSingleEvent | false                            | Whether or not to generate Choices (POINT_EVENT & INTERVAL_EVENT) fields for a single EVENT. If "false" only POINT_EVENT will be generated.                                                                                                                                                                                                                 |
+| replaceChars                  | German and Norwegian Characters  | Map to define Characters in the Node name to be replaced.                                                                                                                                                                                                                                                                                                   |
 
-see generator/src/main/resources/DefaultConfig.yaml
+see [generator/src/main/resources/DefaultConfig.yaml](generator/src/main/resources/DefaultConfig.yaml)
 
-### Use The SDK in your projekt
+### Use The SDK in your project
 
 You can include release versions of the SDK via [maven central](https://search.maven.org/search?q=g:org.ehrbase.openehr.sdk)
 
 If you need specific development-versions, you can use [jitpack.io](https://jitpack.io/#ehrbase/openEHR_SDK)
 
-#### Map entity <-> Archie RM objekts
+#### Map entity <-> Archie RM objects
 
 see FlattenerTest and UnflattenerTest
 
@@ -167,6 +149,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ### Codestyle/Formatting
+
 openEHR-SDK java sourcecode is using [palantir-java-format](https://github.com/palantir/palantir-java-format) codestyle.
 The formatting is checked and applied using the [spotless-maven-plugin](https://github.com/diffplug/spotless/tree/main/plugin-maven).
 To apply the codestyle run the `com.diffplug.spotless:spotless-maven-plugin:apply` maven goal in the root directory of the project.
@@ -195,6 +178,12 @@ everything here will be reformatted..
 ```
 Please be aware that `@formatter:off/on` should only be used on rare occasions to increase readability of complex code and shall be looked at critically when reviewing merge requests.
 
+----
+
 ## License
 
-[APACHE 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+openEHR SDK uses the Apache License, Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/ehrbase/openEHR_SDK.svg)](https://starchart.cc/ehrbase/openEHR_SDK)
