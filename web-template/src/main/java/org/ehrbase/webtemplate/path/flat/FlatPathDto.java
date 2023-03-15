@@ -18,61 +18,114 @@
 package org.ehrbase.webtemplate.path.flat;
 
 import java.util.AbstractMap;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
+import org.apache.commons.lang3.ObjectUtils;
 
-public class FlatPathDto {
+public final class FlatPathDto {
 
-    private String name;
-    private FlatPathDto child;
-    private String attributeName;
-    private Integer count;
+    private final String name;
+    private final FlatPathDto child;
+    private final String attributeName;
+    private final Integer count;
 
-    public FlatPathDto() {}
-
-    public FlatPathDto(String path) {
-
+    public FlatPathDto(CharSequence path) {
         this(FlatPathParser.parse(path));
     }
 
-    public FlatPathDto(FlatPathDto flatPathDto) {
-
+    private FlatPathDto(FlatPathDto flatPathDto) {
         this.name = flatPathDto.getName();
         this.child = flatPathDto.getChild();
         this.attributeName = flatPathDto.getAttributeName();
         this.count = flatPathDto.getCount();
     }
 
-    public String getName() {
-        return name;
+    public FlatPathDto(String name, FlatPathDto child, Integer count, String attributeName) {
+        this.name = name;
+        this.child = child;
+        this.count = count;
+        this.attributeName = attributeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 
     public FlatPathDto getChild() {
         return child;
     }
 
-    public void setChild(FlatPathDto child) {
-        this.child = child;
+    /**
+     * Clones this node and appends the child
+     *
+     * @param child
+     * @return
+     */
+    public FlatPathDto nodeWithChild(FlatPathDto child) {
+        return new FlatPathDto(name, child, count, attributeName);
+    }
+
+    /**
+     * Appends the child to a clone of this path
+     * @param child
+     * @return
+     */
+    public FlatPathDto pathWithChild(FlatPathDto child) {
+        return replaceEnd(this, n -> n.nodeWithChild(child));
     }
 
     public String getAttributeName() {
         return attributeName;
     }
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
+    /**
+     * Clones this node and sets the attributeName property
+     *
+     * @param attributeName
+     * @return
+     */
+    public FlatPathDto nodeWithAttributeName(String attributeName) {
+        if (child != null) {
+            throw new IllegalStateException("attributeName can only be set for leaf nodes");
+        }
+        return new FlatPathDto(name, child, count, attributeName);
+    }
+
+    /**
+     * Clones the whole path and sets the attributeName property of the trailing node
+     * @param attributeName
+     * @return
+     */
+    public FlatPathDto pathWithAttributeName(String attributeName) {
+        return replaceEnd(this, n -> n.nodeWithAttributeName(attributeName));
     }
 
     public Integer getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    /**
+     * Clones this node and sets the count property
+     *
+     * @param count
+     * @return
+     */
+    public FlatPathDto nodeWithCount(Integer count) {
+        return new FlatPathDto(name, child, count, attributeName);
+    }
+
+    /**
+     * Clones the whole path and sets the count property of the trailing node
+     * @param count
+     * @return
+     */
+    public FlatPathDto pathWithCount(Integer count) {
+        return replaceEnd(this, n -> n.nodeWithCount(count));
     }
 
     public String format() {
@@ -108,53 +161,87 @@ public class FlatPathDto {
 
     public static FlatPathDto removeEnd(FlatPathDto path, FlatPathDto remove) {
 
-        FlatPathDto me = new FlatPathDto(path);
-        FlatPathDto other = new FlatPathDto(remove);
-        FlatPathDto newMe = null;
-        do {
-
-            if (isNodeEqual(me, other)) break;
-
-            FlatPathDto newChild = new FlatPathDto(me);
-            newChild.setChild(null);
-            if (newMe == null) {
-                newMe = newChild;
-            } else {
-                newMe.getLast().setChild(newChild);
-            }
-
-            me = me.child;
-
-        } while (me != null);
-
-        if (me != null && me.isEqualTo(other.format())) {
-            return newMe;
-        } else {
-            return me;
+        Deque<FlatPathDto> nodes = new LinkedList<>();
+        for (FlatPathDto n = path; n != null; n = n.getChild()) {
+            nodes.add(n);
         }
+
+        Deque removeNodes = new LinkedList();
+        for (FlatPathDto n = remove; n != null; n = n.getChild()) {
+            removeNodes.add(n);
+        }
+
+        if (nodes.size() < removeNodes.size()) {
+            return null;
+        }
+
+        // check + skip tail
+        Iterator<FlatPathDto> nIt = nodes.descendingIterator();
+        Iterator<FlatPathDto> rIt = removeNodes.descendingIterator();
+        while (rIt.hasNext()) {
+            FlatPathDto nNode = nIt.next();
+            FlatPathDto rNode = rIt.next();
+            if (!isNodeEqual(nNode, rNode)) {
+                return null;
+            }
+        }
+
+        // construct result
+        FlatPathDto newPath = null;
+        while (nIt.hasNext()) {
+            FlatPathDto nNode = nIt.next();
+            newPath = new FlatPathDto(nNode.name, newPath, nNode.count, nNode.attributeName);
+        }
+        return newPath;
+    }
+
+    public static FlatPathDto replaceEnd(FlatPathDto path, UnaryOperator<FlatPathDto> replacement) {
+
+        if (path == null) {
+            return null;
+        }
+
+        Deque<FlatPathDto> nodes = new LinkedList<>();
+        for (FlatPathDto n = path; n != null; n = n.getChild()) {
+            nodes.add(n);
+        }
+
+        Iterator<FlatPathDto> nIt = nodes.descendingIterator();
+
+        FlatPathDto node = replacement.apply(nIt.next());
+
+        while (nIt.hasNext()) {
+            node = nIt.next().nodeWithChild(node);
+        }
+        return node;
     }
 
     public static boolean isNodeEqual(FlatPathDto me, FlatPathDto other) {
+        return isNodeEqual(me, other, false, false);
+    }
+
+    public static boolean isNodeEqual(FlatPathDto me, FlatPathDto other, boolean ignoreCount, boolean ignoreAttribute) {
 
         if (!Objects.equals(me.getName(), other.getName())) {
             return false;
         }
 
-        if (!Objects.equals(me.getCount(), other.getCount())
+        if (!ignoreCount
+                && !Objects.equals(me.getCount(), other.getCount())
                 && !(me.getCount() == null && Objects.equals(other.getCount(), 0))
                 && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)) {
             return false;
         }
 
-        if (!Objects.equals(me.getAttributeName(), other.getAttributeName())) {
+        if (!ignoreAttribute && !Objects.equals(me.getAttributeName(), other.getAttributeName())) {
             return false;
         }
         return true;
     }
 
     public static FlatPathDto removeStart(FlatPathDto path, FlatPathDto remove) {
-        FlatPathDto other = new FlatPathDto(remove);
-        FlatPathDto me = new FlatPathDto(path);
+        FlatPathDto other = remove;
+        FlatPathDto me = path;
         do {
 
             if (!isNodeEqual(me, other)) break;
@@ -165,14 +252,24 @@ public class FlatPathDto {
         if (other == null) {
             return me;
         } else {
-            return new FlatPathDto(path);
+            return path;
         }
     }
 
     public static FlatPathDto addEnd(FlatPathDto path, FlatPathDto add) {
-        var flatPath = new FlatPathDto(path);
-        flatPath.getLast().setChild(new FlatPathDto(add));
-        return flatPath;
+        if (add == null) {
+            return path;
+        }
+        Deque nodes = new LinkedList();
+        for (FlatPathDto n = path; n != null; n = n.getChild()) {
+            nodes.add(n);
+        }
+        FlatPathDto child = add;
+        Iterator<FlatPathDto> it = nodes.descendingIterator();
+        while (it.hasNext()) {
+            child = it.next().nodeWithChild(child);
+        }
+        return child;
     }
 
     @Override
@@ -180,23 +277,17 @@ public class FlatPathDto {
         return format();
     }
 
-    public boolean startsWith(String otherPath) {
-        FlatPathDto other = new FlatPathDto(otherPath);
-        FlatPathDto me = new FlatPathDto(this);
+    public boolean startsWith(CharSequence otherPath) {
+        return startsWith(FlatPathParser.parse(otherPath));
+    }
+
+    public boolean startsWith(FlatPathDto other) {
+        FlatPathDto me = this;
         do {
+            boolean ignoreCount = other.getChild() == null && other.count == null;
+            boolean ignoreAttribute = other.getAttributeName() == null;
 
-            String tempAttributeName = me.getAttributeName();
-            if (other.getAttributeName() == null) {
-                me.setAttributeName(null);
-            }
-
-            Integer tempCount = me.getCount();
-            if (other.getChild() == null && other.count == null) {
-                me.setCount(null);
-            }
-            boolean nodeEqual = isNodeEqual(me, other);
-            me.setAttributeName(tempAttributeName);
-            me.setCount(tempCount);
+            boolean nodeEqual = isNodeEqual(me, other, ignoreCount, ignoreAttribute);
             if (!nodeEqual) break;
 
             other = other.getChild();
@@ -207,30 +298,46 @@ public class FlatPathDto {
         return other == null;
     }
 
-    public boolean isEqualTo(String otherPath) {
+    /**
+     *
+     * For {@code count} 0 and null are considered equal.
+     *
+     * @param otherPath
+     * @return
+     */
+    public boolean isEqualTo(CharSequence otherPath) {
+        return isEqualTo(this, FlatPathParser.parse(otherPath), false, false);
+    }
 
-        FlatPathDto other = new FlatPathDto(otherPath);
-        FlatPathDto me = new FlatPathDto(this);
-        do {
+    public boolean isEqualTo(FlatPathDto otherPath) {
+        return isEqualTo(this, otherPath, false, false);
+    }
 
-            if (!Objects.equals(me.getName(), other.getName())) {
-                break;
-            }
-            if (!Objects.equals(me.getAttributeName(), other.getAttributeName())) {
-                break;
-            }
+    public boolean isEqualTo(FlatPathDto otherPath, boolean ignoreCount, boolean ignoreAttribute) {
+        return isEqualTo(this, otherPath, ignoreCount, ignoreAttribute);
+    }
 
-            if (!Objects.equals(me.getCount(), other.getCount())
-                    && !(me.getCount() == null && Objects.equals(other.getCount(), 0))
-                    && !(Objects.equals(me.getCount(), 0) && other.getCount() == null)) {
-                break;
-            }
+    public static boolean isEqualTo(FlatPathDto me, FlatPathDto other, boolean ignoreCount, boolean ignoreAttribute) {
+        if (me == other) {
+            return true;
+        }
+        if (ObjectUtils.anyNull(me, other)) {
+            return false;
+        }
+        if (!Objects.equals(me.getName(), other.getName())) {
+            return false;
+        }
+        if (!ignoreAttribute && !Objects.equals(me.getAttributeName(), other.getAttributeName())) {
+            return false;
+        }
 
-            other = other.getChild();
-            me = me.child;
-        } while (other != null && me != null);
+        if (!ignoreCount
+                && Optional.ofNullable(me.getCount()).orElse(0).intValue()
+                        != Optional.ofNullable(other.getCount()).orElse(0).intValue()) {
+            return false;
+        }
 
-        return other == null && me == null;
+        return isEqualTo(me.getChild(), other.getChild(), ignoreCount, ignoreAttribute);
     }
 
     @Override
@@ -250,10 +357,11 @@ public class FlatPathDto {
     }
 
     public static <T> Map.Entry<FlatPathDto, T> get(Map<FlatPathDto, T> map, String otherPath) {
+        FlatPathDto other = FlatPathParser.parse(otherPath);
 
         return map.entrySet().stream()
-                .filter(d -> d.getKey().isEqualTo(otherPath))
+                .filter(d -> d.getKey().isEqualTo(other, false, false))
                 .findAny()
-                .orElse(new AbstractMap.SimpleEntry<>(null, null));
+                .orElseGet(() -> new AbstractMap.SimpleEntry<>(null, null));
     }
 }
