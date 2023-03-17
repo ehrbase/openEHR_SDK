@@ -58,7 +58,6 @@ public class ContributionBuilder {
         this.contributionCreateDto.setAudit(audit);
     }
 
-
     /**
      * Add Folder creation change type to contribution.
      *
