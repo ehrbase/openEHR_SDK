@@ -38,8 +38,8 @@
     </developers>
 
     <properties>
-        <antlr4.version>4.9.3</antlr4.version>
-        <archie.version>2.1.0</archie.version>
+        <antlr4.version>4.11.1</antlr4.version>
+        <archie.version>3.0.0</archie.version>
         <assertj.version>3.19.0</assertj.version>
         <cglib.version>3.3.0</cglib.version>
         <classgraph.version>4.8.138</classgraph.version>
