@@ -17,11 +17,25 @@
  */
 package org.ehrbase.serialisation;
 
+import static com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime.SECONDS_BETWEEN_0001_AND_1970;
+
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DecimalStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.serialisation.exception.MarshalException;
 
 /**
@@ -94,6 +108,8 @@ public final class OpenEHRDateTimeSerializationUtils {
             .toFormatter()
             .withDecimalStyle(DecimalStyle.STANDARD.withDecimalSeparator('.'));
 
+    private static final LocalTime DEFAULT_TIME = LocalTime.of(0, 0);
+
     private OpenEHRDateTimeSerializationUtils() {}
 
     public static String formatDate(TemporalAccessor date) {
@@ -119,5 +135,119 @@ public final class OpenEHRDateTimeSerializationUtils {
                             + lowestResolution.name());
         }
         return formatter.format(temporal);
+    }
+
+    /**
+     * Archie does not support partial dates for getMagnitude. This method will assume first day/month if missing.
+     * As the openEHR spec defines year as the minimum, a non-null input will throw an Exception if {@link ChronoField}.YEAR is not supported.
+     * @param date
+     * @return
+     */
+    public static Long toMagnitude(DvDate date) {
+        if (date == null || date.getValue() == null) {
+            return null;
+        }
+
+        return toLocalDate(date.getValue()).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970;
+    }
+
+    /**
+     * Archie does not support partial date-times for getMagnitude. This method will assume first day/month and 0 for time components if missing.
+     * As the openEHR spec defines year as the minimum, a non-null input will throw an Exception if {@link ChronoField}.YEAR is not supported.
+     * @param dateTime
+     * @return
+     */
+    public static Long toMagnitude(DvDateTime dateTime) {
+        if (dateTime == null || dateTime.getValue() == null) {
+            return null;
+        }
+
+        TemporalAccessor value = dateTime.getValue();
+        LocalDate date = toLocalDate(value);
+        final Long epochSecond;
+        if (value.isSupported(ChronoField.HOUR_OF_DAY)) {
+            Pair<LocalTime, ZoneOffset> localTimeWithTz = toLocalTimeAndTz(value);
+            epochSecond = date.toEpochSecond(localTimeWithTz.getLeft(), localTimeWithTz.getRight());
+        } else {
+            epochSecond = date.toEpochSecond(DEFAULT_TIME, ZoneOffset.UTC);
+        }
+
+        return epochSecond + SECONDS_BETWEEN_0001_AND_1970;
+    }
+
+    /**
+     * Archie does not support partial times for getMagnitude. This method will assume 0 for fields not within the precision.
+     * As the openEHR spec defines hour as the minimum, a non-null input will throw an Exception if {@link ChronoField}.MINUTE_OF_HOUR is not supported.
+     * @param time
+     * @return
+     */
+    public static Double toMagnitude(DvTime time) {
+        if (time == null || time.getValue() == null) {
+            return null;
+        }
+
+        TemporalAccessor value = time.getValue();
+        return (double) toLocalTimeAndTz(value).getLeft().toSecondOfDay();
+    }
+
+    private static LocalDate toLocalDate(TemporalAccessor value) {
+
+        // Most common cases (the ones we parse ISO strings with a date component to) where creating a new LocalDate is
+        // not necessary
+        if (value instanceof OffsetDateTime) {
+            return ((OffsetDateTime) value).toLocalDate();
+        }
+
+        if (value instanceof LocalDateTime) {
+            return ((LocalDateTime) value).toLocalDate();
+        }
+
+        if (value instanceof LocalDate) {
+            return (LocalDate) value;
+        }
+
+        // more exotic cases
+        int year = value.get(ChronoField.YEAR);
+        int month = value.isSupported(ChronoField.MONTH_OF_YEAR) ? value.get(ChronoField.MONTH_OF_YEAR) : 1;
+        int day = value.isSupported(ChronoField.DAY_OF_MONTH) && value.isSupported(ChronoField.MONTH_OF_YEAR)
+                ? value.get(ChronoField.DAY_OF_MONTH)
+                : 1;
+        return LocalDate.of(year, month, day);
+    }
+
+    private static Pair<LocalTime, ZoneOffset> toLocalTimeAndTz(TemporalAccessor value) {
+
+        // Most common cases (the ones we parse ISO strings with a time component to) where creating a new LocalTime is
+        // not necessary
+        if (value instanceof OffsetTime) {
+            return Pair.of(((OffsetTime) value).toLocalTime(), ((OffsetTime) value).getOffset());
+        }
+
+        if (value instanceof LocalTime) {
+            return Pair.of((LocalTime) value, ZoneOffset.UTC);
+        }
+
+        if (value instanceof OffsetDateTime) {
+            return Pair.of(((OffsetDateTime) value).toLocalTime(), ((OffsetDateTime) value).getOffset());
+        }
+
+        if (value instanceof LocalDateTime) {
+            return Pair.of(((LocalDateTime) value).toLocalTime(), ZoneOffset.UTC);
+        }
+
+        // More exotic cases
+        int hour = value.get(ChronoField.HOUR_OF_DAY);
+        int minute = value.isSupported(ChronoField.MINUTE_OF_HOUR) ? value.get(ChronoField.MINUTE_OF_HOUR) : 0;
+        int second = value.isSupported(ChronoField.SECOND_OF_MINUTE) && value.isSupported(ChronoField.MINUTE_OF_HOUR)
+                ? value.get(ChronoField.SECOND_OF_MINUTE)
+                : 0;
+        int nanoSecond = value.isSupported(ChronoField.NANO_OF_SECOND)
+                        && value.isSupported(ChronoField.SECOND_OF_MINUTE)
+                        && value.isSupported(ChronoField.MINUTE_OF_HOUR)
+                ? value.get(ChronoField.NANO_OF_SECOND)
+                : 0;
+        return Pair.of(
+                LocalTime.of(hour, minute, second, nanoSecond),
+                Optional.of(TemporalQueries.offset()).map(value::query).orElse(ZoneOffset.UTC));
     }
 }
