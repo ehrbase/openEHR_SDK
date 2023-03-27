@@ -3,7 +3,8 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
+ ### Added  
+- Added client support for managing folders trough contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
  ### Fixed 
 
 ## [1.25.0]
