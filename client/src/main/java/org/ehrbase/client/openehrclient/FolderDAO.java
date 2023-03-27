@@ -18,6 +18,7 @@
 package org.ehrbase.client.openehrclient;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import java.util.List;
@@ -40,4 +41,8 @@ public interface FolderDAO {
     <T> List<T> find(Class<T> clazz);
 
     List<ObjectRef<? extends ObjectId>> getItems();
+
+    Folder getRmFolder();
+
+    void addItemToRmFolder(VersionUid versionId);
 }

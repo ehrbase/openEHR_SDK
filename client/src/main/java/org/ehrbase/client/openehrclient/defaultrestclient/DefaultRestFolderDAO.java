@@ -56,20 +56,20 @@ public class DefaultRestFolderDAO implements FolderDAO {
     @Override
     public String getName() {
         directoryEndpoint.syncFromDb();
-        return getFolder().getName().getValue();
+        return getRmFolder().getName().getValue();
     }
 
     @Override
     public void setName(String name) {
         directoryEndpoint.syncFromDb();
-        getFolder().setName(new DvText(name));
+        getRmFolder().setName(new DvText(name));
         directoryEndpoint.saveToDb();
     }
 
     @Override
     public Set<String> listSubFolderNames() {
         directoryEndpoint.syncFromDb();
-        return Optional.of(getFolder()).stream()
+        return Optional.of(getRmFolder()).stream()
                 .map(Folder::getFolders)
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
@@ -78,7 +78,8 @@ public class DefaultRestFolderDAO implements FolderDAO {
                 .collect(Collectors.toSet());
     }
 
-    private Folder getFolder() {
+    @Override
+    public Folder getRmFolder() {
         return directoryEndpoint.find(path);
     }
 
@@ -121,7 +122,7 @@ public class DefaultRestFolderDAO implements FolderDAO {
                         extractTemplateId(clazz)))
                 .and(Condition.matches(
                         new NativeSelectAqlField<>(compositionContainment, "/uid/value", String.class),
-                        getFolder().getItems().stream()
+                        getRmFolder().getItems().stream()
                                 .map(ObjectRef::getId)
                                 .map(Object::toString)
                                 .toArray(String[]::new))));
@@ -138,11 +139,11 @@ public class DefaultRestFolderDAO implements FolderDAO {
      */
     @Override
     public List<ObjectRef<? extends ObjectId>> getItems() {
-        return getFolder().getItems();
+        return getRmFolder().getItems();
     }
 
     void sync() {
-        getFolder();
+        getRmFolder();
         directoryEndpoint.saveToDb();
     }
 
@@ -152,7 +153,11 @@ public class DefaultRestFolderDAO implements FolderDAO {
     }
 
     private void addToFolder(VersionUid versionId) {
-        Folder folder = getFolder();
+        addItemToFolder(versionId);
+    }
+
+    private void addItemToFolder(VersionUid versionId) {
+        Folder folder = getRmFolder();
         if (folder.getItems() == null) {
             folder.setItems(new ArrayList<>());
         }
@@ -162,5 +167,10 @@ public class DefaultRestFolderDAO implements FolderDAO {
                         versionId.getSystem(),
                         "VERSIONED_COMPOSITION"));
         directoryEndpoint.saveToDb();
+    }
+
+    @Override
+    public void addItemToRmFolder(VersionUid versionId) {
+        addItemToFolder(versionId);
     }
 }
