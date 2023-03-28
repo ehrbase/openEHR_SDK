@@ -24,6 +24,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
 import org.ehrbase.serialisation.walker.Context;
 
 public class HistoryPostprocessor extends AbstractMarshalPostprocessor<History> {
@@ -46,8 +47,8 @@ public class HistoryPostprocessor extends AbstractMarshalPostprocessor<History> 
                             .filter(t -> t.getValue() != null)
                             .sorted()
                             .findFirst();
-            if (first.filter(t -> Objects.equals(
-                            t.getMagnitude(), rmObject.getOrigin().getMagnitude()))
+            if (first.map(OpenEHRDateTimeSerializationUtils::toMagnitude)
+                    .filter(t -> Objects.equals(t, OpenEHRDateTimeSerializationUtils.toMagnitude(rmObject.getOrigin())))
                     .isEmpty()) {
                 addValue(
                         values,
