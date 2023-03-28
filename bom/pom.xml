@@ -74,7 +74,7 @@
         <maven-javadoc-plugin.version>3.3.2</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <jacoco.version>0.8.7</jacoco.version>
+        <jacoco.version>0.8.8</jacoco.version>
         <threeten-extra.version>1.6.0</threeten-extra.version>
     </properties>
 
