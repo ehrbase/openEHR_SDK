@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added  
 - Added client support for managing folders trough contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
+- update archie to 3.0.0 and antlr4 to 4.11.1 ([#428](https://github.com/ehrbase/openEHR_SDK/pull/428))
  ### Fixed 
 
 ## [1.25.0]
