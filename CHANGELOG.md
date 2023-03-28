@@ -3,9 +3,10 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
-- Fix error when serializing partial DV_DATE_TIME without time component ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
+ ### Added  
+- Added client support for managing folders trough contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
  ### Fixed 
+- Fix error when serializing partial DV_DATE_TIME without time component ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
 
 ## [1.25.0]
 ### Added
