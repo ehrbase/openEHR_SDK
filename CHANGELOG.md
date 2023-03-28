@@ -7,7 +7,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Added client support for managing folders trough contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
 - update archie to 3.0.0 and antlr4 to 4.11.1 ([#428](https://github.com/ehrbase/openEHR_SDK/pull/428))
  ### Fixed 
-- Fix error when serializing partial DV_DATE_TIME without time component ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
+- Add workarounds for archie not handling date-time values according to spec when (de-)serializing (affects XML,JSON and Flat) ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
 
 ## [1.25.0]
 ### Added
