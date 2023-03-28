@@ -154,7 +154,7 @@ public class CanonicalJson implements RMDataFormat {
      */
     public Map<String, Object> unmarshalToMap(String value) {
         try {
-            return ArchieObjectMapperProvider.getObjectMapper().readValue(value, Map.class);
+            return MARSHAL_OM.readValue(value, Map.class);
         } catch (IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }
