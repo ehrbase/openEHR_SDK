@@ -19,6 +19,11 @@ package org.ehrbase.serialisation;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
+import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -228,6 +233,206 @@ class OpenEHRDateTimeSerializationUtilsTest {
             }
         } else {
             Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDateTime(data.input));
+        }
+    }
+
+    enum DvDateMagnitudeTestData {
+        // -----------DV_DATE-------------
+        NULL_INPUT(null, (Long) null),
+        NULL_VALUE(new DvDate(), (Long) null),
+        PRECISION_FULL(
+                new DvDate(LocalDate.of(2023, 3, 22)),
+                LocalDate.of(2023, 3, 22).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
+        PRECISION_MONTH(
+                new DvDate(YearMonth.of(2023, 3)),
+                LocalDate.of(2023, 3, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
+        PRECISION_YEAR(
+                new DvDate(Year.of(2023)), LocalDate.of(2023, 1, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
+        MISSING_YEAR(new DvDate(Instant.ofEpochSecond(0)), DateTimeException.class);
+
+        private final DvDate input;
+        private final Long expected;
+        private final Class<? extends Exception> expectedExceptionType;
+
+        DvDateMagnitudeTestData(DvDate input, Long expectedMagnitude) {
+            this.input = input;
+            this.expected = expectedMagnitude;
+            this.expectedExceptionType = null;
+        }
+
+        DvDateMagnitudeTestData(DvDate input, Class<? extends Exception> expectedExceptionType) {
+            this.input = input;
+            this.expected = null;
+            this.expectedExceptionType = expectedExceptionType;
+        }
+
+        boolean shouldThrowException() {
+            return this.expectedExceptionType != null;
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(DvDateMagnitudeTestData.class)
+    void testToMagnitudeDvDate(DvDateMagnitudeTestData data) {
+        if (data.shouldThrowException()) {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        }
+    }
+
+    enum DvDateTimeMagnitudeTestData {
+        // -----------DV_DATE-------------
+        NULL_INPUT(null, (Long) null),
+        NULL_VALUE(new DvDateTime(), (Long) null),
+        PRECISION_NANOSECOND_OFFSET_COMMON_TYPE(
+                new DvDateTime(OffsetDateTime.of(2023, 3, 22, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(2, 0))),
+                OffsetDateTime.of(2023, 3, 22, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(2, 0))
+                                .toEpochSecond()
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_NANOSECOND_OFFSET(
+                new DvDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse(
+                        "2023-03-22T12:13:14.123456789+02:00")),
+                LocalDate.of(2023, 3, 22)
+                                .toEpochSecond(LocalTime.of(12, 13, 14, 123456789), ZoneOffset.ofHoursMinutes(2, 0))
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_SECOND_OFFSET(
+                new DvDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse("2023-03-22T12:13:14+02:00")),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(12, 13, 14), ZoneOffset.ofHoursMinutes(2, 0))
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_MINUTE_OFFSET(
+                new DvDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse("2023-03-22T12:13+02:00")),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(12, 13, 0), ZoneOffset.ofHoursMinutes(2, 0))
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_HOUR_OFFSET(
+                new DvDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse("2023-03-22T12+02:00")),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(12, 0, 0), ZoneOffset.ofHoursMinutes(2, 0))
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_NANOSECOND_COMMON_TYPE(
+                new DvDateTime(LocalDateTime.of(2023, 3, 22, 12, 13, 14, 123456789)),
+                LocalDateTime.of(2023, 3, 22, 12, 13, 14, 123456789).toEpochSecond(ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_NANOSECOND(
+                new DvDateTime(
+                        OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse("2023-03-22T12:13:14.123456789")),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(12, 13, 14, 123456789), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_SECOND(
+                new DvDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse("2023-03-22T12:13:14")),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(12, 13, 14), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_MINUTE(
+                new DvDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse("2023-03-22T12:13")),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(12, 13, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_HOUR(
+                new DvDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse("2023-03-22T12")),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(12, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_DAY(
+                new DvDateTime(LocalDate.of(2023, 3, 22)),
+                LocalDate.of(2023, 3, 22).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_MONTH(
+                new DvDateTime(YearMonth.of(2023, 3)),
+                LocalDate.of(2023, 3, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_YEAR(
+                new DvDateTime(Year.of(2023)),
+                LocalDate.of(2023, 1, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        MISSING_YEAR(new DvDateTime(Instant.ofEpochSecond(0)), DateTimeException.class);
+
+        private final DvDateTime input;
+        private final Long expected;
+        private final Class<? extends Exception> expectedExceptionType;
+
+        DvDateTimeMagnitudeTestData(DvDateTime input, Long expectedMagnitude) {
+            this.input = input;
+            this.expected = expectedMagnitude;
+            this.expectedExceptionType = null;
+        }
+
+        DvDateTimeMagnitudeTestData(DvDateTime input, Class<? extends Exception> expectedExceptionType) {
+            this.input = input;
+            this.expected = null;
+            this.expectedExceptionType = expectedExceptionType;
+        }
+
+        boolean shouldThrowException() {
+            return this.expectedExceptionType != null;
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(DvDateTimeMagnitudeTestData.class)
+    void testToMagnitudeDvDateTime(DvDateTimeMagnitudeTestData data) {
+        if (data.shouldThrowException()) {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        }
+    }
+
+    enum DvTimeMagnitudeTestData {
+        // -----------DV_DATE-------------
+        NULL_INPUT(null, (Double) null),
+        NULL_VALUE(new DvTime(), (Double) null),
+        PRECISION_NANOSECOND_OFFSET_COMMON_TYPE(
+                new DvTime(OffsetTime.of(12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(2, 0))),
+                (double) LocalTime.of(12, 13, 14, 123456789).toSecondOfDay()),
+        PRECISION_NANOSECOND_OFFSET(
+                new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12:13:14.123456789+02:00")),
+                (double) LocalTime.of(12, 13, 14, 123456789).toSecondOfDay()),
+        PRECISION_SECOND_OFFSET(
+                new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12:13:14+02:00")),
+                (double) LocalTime.of(12, 13, 14).toSecondOfDay()),
+        PRECISION_MINUTE_OFFSET(
+                new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12:13+02:00")),
+                (double) LocalTime.of(12, 13, 0).toSecondOfDay()),
+        PRECISION_HOUR_OFFSET(new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12+02:00")), (double)
+                LocalTime.of(12, 0, 0).toSecondOfDay()),
+        PRECISION_NANOSECOND_COMMON_TYPE(new DvTime(LocalTime.of(12, 13, 14, 123456789)), (double)
+                LocalTime.of(12, 13, 14, 123456789).toSecondOfDay()),
+        PRECISION_NANOSECOND(
+                new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12:13:14.123456789")),
+                (double) LocalTime.of(12, 13, 14, 123456789).toSecondOfDay()),
+        PRECISION_SECOND(new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12:13:14")), (double)
+                LocalTime.of(12, 13, 14).toSecondOfDay()),
+        PRECISION_MINUTE(new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12:13")), (double)
+                LocalTime.of(12, 13, 0).toSecondOfDay()),
+        PRECISION_HOUR(new DvTime(OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse("12")), (double)
+                LocalTime.of(12, 0, 0).toSecondOfDay()),
+        MISSING_YEAR(new DvTime(Instant.ofEpochSecond(0)), DateTimeException.class);
+
+        private final DvTime input;
+        private final Double expected;
+        private final Class<? extends Exception> expectedExceptionType;
+
+        DvTimeMagnitudeTestData(DvTime input, Double expectedMagnitude) {
+            this.input = input;
+            this.expected = expectedMagnitude;
+            this.expectedExceptionType = null;
+        }
+
+        DvTimeMagnitudeTestData(DvTime input, Class<? extends Exception> expectedExceptionType) {
+            this.input = input;
+            this.expected = null;
+            this.expectedExceptionType = expectedExceptionType;
+        }
+
+        boolean shouldThrowException() {
+            return this.expectedExceptionType != null;
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(DvTimeMagnitudeTestData.class)
+    void testToMagnitudeDvTime(DvTimeMagnitudeTestData data) {
+        if (data.shouldThrowException()) {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
         }
     }
 }
