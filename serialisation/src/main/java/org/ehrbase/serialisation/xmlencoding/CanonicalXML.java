@@ -99,6 +99,9 @@ public class CanonicalXML implements RMDataFormat {
             JAXBElement<RMObject> root = new JAXBElement<>(qName, RMObject.class, rmObject);
 
             Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
+            marshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
+            marshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
+            marshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
 
             DOMResult res = new DOMResult();
             marshaller.marshal(root, res);
