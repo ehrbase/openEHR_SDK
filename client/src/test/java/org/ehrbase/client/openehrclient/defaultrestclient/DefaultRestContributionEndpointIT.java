@@ -93,7 +93,10 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         // Save first composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
-        Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        MinimalEvaluationEnV1Composition minimalEvaluationEnV1Composition = mergeMinimalEvaluationEnV1Composition();
+        Composition composition = (Composition) unflattener.unflatten(minimalEvaluationEnV1Composition);
+        composition.setUid(null);
+        Composition compositionWithId = (Composition) unflattener.unflatten(minimalEvaluationEnV1Composition);
 
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
 
@@ -104,12 +107,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxyDto);
 
         Composition unflattenSecondComposition = (Composition) cut.unflatten(proxyComposition);
+
         // Create contribution
         ContributionCreateDto contribution = ContributionBuilder.builder(createAuditDetails())
                 .addCompositionCreation(composition)
                 .addCompositionCreation(composition)
                 .addCompositionCreation(composition)
-                .addCompositionModification(composition)
+                .addCompositionModification(compositionWithId)
                 .addCompositionModification(
                         unflattenSecondComposition,
                         proxyComposition.getVersionUid().toString())
@@ -197,6 +201,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         // 1 Save composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
         Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        composition.setUid(null);
         AuditDetails audit = createAuditDetails();
 
         // 2 Create contribution with composition modification
@@ -466,9 +471,11 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         // Prepare first composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
         Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        composition.setUid(null);
+        Composition compositionWithId = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
 
         // Add first composition to folder
-        folder.addItemToRmFolder(new VersionUid((composition.getUid().toString())));
+        folder.addItemToRmFolder(new VersionUid((compositionWithId.getUid().toString())));
 
         // Prepare second composition
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
@@ -476,6 +483,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyComposition =
                 openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxyDto);
         Composition unflattenSecondComposition = (Composition) cut.unflatten(proxyComposition);
+        unflattenSecondComposition.setUid(null);
 
         // Add second composition to new folder
         FolderDAO subFolder = folder.getSubFolder("test/contribution");
@@ -484,7 +492,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         // Create contribution
         ContributionCreateDto contribution = ContributionBuilder.builder(createAuditDetails())
                 .addCompositionCreation(composition)
-                .addCompositionModification(composition)
+                .addCompositionModification(compositionWithId)
                 .addCompositionCreation(unflattenSecondComposition)
                 .addCompositionModification(
                         unflattenSecondComposition,

@@ -21,7 +21,7 @@ import static org.ehrbase.client.flattener.DtoToCompositionWalker.findEntity;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -66,7 +66,7 @@ public class Unflattener {
                 .walk(generate, findEntity(dto), introspect, defaultValuesProvider.provide(dto), template.value());
         Optional<VersionUid> versionUid = extractVersionUid(dto);
         if (versionUid.isPresent()) {
-            generate.setUid(new HierObjectId(versionUid.get().toString()));
+            generate.setUid(new ObjectVersionId(versionUid.get().toString()));
         }
         return generate;
     }
