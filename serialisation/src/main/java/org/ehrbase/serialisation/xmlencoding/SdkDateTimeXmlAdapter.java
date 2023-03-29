@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,25 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.jsonencoding;
+package org.ehrbase.serialisation.xmlencoding;
 
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.time.temporal.TemporalAccessor;
+import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
 import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
-import org.ehrbase.util.rmconstants.RmConstants;
 
 /**
- * custom serializer delegating to a custom date-time formatter using '.' as decimal separator and supporting all partial resolutions properly
+ * This JAXB adapter is used to work around archie parsing date-time values that contain invalid dates (i.e. 2023-13, ignoring leap years)
  */
-public class DateTimeSerializer extends AbstractDvTemporalSerializer<TemporalAccessor, DvDateTime> {
+public class SdkDateTimeXmlAdapter extends com.nedap.archie.xml.adapters.DateTimeXmlAdapter {
 
     @Override
-    protected String typeName() {
-        return RmConstants.DV_DATE_TIME;
+    public String marshal(TemporalAccessor value) {
+        return OpenEHRDateTimeSerializationUtils.formatDateTime(value);
     }
 
     @Override
-    protected String format(TemporalAccessor toFormat) {
-        return OpenEHRDateTimeSerializationUtils.formatDateTime(toFormat);
+    public TemporalAccessor unmarshal(String stringValue) {
+        return OpenEHRDateTimeParseUtils.parseDateTime(stringValue);
     }
 }

@@ -38,6 +38,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.api.Assertions;
+import org.ehrbase.serialisation.exception.UnmarshalException;
 import org.ehrbase.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.test_data.composition.CompositionTestDataSimSDTJson;
@@ -251,7 +252,7 @@ public class FlatJsonUnmarshallerTest {
             Composition actual;
             try {
                 actual = cut.unmarshal(json, webTemplate);
-            } catch (IllegalArgumentException ex) {
+            } catch (UnmarshalException ex) {
                 if (testCase.expected != null) {
                     Assertions.fail("should not have failed", ex);
                 }
@@ -294,7 +295,7 @@ public class FlatJsonUnmarshallerTest {
             Composition actual;
             try {
                 actual = cut.unmarshal(json, webTemplate);
-            } catch (IllegalArgumentException ex) {
+            } catch (UnmarshalException ex) {
                 if (testCase.expected != null) {
                     Assertions.fail("should not have failed", ex);
                 }

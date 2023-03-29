@@ -15,25 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.jsonencoding;
+package org.ehrbase.serialisation.flatencoding.std.marshal.postprocessor;
 
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import java.time.temporal.TemporalAccessor;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import java.util.Map;
 import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
-import org.ehrbase.util.rmconstants.RmConstants;
+import org.ehrbase.serialisation.walker.Context;
 
-/**
- * custom serializer delegating to a custom date-time formatter using '.' as decimal separator and supporting all partial resolutions properly
- */
-public class DateTimeSerializer extends AbstractDvTemporalSerializer<TemporalAccessor, DvDateTime> {
+public class DvDatePostprocessor extends AbstractMarshalPostprocessor<DvDate> {
 
+    /** {@inheritDoc} Adds the encoding information */
     @Override
-    protected String typeName() {
-        return RmConstants.DV_DATE_TIME;
+    public void process(
+            String term, DvDate rmObject, Map<String, Object> values, Context<Map<String, Object>> context) {
+        // Serialize temporal accessor here, if part of values, to avoid archie serialization
+        values.computeIfPresent(term, (k, v) -> OpenEHRDateTimeSerializationUtils.formatDate(rmObject.getValue()));
     }
 
+    /** {@inheritDoc} */
     @Override
-    protected String format(TemporalAccessor toFormat) {
-        return OpenEHRDateTimeSerializationUtils.formatDateTime(toFormat);
+    public Class<DvDate> getAssociatedClass() {
+        return DvDate.class;
     }
 }

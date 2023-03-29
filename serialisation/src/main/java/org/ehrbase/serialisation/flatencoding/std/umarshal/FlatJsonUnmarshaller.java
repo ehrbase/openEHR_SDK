@@ -21,8 +21,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
+import java.time.DateTimeException;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.building.webtemplateskeletnbuilder.WebTemplateSkeletonBuilder;
@@ -93,6 +99,12 @@ public class FlatJsonUnmarshaller {
             return generate;
         } catch (JsonProcessingException e) {
             throw new UnmarshalException(e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            if (e.getCause() instanceof DateTimeException) {
+                throw new UnmarshalException(e.getMessage(), e);
+            } else {
+                throw e;
+            }
         }
     }
 
