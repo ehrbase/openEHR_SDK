@@ -2,6 +2,13 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [1.26.0]
+ ### Added  
+- Added client support for managing folders trough contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
+- update archie to 3.0.0 and antlr4 to 4.11.1 ([#428](https://github.com/ehrbase/openEHR_SDK/pull/428))
+ ### Fixed 
+- Add workarounds for archie not handling date-time values according to spec when (de-)serializing (affects XML,JSON and Flat) ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
+
 ## [1.25.0]
 ### Added
 ### Changed
@@ -230,3 +237,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.23.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.22.0...v1.23.0
 [1.24.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.23.0...v1.24.0
 [1.25.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.24.0...v1.25.0
+[1.26.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.25.0...v1.26.0

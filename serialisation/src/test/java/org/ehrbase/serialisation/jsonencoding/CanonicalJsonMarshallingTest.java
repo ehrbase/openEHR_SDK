@@ -119,7 +119,7 @@ public class CanonicalJsonMarshallingTest {
         assertThat(actual)
                 .isEqualToIgnoringWhitespace("{\n"
                         + "  \"_type\" : \"DV_DATE_TIME\",\n"
-                        + "  \"value\" : \"2022-02-25T10:55:41.400Z\"\n"
+                        + "  \"value\" : \"2022-02-25T10:55:41.4Z\"\n"
                         + "}");
     }
 
@@ -130,7 +130,7 @@ public class CanonicalJsonMarshallingTest {
         String actual = cut.marshal(dvTime);
         assertThat(actual)
                 .isEqualToIgnoringWhitespace(
-                        "{\n" + "  \"_type\" : \"DV_TIME\",\n" + "  \"value\" : \"10:55:41.400Z\"\n" + "}");
+                        "{\n" + "  \"_type\" : \"DV_TIME\",\n" + "  \"value\" : \"10:55:41.4Z\"\n" + "}");
     }
 
     @Test

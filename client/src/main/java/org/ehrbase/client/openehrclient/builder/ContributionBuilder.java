@@ -24,6 +24,7 @@ import static org.ehrbase.client.openehrclient.ContributionChangeType.*;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
@@ -55,6 +56,56 @@ public class ContributionBuilder {
      */
     ContributionBuilder(AuditDetails audit) {
         this.contributionCreateDto.setAudit(audit);
+    }
+
+    /**
+     * Add Folder creation change type to contribution.
+     *
+     * @param folder Folder instance
+     * @return the contribution create dto
+     */
+    public ContributionBuilder addFolderCreation(final Folder folder) {
+        updateContribution(folder, CREATION, null);
+
+        return this;
+    }
+
+    /**
+     * Add Folder deletion change type to contribution.
+     *
+     * @param folder Folder instance
+     * @param precedingVersionUid the preceding version uid
+     * @return the contribution create dto
+     */
+    public ContributionBuilder addFolderDeletion(final Folder folder, final String precedingVersionUid) {
+        updateContribution(folder, DELETED, precedingVersionUid);
+
+        return this;
+    }
+
+    /**
+     * Add Folder Modification change type to contribution.
+     *
+     * @param folder Folder instance
+     * @return the contribution create dto
+     */
+    public ContributionBuilder addFolderModification(final Folder folder) {
+        updateContribution(folder, MODIFICATION, null);
+
+        return this;
+    }
+
+    /**
+     * Add Folder Modification change type to contribution.
+     *
+     * @param folder Folder instance
+     * @param precedingVersionUid the preceding version uid
+     * @return the contribution create dto
+     */
+    public ContributionBuilder addFolderModification(final Folder folder, final String precedingVersionUid) {
+        updateContribution(folder, MODIFICATION, precedingVersionUid);
+
+        return this;
     }
 
     /**

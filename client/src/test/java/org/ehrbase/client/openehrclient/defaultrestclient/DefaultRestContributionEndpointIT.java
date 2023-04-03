@@ -17,6 +17,7 @@
  */
 package org.ehrbase.client.openehrclient.defaultrestclient;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.ehrbase.client.TestData.buildProxyEhrbaseBloodPressureSimpleDeV0Composition;
 import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.ONE_ENTRY_COMPOSITION_LATEST;
 import static org.ehrbase.test_data.contribution.ContributionTestDataCanonicalJson.ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST;
@@ -24,6 +25,8 @@ import static org.junit.Assert.*;
 
 import com.nedap.archie.rm.changecontrol.Contribution;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.generic.AuditDetails;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,6 +39,7 @@ import org.ehrbase.client.classgenerator.examples.minimalevaluationenv1compositi
 import org.ehrbase.client.flattener.Flattener;
 import org.ehrbase.client.flattener.Unflattener;
 import org.ehrbase.client.openehrclient.ContributionEndpoint;
+import org.ehrbase.client.openehrclient.FolderDAO;
 import org.ehrbase.client.openehrclient.OpenEhrClient;
 import org.ehrbase.client.openehrclient.VersionUid;
 import org.ehrbase.client.openehrclient.builder.ContributionBuilder;
@@ -44,6 +48,7 @@ import org.ehrbase.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.response.openehr.ContributionCreateDto;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.test_data.composition.CompositionTestDataCanonicalJson;
+import org.ehrbase.test_data.folder.FolderTestDataCanonicalJson;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,7 +93,10 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         // Save first composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
-        Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        MinimalEvaluationEnV1Composition minimalEvaluationEnV1Composition = mergeMinimalEvaluationEnV1Composition();
+        Composition composition = (Composition) unflattener.unflatten(minimalEvaluationEnV1Composition);
+        composition.setUid(null);
+        Composition compositionWithId = (Composition) unflattener.unflatten(minimalEvaluationEnV1Composition);
 
         Unflattener cut = new Unflattener(new TestDataTemplateProvider());
 
@@ -99,12 +107,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
                 openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxyDto);
 
         Composition unflattenSecondComposition = (Composition) cut.unflatten(proxyComposition);
+
         // Create contribution
         ContributionCreateDto contribution = ContributionBuilder.builder(createAuditDetails())
                 .addCompositionCreation(composition)
                 .addCompositionCreation(composition)
                 .addCompositionCreation(composition)
-                .addCompositionModification(composition)
+                .addCompositionModification(compositionWithId)
                 .addCompositionModification(
                         unflattenSecondComposition,
                         proxyComposition.getVersionUid().toString())
@@ -123,13 +132,13 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         assertTrue(remoteContribution.isPresent());
         assertEquals(
                 expectedCompositionsCreatedTimes,
-                countNumberOfChangedCompositionsByVersion(remoteContribution.get(), "1"));
+                countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "1"));
         assertEquals(
                 expectedCompositionsModifiedTimes,
-                countNumberOfChangedCompositionsByVersion(remoteContribution.get(), "2"));
+                countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "2"));
     }
 
-    private static long countNumberOfChangedCompositionsByVersion(Contribution remoteContribution, String version) {
+    private static long countNumberOfChangedLocatableObjectByVersion(Contribution remoteContribution, String version) {
         return remoteContribution.getVersions().stream()
                 .filter(objectRef -> version.equals(objectRef
                         .getId()
@@ -192,6 +201,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
         // 1 Save composition
         Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
         Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        composition.setUid(null);
         AuditDetails audit = createAuditDetails();
 
         // 2 Create contribution with composition modification
@@ -393,6 +403,124 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
 
         String expectedMessage = "Invalid Contribution, must have at least one Version object.";
         assertTrue(exception.getMessage().contains(expectedMessage));
+    }
+
+    @Test
+    public void testSaveContributionWithFolderCreationModification() throws IOException {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        String value = IOUtils.toString(FolderTestDataCanonicalJson.SIMPLE_EMPTY_FOLDER.getStream(), UTF_8);
+        CanonicalJson canonicalJson = new CanonicalJson();
+        Folder folder = canonicalJson.unmarshal(value, Folder.class);
+
+        String contributionJson =
+                IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
+        ContributionCreateDto contributionDto =
+                new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
+
+        ContributionCreateDto contribution = ContributionBuilder.builder(contributionDto.getAudit())
+                .addFolderCreation(folder)
+                .build();
+
+        ContributionEndpoint contributionEndpoint = openEhrClient.contributionEndpoint(ehr);
+        VersionUid versionUid = contributionEndpoint.saveContribution(contribution);
+        Optional<Contribution> remoteContribution = contributionEndpoint.find(versionUid.getUuid());
+
+        assertTrue(remoteContribution.isPresent());
+
+        Folder newFolder = new Folder();
+        DvText name = new DvText();
+        name.setValue("test");
+        newFolder.setName(name);
+        newFolder.setUid(folder.getUid());
+        folder.addFolder(newFolder);
+
+        ContributionCreateDto modifiedContribution = ContributionBuilder.builder(contributionDto.getAudit())
+                .addFolderModification(
+                        folder,
+                        String.valueOf(
+                                remoteContribution.get().getVersions().get(0).getId()))
+                .build();
+
+        VersionUid secondVersionUid = contributionEndpoint.saveContribution(modifiedContribution);
+        Optional<Contribution> remoteModifiedContribution = contributionEndpoint.find(secondVersionUid.getUuid());
+
+        // 5 Get previous version composition uid
+        String folderPrecedingVersionUid =
+                remoteModifiedContribution.get().getVersions().get(0).getId().getValue();
+
+        // 6 Create contribution with composition deletion
+        ContributionCreateDto contributionWithFolderDeletion = ContributionBuilder.builder(contributionDto.getAudit())
+                .addFolderDeletion(folder, folderPrecedingVersionUid)
+                .build();
+
+        // 7 Save Contribution
+        openEhrClient.contributionEndpoint(ehr).saveContribution(contributionWithFolderDeletion);
+        // 8 Confirm that composition no longer exist
+    }
+
+    @Test
+    public void testSaveContributionWithFolderModification() throws IOException {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        // Create root folder
+        FolderDAO folder = openEhrClient.folder(ehr, "");
+        Folder rootFolder = folder.getRmFolder();
+
+        // Prepare first composition
+        Unflattener unflattener = new Unflattener(new TestDataTemplateProvider());
+        Composition composition = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+        composition.setUid(null);
+        Composition compositionWithId = (Composition) unflattener.unflatten(mergeMinimalEvaluationEnV1Composition());
+
+        // Add first composition to folder
+        folder.addItemToRmFolder(new VersionUid((compositionWithId.getUid().toString())));
+
+        // Prepare second composition
+        Unflattener cut = new Unflattener(new TestDataTemplateProvider());
+        ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyDto = buildProxyEhrbaseBloodPressureSimpleDeV0Composition();
+        ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyComposition =
+                openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxyDto);
+        Composition unflattenSecondComposition = (Composition) cut.unflatten(proxyComposition);
+        unflattenSecondComposition.setUid(null);
+
+        // Add second composition to new folder
+        FolderDAO subFolder = folder.getSubFolder("test/contribution");
+        subFolder.addItemToRmFolder(proxyComposition.getVersionUid());
+
+        // Create contribution
+        ContributionCreateDto contribution = ContributionBuilder.builder(createAuditDetails())
+                .addCompositionCreation(composition)
+                .addCompositionModification(compositionWithId)
+                .addCompositionCreation(unflattenSecondComposition)
+                .addCompositionModification(
+                        unflattenSecondComposition,
+                        proxyComposition.getVersionUid().toString())
+                .addFolderModification(rootFolder, rootFolder.getUid().getValue())
+                .build();
+
+        // Save Contribution
+        VersionUid versionUid = openEhrClient.contributionEndpoint(ehr).saveContribution(contribution);
+
+        // Find Contribution
+        Optional<Contribution> remoteContribution =
+                openEhrClient.contributionEndpoint(ehr).find(versionUid.getUuid());
+
+        long expectedCompositionsCreatedTimes = 2L;
+        long expectedCompositionsModifiedTimes = 2L;
+        long expectedFolderModifiedTimes = 1L;
+
+        assertTrue(remoteContribution.isPresent());
+        assertEquals(
+                expectedCompositionsCreatedTimes,
+                countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "1"));
+        assertEquals(
+                expectedCompositionsModifiedTimes,
+                countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "2"));
+        assertEquals(
+                expectedFolderModifiedTimes,
+                countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "6"));
     }
 
     private static long getContributionVersion(VersionUid versionUid) {

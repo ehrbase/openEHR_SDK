@@ -19,21 +19,20 @@ package org.ehrbase.serialisation.jsonencoding;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.time.temporal.TemporalAccessor;
-import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
-import org.ehrbase.util.rmconstants.RmConstants;
+import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
 
 /**
- * custom serializer delegating to a custom date-time formatter using '.' as decimal separator and supporting all partial resolutions properly
+ * Workaround for archie date-time parsing issues
  */
-public class DateTimeSerializer extends AbstractDvTemporalSerializer<TemporalAccessor, DvDateTime> {
+public class DateTimeDeserializer extends AbstractDvTemporalDeserializer<TemporalAccessor, DvDateTime> {
 
     @Override
-    protected String typeName() {
-        return RmConstants.DV_DATE_TIME;
+    DvDateTime createInstance() {
+        return new DvDateTime();
     }
 
     @Override
-    protected String format(TemporalAccessor toFormat) {
-        return OpenEHRDateTimeSerializationUtils.formatDateTime(toFormat);
+    TemporalAccessor parseValue(String valueString) {
+        return OpenEHRDateTimeParseUtils.parseDateTime(valueString);
     }
 }

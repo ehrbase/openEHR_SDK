@@ -38,7 +38,9 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.archetyped.TemplateId;
 import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 import com.nedap.archie.rminfo.ArchieAOMInfoLookup;
@@ -63,18 +65,22 @@ public class CanonicalJson implements RMDataFormat {
 
     static {
         // Configuration to ignore methods that are not part of the RM
-
-        MARSHAL_OM.addMixInAnnotations(ArchetypeID.class, ObjectIdMixIn.class);
-        MARSHAL_OM.addMixInAnnotations(Locatable.class, LocatableMixIn.class);
-        MARSHAL_OM.addMixInAnnotations(Pathable.class, PathableMixIn.class);
-        MARSHAL_OM.addMixInAnnotations(UIDBasedId.class, UIDBasedIdMixIn.class);
+        MARSHAL_OM
+                .addMixIn(ArchetypeID.class, ObjectIdMixIn.class)
+                .addMixIn(Locatable.class, LocatableMixIn.class)
+                .addMixIn(Pathable.class, PathableMixIn.class)
+                .addMixIn(UIDBasedId.class, UIDBasedIdMixIn.class);
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(DvDateTime.class, new DateTimeSerializer());
+        module.addSerializer(DvTime.class, new TimeSerializer());
+        module.addSerializer(DvDate.class, new DateSerializer());
+        module.addDeserializer(DvDateTime.class, new DateTimeDeserializer());
+        module.addDeserializer(DvTime.class, new TimeDeserializer());
+        module.addDeserializer(DvDate.class, new DateDeserializer());
         MARSHAL_OM.registerModule(module);
 
         // Global configuration to not include empty lists in the JSON
-
         MARSHAL_OM.setDefaultPropertyInclusion(JsonInclude.Value.construct(
                 Include.CUSTOM,
                 Include.CUSTOM,
@@ -132,7 +138,7 @@ public class CanonicalJson implements RMDataFormat {
     @Override
     public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
         try {
-            return ArchieObjectMapperProvider.getObjectMapper().readValue(value, clazz);
+            return MARSHAL_OM.readValue(value, clazz);
         } catch (IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }
@@ -148,7 +154,7 @@ public class CanonicalJson implements RMDataFormat {
      */
     public Map<String, Object> unmarshalToMap(String value) {
         try {
-            return ArchieObjectMapperProvider.getObjectMapper().readValue(value, Map.class);
+            return MARSHAL_OM.readValue(value, Map.class);
         } catch (IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }
