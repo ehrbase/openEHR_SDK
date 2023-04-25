@@ -50,6 +50,22 @@ class AqlToDtoParserTest {
     }
 
     @Test
+    void parseEhrPredicate() {
+        String aql =
+                "Select c/name/value, d/ehr_id/value as ehr_id from EHR d[some_key='some_value'] contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+
+        testAql(aql, aql);
+    }
+
+    @Test
+    void parseFromComposition() {
+        String aql = "Select e/name/value as name from COMPOSITION e";
+        String expected = aql; // .replace(" from ", " from EHR e contains ");
+
+        testAql(aql, expected);
+    }
+
+    @Test
     void parseDoubleAlias() {
         String aql =
                 "Select e/ehr_id/value ,c0 as F1 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
@@ -57,6 +73,32 @@ class AqlToDtoParserTest {
         testAql(
                 aql,
                 "Select e/ehr_id/value as F1, c0 as F1_F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+    }
+
+    @Test
+    void parseEhrAliasSwap() {
+        String aql = "Select c/name/value as e from EHR[ehr_id/value != 'anything'] contains COMPOSITION c";
+        String expected =
+                "Select c/name/value as e from EHR e1 contains COMPOSITION c where e1/ehr_id/value != 'anything'";
+
+        testAql(aql, expected);
+    }
+
+    @Test
+    void parsePlainEhr() {
+        String aql = "Select c/name/value from EHR CONTAINS COMPOSITION c";
+
+        testAql(aql, aql);
+    }
+
+    @Test
+    void parseDefaultEhrAliasCollision() {
+        String aql = "Select e/name/value as F1 from EHR[ehr_id/value != 'anything'] contains COMPOSITION e";
+
+        String expected =
+                "Select e/name/value as F1 from EHR e1 contains COMPOSITION e where e1/ehr_id/value != 'anything'";
+
+        testAql(aql, expected);
     }
 
     @Test
@@ -237,6 +279,11 @@ class AqlToDtoParserTest {
         String actualAql = new AqlBinder().bind(actual).getLeft().buildAql();
 
         assertThat(actualAql).isEqualTo(expected);
+
+        String roundtripAql =
+                new AqlBinder().bind(cut.parse(expected)).getLeft().buildAql();
+
+        assertThat(roundtripAql).isEqualTo(expected);
     }
 
     @Test

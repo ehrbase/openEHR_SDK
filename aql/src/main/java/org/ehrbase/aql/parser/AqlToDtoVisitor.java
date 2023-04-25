@@ -37,6 +37,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.EhrDto;
@@ -84,12 +85,18 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
     public AqlDto visitQuery(AqlParser.QueryContext ctx) {
         AqlDto aqlDto = new AqlDto();
 
-        Pair<EhrDto, ConditionDto> visitFromEHR =
-                visitFromEHR(ctx.queryExpr().from().fromEHR());
-        aqlDto.setEhr(visitFromEHR.getLeft());
+        AqlParser.FromContext fromCtx = ctx.queryExpr().from();
 
-        if (ctx.queryExpr().from().containsExpression() != null) {
-            aqlDto.setContains(visitContainsExpression(ctx.queryExpr().from().containsExpression()));
+        Pair<EhrDto, ConditionDto> visitFromEHR;
+        if (fromCtx.fromExpr() != null) {
+            aqlDto.setContains(visitContainsExpression(fromCtx.fromExpr().containsExpression()));
+            visitFromEHR = ImmutablePair.nullPair();
+        } else {
+            visitFromEHR = visitFromEHR(fromCtx.fromEHR());
+            aqlDto.setEhr(visitFromEHR.getLeft());
+            if (fromCtx.containsExpression() != null) {
+                aqlDto.setContains(visitContainsExpression(fromCtx.containsExpression()));
+            }
         }
         aqlDto.setSelect(visitSelect(ctx.queryExpr().select()));
         if (ctx.queryExpr().where() != null) {
@@ -133,7 +140,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                     SelectFieldDto selectFieldDto = selectFieldDtoMultiMap.values().stream()
                             .filter(d -> e.getKey().equals(d.getName()))
                             .findAny()
-                            .orElseThrow();
+                            .orElseThrow(() -> new NullPointerException("Missing identifier: " + e.getKey()));
 
                     SelectFieldDto value = e.getValue();
                     value.setName(selectFieldDto.getName());
