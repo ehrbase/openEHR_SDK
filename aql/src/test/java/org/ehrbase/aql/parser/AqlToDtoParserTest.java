@@ -88,7 +88,7 @@ class AqlToDtoParserTest {
     void parsePlainEhr() {
         String aql = "Select c/name/value from EHR CONTAINS COMPOSITION c";
 
-        testAql(aql, aql);
+        testAql(aql, "Select c/name/value as F1 from EHR e contains COMPOSITION c");
     }
 
     @Test

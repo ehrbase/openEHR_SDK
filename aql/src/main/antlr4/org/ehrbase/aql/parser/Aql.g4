@@ -97,9 +97,7 @@ from
 //        | FROM ContainsOr;
 
 fromEHR
-        : EHR standardPredicate
-        | EHR IDENTIFIER standardPredicate
-        | EHR IDENTIFIER ;
+        : EHR (IDENTIFIER)? (standardPredicate)? ;
 
 //foreign data
 fromForeignData
