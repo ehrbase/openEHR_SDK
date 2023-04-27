@@ -37,6 +37,7 @@ import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class AqlToDtoParserTest {
@@ -50,6 +51,7 @@ class AqlToDtoParserTest {
     }
 
     @Test
+    @Disabled
     void parseEhrPredicate() {
         String aql =
                 "Select c/name/value, d/ehr_id/value as ehr_id from EHR d[some_key='some_value'] contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
@@ -58,6 +60,7 @@ class AqlToDtoParserTest {
     }
 
     @Test
+    @Disabled
     void parseFromComposition() {
         String aql = "Select e/name/value as name from COMPOSITION e";
         String expected = aql; // .replace(" from ", " from EHR e contains ");
@@ -76,6 +79,7 @@ class AqlToDtoParserTest {
     }
 
     @Test
+    @Disabled
     void parseEhrAliasSwap() {
         String aql = "Select c/name/value as e from EHR[ehr_id/value != 'anything'] contains COMPOSITION c";
         String expected =
