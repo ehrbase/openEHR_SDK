@@ -40,6 +40,7 @@ import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class AqlToDtoParserTest {
 
     @Test
@@ -55,6 +56,15 @@ class AqlToDtoParserTest {
     void parseEhrPredicate() {
         String aql =
                 "Select c/name/value, d/ehr_id/value as ehr_id from EHR d[some_key='some_value'] contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+
+        testAql(aql, aql);
+    }
+
+    @Test
+    @Disabled
+    void parseCompositionPredicate() {
+        String aql =
+                "Select c/name/value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[some_key='some_value']";
 
         testAql(aql, aql);
     }

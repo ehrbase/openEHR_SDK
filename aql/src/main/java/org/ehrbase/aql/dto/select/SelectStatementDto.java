@@ -22,4 +22,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
 @JsonSubTypes({@JsonSubTypes.Type(value = SelectFieldDto.class, name = "SelectField")})
-public interface SelectStatementDto {}
+public interface SelectStatementDto {
+    String getName();
+
+    void setName(String name);
+}

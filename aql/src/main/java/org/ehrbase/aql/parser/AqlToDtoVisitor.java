@@ -17,7 +17,6 @@
  */
 package org.ehrbase.aql.parser;
 
-import com.nedap.archie.datetime.DateTimeParsers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,33 +31,21 @@ import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.EhrDto;
 import org.ehrbase.aql.dto.LogicalOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
-import org.ehrbase.aql.dto.condition.LikeOperatorDto;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.SimpleValue;
-import org.ehrbase.aql.dto.condition.Value;
-import org.ehrbase.aql.dto.containment.ContainmentDto;
-import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
-import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
-import org.ehrbase.aql.dto.containment.ContainmentLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.containment.*;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -67,64 +54,41 @@ import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
-import org.ehrbase.aql.dto.select.AQLFunction;
 import org.ehrbase.aql.dto.select.FunctionDto;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
-import org.ehrbase.aql.parser.AqlParser.OperandContext;
-import org.ehrbase.client.aql.top.Direction;
 
-public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
+public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
     private int containmentId = 0;
     private final Map<String, Integer> identifierMap = new HashMap<>();
     private final MultiValuedMap<String, SelectFieldDto> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
 
+    private List<String> errors;
+
     @Override
-    public AqlDto visitQuery(AqlParser.QueryContext ctx) {
+    public AqlDto visitSelectQuery(AqlParser.SelectQueryContext ctx) {
+
+        errors = new ArrayList<>();
         AqlDto aqlDto = new AqlDto();
 
-        AqlParser.FromContext fromCtx = ctx.queryExpr().from();
-
-        Pair<EhrDto, ConditionDto> visitFromEHR;
-        if (fromCtx.fromExpr() != null) {
-            aqlDto.setContains(visitContainsExpression(fromCtx.fromExpr().containsExpression()));
-            visitFromEHR = ImmutablePair.nullPair();
-        } else {
-            visitFromEHR = visitFromEHR(fromCtx.fromEHR());
-            aqlDto.setEhr(visitFromEHR.getLeft());
-            if (fromCtx.containsExpression() != null) {
-                aqlDto.setContains(visitContainsExpression(fromCtx.containsExpression()));
-            }
+        // select
+        aqlDto.setSelect(visitSelectClause(ctx.selectClause()));
+        // from
+        aqlDto.setContains(visitFromClause(ctx.fromClause()));
+        // where
+        if (ctx.whereClause() != null) {
+            aqlDto.setWhere(visitWhereClause(ctx.whereClause()));
         }
-        aqlDto.setSelect(visitSelect(ctx.queryExpr().select()));
-        if (ctx.queryExpr().where() != null) {
-            aqlDto.setWhere(visitIdentifiedExpr(ctx.queryExpr().where().identifiedExpr()));
-        }
-        if (visitFromEHR.getRight() != null) {
-            if (aqlDto.getWhere() == null) {
-                aqlDto.setWhere(visitFromEHR.getRight());
-            } else {
-                ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
-                and.setSymbol(ConditionLogicalOperatorSymbol.AND);
-                and.setValues(new ArrayList<>(List.of(aqlDto.getWhere(), visitFromEHR.getRight())));
-                aqlDto.setWhere(and);
-            }
+        // oder by
+        if (ctx.orderByClause() != null) {
+            aqlDto.setOrderBy(visitOrderByClause(ctx.orderByClause()));
         }
 
-        if (ctx.queryExpr().orderBy() != null) {
-            aqlDto.setOrderBy(visitOrderBySeq(ctx.queryExpr().orderBy().orderBySeq()));
-        }
+        if (ctx.limitClause() != null) {
 
-        if (ctx.queryExpr().limit() != null) {
-            AqlParser.LimitContext limitExpr = ctx.queryExpr().limit();
-            aqlDto.setLimit(Integer.parseInt(limitExpr.INTEGER().getText()));
-
-            if (ctx.queryExpr().offset() != null) {
-                aqlDto.setOffset(
-                        Integer.parseInt(ctx.queryExpr().offset().INTEGER().getText()));
-            }
+            errors.add("limit not yet implemented");
         }
 
         selectFieldDtoMultiMap.entries().forEach(e -> {
@@ -140,35 +104,217 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                     SelectFieldDto selectFieldDto = selectFieldDtoMultiMap.values().stream()
                             .filter(d -> e.getKey().equals(d.getName()))
                             .findAny()
-                            .orElseThrow(() -> new NullPointerException("Missing identifier: " + e.getKey()));
+                            .orElseThrow();
 
                     SelectFieldDto value = e.getValue();
                     value.setName(selectFieldDto.getName());
                     value.setAqlPath(selectFieldDto.getAqlPathDto());
                     value.setContainmentId(selectFieldDto.getContainmentId());
                 });
+
         return aqlDto;
     }
 
     @Override
-    public Pair<EhrDto, ConditionDto> visitFromEHR(AqlParser.FromEHRContext ctx) {
-        EhrDto ehrDto = new EhrDto();
-        ehrDto.setContainmentId(buildContainmentId());
-        if (ctx.IDENTIFIER() != null) {
-            identifierMap.put(ctx.IDENTIFIER().getText(), ehrDto.getContainmentId());
-            ehrDto.setIdentifier(ctx.IDENTIFIER().getText());
+    public SelectDto visitSelectClause(AqlParser.SelectClauseContext ctx) {
+
+        SelectDto selectDto = new SelectDto();
+
+        selectDto.setDistinct(ctx.DISTINCT() != null);
+
+        if (ctx.top() != null) {
+
+            errors.add("top not yet implemented");
         }
-        return Pair.of(
-                ehrDto,
-                Optional.ofNullable(ctx.standardPredicate())
-                        .map(AqlParser.StandardPredicateContext::predicateExpr)
-                        .map(p -> buildConditionDtoFromPredicate(p, ehrDto.getContainmentId()))
-                        .orElse(null));
+
+        selectDto.setStatement(
+                ctx.selectExpr().stream().map(this::visitSelectExpr).collect(Collectors.toList()));
+
+        return selectDto;
     }
 
-    private ConditionDto buildConditionDtoFromPredicate(AqlParser.PredicateExprContext p, int containmentId) {
-        PredicateDto predicateDto = PredicateHelper.buildPredicate(getFullText(p));
-        return to(predicateDto, containmentId);
+    @Override
+    public SelectStatementDto visitSelectExpr(AqlParser.SelectExprContext ctx) {
+
+        SelectStatementDto selectStatementDto = visitColumnExpr(ctx.columnExpr());
+
+        if (ctx.IDENTIFIER() != null) {
+            selectStatementDto.setName(ctx.IDENTIFIER().getText());
+        }
+
+        return selectStatementDto;
+    }
+
+    @Override
+    public SelectStatementDto visitColumnExpr(AqlParser.ColumnExprContext ctx) {
+
+        if (ctx.identifiedPath() != null) {
+            return visitIdentifiedPath(ctx.identifiedPath());
+
+        } else if (ctx.functionCall() != null) {
+            return visitFunctionCall(ctx.functionCall());
+        } else if (ctx.aggregateFunctionCall() != null) {
+
+            errors.add("aggregate function not yet implemented");
+            return new DummySelectStatementDto();
+        } else if (ctx.primitive() != null) {
+
+            errors.add("primitive function not yet implemented");
+            return new DummySelectStatementDto();
+        } else {
+
+            throw new AqlParseException("Invalid ColumnExpr");
+        }
+    }
+
+    @Override
+    public SelectFieldDto visitIdentifiedPath(AqlParser.IdentifiedPathContext ctx) {
+
+        SelectFieldDto selectFieldDto = new SelectFieldDto();
+
+        selectFieldDtoMultiMap.put(ctx.IDENTIFIER().getText(), selectFieldDto);
+        selectFieldDto.setAqlPath(
+                StringUtils.removeStart(getFullText(ctx), ctx.IDENTIFIER().getText()));
+
+        return selectFieldDto;
+    }
+
+    @Override
+    public FunctionDto visitFunctionCall(AqlParser.FunctionCallContext ctx) {
+
+        errors.add("function not yet implemented");
+        return new FunctionDto();
+    }
+
+    @Override
+    public ContainmentExpresionDto visitFromClause(AqlParser.FromClauseContext ctx) {
+
+        return visitFromExpr(ctx.fromExpr());
+    }
+
+    @Override
+    public ContainmentExpresionDto visitFromExpr(AqlParser.FromExprContext ctx) {
+
+        return visitContainsExpr(ctx.containsExpr());
+    }
+
+    @Override
+    public ContainmentExpresionDto visitContainsExpr(AqlParser.ContainsExprContext ctx) {
+
+        ContainmentLogicalOperatorSymbol symbol = extractSymbol(ctx);
+
+        if (symbol != null) {
+
+            AqlParser.ContainsExprContext current = ctx;
+
+            List<Object> boolList = new ArrayList<>();
+
+            while (current != null) {
+
+                boolList.add(visitContainsExpr(ctx.containsExpr(0)));
+                Optional.ofNullable(extractSymbol(current)).ifPresent(boolList::add);
+
+                if (ctx.containsExpr().size() == 2) {
+                    current = ctx.containsExpr(1);
+                } else {
+                    current = null;
+                }
+            }
+            return buildContainmentLogicalOperator(boolList);
+
+        } else if (ctx.SYM_LEFT_PAREN() != null) {
+
+            return visitContainsExpr(ctx.containsExpr(0));
+        } else {
+
+            AqlParser.ClassExprOperandContext classExprOperandContext = ctx.classExprOperand();
+            if (classExprOperandContext instanceof AqlParser.ClassExpressionContext) {
+
+                ContainmentDto containmentDto =
+                        visitClassExpression((AqlParser.ClassExpressionContext) classExprOperandContext);
+
+                if (ctx.CONTAINS() != null) {
+
+                    ContainmentExpresionDto contains = visitContainsExpr(ctx.containsExpr(0));
+                    if (ctx.NOT() != null) {
+
+                        errors.add("NOT contains not yet implemented");
+                    } else {
+                        containmentDto.setContains(contains);
+                    }
+                }
+                return containmentDto;
+            } else {
+                return visitVersionClassExpr((AqlParser.VersionClassExprContext) classExprOperandContext);
+            }
+        }
+    }
+
+    @Override
+    public ContainmentDto visitClassExpression(AqlParser.ClassExpressionContext ctx) {
+
+        ContainmentDto containmentDto = new ContainmentDto();
+        containmentDto.setId(buildContainmentId());
+        containmentDto.getContainment().setType(ctx.IDENTIFIER(0).getText());
+
+        if (ctx.IDENTIFIER().size() == 2) {
+            containmentDto.setIdentifier(ctx.IDENTIFIER(1).getText());
+            identifierMap.put(containmentDto.getIdentifier(), containmentDto.getId());
+        }
+
+        if (ctx.pathPredicate() != null) {
+            PredicateDto predicateDto = PredicateHelper.buildPredicate(getFullText(ctx.pathPredicate()));
+
+            containmentDto.getContainment().setOtherPredicates(predicateDto);
+            PredicateHelper.find(predicateDto, PredicateHelper.ARCHETYPE_NODE_ID)
+                    .ifPresent(s -> containmentDto
+                            .getContainment()
+                            .setArchetypeId(
+                                    ((SimpleValue) s.getValue()).getValue().toString()));
+        }
+
+        return containmentDto;
+    }
+
+    @Override
+    public ContainmentExpresionDto visitVersionClassExpr(AqlParser.VersionClassExprContext ctx) {
+
+        errors.add("version not yet implemented");
+        return new ContainmentExpresionDto() {};
+    }
+
+    public ContainmentLogicalOperator buildContainmentLogicalOperator(List<Object> boolList) {
+
+        return (ContainmentLogicalOperator) buildLogicalOperator(boolList, (Function<
+                        ContainmentLogicalOperatorSymbol,
+                        LogicalOperatorDto<ContainmentLogicalOperatorSymbol, ContainmentExpresionDto>>)
+                s -> {
+                    ContainmentLogicalOperator conditionLogicalOperatorDto = new ContainmentLogicalOperator();
+                    conditionLogicalOperatorDto.setSymbol(s);
+                    conditionLogicalOperatorDto.setValues(new ArrayList<>());
+
+                    return conditionLogicalOperatorDto;
+                });
+    }
+
+    @Override
+    public ConditionDto visitWhereClause(AqlParser.WhereClauseContext ctx) {
+
+        errors.add("where not yet implemented");
+
+        return null;
+    }
+
+    @Override
+    public List<OrderByExpressionDto> visitOrderByClause(AqlParser.OrderByClauseContext ctx) {
+
+        errors.add("OrderBy not yet implemented");
+
+        return null;
+    }
+
+    public List<String> getErrors() {
+        return errors;
     }
 
     public static String getFullText(ParserRuleContext context) {
@@ -217,215 +363,6 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         }
 
         return null;
-    }
-
-    @Override
-    public SelectDto visitSelect(AqlParser.SelectContext ctx) {
-        SelectDto selectDto = new SelectDto();
-        selectDto.setStatement(visitSelectExpr(ctx.selectExpr()));
-        if (ctx.topExpr() != null) {
-            selectDto.setTopDirection(extractSymbol(ctx.topExpr()));
-            selectDto.setTopCount(Integer.parseInt(ctx.topExpr().INTEGER().getText()));
-        }
-        if (ctx.selectExpr().DISTINCT() != null) {
-            selectDto.setDistinct(true);
-        }
-        return selectDto;
-    }
-
-    private Direction extractSymbol(AqlParser.TopExprContext topExpr) {
-        if (topExpr.BACKWARD() != null) {
-            return Direction.BACKWARD;
-        } else {
-            return Direction.FORWARD;
-        }
-    }
-
-    @Override
-    public List<SelectStatementDto> visitSelectExpr(AqlParser.SelectExprContext ctx) {
-        List<SelectStatementDto> selectStatementDtos = new ArrayList<>();
-
-        if (ctx.identifiedPath() != null) {
-            SelectFieldDto selectFieldDto = visitIdentifiedPath(ctx.identifiedPath());
-            if (ctx.IDENTIFIER() != null) {
-                selectFieldDto.setName(ctx.IDENTIFIER().getText());
-            }
-            selectStatementDtos.add(selectFieldDto);
-        } else if (ctx.stdExpression() != null) {
-            if (ctx.stdExpression().function() != null) {
-                FunctionDto functionDto = visitFunction(ctx.stdExpression().function());
-                selectStatementDtos.add(functionDto);
-                if (ctx.IDENTIFIER() != null) {
-                    functionDto.setName(ctx.IDENTIFIER().getText());
-                }
-            }
-        }
-
-        if (ctx.selectExpr() != null) {
-            selectStatementDtos.addAll(visitSelectExpr(ctx.selectExpr()));
-        }
-        return selectStatementDtos;
-    }
-
-    @Override
-    public FunctionDto visitFunction(AqlParser.FunctionContext ctx) {
-
-        FunctionDto functionDto = new FunctionDto();
-
-        AQLFunction aqlFunction =
-                AQLFunction.valueOf(ctx.FUNCTION_IDENTIFIER().toString().toUpperCase(Locale.ROOT));
-
-        functionDto.setAqlFunction(aqlFunction);
-
-        if (ctx.identifiedPath() != null) {
-            functionDto.setParameters(
-                    ctx.identifiedPath().stream().map(this::visitIdentifiedPath).collect(Collectors.toList()));
-        }
-
-        return functionDto;
-    }
-
-    @Override
-    public SelectFieldDto visitIdentifiedPath(AqlParser.IdentifiedPathContext ctx) {
-        SelectFieldDto selectStatementDto = new SelectFieldDto();
-        selectFieldDtoMultiMap.put(ctx.IDENTIFIER().getText(), selectStatementDto);
-        selectStatementDto.setAqlPath(
-                StringUtils.removeStart(getFullText(ctx), ctx.IDENTIFIER().getText()));
-
-        return selectStatementDto;
-    }
-
-    @Override
-    public ContainmentExpresionDto visitContainsExpression(AqlParser.ContainsExpressionContext ctx) {
-
-        List<Object> boolList = new ArrayList<>();
-
-        AqlParser.ContainsExpressionContext currentContext = ctx;
-        while (currentContext != null) {
-            ContainmentLogicalOperatorSymbol symbol = extractSymbol(currentContext);
-            boolList.add(visitContainExpressionBool(currentContext.containExpressionBool()));
-
-            if (symbol != null) {
-                boolList.add(symbol);
-            }
-            currentContext = currentContext.containsExpression();
-        }
-
-        if (boolList.size() == 1) {
-            return (ContainmentExpresionDto) boolList.get(0);
-        } else {
-            return buildContainmentLogicalOperator(boolList);
-        }
-    }
-
-    public ContainmentLogicalOperator buildContainmentLogicalOperator(List<Object> boolList) {
-
-        return (ContainmentLogicalOperator) buildLogicalOperator(boolList, (Function<
-                        ContainmentLogicalOperatorSymbol,
-                        LogicalOperatorDto<ContainmentLogicalOperatorSymbol, ContainmentExpresionDto>>)
-                s -> {
-                    ContainmentLogicalOperator conditionLogicalOperatorDto = new ContainmentLogicalOperator();
-                    conditionLogicalOperatorDto.setSymbol(s);
-                    conditionLogicalOperatorDto.setValues(new ArrayList<>());
-
-                    return conditionLogicalOperatorDto;
-                });
-    }
-
-    @Override
-    public ContainmentExpresionDto visitContainExpressionBool(AqlParser.ContainExpressionBoolContext ctx) {
-
-        if (ctx.contains() != null) {
-            return visitContains(ctx.contains());
-        } else {
-            return visitContainsExpression(ctx.containsExpression());
-        }
-    }
-
-    @Override
-    public ContainmentDto visitContains(AqlParser.ContainsContext ctx) {
-
-        ContainmentDto containmentDto = visitSimpleClassExpr(ctx.simpleClassExpr());
-        if (ctx.containsExpression() != null) {
-            containmentDto.setContains(visitContainsExpression(ctx.containsExpression()));
-        }
-        return containmentDto;
-    }
-
-    @Override
-    public ContainmentDto visitSimpleClassExpr(AqlParser.SimpleClassExprContext ctx) {
-        ContainmentDto currentContainment = new ContainmentDto();
-        currentContainment.setId(buildContainmentId());
-        AqlParser.ArchetypedClassExprContext archetypedClassExprContext =
-                ctx.getChild(AqlParser.ArchetypedClassExprContext.class, 0);
-        if (archetypedClassExprContext != null) {
-            if (archetypedClassExprContext.IDENTIFIER().size() == 2) {
-                currentContainment.setIdentifier(
-                        archetypedClassExprContext.IDENTIFIER(1).getText());
-                identifierMap.put(currentContainment.getIdentifier(), currentContainment.getId());
-            }
-
-            currentContainment
-                    .getContainment()
-                    .setType(archetypedClassExprContext.IDENTIFIER(0).getText());
-            currentContainment
-                    .getContainment()
-                    .setArchetypeId(archetypedClassExprContext.ARCHETYPEID().getText());
-            currentContainment
-                    .getContainment()
-                    .setOtherPredicates(new PredicateLogicalAndOperation(new PredicateComparisonOperatorDto(
-                            PredicateHelper.ARCHETYPE_NODE_ID,
-                            ConditionComparisonOperatorSymbol.EQ,
-                            new SimpleValue(currentContainment.getContainment().getArchetypeId()))));
-
-        } else {
-            currentContainment.getContainment().setType(ctx.IDENTIFIER(0).getText());
-            currentContainment.getContainment().setArchetypeId(ctx.IDENTIFIER(0).getText());
-            if (ctx.IDENTIFIER().size() == 2) {
-                currentContainment.setIdentifier(ctx.IDENTIFIER(1).getText());
-                identifierMap.put(currentContainment.getIdentifier(), currentContainment.getId());
-            }
-        }
-
-        return currentContainment;
-    }
-
-    @Override
-    public ConditionDto visitIdentifiedExpr(AqlParser.IdentifiedExprContext ctx) {
-
-        int childCount = ctx.getChildCount();
-        List<Object> boolList = new ArrayList<>(childCount);
-
-        for (int i = 0; i < childCount; i++) {
-            ParseTree child = ctx.getChild(i);
-            if (child instanceof AqlParser.IdentifiedEqualityContext) {
-                boolList.add(visitIdentifiedEquality((AqlParser.IdentifiedEqualityContext) child));
-            } else if (child instanceof TerminalNode) {
-                ConditionLogicalOperatorSymbol symbol = extractSymbolTerminal((TerminalNode) child);
-                if (symbol != null) {
-                    boolList.add(symbol);
-                }
-            }
-        }
-        if (boolList.size() == 1) {
-            return (ConditionDto) boolList.get(0);
-        } else {
-            return buildConditionLogicalOperator(boolList);
-        }
-    }
-
-    private ConditionLogicalOperatorDto buildConditionLogicalOperator(List<Object> boolList) {
-
-        return (ConditionLogicalOperatorDto) buildLogicalOperator(boolList, (Function<
-                        ConditionLogicalOperatorSymbol,
-                        LogicalOperatorDto<ConditionLogicalOperatorSymbol, ConditionDto>>)
-                s -> {
-                    ConditionLogicalOperatorDto conditionLogicalOperatorDto = new ConditionLogicalOperatorDto();
-                    conditionLogicalOperatorDto.setSymbol(s);
-                    conditionLogicalOperatorDto.setValues(new ArrayList<>());
-
-                    return conditionLogicalOperatorDto;
-                });
     }
 
     private static <T, S extends LogicalOperatorSymbol> LogicalOperatorDto<S, T> buildLogicalOperator(
@@ -521,132 +458,12 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         }
     }
 
-    @Override
-    public ConditionDto visitIdentifiedEquality(AqlParser.IdentifiedEqualityContext ctx) {
-        ConditionDto conditionDto = null;
-
-        if (ctx.identifiedExpr() != null) {
-            conditionDto = visitIdentifiedExpr(ctx.identifiedExpr());
-        } else if (ctx.IS() != null) {
-            ConditionComparisonOperatorDto operatorDto = new ConditionComparisonOperatorDto();
-            operatorDto.setSymbol(
-                    ctx.NOT() == null ? ConditionComparisonOperatorSymbol.EQ : ConditionComparisonOperatorSymbol.NEQ);
-            operatorDto.setStatement(
-                    visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
-            if (ctx.TRUE() != null) {
-                operatorDto.setValue(new SimpleValue(true));
-            } else if (ctx.FALSE() != null) {
-                operatorDto.setValue(new SimpleValue(false));
-            } else {
-                throw new AqlParseException("Not supported, only IS (NOT) TRUE/FALSE is supported");
-            }
-            conditionDto = operatorDto;
-        } else if (ctx.COMPARABLEOPERATOR() != null) {
-            ConditionComparisonOperatorSymbol comparisonOperatorSymbol = extractSymbol(ctx);
-            ConditionComparisonOperatorDto operatorDto = new ConditionComparisonOperatorDto();
-            operatorDto.setSymbol(comparisonOperatorSymbol);
-            operatorDto.setStatement(
-                    visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
-            operatorDto.setValue(visitOperand(ctx.identifiedOperand(1).operand()));
-
-            conditionDto = operatorDto;
-        } else if (ctx.MATCHES() != null) {
-            MatchesOperatorDto matchesOperatorDto = new MatchesOperatorDto();
-            matchesOperatorDto.setStatement(
-                    visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
-            matchesOperatorDto.setValues(new ArrayList<>());
-            AqlParser.ValueListItemsContext valueListItemsContext =
-                    ctx.matchesOperand().valueListItems();
-            while (valueListItemsContext != null) {
-                matchesOperatorDto.getValues().add(visitOperand(valueListItemsContext.operand()));
-                valueListItemsContext = valueListItemsContext.valueListItems();
-            }
-
-            conditionDto = matchesOperatorDto;
-        } else if (ctx.EXISTS() != null) {
-            conditionDto = new ExistsConditionOperatorDto(visitIdentifiedPath(ctx.identifiedPath()));
-
-        } else if (ctx.LIKE() != null) {
-
-            LikeOperatorDto likeOperatorDto = new LikeOperatorDto();
-            likeOperatorDto.setStatement(
-                    visitIdentifiedPath(ctx.identifiedOperand(0).identifiedPath()));
-            likeOperatorDto.setValue(visitLikeOperand(ctx.likeOperand()));
-
-            conditionDto = likeOperatorDto;
-        }
-
-        if (ctx.NOT() != null
-                // "NOT" not belonging to is, in or between.
-                && (ctx.IS() == null && ctx.IN() == null && ctx.BETWEEN() == null)) {
-            return new NotConditionOperatorDto(conditionDto);
-        } else {
-            return conditionDto;
-        }
-    }
-
-    @Override
-    public Value visitOperand(AqlParser.OperandContext ctx) {
-        final Value value;
-
-        if (isBooleanOperand(ctx)) {
-            value = new SimpleValue(Boolean.parseBoolean(ctx.getText()));
-        } else if (ctx.DATE() != null) {
-            String unwrap = unwrapText(ctx);
-            value = new SimpleValue(DateTimeParsers.parseTimeValue(unwrap));
-        } else if (ctx.FLOAT() != null) {
-            value = new SimpleValue(Double.valueOf(ctx.getText()));
-        } else if (ctx.INTEGER() != null) {
-            value = new SimpleValue(Integer.valueOf(ctx.getText()));
-        } else if (ctx.STRING() != null) {
-            value = new SimpleValue(unwrapText(ctx));
-        } else if (ctx.PARAMETER() != null) {
-            value = parameter(ctx);
-        } else {
-            throw new AqlParseException("Can not handle value " + ctx.getText());
-        }
-        return value;
-    }
-
-    @Override
-    public Value visitLikeOperand(AqlParser.LikeOperandContext ctx) {
-        final Value value;
-
-        if (ctx.STRING() != null) {
-            value = new SimpleValue(unwrapText(ctx));
-        } else if (ctx.PARAMETER() != null) {
-            value = parameter(ctx);
-        } else {
-            throw new AqlParseException("Can not handle value " + ctx.getText());
-        }
-        return value;
-    }
-
     private static String unwrapText(RuleContext ctx) {
         return StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
     }
 
     private static ParameterValue parameter(RuleContext ctx) {
         return new ParameterValue(StringUtils.removeStart(ctx.getText(), "$"), "?");
-    }
-
-    @Override
-    public List<OrderByExpressionDto> visitOrderBySeq(AqlParser.OrderBySeqContext ctx) {
-        List<OrderByExpressionDto> orderByExpressionDtoList = new ArrayList<>();
-
-        orderByExpressionDtoList.add(visitOrderByExpr(ctx.orderByExpr()));
-        if (ctx.orderBySeq() != null) {
-            orderByExpressionDtoList.addAll(visitOrderBySeq(ctx.orderBySeq()));
-        }
-        return orderByExpressionDtoList;
-    }
-
-    @Override
-    public OrderByExpressionDto visitOrderByExpr(AqlParser.OrderByExprContext ctx) {
-        OrderByExpressionDto orderByExpressionDto = new OrderByExpressionDto();
-        orderByExpressionDto.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
-        orderByExpressionDto.setSymbol(extractSymbol(ctx));
-        return orderByExpressionDto;
     }
 
     private OrderByExpressionSymbol extractSymbol(AqlParser.OrderByExprContext ctx) {
@@ -657,8 +474,8 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         }
     }
 
-    private ConditionComparisonOperatorSymbol extractSymbol(AqlParser.IdentifiedEqualityContext ctx) {
-        switch (ctx.COMPARABLEOPERATOR().getText()) {
+    private ConditionComparisonOperatorSymbol extractSymbol(AqlParser.IdentifiedExprContext ctx) {
+        switch (ctx.COMPARISON_OPERATOR().getText()) {
             case "=":
                 return ConditionComparisonOperatorSymbol.EQ;
             case "!=":
@@ -673,7 +490,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
                 return ConditionComparisonOperatorSymbol.LT_EQ;
             default:
                 throw new AqlParseException(
-                        "Unknown Token " + ctx.COMPARABLEOPERATOR().getText());
+                        "Unknown Token " + ctx.COMPARISON_OPERATOR().getText());
         }
     }
 
@@ -690,7 +507,7 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
         return containmentId++;
     }
 
-    private ContainmentLogicalOperatorSymbol extractSymbol(AqlParser.ContainsExpressionContext ctx) {
+    private ContainmentLogicalOperatorSymbol extractSymbol(AqlParser.ContainsExprContext ctx) {
         if (ctx == null) {
             return null;
         }
@@ -698,14 +515,23 @@ public class AqlToDtoVisitor extends AqlBaseVisitor<Object> {
             return ContainmentLogicalOperatorSymbol.OR;
         } else if (ctx.AND() != null) {
             return ContainmentLogicalOperatorSymbol.AND;
-        } else if (ctx.XOR() != null) {
-            throw new AqlParseException("XOR not supported");
         } else {
             return null;
         }
     }
 
-    private boolean isBooleanOperand(OperandContext ctx) {
-        return ctx.BOOLEAN() != null || ctx.TRUE() != null || ctx.FALSE() != null;
+    private static class DummySelectStatementDto implements SelectStatementDto {
+
+        private String name;
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 }

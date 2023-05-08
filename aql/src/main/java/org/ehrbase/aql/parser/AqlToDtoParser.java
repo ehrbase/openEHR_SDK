@@ -32,7 +32,14 @@ public class AqlToDtoParser {
             AqlParser aqlParser = new AqlParser(commonTokenStream);
             aqlParser.addErrorListener(new SDKErrorListener());
             AqlToDtoVisitor listener = new AqlToDtoVisitor();
-            return listener.visitQuery(aqlParser.query());
+            AqlDto aqlDto = listener.visitSelectQuery(aqlParser.selectQuery());
+
+            if (!listener.getErrors().isEmpty()) {
+                throw new AqlParseException(
+                        String.format("Can not parse aql %s: %s", aql, String.join(",", listener.getErrors())));
+            }
+
+            return aqlDto;
         } catch (RuntimeException e) {
             throw new AqlParseException(e.getMessage(), e);
         }

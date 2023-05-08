@@ -25,6 +25,7 @@ public class SelectFieldDto implements SelectStatementDto {
     private AqlPath aqlPath;
     private int containmentId;
 
+    @Override
     public String getName() {
         return this.name;
     }
@@ -41,6 +42,7 @@ public class SelectFieldDto implements SelectStatementDto {
         return this.containmentId;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
