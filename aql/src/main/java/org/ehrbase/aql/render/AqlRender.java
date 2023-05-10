@@ -17,10 +17,16 @@
  */
 package org.ehrbase.aql.render;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nedap.archie.json.JacksonUtil;
+import java.time.temporal.TemporalAccessor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
@@ -28,6 +34,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectDto;
 import org.ehrbase.aql.dto.select.SelectFieldDto;
+import org.ehrbase.aql.dto.select.SelectPrimitiveDto;
 import org.ehrbase.aql.dto.select.SelectStatementDto;
 import org.ehrbase.util.exception.SdkException;
 
@@ -61,6 +68,10 @@ public class AqlRender {
 
         sb.append("SELECT ");
 
+        if (dto.isDistinct()) {
+            sb.append("DISTINCT ");
+        }
+
         sb.append(dto.getStatement().stream()
                 .map(s -> {
                     StringBuilder sbInner = new StringBuilder();
@@ -76,6 +87,12 @@ public class AqlRender {
 
         if (dto instanceof SelectFieldDto) {
             renderSelectFieldDto(sb, (SelectFieldDto) dto);
+        } else if (dto instanceof SelectPrimitiveDto) {
+            renderSelectPrimitiveDto(sb, (SelectPrimitiveDto) dto);
+        }
+
+        if (dto.getName() != null) {
+            sb.append(" AS ").append(dto.getName());
         }
     }
 
@@ -90,9 +107,39 @@ public class AqlRender {
         sb.append(containmentExpresionDto.getIdentifier());
 
         sb.append(dto.getAqlPathDto().format(AqlPath.OtherPredicatesFormat.SHORTED, false));
+    }
 
-        if (dto.getName() != null) {
-            sb.append(" AS ").append(dto.getName());
+    private void renderSelectPrimitiveDto(StringBuilder sb, SelectPrimitiveDto dto) {
+
+        sb.append(renderValue(dto.getSimpleValue()));
+    }
+
+    public String renderValue(SimpleValue simpleValue) {
+        Object value = simpleValue.getValue();
+
+        if (value == null) {
+
+            return "NULL";
+        }
+        if (Long.class.isAssignableFrom(value.getClass()) || Integer.class.isAssignableFrom(value.getClass())) {
+            return value.toString();
+        } else if (Double.class.isAssignableFrom(value.getClass()) || Float.class.isAssignableFrom(value.getClass())) {
+            return value.toString();
+        }
+        if (Boolean.class.isAssignableFrom(value.getClass())) {
+            return value.toString();
+        } else if (String.class.isAssignableFrom(value.getClass()) || UUID.class.isAssignableFrom(value.getClass())) {
+            return StringUtils.wrap(value.toString(), "'");
+        } else if (TemporalAccessor.class.isAssignableFrom(value.getClass())) {
+            String valueAsString;
+            try {
+                valueAsString = JacksonUtil.getObjectMapper().writeValueAsString(value);
+            } catch (JsonProcessingException e) {
+                throw new SdkException(e.getMessage(), e);
+            }
+            return StringUtils.wrap(valueAsString.replace("\"", ""), "'");
+        } else {
+            throw new SdkException(String.format("%s is not an valid AQL Value", value.getClass()));
         }
     }
 

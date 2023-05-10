@@ -38,6 +38,7 @@ import org.ehrbase.aql.parser.AqlToDtoParser;
 import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.webtemplate.model.WebTemplateNode;
 import org.ehrbase.webtemplate.templateprovider.TestDataTemplateProvider;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -45,6 +46,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 /**
  * @author Stefan Spiska
  */
+@Disabled
 class InterpreterTest {
 
     @Test

@@ -17,6 +17,7 @@
  */
 package org.ehrbase.aql.parser;
 
+import com.nedap.archie.datetime.DateTimeParsers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,10 +55,7 @@ import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
-import org.ehrbase.aql.dto.select.FunctionDto;
-import org.ehrbase.aql.dto.select.SelectDto;
-import org.ehrbase.aql.dto.select.SelectFieldDto;
-import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.aql.dto.select.*;
 
 public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
@@ -159,12 +157,53 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             return new DummySelectStatementDto();
         } else if (ctx.primitive() != null) {
 
-            errors.add("primitive function not yet implemented");
-            return new DummySelectStatementDto();
+            return visitPrimitive(ctx.primitive());
         } else {
 
             throw new AqlParseException("Invalid ColumnExpr");
         }
+    }
+
+    @Override
+    public SelectPrimitiveDto visitPrimitive(AqlParser.PrimitiveContext ctx) {
+
+        SelectPrimitiveDto selectPrimitiveDto = new SelectPrimitiveDto();
+
+        final SimpleValue value;
+
+        if (ctx.BOOLEAN() != null) {
+            value = new SimpleValue(Boolean.parseBoolean(ctx.getText()));
+        } else if (ctx.DATE() != null) {
+            String unwrap = unwrapText(ctx);
+            value = new SimpleValue(DateTimeParsers.parseTimeValue(unwrap));
+        } else if (ctx.numericPrimitive() != null) {
+            AqlParser.NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
+            value = visitNumericPrimitive(numericPrimitiveContext);
+        } else if (ctx.STRING() != null) {
+            value = new SimpleValue(unwrapText(ctx));
+        } else {
+            throw new AqlParseException("Can not handle value " + ctx.getText());
+        }
+
+        selectPrimitiveDto.setSimpleValue(value);
+
+        return selectPrimitiveDto;
+    }
+
+    @Override
+    public SimpleValue visitNumericPrimitive(AqlParser.NumericPrimitiveContext ctx) {
+
+        SimpleValue value;
+
+        if (ctx.REAL() != null) {
+            value = new SimpleValue(Double.valueOf(ctx.getText()));
+        } else if (ctx.INTEGER() != null) {
+            value = new SimpleValue(Integer.valueOf(ctx.getText()));
+        } else {
+            throw new AqlParseException("Can not handle value " + ctx.getText());
+        }
+
+        return value;
     }
 
     @Override

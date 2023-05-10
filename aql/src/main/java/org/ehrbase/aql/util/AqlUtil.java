@@ -20,7 +20,6 @@ package org.ehrbase.aql.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.ehrbase.aql.binder.AqlBinder;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionDto;
@@ -28,13 +27,13 @@ import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ParameterValue;
 import org.ehrbase.aql.dto.condition.Value;
 import org.ehrbase.aql.parser.AqlToDtoParser;
+import org.ehrbase.aql.render.AqlRender;
 
 public class AqlUtil {
 
     private AqlUtil() {}
 
     private static final AqlToDtoParser PARSER = new AqlToDtoParser();
-    private static final AqlBinder BINDER = new AqlBinder();
 
     /**
      * Removes a parameter from the aql
@@ -48,7 +47,7 @@ public class AqlUtil {
         AqlDto dto = PARSER.parse(aql);
 
         dto.setWhere(removeParameter(dto.getWhere(), parameterName));
-        return BINDER.bind(dto).getLeft().buildAql();
+        return new AqlRender(dto).render();
     }
 
     private static ConditionDto removeParameter(ConditionDto conditionDto, String parameterName) {

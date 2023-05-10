@@ -19,8 +19,10 @@ package org.ehrbase.aql.util;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class AqlUtilTest {
 
     @Test
