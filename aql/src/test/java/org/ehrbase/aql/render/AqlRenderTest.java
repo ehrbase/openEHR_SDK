@@ -32,7 +32,7 @@ class AqlRenderTest {
     void render() {
 
         String aql =
-                "select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+                "SELECT c/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value, d/ehr_id/value AS ehr_id FROM EHR d CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
         String expected = aql;
 
         test(aql, expected);

@@ -59,7 +59,7 @@ public class AqlRender {
 
     private void renderSelect(StringBuilder sb, SelectDto dto) {
 
-        sb.append("select ");
+        sb.append("SELECT ");
 
         sb.append(dto.getStatement().stream()
                 .map(s -> {
@@ -92,14 +92,14 @@ public class AqlRender {
         sb.append(dto.getAqlPathDto().format(AqlPath.OtherPredicatesFormat.SHORTED, false));
 
         if (dto.getName() != null) {
-            sb.append(" as ").append(dto.getName());
+            sb.append(" AS ").append(dto.getName());
         }
     }
 
     private String buildFrom() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("from ");
+        sb.append("FROM ");
 
         renderContainmentExpresionDto(sb, dto.getContains());
 
@@ -131,7 +131,7 @@ public class AqlRender {
         }
 
         if (dto.getContains() != null) {
-            sb.append(" contains ");
+            sb.append(" CONTAINS ");
             renderContainmentExpresionDto(sb, dto.getContains());
         }
     }
