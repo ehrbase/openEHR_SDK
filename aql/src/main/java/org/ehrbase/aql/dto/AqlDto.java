@@ -27,8 +27,8 @@ import org.ehrbase.aql.dto.select.SelectDto;
 public class AqlDto {
 
     private SelectDto select;
-    private EhrDto ehr;
-    private ContainmentExpresionDto contains;
+
+    private ContainmentExpresionDto from;
     private ConditionDto where;
     private List<OrderByExpressionDto> orderBy;
     private Integer limit;
@@ -38,12 +38,8 @@ public class AqlDto {
         return this.select;
     }
 
-    public EhrDto getEhr() {
-        return this.ehr;
-    }
-
-    public ContainmentExpresionDto getContains() {
-        return this.contains;
+    public ContainmentExpresionDto getFrom() {
+        return this.from;
     }
 
     public ConditionDto getWhere() {
@@ -58,12 +54,8 @@ public class AqlDto {
         this.select = select;
     }
 
-    public void setEhr(EhrDto ehr) {
-        this.ehr = ehr;
-    }
-
-    public void setContains(ContainmentExpresionDto contains) {
-        this.contains = contains;
+    public void setFrom(ContainmentExpresionDto from) {
+        this.from = from;
     }
 
     public void setWhere(ConditionDto where) {
@@ -96,8 +88,7 @@ public class AqlDto {
         if (o == null || getClass() != o.getClass()) return false;
         AqlDto aqlDto = (AqlDto) o;
         return Objects.equals(select, aqlDto.select)
-                && Objects.equals(ehr, aqlDto.ehr)
-                && Objects.equals(contains, aqlDto.contains)
+                && Objects.equals(from, aqlDto.from)
                 && Objects.equals(where, aqlDto.where)
                 && Objects.equals(orderBy, aqlDto.orderBy)
                 && Objects.equals(limit, aqlDto.limit)
@@ -106,7 +97,7 @@ public class AqlDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(select, ehr, contains, where, orderBy, limit, offset);
+        return Objects.hash(select, from, where, orderBy, limit, offset);
     }
 
     @Override
@@ -114,10 +105,8 @@ public class AqlDto {
         return "AqlDto{"
                 + "select="
                 + select
-                + ", ehr="
-                + ehr
                 + ", contains="
-                + contains
+                + from
                 + ", where="
                 + where
                 + ", orderBy="

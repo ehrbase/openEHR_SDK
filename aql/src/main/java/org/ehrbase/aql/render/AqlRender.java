@@ -26,16 +26,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.condition.SimpleValue;
-import org.ehrbase.aql.dto.containment.Containment;
-import org.ehrbase.aql.dto.containment.ContainmentDto;
+import org.ehrbase.aql.dto.containment.ContainmentClassExpressionDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
+import org.ehrbase.aql.dto.operant.ColumnExpression;
+import org.ehrbase.aql.dto.operant.IdentifiedPath;
+import org.ehrbase.aql.dto.operant.Primitive;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectDto;
-import org.ehrbase.aql.dto.select.SelectFieldDto;
-import org.ehrbase.aql.dto.select.SelectPrimitiveDto;
-import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.aql.dto.select.SelectExpressionDto;
 import org.ehrbase.util.exception.SdkException;
 
 /**
@@ -45,7 +44,7 @@ public class AqlRender {
 
     private final AqlDto dto;
 
-    private final Map<Integer, ContainmentDto> containmentByIdMap = new HashMap<>();
+    private final Map<Integer, ContainmentClassExpressionDto> containmentByIdMap = new HashMap<>();
 
     public AqlRender(AqlDto dto) {
         this.dto = dto;
@@ -83,22 +82,23 @@ public class AqlRender {
         sb.append(" ");
     }
 
-    private void renderSelectStatementDto(StringBuilder sb, SelectStatementDto dto) {
+    private void renderSelectStatementDto(StringBuilder sb, SelectExpressionDto dto) {
+        ColumnExpression columnExpression = dto.getColumnExpression();
 
-        if (dto instanceof SelectFieldDto) {
-            renderSelectFieldDto(sb, (SelectFieldDto) dto);
-        } else if (dto instanceof SelectPrimitiveDto) {
-            renderSelectPrimitiveDto(sb, (SelectPrimitiveDto) dto);
+        if (columnExpression instanceof IdentifiedPath) {
+            renderSelectFieldDto(sb, (IdentifiedPath) columnExpression);
+        } else if (columnExpression instanceof Primitive) {
+            renderSelectPrimitiveDto(sb, (Primitive) columnExpression);
         }
 
-        if (dto.getName() != null) {
-            sb.append(" AS ").append(dto.getName());
+        if (dto.getAlias() != null) {
+            sb.append(" AS ").append(dto.getAlias());
         }
     }
 
-    private void renderSelectFieldDto(StringBuilder sb, SelectFieldDto dto) {
+    private void renderSelectFieldDto(StringBuilder sb, IdentifiedPath dto) {
 
-        ContainmentDto containmentExpresionDto = containmentByIdMap.get(dto.getContainmentId());
+        ContainmentClassExpressionDto containmentExpresionDto = containmentByIdMap.get(dto.getFromId());
 
         if (containmentExpresionDto == null) {
             throw new SdkException("Select without corresponding contains");
@@ -106,16 +106,15 @@ public class AqlRender {
 
         sb.append(containmentExpresionDto.getIdentifier());
 
-        sb.append(dto.getAqlPathDto().format(AqlPath.OtherPredicatesFormat.SHORTED, false));
+        sb.append(dto.getPath().format(AqlPath.OtherPredicatesFormat.SHORTED, false));
     }
 
-    private void renderSelectPrimitiveDto(StringBuilder sb, SelectPrimitiveDto dto) {
+    private void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
 
-        sb.append(renderValue(dto.getSimpleValue()));
+        sb.append(renderValue(dto.getValue()));
     }
 
-    public String renderValue(SimpleValue simpleValue) {
-        Object value = simpleValue.getValue();
+    public String renderValue(Object value) {
 
         if (value == null) {
 
@@ -148,33 +147,31 @@ public class AqlRender {
 
         sb.append("FROM ");
 
-        renderContainmentExpresionDto(sb, dto.getContains());
+        renderContainmentExpresionDto(sb, dto.getFrom());
 
         return sb.toString();
     }
 
     private void renderContainmentExpresionDto(StringBuilder sb, ContainmentExpresionDto dto) {
 
-        if (dto instanceof ContainmentDto) {
-            renderContainmentDto(sb, (ContainmentDto) dto);
+        if (dto instanceof ContainmentClassExpressionDto) {
+            renderContainmentDto(sb, (ContainmentClassExpressionDto) dto);
         }
     }
 
-    private void renderContainmentDto(StringBuilder sb, ContainmentDto dto) {
+    private void renderContainmentDto(StringBuilder sb, ContainmentClassExpressionDto dto) {
 
         containmentByIdMap.put(dto.getId(), dto);
 
-        Containment containment = dto.getContainment();
-
-        sb.append(containment.getType()).append(" ");
+        sb.append(dto.getType()).append(" ");
 
         if (dto.getIdentifier() != null) {
             sb.append(dto.getIdentifier());
         }
 
-        if (containment.getOtherPredicates() != null) {
+        if (dto.getOtherPredicates() != null) {
 
-            sb.append(PredicateHelper.format(containment.getOtherPredicates(), AqlPath.OtherPredicatesFormat.SHORTED));
+            sb.append(PredicateHelper.format(dto.getOtherPredicates(), AqlPath.OtherPredicatesFormat.SHORTED));
         }
 
         if (dto.getContains() != null) {

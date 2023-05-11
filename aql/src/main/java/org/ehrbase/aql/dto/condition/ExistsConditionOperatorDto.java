@@ -18,26 +18,26 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.util.Objects;
-import org.ehrbase.aql.dto.select.SelectFieldDto;
+import org.ehrbase.aql.dto.operant.IdentifiedPath;
 
 /**
  * @author Stefan Spiska
  */
 public class ExistsConditionOperatorDto implements ConditionDto {
 
-    private SelectFieldDto value;
+    private IdentifiedPath value;
 
     public ExistsConditionOperatorDto() {}
 
-    public ExistsConditionOperatorDto(SelectFieldDto value) {
+    public ExistsConditionOperatorDto(IdentifiedPath value) {
         this.value = value;
     }
 
-    public SelectFieldDto getValue() {
+    public IdentifiedPath getValue() {
         return value;
     }
 
-    public void setValue(SelectFieldDto value) {
+    public void setValue(IdentifiedPath value) {
         this.value = value;
     }
 

@@ -19,7 +19,7 @@ package org.ehrbase.client.aql.funtion;
 
 import java.util.Collections;
 import java.util.List;
-import org.ehrbase.aql.dto.select.AQLFunction;
+import org.ehrbase.aql.dto.operant.AQLFunction;
 import org.ehrbase.client.aql.field.SelectAqlField;
 
 /**

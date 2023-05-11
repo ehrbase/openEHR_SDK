@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,14 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.containment;
+package org.ehrbase.aql.dto.operant;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = ContainmentClassExpressionDto.class, name = "Containment"),
-    @JsonSubTypes.Type(value = ContainmentLogicalOperator.class, name = "LogicalOperator")
-})
-public interface ContainmentExpresionDto {}
+/**
+ * @author Stefan Spiska
+ */
+public enum AQLFunction {
+    COUNT,
+    MIN,
+    MAX,
+    AVG;
+}

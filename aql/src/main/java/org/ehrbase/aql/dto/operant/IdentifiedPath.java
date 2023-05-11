@@ -15,37 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.containment;
+package org.ehrbase.aql.dto.operant;
+
+import org.ehrbase.aql.dto.path.AqlPath;
+
 /**
  * @author Stefan Spiska
  */
-public abstract class ContainmentDto implements ContainmentExpresionDto {
+public class IdentifiedPath implements ColumnExpression, Terminal, ComparisonLeftOperator {
 
-    private ContainmentExpresionDto contains;
-    private int id;
-    private String identifier;
+    private int fromId;
+    private AqlPath path;
 
-    public int getId() {
-        return this.id;
+    public int getFromId() {
+        return fromId;
     }
 
-    public void setContains(ContainmentExpresionDto contains) {
-        this.contains = contains;
+    public void setFromId(int fromId) {
+        this.fromId = fromId;
     }
 
-    public ContainmentExpresionDto getContains() {
-        return this.contains;
+    public AqlPath getPath() {
+        return path;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setPath(AqlPath path) {
+        this.path = path;
     }
 }

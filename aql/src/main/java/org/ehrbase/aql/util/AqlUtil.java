@@ -24,8 +24,8 @@ import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.Value;
+import org.ehrbase.aql.dto.operant.ParameterDto;
+import org.ehrbase.aql.dto.operant.Terminal;
 import org.ehrbase.aql.parser.AqlToDtoParser;
 import org.ehrbase.aql.render.AqlRender;
 
@@ -52,8 +52,8 @@ public class AqlUtil {
 
     private static ConditionDto removeParameter(ConditionDto conditionDto, String parameterName) {
         if (conditionDto instanceof ConditionComparisonOperatorDto) {
-            Value value = ((ConditionComparisonOperatorDto) conditionDto).getValue();
-            if (value instanceof ParameterValue && Objects.equals(((ParameterValue) value).getName(), parameterName)) {
+            Terminal value = ((ConditionComparisonOperatorDto) conditionDto).getValue();
+            if (value instanceof ParameterDto && Objects.equals(((ParameterDto) value).getName(), parameterName)) {
                 return null;
             }
         } else if (conditionDto instanceof ConditionLogicalOperatorDto) {

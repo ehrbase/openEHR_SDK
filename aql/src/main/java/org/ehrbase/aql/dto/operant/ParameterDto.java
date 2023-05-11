@@ -15,37 +15,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.containment;
+package org.ehrbase.aql.dto.operant;
+
+import java.util.Objects;
+
 /**
  * @author Stefan Spiska
  */
-public abstract class ContainmentDto implements ContainmentExpresionDto {
+public class ParameterDto implements MatchesOperant, Terminal, LikeOperant, PathPredicateOperand {
 
-    private ContainmentExpresionDto contains;
-    private int id;
-    private String identifier;
+    private String name;
 
-    public int getId() {
-        return this.id;
+    public ParameterDto() {}
+
+    public ParameterDto(ParameterDto other) {
+        this.name = other.name;
     }
 
-    public void setContains(ContainmentExpresionDto contains) {
-        this.contains = contains;
+    public String getName() {
+        return name;
     }
 
-    public ContainmentExpresionDto getContains() {
-        return this.contains;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParameterDto that = (ParameterDto) o;
+        return Objects.equals(name, that.name);
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

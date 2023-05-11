@@ -17,14 +17,14 @@
  */
 package org.ehrbase.aql.dto.orderby;
 
-import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.aql.dto.operant.IdentifiedPath;
 
 public class OrderByExpressionDto {
 
-    private SelectStatementDto statement;
+    private IdentifiedPath statement;
     private OrderByExpressionSymbol symbol;
 
-    public SelectStatementDto getStatement() {
+    public IdentifiedPath getStatement() {
         return this.statement;
     }
 
@@ -32,7 +32,7 @@ public class OrderByExpressionDto {
         return this.symbol;
     }
 
-    public void setStatement(SelectStatementDto statement) {
+    public void setStatement(IdentifiedPath statement) {
         this.statement = statement;
     }
 

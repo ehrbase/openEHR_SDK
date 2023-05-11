@@ -38,30 +38,24 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.LogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.SimpleValue;
 import org.ehrbase.aql.dto.containment.*;
+import org.ehrbase.aql.dto.operant.*;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
 import org.ehrbase.aql.dto.path.AqlPath;
-import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
-import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
 import org.ehrbase.aql.dto.select.*;
 
 public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
     private int containmentId = 0;
     private final Map<String, Integer> identifierMap = new HashMap<>();
-    private final MultiValuedMap<String, SelectFieldDto> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
+    private final MultiValuedMap<String, IdentifiedPath> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
 
     private List<String> errors;
 
@@ -74,7 +68,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         // select
         aqlDto.setSelect(visitSelectClause(ctx.selectClause()));
         // from
-        aqlDto.setContains(visitFromClause(ctx.fromClause()));
+        aqlDto.setFrom(visitFromClause(ctx.fromClause()));
         // where
         if (ctx.whereClause() != null) {
             aqlDto.setWhere(visitWhereClause(ctx.whereClause()));
@@ -91,24 +85,9 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
         selectFieldDtoMultiMap.entries().forEach(e -> {
             if (identifierMap.containsKey(e.getKey())) {
-                e.getValue().setContainmentId(identifierMap.get(e.getKey()));
+                e.getValue().setFromId(identifierMap.get(e.getKey()));
             }
         });
-
-        // replace reference by name
-        selectFieldDtoMultiMap.entries().stream()
-                .filter(e -> !identifierMap.containsKey(e.getKey()))
-                .forEach(e -> {
-                    SelectFieldDto selectFieldDto = selectFieldDtoMultiMap.values().stream()
-                            .filter(d -> e.getKey().equals(d.getName()))
-                            .findAny()
-                            .orElseThrow();
-
-                    SelectFieldDto value = e.getValue();
-                    value.setName(selectFieldDto.getName());
-                    value.setAqlPath(selectFieldDto.getAqlPathDto());
-                    value.setContainmentId(selectFieldDto.getContainmentId());
-                });
 
         return aqlDto;
     }
@@ -132,19 +111,21 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public SelectStatementDto visitSelectExpr(AqlParser.SelectExprContext ctx) {
+    public SelectExpressionDto visitSelectExpr(AqlParser.SelectExprContext ctx) {
 
-        SelectStatementDto selectStatementDto = visitColumnExpr(ctx.columnExpr());
+        SelectExpressionDto selectExpressionDto = new SelectExpressionDto();
+
+        selectExpressionDto.setColumnExpression(visitColumnExpr(ctx.columnExpr()));
 
         if (ctx.IDENTIFIER() != null) {
-            selectStatementDto.setName(ctx.IDENTIFIER().getText());
+            selectExpressionDto.setAlias(ctx.IDENTIFIER().getText());
         }
 
-        return selectStatementDto;
+        return selectExpressionDto;
     }
 
     @Override
-    public SelectStatementDto visitColumnExpr(AqlParser.ColumnExprContext ctx) {
+    public ColumnExpression visitColumnExpr(AqlParser.ColumnExprContext ctx) {
 
         if (ctx.identifiedPath() != null) {
             return visitIdentifiedPath(ctx.identifiedPath());
@@ -154,7 +135,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         } else if (ctx.aggregateFunctionCall() != null) {
 
             errors.add("aggregate function not yet implemented");
-            return new DummySelectStatementDto();
+            return new AggregateFunctionDto();
         } else if (ctx.primitive() != null) {
 
             return visitPrimitive(ctx.primitive());
@@ -165,40 +146,36 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public SelectPrimitiveDto visitPrimitive(AqlParser.PrimitiveContext ctx) {
+    public Primitive visitPrimitive(AqlParser.PrimitiveContext ctx) {
 
-        SelectPrimitiveDto selectPrimitiveDto = new SelectPrimitiveDto();
-
-        final SimpleValue value;
+        final Primitive selectPrimitiveDto;
 
         if (ctx.BOOLEAN() != null) {
-            value = new SimpleValue(Boolean.parseBoolean(ctx.getText()));
+            selectPrimitiveDto = new Primitive(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null) {
             String unwrap = unwrapText(ctx);
-            value = new SimpleValue(DateTimeParsers.parseTimeValue(unwrap));
+            selectPrimitiveDto = new Primitive(DateTimeParsers.parseTimeValue(unwrap));
         } else if (ctx.numericPrimitive() != null) {
             AqlParser.NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
-            value = visitNumericPrimitive(numericPrimitiveContext);
+            selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
         } else if (ctx.STRING() != null) {
-            value = new SimpleValue(unwrapText(ctx));
+            selectPrimitiveDto = new Primitive(unwrapText(ctx));
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
-
-        selectPrimitiveDto.setSimpleValue(value);
 
         return selectPrimitiveDto;
     }
 
     @Override
-    public SimpleValue visitNumericPrimitive(AqlParser.NumericPrimitiveContext ctx) {
+    public Primitive visitNumericPrimitive(AqlParser.NumericPrimitiveContext ctx) {
 
-        SimpleValue value;
+        Primitive value;
 
         if (ctx.REAL() != null) {
-            value = new SimpleValue(Double.valueOf(ctx.getText()));
+            value = new Primitive(Double.valueOf(ctx.getText()));
         } else if (ctx.INTEGER() != null) {
-            value = new SimpleValue(Integer.valueOf(ctx.getText()));
+            value = new Primitive(Integer.valueOf(ctx.getText()));
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
@@ -207,13 +184,13 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public SelectFieldDto visitIdentifiedPath(AqlParser.IdentifiedPathContext ctx) {
+    public IdentifiedPath visitIdentifiedPath(AqlParser.IdentifiedPathContext ctx) {
 
-        SelectFieldDto selectFieldDto = new SelectFieldDto();
+        IdentifiedPath selectFieldDto = new IdentifiedPath();
 
         selectFieldDtoMultiMap.put(ctx.IDENTIFIER().getText(), selectFieldDto);
-        selectFieldDto.setAqlPath(
-                StringUtils.removeStart(getFullText(ctx), ctx.IDENTIFIER().getText()));
+        selectFieldDto.setPath(AqlPath.parse(
+                StringUtils.removeStart(getFullText(ctx), ctx.IDENTIFIER().getText())));
 
         return selectFieldDto;
     }
@@ -267,34 +244,36 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         } else {
 
             AqlParser.ClassExprOperandContext classExprOperandContext = ctx.classExprOperand();
+
+            final ContainmentDto containmentDto;
+
             if (classExprOperandContext instanceof AqlParser.ClassExpressionContext) {
 
-                ContainmentDto containmentDto =
-                        visitClassExpression((AqlParser.ClassExpressionContext) classExprOperandContext);
-
-                if (ctx.CONTAINS() != null) {
-
-                    ContainmentExpresionDto contains = visitContainsExpr(ctx.containsExpr(0));
-                    if (ctx.NOT() != null) {
-
-                        errors.add("NOT contains not yet implemented");
-                    } else {
-                        containmentDto.setContains(contains);
-                    }
-                }
-                return containmentDto;
+                containmentDto = visitClassExpression((AqlParser.ClassExpressionContext) classExprOperandContext);
             } else {
-                return visitVersionClassExpr((AqlParser.VersionClassExprContext) classExprOperandContext);
+
+                containmentDto = visitVersionClassExpr((AqlParser.VersionClassExprContext) classExprOperandContext);
             }
+            if (ctx.CONTAINS() != null) {
+
+                ContainmentExpresionDto contains = visitContainsExpr(ctx.containsExpr(0));
+                if (ctx.NOT() != null) {
+
+                    errors.add("NOT contains not yet implemented");
+                } else {
+                    containmentDto.setContains(contains);
+                }
+            }
+            return containmentDto;
         }
     }
 
     @Override
-    public ContainmentDto visitClassExpression(AqlParser.ClassExpressionContext ctx) {
+    public ContainmentClassExpressionDto visitClassExpression(AqlParser.ClassExpressionContext ctx) {
 
-        ContainmentDto containmentDto = new ContainmentDto();
+        ContainmentClassExpressionDto containmentDto = new ContainmentClassExpressionDto();
         containmentDto.setId(buildContainmentId());
-        containmentDto.getContainment().setType(ctx.IDENTIFIER(0).getText());
+        containmentDto.setType(ctx.IDENTIFIER(0).getText());
 
         if (ctx.IDENTIFIER().size() == 2) {
             containmentDto.setIdentifier(ctx.IDENTIFIER(1).getText());
@@ -304,22 +283,17 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.pathPredicate() != null) {
             PredicateDto predicateDto = PredicateHelper.buildPredicate(getFullText(ctx.pathPredicate()));
 
-            containmentDto.getContainment().setOtherPredicates(predicateDto);
-            PredicateHelper.find(predicateDto, PredicateHelper.ARCHETYPE_NODE_ID)
-                    .ifPresent(s -> containmentDto
-                            .getContainment()
-                            .setArchetypeId(
-                                    ((SimpleValue) s.getValue()).getValue().toString()));
+            containmentDto.setOtherPredicates(predicateDto);
         }
 
         return containmentDto;
     }
 
     @Override
-    public ContainmentExpresionDto visitVersionClassExpr(AqlParser.VersionClassExprContext ctx) {
+    public VersionExpressionDto visitVersionClassExpr(AqlParser.VersionClassExprContext ctx) {
 
         errors.add("version not yet implemented");
-        return new ContainmentExpresionDto() {};
+        return new VersionExpressionDto() {};
     }
 
     public ContainmentLogicalOperator buildContainmentLogicalOperator(List<Object> boolList) {
@@ -365,43 +339,6 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         return context.start
                 .getInputStream()
                 .getText(Interval.of(context.start.getStartIndex(), context.stop.getStopIndex()));
-    }
-
-    private ConditionDto to(PredicateDto predicateDto, int containmentId) {
-        if (predicateDto instanceof PredicateComparisonOperatorDto) {
-            ConditionComparisonOperatorDto conditionComparisonOperatorDto = new ConditionComparisonOperatorDto();
-            SelectFieldDto statement = new SelectFieldDto();
-            statement.setContainmentId(containmentId);
-
-            String aqlStr = ((PredicateComparisonOperatorDto) predicateDto).getStatement();
-            if (StringUtils.isEmpty(aqlStr)) {
-                statement.setAqlPath(AqlPath.ROOT_PATH);
-            } else {
-                statement.setAqlPath(AqlPath.parse(aqlStr));
-            }
-            conditionComparisonOperatorDto.setStatement(statement);
-            conditionComparisonOperatorDto.setSymbol(((PredicateComparisonOperatorDto) predicateDto).getSymbol());
-            conditionComparisonOperatorDto.setValue(((PredicateComparisonOperatorDto) predicateDto).getValue());
-            return conditionComparisonOperatorDto;
-        }
-
-        if (predicateDto instanceof PredicateLogicalAndOperation) {
-            ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
-            and.setSymbol(ConditionLogicalOperatorSymbol.AND);
-            and.setValues(((PredicateLogicalAndOperation) predicateDto)
-                    .getValues().stream().map(p -> to(p, containmentId)).collect(Collectors.toList()));
-            return and;
-        }
-
-        if (predicateDto instanceof PredicateLogicalOrOperation) {
-            ConditionLogicalOperatorDto or = new ConditionLogicalOperatorDto();
-            or.setSymbol(ConditionLogicalOperatorSymbol.OR);
-            or.setValues(((PredicateLogicalOrOperation) predicateDto)
-                    .getValues().stream().map(p -> to(p, containmentId)).collect(Collectors.toList()));
-            return or;
-        }
-
-        return null;
     }
 
     private static <T, S extends LogicalOperatorSymbol> LogicalOperatorDto<S, T> buildLogicalOperator(
@@ -501,10 +438,6 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         return StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
     }
 
-    private static ParameterValue parameter(RuleContext ctx) {
-        return new ParameterValue(StringUtils.removeStart(ctx.getText(), "$"), "?");
-    }
-
     private OrderByExpressionSymbol extractSymbol(AqlParser.OrderByExprContext ctx) {
         if (ctx.DESC() != null || ctx.DESCENDING() != null) {
             return OrderByExpressionSymbol.DESC;
@@ -556,21 +489,6 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             return ContainmentLogicalOperatorSymbol.AND;
         } else {
             return null;
-        }
-    }
-
-    private static class DummySelectStatementDto implements SelectStatementDto {
-
-        private String name;
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public void setName(String name) {
-            this.name = name;
         }
     }
 }

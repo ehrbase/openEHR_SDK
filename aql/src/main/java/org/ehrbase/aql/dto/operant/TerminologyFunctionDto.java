@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,14 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.select;
+package org.ehrbase.aql.dto.operant;
 
 /**
  * @author Stefan Spiska
  */
-public enum AQLFunction {
-    COUNT,
-    MIN,
-    MAX,
-    AVG;
-}
+public class TerminologyFunctionDto extends AbstractFunktion
+        implements MatchesOperant, ColumnExpression, Terminal, ComparisonLeftOperator {}

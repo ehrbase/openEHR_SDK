@@ -15,14 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.containment;
+package org.ehrbase.aql.dto.select;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.ehrbase.aql.dto.operant.ColumnExpression;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = ContainmentClassExpressionDto.class, name = "Containment"),
-    @JsonSubTypes.Type(value = ContainmentLogicalOperator.class, name = "LogicalOperator")
-})
-public interface ContainmentExpresionDto {}
+public class SelectExpressionDto {
+
+    private String alias;
+    private ColumnExpression columnExpression;
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public ColumnExpression getColumnExpression() {
+        return columnExpression;
+    }
+
+    public void setColumnExpression(ColumnExpression columnExpression) {
+        this.columnExpression = columnExpression;
+    }
+}

@@ -17,12 +17,27 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = ContainmentClassExpressionDto.class, name = "Containment"),
-    @JsonSubTypes.Type(value = ContainmentLogicalOperator.class, name = "LogicalOperator")
-})
-public interface ContainmentExpresionDto {}
+public class ContainmentClassExpressionDto extends ContainmentDto {
+
+    private String type;
+
+    private PredicateDto otherPredicates;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public PredicateDto getOtherPredicates() {
+        return otherPredicates;
+    }
+
+    public void setOtherPredicates(PredicateDto otherPredicates) {
+        this.otherPredicates = otherPredicates;
+    }
+}

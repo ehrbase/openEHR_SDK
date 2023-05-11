@@ -19,26 +19,27 @@ package org.ehrbase.aql.dto.condition;
 
 import java.util.List;
 import java.util.Objects;
-import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.aql.dto.operant.IdentifiedPath;
+import org.ehrbase.aql.dto.operant.MatchesOperant;
 
 public class MatchesOperatorDto implements ConditionDto {
 
-    private SelectStatementDto statement;
-    private List<Value> values;
+    private IdentifiedPath statement;
+    private List<MatchesOperant> values;
 
-    public SelectStatementDto getStatement() {
+    public IdentifiedPath getStatement() {
         return statement;
     }
 
-    public void setStatement(SelectStatementDto statement) {
+    public void setStatement(IdentifiedPath statement) {
         this.statement = statement;
     }
 
-    public List<Value> getValues() {
+    public List<MatchesOperant> getValues() {
         return values;
     }
 
-    public void setValues(List<Value> values) {
+    public void setValues(List<MatchesOperant> values) {
         this.values = values;
     }
 

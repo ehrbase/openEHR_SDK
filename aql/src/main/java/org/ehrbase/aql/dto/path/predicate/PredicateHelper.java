@@ -34,9 +34,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.SimpleValue;
-import org.ehrbase.aql.dto.condition.Value;
+import org.ehrbase.aql.dto.operant.ParameterDto;
+import org.ehrbase.aql.dto.operant.PathPredicateOperand;
+import org.ehrbase.aql.dto.operant.Primitive;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPathHelper;
 import org.ehrbase.aql.util.CharSequenceHelper;
@@ -139,7 +139,7 @@ public class PredicateHelper {
 
         String statement;
         ConditionComparisonOperatorSymbol operator;
-        Value value;
+        PathPredicateOperand value;
         if (split.size() == 1) {
             if (i == 0) {
                 statement = ARCHETYPE_NODE_ID;
@@ -161,38 +161,38 @@ public class PredicateHelper {
         return new PredicateComparisonOperatorDto(statement, operator, value);
     }
 
-    private static Value parseValue(String statement, CharSequence s) {
+    private static PathPredicateOperand parseValue(String statement, CharSequence s) {
 
         if (s.length() > 0 && s.charAt(0) == '$') {
-            ParameterValue parameterValue =
-                    new ParameterValue(CharSequenceHelper.subSequence(s, 1).toString(), null);
+            ParameterDto parameterValue = new ParameterDto();
+            parameterValue.setName(CharSequenceHelper.subSequence(s, 1).toString());
             return parameterValue;
         }
 
         if (ARCHETYPE_NODE_ID.equals(statement)) {
-            return new SimpleValue(s.toString());
+            return new Primitive(s.toString());
         } else if (s.length() > 1 && s.charAt(0) == '\'') {
-            return new SimpleValue(
+            return new Primitive(
                     CharSequenceHelper.subSequence(s, 1, s.length() - 1).toString());
         } else if (StringUtils.contains(s, '.')) {
-            return new SimpleValue(Double.parseDouble(s.toString()));
+            return new Primitive(Double.parseDouble(s.toString()));
         } else {
-            return new SimpleValue(Long.parseLong(s.toString()));
+            return new Primitive(Long.parseLong(s.toString()));
         }
     }
 
-    private static void format(String statement, StringBuilder sb, Value value) {
-        if (value instanceof SimpleValue) {
-            Object o = ((SimpleValue) value).getValue();
+    private static void format(String statement, StringBuilder sb, PathPredicateOperand value) {
+        if (value instanceof Primitive) {
+            Object o = ((Primitive) value).getValue();
 
             if (o instanceof String && !ARCHETYPE_NODE_ID.equals(statement)) {
                 sb.append(StringUtils.wrap(o.toString(), "'"));
             } else {
                 sb.append(o);
             }
-        } else if (value instanceof ParameterValue) {
+        } else if (value instanceof ParameterDto) {
 
-            sb.append('$').append(((ParameterValue) value).getName());
+            sb.append('$').append(((ParameterDto) value).getName());
         }
     }
 
@@ -205,8 +205,8 @@ public class PredicateHelper {
     public static void format(
             StringBuilder sb, PredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
-        if (predicateDto instanceof ParameterValue) {
-            sb.append('$').append(((ParameterValue) predicateDto).getName());
+        if (predicateDto instanceof ParameterDto) {
+            sb.append('$').append(((ParameterDto) predicateDto).getName());
         } else if (predicateDto instanceof PredicateComparisonOperatorDto) {
             formatPredicateComparisonOperatorDto(
                     sb, (PredicateComparisonOperatorDto) predicateDto, otherPredicatesFormat);

@@ -19,28 +19,29 @@ package org.ehrbase.aql.dto.path.predicate;
 
 import java.io.Serializable;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.SimpleValue;
-import org.ehrbase.aql.dto.condition.Value;
+import org.ehrbase.aql.dto.operant.ParameterDto;
+import org.ehrbase.aql.dto.operant.PathPredicateOperand;
+import org.ehrbase.aql.dto.operant.Primitive;
 
 public final class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {
 
     private String statement;
     private ConditionComparisonOperatorSymbol symbol;
-    private Value value;
+    private PathPredicateOperand value;
 
     public PredicateComparisonOperatorDto(PredicateComparisonOperatorDto other) {
         this.statement = other.statement;
         this.symbol = other.symbol;
 
-        if (other.value instanceof ParameterValue) {
-            this.value = new ParameterValue((ParameterValue) other.value);
+        if (other.value instanceof ParameterDto) {
+            this.value = new ParameterDto((ParameterDto) other.value);
         } else {
-            this.value = new SimpleValue((SimpleValue) other.value);
+            this.value = new Primitive(((Primitive) other.value).getValue());
         }
     }
 
-    public PredicateComparisonOperatorDto(String statement, ConditionComparisonOperatorSymbol symbol, Value value) {
+    public PredicateComparisonOperatorDto(
+            String statement, ConditionComparisonOperatorSymbol symbol, PathPredicateOperand value) {
         this.statement = statement;
         this.symbol = symbol;
         this.value = value;
@@ -54,7 +55,7 @@ public final class PredicateComparisonOperatorDto implements SimplePredicateDto,
         return this.symbol;
     }
 
-    public Value getValue() {
+    public PathPredicateOperand getValue() {
         return this.value;
     }
 

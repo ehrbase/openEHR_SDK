@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,14 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.condition;
+package org.ehrbase.aql.dto.operant;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = SimpleValue.class, name = "Simple"),
-    @JsonSubTypes.Type(value = ParameterValue.class, name = "Parameter")
-})
-public interface Value {}
+/**
+ * @author Stefan Spiska
+ */
+public class FunctionDto extends AbstractFunktion implements ColumnExpression, Terminal, ComparisonLeftOperator {}

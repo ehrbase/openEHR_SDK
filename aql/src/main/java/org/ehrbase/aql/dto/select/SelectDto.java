@@ -27,7 +27,7 @@ public class SelectDto {
 
     private boolean isDistinct = false;
 
-    private List<SelectStatementDto> statement;
+    private List<SelectExpressionDto> statement;
 
     public Integer getTopCount() {
         return this.topCount;
@@ -37,7 +37,7 @@ public class SelectDto {
         return this.topDirection;
     }
 
-    public List<SelectStatementDto> getStatement() {
+    public List<SelectExpressionDto> getStatement() {
         return this.statement;
     }
 
@@ -49,7 +49,7 @@ public class SelectDto {
         this.topDirection = topDirection;
     }
 
-    public void setStatement(List<SelectStatementDto> statement) {
+    public void setStatement(List<SelectExpressionDto> statement) {
         this.statement = statement;
     }
 

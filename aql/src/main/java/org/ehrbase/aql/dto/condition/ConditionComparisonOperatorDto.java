@@ -17,15 +17,16 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-import org.ehrbase.aql.dto.select.SelectStatementDto;
+import org.ehrbase.aql.dto.operant.ComparisonLeftOperator;
+import org.ehrbase.aql.dto.operant.Terminal;
 
 public class ConditionComparisonOperatorDto implements ConditionDto {
 
-    private SelectStatementDto statement;
+    private ComparisonLeftOperator statement;
     private ConditionComparisonOperatorSymbol symbol;
-    private Value value;
+    private Terminal value;
 
-    public SelectStatementDto getStatement() {
+    public ComparisonLeftOperator getStatement() {
         return this.statement;
     }
 
@@ -33,11 +34,11 @@ public class ConditionComparisonOperatorDto implements ConditionDto {
         return this.symbol;
     }
 
-    public Value getValue() {
+    public Terminal getValue() {
         return this.value;
     }
 
-    public void setStatement(SelectStatementDto statement) {
+    public void setStatement(ComparisonLeftOperator statement) {
         this.statement = statement;
     }
 
@@ -45,7 +46,7 @@ public class ConditionComparisonOperatorDto implements ConditionDto {
         this.symbol = symbol;
     }
 
-    public void setValue(Value value) {
+    public void setValue(Terminal value) {
         this.value = value;
     }
 

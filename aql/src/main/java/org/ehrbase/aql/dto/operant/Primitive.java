@@ -15,34 +15,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.select;
+package org.ehrbase.aql.dto.operant;
 
-import org.ehrbase.aql.dto.condition.SimpleValue;
+import java.util.Objects;
 
 /**
  * @author Stefan Spiska
  */
-public class SelectPrimitiveDto implements SelectStatementDto {
+public class Primitive implements Terminal, ColumnExpression, MatchesOperant, LikeOperant, PathPredicateOperand {
 
-    private String name;
+    Object value;
 
-    private SimpleValue simpleValue;
+    public Primitive() {}
 
-    @Override
-    public String getName() {
-        return name;
+    public Primitive(Object value) {
+        this.value = value;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Primitive primitive = (Primitive) o;
+        return Objects.equals(value, primitive.value);
     }
 
-    public SimpleValue getSimpleValue() {
-        return simpleValue;
-    }
-
-    public void setSimpleValue(SimpleValue simpleValue) {
-        this.simpleValue = simpleValue;
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
