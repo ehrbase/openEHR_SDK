@@ -285,14 +285,14 @@ public class WebTemplateNode implements Serializable {
     }
 
     public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {
+        return streamMatching(filter).collect(Collectors.toList());
+    }
 
-        List<WebTemplateNode> matching = children.stream()
-                .map(c -> c.findMatching(filter))
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+    public Stream<WebTemplateNode> streamMatching(Predicate<WebTemplateNode> filter) {
+        Stream<WebTemplateNode> matching = children.stream().flatMap(c -> c.streamMatching(filter));
 
         if (filter.test(this)) {
-            matching.add(this);
+            matching = Stream.concat(matching, Stream.of(this));
         }
         return matching;
     }
