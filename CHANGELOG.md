@@ -2,6 +2,10 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [unreleased]
+ ### Added 
+ ### Fixed 
+
 ## [1.27.0]
  ### Changed 
  - Bump libraries
@@ -243,3 +247,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.25.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.24.0...v1.25.0
 [1.26.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.25.0...v1.26.0
 [1.27.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...v1.27.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.27.0...HEAD
