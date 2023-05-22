@@ -2,6 +2,10 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [1.27.0]
+ ### Changed 
+ - Bump libraries
+
 ## [1.26.0]
  ### Added  
 - Added client support for managing folders trough contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
@@ -238,3 +242,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.24.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.23.0...v1.24.0
 [1.25.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.24.0...v1.25.0
 [1.26.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.25.0...v1.26.0
+[1.27.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...v1.27.0
