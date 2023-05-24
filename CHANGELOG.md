@@ -8,7 +8,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Changed
 
-- Enhanced JSON representation of AqlDto
+- Enhanced JSON representation of AqlDto ([#462](https://github.com/ehrbase/openEHR_SDK/pull/462))
 
 ### Fixed
 
