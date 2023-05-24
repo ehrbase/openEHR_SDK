@@ -17,13 +17,14 @@
  */
 package org.ehrbase.aql.dto.containment;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Objects;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 
 public class Containment implements Serializable {
-    private String archetypeId;
     private String type;
+    private String archetypeId;
 
     private PredicateDto otherPredicates;
 
@@ -41,6 +42,7 @@ public class Containment implements Serializable {
         this.otherPredicates = otherPredicates;
     }
 
+    @JsonProperty(index = 10)
     public String getType() {
         return type;
     }
@@ -49,6 +51,7 @@ public class Containment implements Serializable {
         this.type = type;
     }
 
+    @JsonProperty(index = 20)
     public String getArchetypeId() {
         return this.archetypeId;
     }
@@ -57,6 +60,7 @@ public class Containment implements Serializable {
         this.archetypeId = archetypeId;
     }
 
+    @JsonProperty(index = 30)
     public PredicateDto getOtherPredicates() {
         return otherPredicates;
     }

@@ -17,6 +17,7 @@
  */
 package org.ehrbase.aql.dto.containment;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 
@@ -26,17 +27,20 @@ public class ContainmentLogicalOperator
     ContainmentLogicalOperatorSymbol symbol;
     List<ContainmentExpresionDto> values;
 
+    @Override
+    @JsonProperty(index = 10)
     public ContainmentLogicalOperatorSymbol getSymbol() {
         return this.symbol;
     }
 
-    @Override
-    public List<ContainmentExpresionDto> getValues() {
-        return this.values;
-    }
-
     public void setSymbol(ContainmentLogicalOperatorSymbol symbol) {
         this.symbol = symbol;
+    }
+
+    @Override
+    @JsonProperty(index = 20)
+    public List<ContainmentExpresionDto> getValues() {
+        return this.values;
     }
 
     public void setValues(List<ContainmentExpresionDto> values) {

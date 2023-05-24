@@ -17,31 +17,31 @@
  */
 package org.ehrbase.aql.dto.containment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class ContainmentDto implements ContainmentExpresionDto {
-    private Containment containment = new Containment();
     private int id;
-    private ContainmentExpresionDto contains;
     private String identifier;
+    private Containment containment = new Containment();
+    private ContainmentExpresionDto contains;
 
+    @JsonProperty(index = 10)
     public int getId() {
         return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     /**
      * @deprecated use  {@link ContainmentDto#getContainment()} and {@link Containment#getArchetypeId()}
      */
     @Deprecated
+    @JsonIgnore
     public String getArchetypeId() {
         return getContainment().getArchetypeId();
-    }
-
-    public ContainmentExpresionDto getContains() {
-        return this.contains;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
     /**
      * @deprecated  use {@link ContainmentDto#getContainment()} and {@link Containment#setArchetypeId(String)}
@@ -51,10 +51,7 @@ public class ContainmentDto implements ContainmentExpresionDto {
         getContainment().setArchetypeId(archetypeId);
     }
 
-    public void setContains(ContainmentExpresionDto contains) {
-        this.contains = contains;
-    }
-
+    @JsonProperty(index = 20)
     public String getIdentifier() {
         return identifier;
     }
@@ -63,12 +60,22 @@ public class ContainmentDto implements ContainmentExpresionDto {
         this.identifier = identifier;
     }
 
+    @JsonProperty(index = 30)
     public Containment getContainment() {
         return containment;
     }
 
     public void setContainment(Containment containment) {
         this.containment = containment;
+    }
+
+    @JsonProperty(index = 40)
+    public ContainmentExpresionDto getContains() {
+        return this.contains;
+    }
+
+    public void setContains(ContainmentExpresionDto contains) {
+        this.contains = contains;
     }
 
     @Override
