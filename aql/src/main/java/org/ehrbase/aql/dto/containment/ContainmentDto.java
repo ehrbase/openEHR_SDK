@@ -17,7 +17,6 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
@@ -39,7 +38,7 @@ public class ContainmentDto implements ContainmentExpresionDto {
      * @deprecated use  {@link ContainmentDto#getContainment()} and {@link Containment#getArchetypeId()}
      */
     @Deprecated
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getArchetypeId() {
         return getContainment().getArchetypeId();
     }
