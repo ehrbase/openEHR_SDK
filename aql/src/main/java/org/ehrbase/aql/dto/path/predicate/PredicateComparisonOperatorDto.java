@@ -46,6 +46,8 @@ public final class PredicateComparisonOperatorDto implements SimplePredicateDto,
         this.value = value;
     }
 
+    PredicateComparisonOperatorDto() {}
+
     public String getStatement() {
         return this.statement;
     }
