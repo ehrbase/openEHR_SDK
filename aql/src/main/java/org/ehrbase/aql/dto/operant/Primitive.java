@@ -17,26 +17,28 @@
  */
 package org.ehrbase.aql.dto.operant;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 /**
  * @author Stefan Spiska
  */
-public class Primitive implements Terminal, ColumnExpression, MatchesOperant, LikeOperant, PathPredicateOperand {
+public abstract class Primitive<T>
+        implements Terminal, ColumnExpression, MatchesOperant, LikeOperant, PathPredicateOperand {
 
-    Object value;
+    T value;
 
     public Primitive() {}
 
-    public Primitive(Object value) {
+    public Primitive(T value) {
         this.value = value;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(T value) {
         this.value = value;
     }
 
@@ -51,5 +53,24 @@ public class Primitive implements Terminal, ColumnExpression, MatchesOperant, Li
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    public static <U> Primitive<U> clone(Primitive<U> other) {
+
+        Primitive newInstance = null;
+        try {
+            newInstance = other.getClass().getConstructor().newInstance();
+            newInstance.setValue(other.getValue());
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newInstance;
     }
 }

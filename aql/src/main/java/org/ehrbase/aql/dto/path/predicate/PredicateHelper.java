@@ -34,9 +34,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.operant.ParameterDto;
-import org.ehrbase.aql.dto.operant.PathPredicateOperand;
-import org.ehrbase.aql.dto.operant.Primitive;
+import org.ehrbase.aql.dto.operant.*;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPathHelper;
 import org.ehrbase.aql.util.CharSequenceHelper;
@@ -170,14 +168,14 @@ public class PredicateHelper {
         }
 
         if (ARCHETYPE_NODE_ID.equals(statement)) {
-            return new Primitive(s.toString());
+            return new StringPrimitiveDto(s.toString());
         } else if (s.length() > 1 && s.charAt(0) == '\'') {
-            return new Primitive(
+            return new StringPrimitiveDto(
                     CharSequenceHelper.subSequence(s, 1, s.length() - 1).toString());
         } else if (StringUtils.contains(s, '.')) {
-            return new Primitive(Double.parseDouble(s.toString()));
+            return new DoublePrimitiveDto(Double.parseDouble(s.toString()));
         } else {
-            return new Primitive(Long.parseLong(s.toString()));
+            return new LongPrimitiveDto(Long.parseLong(s.toString()));
         }
     }
 

@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.operant.PathPredicateOperand;
 import org.ehrbase.aql.dto.operant.Primitive;
+import org.ehrbase.aql.dto.operant.StringPrimitiveDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -522,7 +523,10 @@ public final class AqlPath implements Serializable {
                         return cmpOp;
                     } else {
                         // value changed
-                        return new PredicateComparisonOperatorDto(statement, EQ, new Primitive(newValue));
+                        Primitive<String> clone = new StringPrimitiveDto();
+                        clone.setValue(newValue);
+
+                        return new PredicateComparisonOperatorDto(statement, EQ, clone);
                     }
                 }
             }
@@ -562,7 +566,8 @@ public final class AqlPath implements Serializable {
                 // statement not found
                 SimplePredicateDto[] newValues = Stream.concat(
                                 otherPredicate.getValues().stream(),
-                                Stream.of(new PredicateComparisonOperatorDto(statement, EQ, new Primitive(newValue))))
+                                Stream.of(new PredicateComparisonOperatorDto(
+                                        statement, EQ, new StringPrimitiveDto(newValue))))
                         .toArray(SimplePredicateDto[]::new);
                 return new PredicateLogicalAndOperation(newValues);
 
@@ -609,7 +614,7 @@ public final class AqlPath implements Serializable {
                 otherPredicates = new PredicateLogicalAndOperation();
             } else {
                 otherPredicates = new PredicateLogicalAndOperation(
-                        new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new Primitive(atCode)));
+                        new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new StringPrimitiveDto(atCode)));
             }
             return new AqlNode(name, atCode, otherPredicates);
         }

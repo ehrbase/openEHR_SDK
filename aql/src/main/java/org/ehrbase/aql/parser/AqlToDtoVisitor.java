@@ -151,15 +151,15 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         final Primitive selectPrimitiveDto;
 
         if (ctx.BOOLEAN() != null) {
-            selectPrimitiveDto = new Primitive(Boolean.parseBoolean(ctx.getText()));
+            selectPrimitiveDto = new BooleanPrimitiveDto(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null) {
             String unwrap = unwrapText(ctx);
-            selectPrimitiveDto = new Primitive(DateTimeParsers.parseTimeValue(unwrap));
+            selectPrimitiveDto = new TemporalPrimitiveDto(DateTimeParsers.parseTimeValue(unwrap));
         } else if (ctx.numericPrimitive() != null) {
             AqlParser.NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
             selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
         } else if (ctx.STRING() != null) {
-            selectPrimitiveDto = new Primitive(unwrapText(ctx));
+            selectPrimitiveDto = new StringPrimitiveDto(unwrapText(ctx));
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
@@ -173,9 +173,9 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         Primitive value;
 
         if (ctx.REAL() != null) {
-            value = new Primitive(Double.valueOf(ctx.getText()));
+            value = new DoublePrimitiveDto(Double.valueOf(ctx.getText()));
         } else if (ctx.INTEGER() != null) {
-            value = new Primitive(Integer.valueOf(ctx.getText()));
+            value = new LongPrimitiveDto(Long.valueOf(ctx.getText()));
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
