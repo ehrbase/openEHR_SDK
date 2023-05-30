@@ -86,6 +86,20 @@ class AqlRenderTest {
         test(aql, aql);
     }
 
+    @Test
+    void renderAggregateFunction() {
+
+        String aql = "SELECT"
+                + " e/ehr_id/value AS EhrId,"
+                + " MAX(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS max_Systolic,"
+                + " MIN(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS min_Systolic,"
+                + " AVG(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS mean_Systolic"
+                + " FROM ehr e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]";
+
+        test(aql, aql);
+    }
+
     private static void test(String aql, String expected) {
         AqlDto aqlDto = new AqlToDtoParser().parse(aql);
 

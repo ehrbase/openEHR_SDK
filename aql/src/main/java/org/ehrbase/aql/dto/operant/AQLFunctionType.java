@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -20,19 +20,7 @@ package org.ehrbase.aql.dto.operant;
 /**
  * @author Stefan Spiska
  */
-public enum AQLFunction {
-    COUNT(AQLFunctionType.AGGREGATE),
-    MIN(AQLFunctionType.AGGREGATE),
-    MAX(AQLFunctionType.AGGREGATE),
-    AVG(AQLFunctionType.AGGREGATE);
-
-    private final AQLFunctionType functionType;
-
-    AQLFunction(AQLFunctionType functionType) {
-        this.functionType = functionType;
-    }
-
-    public AQLFunctionType getFunctionType() {
-        return functionType;
-    }
+public enum AQLFunctionType {
+    SINGLE_ROW,
+    AGGREGATE
 }

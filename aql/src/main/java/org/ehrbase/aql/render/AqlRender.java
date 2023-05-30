@@ -28,9 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpressionDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
-import org.ehrbase.aql.dto.operant.ColumnExpression;
-import org.ehrbase.aql.dto.operant.IdentifiedPath;
-import org.ehrbase.aql.dto.operant.Primitive;
+import org.ehrbase.aql.dto.operant.*;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectDto;
@@ -86,9 +84,12 @@ public class AqlRender {
         ColumnExpression columnExpression = dto.getColumnExpression();
 
         if (columnExpression instanceof IdentifiedPath) {
-            renderSelectFieldDto(sb, (IdentifiedPath) columnExpression);
+            renderIdentifiedPath(sb, (IdentifiedPath) columnExpression);
         } else if (columnExpression instanceof Primitive) {
             renderSelectPrimitiveDto(sb, (Primitive) columnExpression);
+        } else if (columnExpression instanceof AggregateFunctionDto) {
+
+            renderAggregateFunctionDto(sb, (AggregateFunctionDto) columnExpression);
         }
 
         if (dto.getAlias() != null) {
@@ -96,7 +97,15 @@ public class AqlRender {
         }
     }
 
-    private void renderSelectFieldDto(StringBuilder sb, IdentifiedPath dto) {
+    private void renderAggregateFunctionDto(StringBuilder sb, AggregateFunctionDto aggregateFunctionDto) {
+
+        sb.append(aggregateFunctionDto.getFunctionName().name()).append("(");
+
+        renderIdentifiedPath(sb, aggregateFunctionDto.getIdentifiedPath());
+        sb.append(")");
+    }
+
+    private void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
 
         ContainmentClassExpressionDto containmentExpresionDto = containmentByIdMap.get(dto.getFromId());
 

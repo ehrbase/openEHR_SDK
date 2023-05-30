@@ -50,6 +50,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.*;
+import org.ehrbase.util.exception.SdkException;
 
 public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
@@ -134,8 +135,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             return visitFunctionCall(ctx.functionCall());
         } else if (ctx.aggregateFunctionCall() != null) {
 
-            errors.add("aggregate function not yet implemented");
-            return new AggregateFunctionDto();
+            return visitAggregateFunctionCall(ctx.aggregateFunctionCall());
         } else if (ctx.primitive() != null) {
 
             return visitPrimitive(ctx.primitive());
@@ -143,6 +143,24 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
             throw new AqlParseException("Invalid ColumnExpr");
         }
+    }
+
+    @Override
+    public AggregateFunctionDto visitAggregateFunctionCall(AqlParser.AggregateFunctionCallContext ctx) {
+
+        AggregateFunctionDto dto = new AggregateFunctionDto();
+
+        final AQLFunction aqlFunction;
+        try {
+            aqlFunction = AQLFunction.valueOf(ctx.name.getText().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new SdkException(String.format("Unknown function %s ", ctx.name.getText()));
+        }
+
+        dto.setFunctionName(aqlFunction);
+        dto.setIdentifiedPath(visitIdentifiedPath(ctx.identifiedPath()));
+
+        return dto;
     }
 
     @Override
