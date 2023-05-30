@@ -73,6 +73,18 @@ public class OPTParserTest {
     }
 
     @Test
+    public void parseAQLExample() throws IOException, XmlException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
+                        OperationalTemplateTestData.AQL_EXAMPLE.getStream())
+                .getTemplate();
+
+        OPTParser cut = new OPTParser(template);
+        WebTemplate actual = cut.parse();
+        actual = new Filter().filter(actual);
+        assertThat(actual).isNotNull();
+    }
+
+    @Test
     public void parseTestingTemplateN() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
