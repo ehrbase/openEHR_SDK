@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -150,17 +151,22 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
         AggregateFunctionDto dto = new AggregateFunctionDto();
 
-        final AQLFunction aqlFunction;
-        try {
-            aqlFunction = AQLFunction.valueOf(ctx.name.getText().toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            throw new SdkException(String.format("Unknown function %s ", ctx.name.getText()));
-        }
+        final AQLFunction aqlFunction = findFunctionName(ctx.name);
 
         dto.setFunctionName(aqlFunction);
         dto.setIdentifiedPath(visitIdentifiedPath(ctx.identifiedPath()));
 
         return dto;
+    }
+
+    private static AQLFunction findFunctionName(Token name) {
+        final AQLFunction aqlFunction;
+        try {
+            aqlFunction = AQLFunction.valueOf(name.getText().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new SdkException(String.format("Unknown function %s ", name.getText()));
+        }
+        return aqlFunction;
     }
 
     @Override
@@ -214,10 +220,39 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public FunctionDto visitFunctionCall(AqlParser.FunctionCallContext ctx) {
+    public SingleRowFunktion visitFunctionCall(AqlParser.FunctionCallContext ctx) {
 
-        errors.add("function not yet implemented");
-        return new FunctionDto();
+        SingleRowFunktion dto = new SingleRowFunktion();
+        dto.setFunctionName(findFunctionName(ctx.name));
+
+        dto.setOperantList(ctx.terminal().stream().map(this::visitTerminal).toList());
+
+        return dto;
+    }
+
+    @Override
+    public Terminal visitTerminal(AqlParser.TerminalContext ctx) {
+
+        if (ctx.identifiedPath() != null) {
+            return visitIdentifiedPath(ctx.identifiedPath());
+        }
+        if (ctx.functionCall() != null) {
+            return visitFunctionCall(ctx.functionCall());
+        }
+        if (ctx.PARAMETER() != null) {
+            return createParameter(ctx.PARAMETER());
+        }
+        if (ctx.primitive() != null) {
+            return visitPrimitive(ctx.primitive());
+        }
+        throw new UnsupportedOperationException("Can not parse %s".formatted(ctx.getText()));
+    }
+
+    private ParameterDto createParameter(TerminalNode node) {
+
+        ParameterDto parameterDto = new ParameterDto();
+        parameterDto.setName(StringUtils.removeStart(node.getText(), "$"));
+        return parameterDto;
     }
 
     @Override

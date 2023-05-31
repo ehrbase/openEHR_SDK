@@ -24,7 +24,9 @@ public enum AQLFunction {
     COUNT(AQLFunctionType.AGGREGATE),
     MIN(AQLFunctionType.AGGREGATE),
     MAX(AQLFunctionType.AGGREGATE),
-    AVG(AQLFunctionType.AGGREGATE);
+    AVG(AQLFunctionType.AGGREGATE),
+    CONTAINS(AQLFunctionType.SINGLE_ROW),
+    CONCAT_WS(AQLFunctionType.SINGLE_ROW);
 
     private final AQLFunctionType functionType;
 

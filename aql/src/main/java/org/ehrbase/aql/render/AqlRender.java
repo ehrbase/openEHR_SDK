@@ -90,6 +90,10 @@ public class AqlRender {
         } else if (columnExpression instanceof AggregateFunctionDto) {
 
             renderAggregateFunctionDto(sb, (AggregateFunctionDto) columnExpression);
+        } else if (columnExpression instanceof SingleRowFunktion singleRowFunktion) {
+            renderSingleRowFunctionDto(sb, singleRowFunktion);
+        } else {
+            throw new UnsupportedOperationException("Can not handle %s".formatted(dto.getClass()));
         }
 
         if (dto.getAlias() != null) {
@@ -103,6 +107,37 @@ public class AqlRender {
 
         renderIdentifiedPath(sb, aggregateFunctionDto.getIdentifiedPath());
         sb.append(")");
+    }
+
+    private void renderSingleRowFunctionDto(StringBuilder sb, SingleRowFunktion singleRowFunktion) {
+
+        sb.append(singleRowFunktion.getFunctionName().name()).append("(");
+        sb.append(singleRowFunktion.getOperantList().stream()
+                .map(this::renderTerminal)
+                .collect(Collectors.joining(", ")));
+        sb.append(")");
+    }
+
+    private String renderTerminal(Terminal terminal) {
+
+        StringBuilder sb = new StringBuilder();
+        if (terminal instanceof SingleRowFunktion singleRowFunktion) {
+            renderSingleRowFunctionDto(sb, singleRowFunktion);
+        } else if (terminal instanceof IdentifiedPath identifiedPath) {
+            renderIdentifiedPath(sb, identifiedPath);
+        } else if (terminal instanceof Primitive<?> primitive) {
+            sb.append(renderValue(primitive.getValue()));
+        } else if (terminal instanceof ParameterDto parameterDto) {
+            renderParameterDto(sb, parameterDto);
+        } else {
+            throw new UnsupportedOperationException("Can not handle %s".formatted(terminal.getClass()));
+        }
+        return sb.toString();
+    }
+
+    private void renderParameterDto(StringBuilder sb, ParameterDto parameterDto) {
+
+        sb.append("$").append(parameterDto.getName());
     }
 
     private void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {

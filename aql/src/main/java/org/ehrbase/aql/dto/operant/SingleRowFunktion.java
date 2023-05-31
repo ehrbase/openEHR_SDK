@@ -17,7 +17,31 @@
  */
 package org.ehrbase.aql.dto.operant;
 
+import java.util.List;
+
 /**
  * @author Stefan Spiska
  */
-public class FunctionDto extends AbstractFunktion implements ColumnExpression, Terminal, ComparisonLeftOperator {}
+public class SingleRowFunktion extends AbstractFunktion implements ColumnExpression, Terminal, ComparisonLeftOperator {
+
+    private List<Terminal> operantList;
+
+    public List<Terminal> getOperantList() {
+        return operantList;
+    }
+
+    public void setOperantList(List<Terminal> operantList) {
+        this.operantList = operantList;
+    }
+
+    @Override
+    public void setFunctionName(AQLFunction functionName) {
+
+        if (functionName.getFunctionType() != AQLFunctionType.SINGLE_ROW) {
+
+            throw new UnsupportedOperationException(
+                    String.format("%s is not a Single Row Function", functionName.name()));
+        }
+        super.setFunctionName(functionName);
+    }
+}

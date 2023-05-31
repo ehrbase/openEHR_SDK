@@ -100,6 +100,17 @@ class AqlRenderTest {
         test(aql, aql);
     }
 
+    @Test
+    void renderSingleRowFunction() {
+
+        String aql = "SELECT"
+                + " CONCAT_WS(':', $Pos, o/data[at0001]/events[at0006]/state[at0007]/items[at0008]/value/value) AS position_"
+                + " FROM ehr e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]";
+
+        test(aql, aql);
+    }
+
     private static void test(String aql, String expected) {
         AqlDto aqlDto = new AqlToDtoParser().parse(aql);
 
