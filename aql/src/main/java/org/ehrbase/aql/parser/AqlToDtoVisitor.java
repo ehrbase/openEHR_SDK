@@ -55,8 +55,7 @@ import org.ehrbase.util.exception.SdkException;
 
 public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
-    private int containmentId = 0;
-    private final Map<String, Integer> identifierMap = new HashMap<>();
+    private final Map<String, ContainmentDto> identifierMap = new HashMap<>();
     private final MultiValuedMap<String, IdentifiedPath> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
 
     private List<String> errors;
@@ -87,7 +86,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
         selectFieldDtoMultiMap.entries().forEach(e -> {
             if (identifierMap.containsKey(e.getKey())) {
-                e.getValue().setFromId(identifierMap.get(e.getKey()));
+                e.getValue().setFrom(identifierMap.get(e.getKey()));
             }
         });
 
@@ -325,12 +324,11 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     public ContainmentClassExpressionDto visitClassExpression(AqlParser.ClassExpressionContext ctx) {
 
         ContainmentClassExpressionDto containmentDto = new ContainmentClassExpressionDto();
-        containmentDto.setId(buildContainmentId());
         containmentDto.setType(ctx.IDENTIFIER(0).getText());
 
         if (ctx.IDENTIFIER().size() == 2) {
             containmentDto.setIdentifier(ctx.IDENTIFIER(1).getText());
-            identifierMap.put(containmentDto.getIdentifier(), containmentDto.getId());
+            identifierMap.put(containmentDto.getIdentifier(), containmentDto);
         }
 
         if (ctx.pathPredicate() != null) {
@@ -526,10 +524,6 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         } else {
             return operatorSymbol.getPrecedence() <= nextOperatorSymbol.getPrecedence();
         }
-    }
-
-    private int buildContainmentId() {
-        return containmentId++;
     }
 
     private ContainmentLogicalOperatorSymbol extractSymbol(AqlParser.ContainsExprContext ctx) {

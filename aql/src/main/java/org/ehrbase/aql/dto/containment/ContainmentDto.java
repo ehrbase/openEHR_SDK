@@ -22,12 +22,8 @@ package org.ehrbase.aql.dto.containment;
 public abstract class ContainmentDto implements ContainmentExpresionDto {
 
     private ContainmentExpresionDto contains;
-    private int id;
-    private String identifier;
 
-    public int getId() {
-        return this.id;
-    }
+    private String identifier;
 
     public void setContains(ContainmentExpresionDto contains) {
         this.contains = contains;
@@ -35,10 +31,6 @@ public abstract class ContainmentDto implements ContainmentExpresionDto {
 
     public ContainmentExpresionDto getContains() {
         return this.contains;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getIdentifier() {

@@ -20,4 +20,4 @@ package org.ehrbase.aql.dto.containment;
 /**
  * @author Stefan Spiska
  */
-public class VersionDto {}
+public class VersionDto extends ContainmentDto {}

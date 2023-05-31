@@ -20,13 +20,12 @@ package org.ehrbase.aql.render;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nedap.archie.json.JacksonUtil;
 import java.time.temporal.TemporalAccessor;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpressionDto;
+import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
 import org.ehrbase.aql.dto.operant.*;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -41,8 +40,6 @@ import org.ehrbase.util.exception.SdkException;
 public class AqlRender {
 
     private final AqlDto dto;
-
-    private final Map<Integer, ContainmentClassExpressionDto> containmentByIdMap = new HashMap<>();
 
     public AqlRender(AqlDto dto) {
         this.dto = dto;
@@ -142,13 +139,13 @@ public class AqlRender {
 
     private void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
 
-        ContainmentClassExpressionDto containmentExpresionDto = containmentByIdMap.get(dto.getFromId());
+        ContainmentDto containmentDto = dto.getFrom();
 
-        if (containmentExpresionDto == null) {
+        if (containmentDto == null) {
             throw new SdkException("Select without corresponding contains");
         }
 
-        sb.append(containmentExpresionDto.getIdentifier());
+        sb.append(containmentDto.getIdentifier());
 
         sb.append(dto.getPath().format(AqlPath.OtherPredicatesFormat.SHORTED, false));
     }
@@ -204,8 +201,6 @@ public class AqlRender {
     }
 
     private void renderContainmentDto(StringBuilder sb, ContainmentClassExpressionDto dto) {
-
-        containmentByIdMap.put(dto.getId(), dto);
 
         sb.append(dto.getType()).append(" ");
 
