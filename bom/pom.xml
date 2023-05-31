@@ -38,7 +38,7 @@
     </developers>
 
     <properties>
-        <antlr4.version>4.13.0</antlr4.version>
+        <antlr4.version>4.11.1</antlr4.version>
         <archie.version>3.3.0</archie.version>
         <assertj.version>3.19.0</assertj.version>
         <cglib.version>3.3.0</cglib.version>
