@@ -20,13 +20,12 @@ package org.ehrbase.aql.render;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nedap.archie.json.JacksonUtil;
 import java.time.temporal.TemporalAccessor;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.containment.ContainmentClassExpressionDto;
-import org.ehrbase.aql.dto.containment.ContainmentDto;
-import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
+import org.ehrbase.aql.dto.containment.*;
 import org.ehrbase.aql.dto.operant.*;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -90,7 +89,8 @@ public class AqlRender {
         } else if (columnExpression instanceof SingleRowFunktion singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else {
-            throw new UnsupportedOperationException("Can not handle %s".formatted(dto.getClass()));
+            throw new UnsupportedOperationException(
+                    "Can not handle %s".formatted(dto.getClass().getName()));
         }
 
         if (dto.getAlias() != null) {
@@ -127,7 +127,8 @@ public class AqlRender {
         } else if (terminal instanceof ParameterDto parameterDto) {
             renderParameterDto(sb, parameterDto);
         } else {
-            throw new UnsupportedOperationException("Can not handle %s".formatted(terminal.getClass()));
+            throw new UnsupportedOperationException(
+                    "Can not handle %s".formatted(terminal.getClass().getName()));
         }
         return sb.toString();
     }
@@ -179,7 +180,8 @@ public class AqlRender {
             }
             return StringUtils.wrap(valueAsString.replace("\"", ""), "'");
         } else {
-            throw new SdkException(String.format("%s is not an valid AQL Value", value.getClass()));
+            throw new SdkException(
+                    "%s is not an valid AQL Value".formatted(value.getClass().getName()));
         }
     }
 
@@ -195,9 +197,30 @@ public class AqlRender {
 
     private void renderContainmentExpresionDto(StringBuilder sb, ContainmentExpresionDto dto) {
 
-        if (dto instanceof ContainmentClassExpressionDto) {
-            renderContainmentDto(sb, (ContainmentClassExpressionDto) dto);
+        if (dto instanceof ContainmentClassExpressionDto classExpressionDto) {
+            renderContainmentDto(sb, classExpressionDto);
+        } else if (dto instanceof ContainmentLogicalOperator containmentLogicalOperator) {
+            renderContainmentLogicalOperator(sb, containmentLogicalOperator);
+        } else {
+            throw new UnsupportedOperationException(
+                    "Can not handle %s".formatted(dto.getClass().getName()));
         }
+    }
+
+    private void renderContainmentLogicalOperator(
+            StringBuilder sb, ContainmentLogicalOperator containmentLogicalOperator) {
+
+        Iterator<ContainmentExpresionDto> iterator =
+                containmentLogicalOperator.getValues().iterator();
+        sb.append("(");
+        while (iterator.hasNext()) {
+            ContainmentExpresionDto next = iterator.next();
+            renderContainmentExpresionDto(sb, next);
+            if (iterator.hasNext()) {
+                sb.append(" ").append(containmentLogicalOperator.getSymbol()).append(" ");
+            }
+        }
+        sb.append(")");
     }
 
     private void renderContainmentDto(StringBuilder sb, ContainmentClassExpressionDto dto) {
@@ -214,8 +237,14 @@ public class AqlRender {
         }
 
         if (dto.getContains() != null) {
-            sb.append(" CONTAINS ");
-            renderContainmentExpresionDto(sb, dto.getContains());
+
+            if (dto.getContains() instanceof ContainmentLogicalNotOperator containmentLogicalNotOperator) {
+                sb.append(" NOT CONTAINS ");
+                renderContainmentExpresionDto(sb, containmentLogicalNotOperator.getContainmentExpression());
+            } else {
+                sb.append(" CONTAINS ");
+                renderContainmentExpresionDto(sb, dto.getContains());
+            }
         }
     }
 }

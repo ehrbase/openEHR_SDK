@@ -111,6 +111,33 @@ class AqlRenderTest {
         test(aql, aql);
     }
 
+    @Test
+    void renderContainAnd() {
+
+        String aql = "SELECT"
+                + " e/ehr_id/value AS Ehr_id,"
+                + " c/context/start_time AS start_time,"
+                + " o1/data[at0001]/events[at0006]/state[at0007]/items[at0008]/value/value AS position_,"
+                + " o2/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude AS body_weight"
+                + " FROM EHR e"
+                + " CONTAINS COMPOSITION c"
+                + " CONTAINS"
+                + " (OBSERVATION o1[openEHR-EHR-OBSERVATION.blood_pressure.v2] AND OBSERVATION o2[openEHR-EHR-OBSERVATION.body_weight.v2])";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderContainNOT() {
+
+        String aql = "SELECT"
+                + " e/ehr_id/value AS Ehr_id"
+                + " FROM EHR e"
+                + " NOT CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+
+        test(aql, aql);
+    }
+
     private static void test(String aql, String expected) {
         AqlDto aqlDto = new AqlToDtoParser().parse(aql);
 

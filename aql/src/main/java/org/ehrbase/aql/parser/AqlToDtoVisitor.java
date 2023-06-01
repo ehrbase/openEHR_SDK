@@ -279,12 +279,12 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
             while (current != null) {
 
-                boolList.add(visitContainsExpr(ctx.containsExpr(0)));
-                Optional.ofNullable(extractSymbol(current)).ifPresent(boolList::add);
-
-                if (ctx.containsExpr().size() == 2) {
-                    current = ctx.containsExpr(1);
+                if (current.containsExpr().size() == 2) {
+                    boolList.add(visitContainsExpr(current.containsExpr(0)));
+                    Optional.ofNullable(extractSymbol(current)).ifPresent(boolList::add);
+                    current = current.containsExpr(1);
                 } else {
+                    boolList.add(visitContainsExpr(current));
                     current = null;
                 }
             }
@@ -311,7 +311,9 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
                 ContainmentExpresionDto contains = visitContainsExpr(ctx.containsExpr(0));
                 if (ctx.NOT() != null) {
 
-                    errors.add("NOT contains not yet implemented");
+                    ContainmentLogicalNotOperator not = new ContainmentLogicalNotOperator();
+                    not.setContainmentExpression(contains);
+                    containmentDto.setContains(not);
                 } else {
                     containmentDto.setContains(contains);
                 }
