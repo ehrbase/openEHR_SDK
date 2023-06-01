@@ -138,6 +138,127 @@ class AqlRenderTest {
         test(aql, aql);
     }
 
+    @Test
+    void renderWhere() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " WHERE o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > 40";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWherePath() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " WHERE"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWhereParameter() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " WHERE"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > $systolicCriteria";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWhereFunction() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " WHERE"
+                + " CEIL(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) = 50";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWhereExist() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " WHERE"
+                + " EXISTS o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWhereAND() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " WHERE"
+                + " (o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude > 50"
+                + " AND"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude <= 80)";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWhereNot() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " WHERE"
+                + " NOT EXISTS o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWhereLike() {
+
+        String aql = "SELECT"
+                + " o/data[at0002]/events[at0003.1]/state[at0008.1]/items[at0009]/value/value AS state_of_dress"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.body_weight.v2]"
+                + " WHERE"
+                + " o/data[at0002]/events[at0003.1]/state[at0008.1]/items[at0009]/value/value LIKE 'Fully?'";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderWhereMatches() {
+
+        String aql = "SELECT"
+                + " o/data[at0002]/events[at0003.1]/state[at0008.1]/items[at0009]/value/value AS state_of_dress"
+                + " FROM EHR e"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.body_weight.v2]"
+                + " WHERE"
+                + " o/data[at0002]/events[at0003.1]/state[at0008.1]/items[at0009]/value/defining_code/code_string MATCHES {'at0028', 'at0010'}";
+
+        test(aql, aql);
+    }
+
     private static void test(String aql, String expected) {
         AqlDto aqlDto = new AqlToDtoParser().parse(aql);
 

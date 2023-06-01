@@ -23,8 +23,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public abstract class Primitive<T>
-        implements Terminal, ColumnExpression, MatchesOperant, LikeOperant, PathPredicateOperand {
+public abstract class Primitive<T> implements Terminal, ColumnExpression, MatchesOperant, PathPredicateOperand {
 
     T value;
 

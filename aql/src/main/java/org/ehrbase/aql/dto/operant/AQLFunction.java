@@ -26,7 +26,8 @@ public enum AQLFunction {
     MAX(AQLFunctionType.AGGREGATE),
     AVG(AQLFunctionType.AGGREGATE),
     CONTAINS(AQLFunctionType.SINGLE_ROW),
-    CONCAT_WS(AQLFunctionType.SINGLE_ROW);
+    CONCAT_WS(AQLFunctionType.SINGLE_ROW),
+    CEIL(AQLFunctionType.SINGLE_ROW);
 
     private final AQLFunctionType functionType;
 

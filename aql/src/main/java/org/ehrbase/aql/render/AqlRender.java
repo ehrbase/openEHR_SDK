@@ -25,6 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.condition.*;
 import org.ehrbase.aql.dto.containment.*;
 import org.ehrbase.aql.dto.operant.*;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -48,13 +49,122 @@ public class AqlRender {
 
         StringBuilder sb = new StringBuilder();
 
-        String from = buildFrom();
-
         renderSelect(sb, dto.getSelect());
-
-        sb.append(from);
+        sb.append(buildFrom());
+        if (dto.getWhere() != null) {
+            sb.append(" WHERE ");
+            renderWhere(sb, dto.getWhere());
+        }
 
         return sb.toString();
+    }
+
+    private void renderWhere(StringBuilder sb, ConditionDto where) {
+        if (where instanceof ConditionComparisonOperatorDto conditionComparisonOperatorDto) {
+            renderConditionComparisonOperatorDto(sb, conditionComparisonOperatorDto);
+        } else if (where instanceof NotConditionOperatorDto notConditionOperatorDto) {
+            renderNotConditionOperatorDto(sb, notConditionOperatorDto);
+        } else if (where instanceof ExistsConditionOperatorDto existsConditionOperatorDto) {
+            renderExistsCondition(sb, existsConditionOperatorDto);
+        } else if (where instanceof ConditionLogicalOperatorDto conditionLogicalOperatorDto) {
+            renderConditionLogical(sb, conditionLogicalOperatorDto);
+        } else if (where instanceof LikeOperatorDto likeOperatorDto) {
+            renderLike(sb, likeOperatorDto);
+        } else if (where instanceof MatchesOperatorDto matchesOperatorDto) {
+            renderMatches(sb, matchesOperatorDto);
+        } else {
+            throw new SdkException(
+                    "Can not handle %s".formatted(where.getClass().getName()));
+        }
+    }
+
+    private void renderMatches(StringBuilder sb, MatchesOperatorDto matchesOperatorDto) {
+
+        renderIdentifiedPath(sb, matchesOperatorDto.getStatement());
+        sb.append(" ").append("MATCHES").append(" ");
+        sb.append("{");
+        Iterator<MatchesOperant> iterator = matchesOperatorDto.getValues().iterator();
+        while (iterator.hasNext()) {
+            MatchesOperant next = iterator.next();
+            renderMatchesOperant(sb, next);
+            if (iterator.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        sb.append("}");
+    }
+
+    private void renderMatchesOperant(StringBuilder sb, MatchesOperant next) {
+
+        if (next instanceof ParameterDto parameterDto) {
+            renderParameterDto(sb, parameterDto);
+        } else if (next instanceof Primitive<?> primitive) {
+            sb.append(renderValue(primitive.getValue()));
+        } else {
+            throw new SdkException("Can not handle %s".formatted(next.getClass().getName()));
+        }
+    }
+
+    private void renderLike(StringBuilder sb, LikeOperatorDto likeOperatorDto) {
+        renderIdentifiedPath(sb, likeOperatorDto.getStatement());
+        sb.append(" ").append("LIKE").append(" ");
+        renderLikeOperant(sb, likeOperatorDto.getValue());
+    }
+
+    private void renderLikeOperant(StringBuilder sb, LikeOperant value) {
+
+        if (value instanceof ParameterDto parameterDto) {
+            renderParameterDto(sb, parameterDto);
+        } else {
+            sb.append(renderValue(((StringPrimitiveDto) value).getValue()));
+        }
+    }
+
+    private void renderConditionLogical(StringBuilder sb, ConditionLogicalOperatorDto conditionLogicalOperatorDto) {
+
+        Iterator<ConditionDto> iterator =
+                conditionLogicalOperatorDto.getValues().iterator();
+        sb.append("(");
+        while (iterator.hasNext()) {
+
+            renderWhere(sb, iterator.next());
+            if (iterator.hasNext()) {
+                sb.append(" ").append(conditionLogicalOperatorDto.getSymbol()).append(" ");
+            }
+        }
+        sb.append(")");
+    }
+
+    private void renderExistsCondition(StringBuilder sb, ExistsConditionOperatorDto existsConditionOperatorDto) {
+        sb.append("EXISTS ");
+        renderIdentifiedPath(sb, existsConditionOperatorDto.getValue());
+    }
+
+    private void renderNotConditionOperatorDto(StringBuilder sb, NotConditionOperatorDto notConditionOperatorDto) {
+        sb.append("NOT ");
+        renderWhere(sb, notConditionOperatorDto.getConditionDto());
+    }
+
+    private void renderConditionComparisonOperatorDto(
+            StringBuilder sb, ConditionComparisonOperatorDto conditionComparisonOperatorDto) {
+        ComparisonLeftOperator statement = conditionComparisonOperatorDto.getStatement();
+
+        renderComparisonLeftOperator(sb, statement);
+        sb.append(" ")
+                .append(conditionComparisonOperatorDto.getSymbol().getSymbol())
+                .append(" ");
+        sb.append(renderTerminal(conditionComparisonOperatorDto.getValue()));
+    }
+
+    private void renderComparisonLeftOperator(StringBuilder sb, ComparisonLeftOperator statement) {
+        if (statement instanceof IdentifiedPath identifiedPath) {
+            renderIdentifiedPath(sb, identifiedPath);
+        } else if (statement instanceof SingleRowFunktion singleRowFunktion) {
+            renderSingleRowFunctionDto(sb, singleRowFunktion);
+        } else {
+            throw new SdkException(
+                    "Can not handle %s".formatted(statement.getClass().getName()));
+        }
     }
 
     private void renderSelect(StringBuilder sb, SelectDto dto) {
