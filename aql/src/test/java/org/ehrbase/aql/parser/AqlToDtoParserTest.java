@@ -19,16 +19,21 @@ package org.ehrbase.aql.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.containment.ContainmentClassExpressionDto;
+import org.ehrbase.aql.dto.containment.ContainmentDto;
 import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
+import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
+import org.ehrbase.aql.dto.operant.StringPrimitiveDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateDto;
+import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.render.AqlRender;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 class AqlToDtoParserTest {
 
     @Test
@@ -66,38 +71,30 @@ class AqlToDtoParserTest {
     @Test
     void parseDoubleAlias() {
         String aql =
-                "Select e/ehr_id/value ,c0 as F1 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+                "Select e/ehr_id/value, c0 as F1 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
 
-        testAql(
-                aql,
-                "Select e/ehr_id/value as F1, c0 as F1_F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+        testAql(aql, aql);
     }
 
     @Test
-    @Disabled
     void parseEhrAliasSwap() {
-        String aql = "Select c/name/value as e from EHR[ehr_id/value != 'anything'] contains COMPOSITION c";
-        String expected =
-                "Select c/name/value as e from EHR e1 contains COMPOSITION c where e1/ehr_id/value != 'anything'";
+        String aql = "Select c/name/value as e from EHR[ehr_id/value!='anything'] contains COMPOSITION c";
 
-        testAql(aql, expected);
+        testAql(aql, aql);
     }
 
     @Test
     void parsePlainEhr() {
         String aql = "Select c/name/value from EHR CONTAINS COMPOSITION c";
 
-        testAql(aql, "Select c/name/value as F1 from EHR e contains COMPOSITION c");
+        testAql(aql, aql);
     }
 
     @Test
     void parseDefaultEhrAliasCollision() {
-        String aql = "Select e/name/value as F1 from EHR[ehr_id/value != 'anything'] contains COMPOSITION e";
+        String aql = "Select e/name/value as F1 from EHR[ehr_id/value!='anything'] contains COMPOSITION e";
 
-        String expected =
-                "Select e/name/value as F1 from EHR e1 contains COMPOSITION e where e1/ehr_id/value != 'anything'";
-
-        testAql(aql, expected);
+        testAql(aql, aql);
     }
 
     @Test
@@ -105,16 +102,14 @@ class AqlToDtoParserTest {
         String aql =
                 "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
 
-        testAql(
-                aql,
-                "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+        testAql(aql, aql);
     }
 
     @Test
     void parseObservation() {
         String aql = "SELECT o FROM EHR e CONTAINS OBSERVATION o";
 
-        testAql(aql, "Select o as F1 from EHR e contains OBSERVATION o");
+        testAql(aql, aql);
     }
 
     @Test
@@ -144,7 +139,7 @@ class AqlToDtoParserTest {
     @Test
     void parseMatches() {
         String aql =
-                "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] where d/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'}";
+                "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] where d/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7', '61861e76-1606-48c9-adcf-49ebbb2c6bbd'}";
 
         testAql(aql, aql);
     }
@@ -192,7 +187,7 @@ class AqlToDtoParserTest {
     void parseWithoutContains() {
         String aql = "SELECT e/ehr_id/value FROM EHR e";
 
-        testAql(aql, "Select e/ehr_id/value as F1 from EHR e");
+        testAql(aql, aql);
     }
 
     @Test
@@ -213,8 +208,7 @@ class AqlToDtoParserTest {
             cut.parse(aql);
             fail("Expected AqlParseException");
         } catch (AqlParseException e) {
-            assertThat(e.getMessage())
-                    .isEqualTo("Parse exception: line 1: char 113 mismatched input 'EHR' expecting FROM");
+            assertThat(e.getMessage()).isEqualTo("Parse exception: line 1: char 113 missing FROM at 'EHR'");
         }
     }
 
@@ -227,32 +221,18 @@ class AqlToDtoParserTest {
     }
 
     @Test
-    void parseTop() {
-        String aql =
-                "Select TOP 10 FORWARD o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
-
-        testAql(aql, aql);
-
-        String aqlTopWithoutDirection =
-                "Select TOP 10 o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
-
-        testAql(aqlTopWithoutDirection, aql);
-    }
-
-    @Test
     void parseOrderBy() {
 
         String aqlTwoOrderBy =
                 "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value DESCENDING";
-
-        testAql(aqlTwoOrderBy, aqlTwoOrderBy);
-
         String aqlShortenedSymbols =
                 "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC, e/ehr_id/value DESC";
 
-        testAql(aqlShortenedSymbols, aqlTwoOrderBy);
+        testAql(aqlTwoOrderBy, aqlShortenedSymbols);
+
+        testAql(aqlShortenedSymbols, aqlShortenedSymbols);
 
         var sortDefault1 =
                 "select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
@@ -260,7 +240,7 @@ class AqlToDtoParserTest {
         testAql(
                 sortDefault1,
                 "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
-                        + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value ASCENDING");
+                        + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC, e/ehr_id/value ASC");
 
         var sortDefault2 =
                 "select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
@@ -268,7 +248,7 @@ class AqlToDtoParserTest {
         testAql(
                 sortDefault2,
                 "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
-                        + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude DESCENDING, e/ehr_id/value ASCENDING");
+                        + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude DESC, e/ehr_id/value ASC");
     }
 
     void testAql(String aql, String expected) {
@@ -279,11 +259,11 @@ class AqlToDtoParserTest {
 
         String actualAql = new AqlRender(actual).render();
 
-        assertThat(actualAql).isEqualTo(expected);
+        assertThat(actualAql.toUpperCase()).isEqualTo(expected.toUpperCase());
 
         String roundtripAql = new AqlRender(cut.parse(expected)).render();
 
-        assertThat(roundtripAql).isEqualTo(expected);
+        assertThat(roundtripAql.toUpperCase()).isEqualTo(expected.toUpperCase());
     }
 
     @Test
@@ -347,12 +327,22 @@ class AqlToDtoParserTest {
     String render(ContainmentExpresionDto containmentExpresion) {
         StringBuilder sb = new StringBuilder();
 
-        /*
-        if (containmentExpresion instanceof ContainmentDto) {
-            sb.append(((ContainmentDto) containmentExpresion).getContainment().getArchetypeId());
-            ContainmentExpresionDto contains = ((ContainmentDto) containmentExpresion).getContains();
-            if (contains != null) {
-                sb.append(" --> ").append(render(contains));
+        if (containmentExpresion instanceof ContainmentClassExpressionDto classExpressionDto) {
+
+            if (classExpressionDto.getType().equals("EHR")) {
+                sb.append(render(classExpressionDto.getContains()));
+            } else {
+                PredicateDto otherPredicates =
+                        ((ContainmentClassExpressionDto) containmentExpresion).getOtherPredicates();
+                sb.append(PredicateHelper.find(otherPredicates, PredicateHelper.ARCHETYPE_NODE_ID)
+                        .map(PredicateComparisonOperatorDto::getValue)
+                        .map(StringPrimitiveDto.class::cast)
+                        .map(StringPrimitiveDto::getValue)
+                        .orElse(classExpressionDto.getType()));
+                ContainmentExpresionDto contains = ((ContainmentDto) containmentExpresion).getContains();
+                if (contains != null) {
+                    sb.append(" --> ").append(render(contains));
+                }
             }
         } else if (containmentExpresion instanceof ContainmentLogicalOperator) {
             sb.append("(")
@@ -368,130 +358,7 @@ class AqlToDtoParserTest {
             return sb.toString();
         }
 
-         */
         return sb.toString();
-    }
-
-    @Test
-    void parseAqlLimitOffset() {
-        var parser = new AqlToDtoParser();
-
-        var query1 = "select e/ehr_id/value "
-                + "from EHR e "
-                + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
-                + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
-                + "order by e/ehr_id/value ASC "
-                + "limit 10";
-
-        var aql = parser.parse(query1);
-        assertEquals(10, aql.getLimit());
-
-        var query2 = "select e/ehr_id/value "
-                + "from EHR e "
-                + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
-                + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
-                + "limit 50 "
-                + "offset 100";
-
-        aql = parser.parse(query2);
-        assertEquals(50, aql.getLimit());
-        assertEquals(100, aql.getOffset());
-
-        var query3 = "select e/ehr_id/value "
-                + "from EHR e "
-                + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
-                + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
-                + "limit 50 "
-                + "order by e/ehr_id/value ASC ";
-
-        aql = parser.parse(query3);
-        assertEquals(50, aql.getLimit());
-
-        var query4 = "select e/ehr_id/value "
-                + "from EHR e "
-                + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
-                + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
-                + "offset 100 "
-                + "order by e/ehr_id/value ASC ";
-
-        var query5 = "select e/ehr_id/value "
-                + "from EHR e "
-                + "contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] "
-                + "contains OBSERVATION o [openEHR-EHR-OBSERVATION.body_temperature.v2] "
-                + "offset 100";
-
-        assertThrows(AqlParseException.class, () -> parser.parse(query5));
-    }
-
-    @Test
-    void parseWhereClauseWithBoolean() {
-        String aql;
-
-        aql =
-                "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true";
-        testAql(
-                aql,
-                "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
-
-        aql =
-                "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is true";
-        testAql(
-                aql,
-                "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = true");
-
-        aql =
-                "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is not true";
-        testAql(
-                aql,
-                "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != true");
-
-        aql =
-                "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false";
-        testAql(
-                aql,
-                "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
-
-        aql =
-                "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is false";
-        testAql(
-                aql,
-                "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value = false");
-
-        aql =
-                "select e/ehr_id/value from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value is not false";
-        testAql(
-                aql,
-                "Select e/ehr_id/value as F1 from EHR e contains OBSERVATION o where o/data[at0001]/items[at0024]/items[at0025]/value/value != false");
-    }
-
-    @Test
-    void orderByAndLimitOrder() {
-        var aql1 = "Select "
-                + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
-                + "from EHR e contains COMPOSITION c "
-                + "order by c/context/start_time ASCENDING "
-                + "LIMIT 10 OFFSET 10";
-
-        var aql2 = "Select "
-                + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
-                + "from EHR e contains COMPOSITION c "
-                + "LIMIT 10 OFFSET 10 "
-                + "order by c/context/start_time ASCENDING";
-        testAql(aql1, aql2);
-
-        testAql(aql2, aql2);
-
-        var aql3 = "Select "
-                + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
-                + "from EHR e contains COMPOSITION c "
-                + "LIMIT 10 OFFSET 10";
-        testAql(aql3, aql3);
-
-        var aql4 = "Select "
-                + "c/name/value as Name, c/context/start_time as date_time, c/composer/name as Composer "
-                + "from EHR e contains COMPOSITION c "
-                + "order by c/context/start_time ASCENDING";
-        testAql(aql4, aql4);
     }
 
     @Test

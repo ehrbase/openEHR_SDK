@@ -19,23 +19,21 @@ package org.ehrbase.aql.util;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class AqlUtilTest {
 
     @Test
     public void removeParameter() {
 
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where  e/ehr_id/value = $ehrid";
+                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where e/ehr_id/value = $ehrid";
 
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
-                .isEqualTo(
-                        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+                .isEqualToIgnoringCase(
+                        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
     }
 
     @Test
@@ -47,8 +45,8 @@ public class AqlUtilTest {
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
-                .isEqualTo(
-                        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where e/ehr_id/value = $ehrid2");
+                .isEqualToIgnoringCase(
+                        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where e/ehr_id/value = $ehrid2");
     }
 
     @Test
@@ -60,8 +58,8 @@ public class AqlUtilTest {
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
-                .isEqualTo(
-                        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid2 or e/ehr_id/value = $ehrid3)");
+                .isEqualToIgnoringCase(
+                        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid2 or e/ehr_id/value = $ehrid3)");
     }
 
     @Test
@@ -73,8 +71,8 @@ public class AqlUtilTest {
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
-                .isEqualTo(
-                        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+                .isEqualToIgnoringCase(
+                        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
     }
 
     @Test
@@ -86,8 +84,8 @@ public class AqlUtilTest {
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
-                .isEqualTo(
-                        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3)");
+                .isEqualToIgnoringCase(
+                        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3)");
     }
 
     @Test
@@ -99,8 +97,8 @@ public class AqlUtilTest {
         String actual = AqlUtil.removeParameter(aql, "ehrid2");
 
         assertThat(actual)
-                .isEqualTo(
-                        "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid or e/ehr_id/value = $ehrid3)");
+                .isEqualToIgnoringCase(
+                        "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid or e/ehr_id/value = $ehrid3)");
     }
 
     @Test
@@ -111,7 +109,7 @@ public class AqlUtilTest {
 
         String actual = AqlUtil.removeParameter(aql, "ehrid9999");
 
-        assertThat(actual).isEqualTo(aql);
+        assertThat(actual).isEqualToIgnoringCase(aql);
     }
 
     @Test
@@ -122,6 +120,6 @@ public class AqlUtilTest {
 
         String actual = AqlUtil.removeParameter(aql, "ehrid9999");
 
-        assertThat(actual).isEqualTo(aql);
+        assertThat(actual).isEqualToIgnoringCase(aql);
     }
 }

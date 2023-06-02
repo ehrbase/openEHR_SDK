@@ -368,15 +368,17 @@ public class AqlRender {
 
     private void renderContainmentDto(StringBuilder sb, ContainmentClassExpressionDto dto) {
 
-        sb.append(dto.getType()).append(" ");
+        sb.append(dto.getType());
 
         if (dto.getIdentifier() != null) {
-            sb.append(dto.getIdentifier());
+            sb.append(" ").append(dto.getIdentifier());
         }
 
         if (dto.getOtherPredicates() != null) {
 
-            sb.append(PredicateHelper.format(dto.getOtherPredicates(), AqlPath.OtherPredicatesFormat.SHORTED));
+            sb.append("[")
+                    .append(PredicateHelper.format(dto.getOtherPredicates(), AqlPath.OtherPredicatesFormat.SHORTED))
+                    .append("]");
         }
 
         if (dto.getContains() != null) {

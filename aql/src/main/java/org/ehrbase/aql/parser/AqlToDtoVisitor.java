@@ -331,7 +331,8 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         }
 
         if (ctx.pathPredicate() != null) {
-            PredicateDto predicateDto = PredicateHelper.buildPredicate(getFullText(ctx.pathPredicate()));
+            PredicateDto predicateDto = PredicateHelper.buildPredicate(
+                    StringUtils.removeEnd(StringUtils.removeStart(getFullText(ctx.pathPredicate()), "["), "]"));
 
             containmentDto.setOtherPredicates(predicateDto);
         }
@@ -396,17 +397,17 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         // AND /  OR
         else {
             List<Object> boollist = new ArrayList<>();
-            ConditionLogicalOperatorSymbol symbol = extractSymbol(ctx);
             var current = ctx;
+            ConditionLogicalOperatorSymbol symbol = extractSymbol(current);
 
             while (current != null) {
                 if (symbol != null) {
-                    boollist.add(visitWhereExpr(current.whereExpr(0)));
-                    boollist.add(symbol);
-                    current = current.whereExpr(1);
+                    boollist.add(0, visitWhereExpr(current.whereExpr(1)));
+                    boollist.add(0, symbol);
+                    current = current.whereExpr(0);
                     symbol = extractSymbol(current);
                 } else {
-                    boollist.add(visitWhereExpr(current));
+                    boollist.add(0, visitWhereExpr(current));
                     current = null;
                 }
             }
