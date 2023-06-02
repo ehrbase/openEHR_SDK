@@ -72,7 +72,13 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
         if (ctx.limitClause() != null) {
 
-            errors.add("limit not yet implemented");
+            AqlParser.LimitClauseContext limitClauseContext = ctx.limitClause();
+
+            aqlDto.setLimit(Integer.parseInt(limitClauseContext.limit.getText()));
+
+            if (limitClauseContext.offset != null) {
+                aqlDto.setOffset(Integer.parseInt(limitClauseContext.offset.getText()));
+            }
         }
 
         selectFieldDtoMultiMap.entries().forEach(e -> {
@@ -490,9 +496,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     @Override
     public List<OrderByExpressionDto> visitOrderByClause(AqlParser.OrderByClauseContext ctx) {
 
-        errors.add("OrderBy not yet implemented");
-
-        return null;
+        return ctx.orderByExpr().stream().map(this::visitOrderByExpr).toList();
     }
 
     public List<String> getErrors() {
@@ -585,6 +589,14 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             currentSymbol = nextSymbol;
         }
         return lowestOperator;
+    }
+
+    @Override
+    public OrderByExpressionDto visitOrderByExpr(AqlParser.OrderByExprContext ctx) {
+        OrderByExpressionDto orderByExpressionDto = new OrderByExpressionDto();
+        orderByExpressionDto.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
+        orderByExpressionDto.setSymbol(extractSymbol(ctx));
+        return orderByExpressionDto;
     }
 
     private ConditionLogicalOperatorSymbol extractSymbolTerminal(TerminalNode child) {

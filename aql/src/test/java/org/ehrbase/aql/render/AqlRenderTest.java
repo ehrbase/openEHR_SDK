@@ -259,6 +259,38 @@ class AqlRenderTest {
         test(aql, aql);
     }
 
+    @Test
+    void renderOrderBy() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
+                + " FROM ehr e"
+                + " CONTAINS COMPOSITION c"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " ORDER BY"
+                + " c/context/start_time DESC,"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude ASC";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderLimit() {
+
+        String aql = "SELECT"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
+                + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
+                + " FROM ehr e"
+                + " CONTAINS COMPOSITION c"
+                + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " ORDER BY"
+                + " c/context/start_time/value DESC"
+                + " LIMIT 10 OFFSET 5";
+
+        test(aql, aql);
+    }
+
     private static void test(String aql, String expected) {
         AqlDto aqlDto = new AqlToDtoParser().parse(aql);
 

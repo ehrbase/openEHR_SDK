@@ -21,13 +21,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nedap.archie.json.JacksonUtil;
 import java.time.temporal.TemporalAccessor;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.condition.*;
 import org.ehrbase.aql.dto.containment.*;
 import org.ehrbase.aql.dto.operant.*;
+import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectDto;
@@ -51,12 +54,42 @@ public class AqlRender {
 
         renderSelect(sb, dto.getSelect());
         sb.append(buildFrom());
+
         if (dto.getWhere() != null) {
             sb.append(" WHERE ");
             renderWhere(sb, dto.getWhere());
         }
 
+        if (CollectionUtils.isNotEmpty(dto.getOrderBy())) {
+
+            renderOrderByClause(sb, dto.getOrderBy());
+        }
+
+        if (dto.getLimit() != null) {
+            sb.append(" LIMIT ").append(dto.getLimit());
+            if (dto.getOffset() != null) {
+                sb.append(" OFFSET ").append(dto.getOffset());
+            }
+        }
+
         return sb.toString();
+    }
+
+    private void renderOrderByClause(StringBuilder sb, List<OrderByExpressionDto> orderBy) {
+        sb.append(" ORDER BY ");
+
+        Iterator<OrderByExpressionDto> iterator = orderBy.iterator();
+
+        while (iterator.hasNext()) {
+
+            OrderByExpressionDto next = iterator.next();
+            renderIdentifiedPath(sb, next.getStatement());
+            sb.append(" ").append(next.getSymbol());
+
+            if (iterator.hasNext()) {
+                sb.append(", ");
+            }
+        }
     }
 
     private void renderWhere(StringBuilder sb, ConditionDto where) {
