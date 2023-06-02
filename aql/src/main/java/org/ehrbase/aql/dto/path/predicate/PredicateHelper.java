@@ -310,11 +310,9 @@ public class PredicateHelper {
     public static Optional<PredicateComparisonOperatorDto> find(PredicateDto predicateDto, String statement) {
 
         if (predicateDto instanceof PredicateComparisonOperatorDto) {
-            if (statement.equals(((PredicateComparisonOperatorDto) predicateDto).getStatement())) {
-                return Optional.of((PredicateComparisonOperatorDto) predicateDto);
-            } else {
-                return Optional.empty();
-            }
+            return Optional.of(predicateDto)
+                    .map(PredicateComparisonOperatorDto.class::cast)
+                    .filter(op -> statement.equals(op.getStatement()));
         }
 
         Deque<PredicateDto> deque;

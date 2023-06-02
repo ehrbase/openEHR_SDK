@@ -36,6 +36,10 @@ public class PredicateLogicalOrOperation
         this.values = List.of(values);
     }
 
+    PredicateLogicalOrOperation() {
+        this.values = List.of();
+    }
+
     @Override
     public PredicateLogicalOperatorSymbol getSymbol() {
         return symbol;

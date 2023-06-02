@@ -17,6 +17,7 @@
  */
 package org.ehrbase.aql.dto.select;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import org.ehrbase.client.aql.top.Direction;
 
@@ -53,6 +54,7 @@ public class SelectDto {
         this.statement = statement;
     }
 
+    @JsonProperty(index = 10)
     public boolean isDistinct() {
         return isDistinct;
     }

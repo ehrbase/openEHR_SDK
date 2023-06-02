@@ -17,9 +17,17 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
 
 /**
  * @author Stefan Spiska
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = PredicateLogicalOrOperation.class, name = "Or"),
+    @JsonSubTypes.Type(value = PredicateLogicalAndOperation.class, name = "And"),
+    @JsonSubTypes.Type(value = PredicateComparisonOperatorDto.class, name = "Comparison")
+})
 public interface PredicateDto extends Serializable {}
