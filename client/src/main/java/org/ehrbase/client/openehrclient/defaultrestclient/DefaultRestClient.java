@@ -57,17 +57,7 @@ import org.ehrbase.client.exception.ClientException;
 import org.ehrbase.client.exception.OptimisticLockException;
 import org.ehrbase.client.exception.WrongStatusCodeException;
 import org.ehrbase.client.flattener.DefaultValuesProvider;
-import org.ehrbase.client.openehrclient.AdminEhrEndpoint;
-import org.ehrbase.client.openehrclient.AdminTemplateEndpoint;
-import org.ehrbase.client.openehrclient.AqlEndpoint;
-import org.ehrbase.client.openehrclient.CompositionEndpoint;
-import org.ehrbase.client.openehrclient.ContributionEndpoint;
-import org.ehrbase.client.openehrclient.FolderDAO;
-import org.ehrbase.client.openehrclient.OpenEhrClient;
-import org.ehrbase.client.openehrclient.OpenEhrClientConfig;
-import org.ehrbase.client.openehrclient.TemplateEndpoint;
-import org.ehrbase.client.openehrclient.VersionUid;
-import org.ehrbase.client.openehrclient.VersionedCompositionEndpoint;
+import org.ehrbase.client.openehrclient.*;
 import org.ehrbase.client.templateprovider.ClientTemplateProvider;
 import org.ehrbase.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.serialisation.mapper.RmObjectJsonDeSerializer;
@@ -322,6 +312,11 @@ public class DefaultRestClient implements OpenEhrClient {
     @Override
     public ContributionEndpoint contributionEndpoint(UUID ehrId) {
         return new DefaultRestContributionEndpoint(this, ehrId);
+    }
+
+    @Override
+    public DirectoryCrudEndpoint directoryCrudEndpoint(UUID ehrId) {
+        return new DefaultCrudEndpoint(this, ehrId);
     }
 
     @Override
