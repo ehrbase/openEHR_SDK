@@ -105,7 +105,7 @@ public class AqlDto {
         return "AqlDto{"
                 + "select="
                 + select
-                + ", contains="
+                + ", from="
                 + from
                 + ", where="
                 + where
