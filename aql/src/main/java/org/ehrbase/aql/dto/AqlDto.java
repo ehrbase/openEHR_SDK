@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.containment.Containment;
-import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
+import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.select.SelectDto;
 
 public class AqlDto {
@@ -30,7 +30,7 @@ public class AqlDto {
 
     private Containment from;
     private ConditionDto where;
-    private List<OrderByExpressionDto> orderBy;
+    private List<OrderByExpression> orderBy;
     private Integer limit;
     private Integer offset;
 
@@ -46,7 +46,7 @@ public class AqlDto {
         return this.where;
     }
 
-    public List<OrderByExpressionDto> getOrderBy() {
+    public List<OrderByExpression> getOrderBy() {
         return this.orderBy;
     }
 
@@ -62,7 +62,7 @@ public class AqlDto {
         this.where = where;
     }
 
-    public void setOrderBy(List<OrderByExpressionDto> orderBy) {
+    public void setOrderBy(List<OrderByExpression> orderBy) {
         this.orderBy = orderBy;
     }
 

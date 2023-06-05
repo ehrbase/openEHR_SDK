@@ -19,16 +19,16 @@ package org.ehrbase.aql.dto.orderby;
 
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 
-public class OrderByExpressionDto {
+public class OrderByExpression {
 
     private IdentifiedPath statement;
-    private OrderByExpressionSymbol symbol;
+    private OrderByDirection symbol;
 
     public IdentifiedPath getStatement() {
         return this.statement;
     }
 
-    public OrderByExpressionSymbol getSymbol() {
+    public OrderByDirection getSymbol() {
         return this.symbol;
     }
 
@@ -36,14 +36,14 @@ public class OrderByExpressionDto {
         this.statement = statement;
     }
 
-    public void setSymbol(OrderByExpressionSymbol symbol) {
+    public void setSymbol(OrderByDirection symbol) {
         this.symbol = symbol;
     }
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof OrderByExpressionDto)) return false;
-        final OrderByExpressionDto other = (OrderByExpressionDto) o;
+        if (!(o instanceof OrderByExpression)) return false;
+        final OrderByExpression other = (OrderByExpression) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$statement = this.getStatement();
         final Object other$statement = other.getStatement();
@@ -55,7 +55,7 @@ public class OrderByExpressionDto {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof OrderByExpressionDto;
+        return other instanceof OrderByExpression;
     }
 
     public int hashCode() {
@@ -69,6 +69,6 @@ public class OrderByExpressionDto {
     }
 
     public String toString() {
-        return "OrderByExpressionDto(statement=" + this.getStatement() + ", symbol=" + this.getSymbol() + ")";
+        return "OrderByExpression(statement=" + this.getStatement() + ", symbol=" + this.getSymbol() + ")";
     }
 }

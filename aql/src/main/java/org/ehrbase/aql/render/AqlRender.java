@@ -50,7 +50,7 @@ import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.SingleRowFunktion;
 import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
 import org.ehrbase.aql.dto.operand.Terminal;
-import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
+import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectDto;
@@ -95,14 +95,14 @@ public class AqlRender {
         return sb.toString();
     }
 
-    private void renderOrderByClause(StringBuilder sb, List<OrderByExpressionDto> orderBy) {
+    private void renderOrderByClause(StringBuilder sb, List<OrderByExpression> orderBy) {
         sb.append(" ORDER BY ");
 
-        Iterator<OrderByExpressionDto> iterator = orderBy.iterator();
+        Iterator<OrderByExpression> iterator = orderBy.iterator();
 
         while (iterator.hasNext()) {
 
-            OrderByExpressionDto next = iterator.next();
+            OrderByExpression next = iterator.next();
             renderIdentifiedPath(sb, next.getStatement());
             sb.append(" ").append(next.getSymbol());
 

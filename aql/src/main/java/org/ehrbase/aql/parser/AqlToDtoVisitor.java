@@ -75,8 +75,8 @@ import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
 import org.ehrbase.aql.dto.operand.TemporalPrimitiveDto;
 import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.operand.TerminologyFunctionDto;
-import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
-import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
+import org.ehrbase.aql.dto.orderby.OrderByDirection;
+import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -534,7 +534,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<OrderByExpressionDto> visitOrderByClause(AqlParser.OrderByClauseContext ctx) {
+    public List<OrderByExpression> visitOrderByClause(AqlParser.OrderByClauseContext ctx) {
 
         return ctx.orderByExpr().stream().map(this::visitOrderByExpr).toList();
     }
@@ -632,11 +632,11 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public OrderByExpressionDto visitOrderByExpr(AqlParser.OrderByExprContext ctx) {
-        OrderByExpressionDto orderByExpressionDto = new OrderByExpressionDto();
-        orderByExpressionDto.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
-        orderByExpressionDto.setSymbol(extractSymbol(ctx));
-        return orderByExpressionDto;
+    public OrderByExpression visitOrderByExpr(AqlParser.OrderByExprContext ctx) {
+        OrderByExpression orderByExpression = new OrderByExpression();
+        orderByExpression.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
+        orderByExpression.setSymbol(extractSymbol(ctx));
+        return orderByExpression;
     }
 
     private ConditionLogicalOperatorSymbol extractSymbolTerminal(TerminalNode child) {
@@ -660,11 +660,11 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         return StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
     }
 
-    private OrderByExpressionSymbol extractSymbol(AqlParser.OrderByExprContext ctx) {
+    private OrderByDirection extractSymbol(AqlParser.OrderByExprContext ctx) {
         if (ctx.DESC() != null || ctx.DESCENDING() != null) {
-            return OrderByExpressionSymbol.DESC;
+            return OrderByDirection.DESC;
         } else {
-            return OrderByExpressionSymbol.ASC;
+            return OrderByDirection.ASC;
         }
     }
 

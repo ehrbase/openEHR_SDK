@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.orderby;
 
-public enum OrderByExpressionSymbol {
+public enum OrderByDirection {
     DESC,
     ASC;
 }
