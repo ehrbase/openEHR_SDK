@@ -20,6 +20,10 @@ package org.ehrbase.aql.dto.orderby;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 
 public class OrderByExpression {
+    public enum OrderByDirection {
+        DESC,
+        ASC;
+    }
 
     private IdentifiedPath statement;
     private OrderByDirection symbol;

@@ -75,13 +75,13 @@ import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
 import org.ehrbase.aql.dto.operand.TemporalPrimitiveDto;
 import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.operand.TerminologyFunctionDto;
-import org.ehrbase.aql.dto.orderby.OrderByDirection;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
+import org.ehrbase.aql.dto.orderby.OrderByExpression.OrderByDirection;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.aql.dto.select.SelectDto;
-import org.ehrbase.aql.dto.select.SelectExpressionDto;
+import org.ehrbase.aql.dto.select.Select;
+import org.ehrbase.aql.dto.select.SelectExpression;
 import org.ehrbase.util.exception.SdkException;
 
 public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
@@ -131,35 +131,34 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public SelectDto visitSelectClause(AqlParser.SelectClauseContext ctx) {
+    public Select visitSelectClause(AqlParser.SelectClauseContext ctx) {
 
-        SelectDto selectDto = new SelectDto();
+        Select select = new Select();
 
-        selectDto.setDistinct(ctx.DISTINCT() != null);
+        select.setDistinct(ctx.DISTINCT() != null);
 
         if (ctx.top() != null) {
 
             errors.add("top not yet implemented");
         }
 
-        selectDto.setStatement(
-                ctx.selectExpr().stream().map(this::visitSelectExpr).collect(Collectors.toList()));
+        select.setStatement(ctx.selectExpr().stream().map(this::visitSelectExpr).collect(Collectors.toList()));
 
-        return selectDto;
+        return select;
     }
 
     @Override
-    public SelectExpressionDto visitSelectExpr(AqlParser.SelectExprContext ctx) {
+    public SelectExpression visitSelectExpr(AqlParser.SelectExprContext ctx) {
 
-        SelectExpressionDto selectExpressionDto = new SelectExpressionDto();
+        SelectExpression selectExpression = new SelectExpression();
 
-        selectExpressionDto.setColumnExpression(visitColumnExpr(ctx.columnExpr()));
+        selectExpression.setColumnExpression(visitColumnExpr(ctx.columnExpr()));
 
         if (ctx.IDENTIFIER() != null) {
-            selectExpressionDto.setAlias(ctx.IDENTIFIER().getText());
+            selectExpression.setAlias(ctx.IDENTIFIER().getText());
         }
 
-        return selectExpressionDto;
+        return selectExpression;
     }
 
     @Override

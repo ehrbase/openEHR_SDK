@@ -53,8 +53,8 @@ import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.aql.dto.select.SelectDto;
-import org.ehrbase.aql.dto.select.SelectExpressionDto;
+import org.ehrbase.aql.dto.select.Select;
+import org.ehrbase.aql.dto.select.SelectExpression;
 import org.ehrbase.util.exception.SdkException;
 
 /**
@@ -220,7 +220,7 @@ public class AqlRender {
         }
     }
 
-    private void renderSelect(StringBuilder sb, SelectDto dto) {
+    private void renderSelect(StringBuilder sb, Select dto) {
 
         sb.append("SELECT ");
 
@@ -239,7 +239,7 @@ public class AqlRender {
         sb.append(" ");
     }
 
-    private void renderSelectStatementDto(StringBuilder sb, SelectExpressionDto dto) {
+    private void renderSelectStatementDto(StringBuilder sb, SelectExpression dto) {
         ColumnExpression columnExpression = dto.getColumnExpression();
 
         if (columnExpression instanceof IdentifiedPath) {

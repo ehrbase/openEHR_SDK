@@ -19,7 +19,7 @@ package org.ehrbase.aql.dto.select;
 
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 
-public class SelectExpressionDto {
+public class SelectExpression {
 
     private String alias;
     private ColumnExpression columnExpression;

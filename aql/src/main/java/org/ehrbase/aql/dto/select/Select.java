@@ -21,14 +21,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import org.ehrbase.client.aql.top.Direction;
 
-public class SelectDto {
+public class Select {
 
     private Integer topCount;
     private Direction topDirection;
 
     private boolean isDistinct = false;
 
-    private List<SelectExpressionDto> statement;
+    private List<SelectExpression> statement;
 
     public Integer getTopCount() {
         return this.topCount;
@@ -38,7 +38,7 @@ public class SelectDto {
         return this.topDirection;
     }
 
-    public List<SelectExpressionDto> getStatement() {
+    public List<SelectExpression> getStatement() {
         return this.statement;
     }
 
@@ -50,7 +50,7 @@ public class SelectDto {
         this.topDirection = topDirection;
     }
 
-    public void setStatement(List<SelectExpressionDto> statement) {
+    public void setStatement(List<SelectExpression> statement) {
         this.statement = statement;
     }
 
@@ -65,8 +65,8 @@ public class SelectDto {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof SelectDto)) return false;
-        final SelectDto other = (SelectDto) o;
+        if (!(o instanceof Select)) return false;
+        final Select other = (Select) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$topCount = this.getTopCount();
         final Object other$topCount = other.getTopCount();
@@ -82,7 +82,7 @@ public class SelectDto {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof SelectDto;
+        return other instanceof Select;
     }
 
     public int hashCode() {
@@ -98,7 +98,7 @@ public class SelectDto {
     }
 
     public String toString() {
-        return "SelectDto(topCount="
+        return "Select(topCount="
                 + this.getTopCount()
                 + ", topDirection="
                 + this.getTopDirection()
