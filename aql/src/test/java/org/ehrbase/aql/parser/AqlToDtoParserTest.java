@@ -28,7 +28,7 @@ import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
-import org.ehrbase.aql.dto.path.predicate.Predicate;
+import org.ehrbase.aql.dto.path.predicate.AqlPredicate;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperator;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.render.AqlRender;
@@ -332,7 +332,7 @@ class AqlToDtoParserTest {
             if (classExpressionDto.getType().equals("EHR")) {
                 sb.append(render(classExpressionDto.getContains()));
             } else {
-                Predicate otherPredicates = ((ContainmentClassExpression) containmentExpresion).getPredicates();
+                AqlPredicate otherPredicates = ((ContainmentClassExpression) containmentExpresion).getPredicates();
                 sb.append(PredicateHelper.find(otherPredicates, PredicateHelper.ARCHETYPE_NODE_ID)
                         .map(PredicateComparisonOperator::getValue)
                         .map(StringPrimitive.class::cast)

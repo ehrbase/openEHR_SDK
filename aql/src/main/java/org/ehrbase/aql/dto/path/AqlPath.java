@@ -34,12 +34,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
-import org.ehrbase.aql.dto.path.predicate.Predicate;
+import org.ehrbase.aql.dto.path.predicate.AqlPredicate;
+import org.ehrbase.aql.dto.path.predicate.DisjunctableAqlPredicate;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperator;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
-import org.ehrbase.aql.dto.path.predicate.SimplePredicate;
 import org.ehrbase.util.exception.SdkException;
 
 public final class AqlPath implements Serializable {
@@ -393,14 +393,16 @@ public final class AqlPath implements Serializable {
         PredicateLogicalAndOperation otherPredicates;
 
         if (predicatesExp != null) {
-            Predicate predicate = PredicateHelper.buildPredicate(predicatesExp);
+            AqlPredicate predicate = PredicateHelper.buildPredicate(predicatesExp);
 
             if (predicate instanceof PredicateLogicalOrOperation) {
                 throw new SdkException("Or in predicate not supported");
             } else if (predicate instanceof PredicateLogicalAndOperation) {
                 otherPredicates = (PredicateLogicalAndOperation) predicate;
+            } else if (predicate instanceof PredicateComparisonOperator) {
+                otherPredicates = new PredicateLogicalAndOperation((PredicateComparisonOperator) predicate);
             } else {
-                otherPredicates = new PredicateLogicalAndOperation((SimplePredicate) predicate);
+                throw new IllegalStateException("Unknown predicate type %s".formatted(predicate.getClass()));
             }
 
             atCode = find(otherPredicates, ARCHETYPE_NODE_ID)
@@ -532,22 +534,23 @@ public final class AqlPath implements Serializable {
             return null;
         }
 
-        private static <P extends SimplePredicate> P replaceInternal(P predicate, String statement, String newValue) {
+        private static <P extends DisjunctableAqlPredicate> P replaceInternal(
+                P predicate, String statement, String newValue) {
             if (predicate instanceof PredicateComparisonOperator) {
                 return (P) replaceValue((PredicateComparisonOperator) predicate, statement, newValue);
 
             } else if (predicate instanceof PredicateLogicalAndOperation) {
-                for (SimplePredicate child : ((PredicateLogicalAndOperation) predicate).getValues()) {
-                    SimplePredicate newChild = replaceInternal(child, statement, newValue);
+                for (PredicateComparisonOperator child : ((PredicateLogicalAndOperation) predicate).getValues()) {
+                    PredicateComparisonOperator newChild = replaceInternal(child, statement, newValue);
                     if (newChild == child) {
                         // value unchanged
                         return predicate;
                     } else if (newChild != null) {
                         // value changed
-                        SimplePredicate[] newValues = ((PredicateLogicalAndOperation) predicate)
+                        PredicateComparisonOperator[] newValues = ((PredicateLogicalAndOperation) predicate)
                                 .getValues().stream()
                                         .map(p -> p == child ? newChild : p)
-                                        .toArray(SimplePredicate[]::new);
+                                        .toArray(PredicateComparisonOperator[]::new);
                         return (P) new PredicateLogicalAndOperation(newValues);
                     }
                 }
@@ -561,11 +564,11 @@ public final class AqlPath implements Serializable {
 
             if (newPredicateDto == null) {
                 // statement not found
-                SimplePredicate[] newValues = Stream.concat(
+                PredicateComparisonOperator[] newValues = Stream.concat(
                                 otherPredicate.getValues().stream(),
                                 Stream.of(
                                         new PredicateComparisonOperator(statement, EQ, new StringPrimitive(newValue))))
-                        .toArray(SimplePredicate[]::new);
+                        .toArray(PredicateComparisonOperator[]::new);
                 return new PredicateLogicalAndOperation(newValues);
 
             } else {

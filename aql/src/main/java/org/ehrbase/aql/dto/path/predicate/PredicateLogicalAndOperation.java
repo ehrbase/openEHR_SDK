@@ -27,16 +27,18 @@ import org.ehrbase.aql.dto.LogicalOperatorDto;
  * @author Stefan Spiska
  */
 public final class PredicateLogicalAndOperation
-        implements LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicate>, SimplePredicate, Serializable {
+        implements LogicalOperatorDto<PredicateLogicalOperatorSymbol, PredicateComparisonOperator>,
+                DisjunctableAqlPredicate,
+                Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.AND;
-    private List<SimplePredicate> values;
+    private List<PredicateComparisonOperator> values;
 
     public PredicateLogicalAndOperation() {
         this.values = List.of();
     }
 
-    public PredicateLogicalAndOperation(SimplePredicate... values) {
+    public PredicateLogicalAndOperation(PredicateComparisonOperator... values) {
         this.values = List.of(values);
     }
 
@@ -46,14 +48,14 @@ public final class PredicateLogicalAndOperation
     }
 
     @Override
-    public List<SimplePredicate> getValues() {
+    public List<PredicateComparisonOperator> getValues() {
         return values;
     }
 
     @Override
-    public PredicateLogicalAndOperation addValues(Stream<SimplePredicate> valuesStream) {
-        SimplePredicate[] newValues =
-                Stream.concat(values.stream(), valuesStream).toArray(SimplePredicate[]::new);
+    public PredicateLogicalAndOperation addValues(Stream<PredicateComparisonOperator> valuesStream) {
+        PredicateComparisonOperator[] newValues =
+                Stream.concat(values.stream(), valuesStream).toArray(PredicateComparisonOperator[]::new);
         return new PredicateLogicalAndOperation(newValues);
     }
 

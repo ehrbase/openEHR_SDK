@@ -17,13 +17,13 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-import org.ehrbase.aql.dto.path.predicate.Predicate;
+import org.ehrbase.aql.dto.path.predicate.AqlPredicate;
 
 public class ContainmentClassExpression extends AbstractContainmentExpression {
 
     private String type;
 
-    private Predicate predicates;
+    private AqlPredicate predicates;
 
     public String getType() {
         return type;
@@ -33,11 +33,11 @@ public class ContainmentClassExpression extends AbstractContainmentExpression {
         this.type = type;
     }
 
-    public Predicate getPredicates() {
+    public AqlPredicate getPredicates() {
         return predicates;
     }
 
-    public void setPredicates(Predicate predicates) {
+    public void setPredicates(AqlPredicate predicates) {
         this.predicates = predicates;
     }
 }

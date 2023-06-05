@@ -25,7 +25,7 @@ import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.util.exception.SdkException;
 
-public final class PredicateComparisonOperator implements SimplePredicate, Serializable {
+public final class PredicateComparisonOperator implements DisjunctableAqlPredicate, Serializable {
 
     private String statement;
     private ComparisonOperatorSymbol symbol;

@@ -73,7 +73,7 @@ class PredicateHelperTest {
     @EnumSource(TestCase.class)
     void roundTrip(TestCase testCase) {
 
-        Predicate predicate = PredicateHelper.buildPredicate(testCase.input);
+        AqlPredicate predicate = PredicateHelper.buildPredicate(testCase.input);
 
         StringBuilder sb = new StringBuilder();
         PredicateHelper.format(sb, predicate, testCase.format);
@@ -83,7 +83,7 @@ class PredicateHelperTest {
 
     @Test
     void remove() {
-        Predicate predicate = PredicateHelper.buildPredicate("name/value='name1' and archetype_node_id=at001");
+        AqlPredicate predicate = PredicateHelper.buildPredicate("name/value='name1' and archetype_node_id=at001");
 
         {
             PredicateLogicalAndOperation actual = PredicateHelper.remove(
