@@ -78,7 +78,7 @@ import org.ehrbase.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.orderby.OrderByExpression.OrderByDirection;
 import org.ehrbase.aql.dto.path.AqlPath;
-import org.ehrbase.aql.dto.path.predicate.PredicateDto;
+import org.ehrbase.aql.dto.path.predicate.Predicate;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectClause;
 import org.ehrbase.aql.dto.select.SelectExpression;
@@ -371,10 +371,10 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         }
 
         if (ctx.pathPredicate() != null) {
-            PredicateDto predicateDto = PredicateHelper.buildPredicate(
+            Predicate predicate = PredicateHelper.buildPredicate(
                     StringUtils.removeEnd(StringUtils.removeStart(getFullText(ctx.pathPredicate()), "["), "]"));
 
-            containmentDto.setOtherPredicates(predicateDto);
+            containmentDto.setPredicates(predicate);
         }
 
         return containmentDto;

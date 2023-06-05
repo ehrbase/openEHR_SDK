@@ -25,13 +25,13 @@ import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.util.exception.SdkException;
 
-public final class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {
+public final class PredicateComparisonOperator implements SimplePredicate, Serializable {
 
     private String statement;
     private ConditionComparisonOperatorSymbol symbol;
     private PathPredicateOperand value;
 
-    public PredicateComparisonOperatorDto(PredicateComparisonOperatorDto other) {
+    public PredicateComparisonOperator(PredicateComparisonOperator other) {
         this.statement = other.statement;
         this.symbol = other.symbol;
 
@@ -52,14 +52,14 @@ public final class PredicateComparisonOperatorDto implements SimplePredicateDto,
         }
     }
 
-    public PredicateComparisonOperatorDto(
+    public PredicateComparisonOperator(
             String statement, ConditionComparisonOperatorSymbol symbol, PathPredicateOperand value) {
         this.statement = statement;
         this.symbol = symbol;
         this.value = value;
     }
 
-    PredicateComparisonOperatorDto() {}
+    PredicateComparisonOperator() {}
 
     public String getStatement() {
         return this.statement;
@@ -75,8 +75,8 @@ public final class PredicateComparisonOperatorDto implements SimplePredicateDto,
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof PredicateComparisonOperatorDto)) return false;
-        final PredicateComparisonOperatorDto other = (PredicateComparisonOperatorDto) o;
+        if (!(o instanceof PredicateComparisonOperator)) return false;
+        final PredicateComparisonOperator other = (PredicateComparisonOperator) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$statement = this.getStatement();
         final Object other$statement = other.getStatement();
@@ -91,7 +91,7 @@ public final class PredicateComparisonOperatorDto implements SimplePredicateDto,
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof PredicateComparisonOperatorDto;
+        return other instanceof PredicateComparisonOperator;
     }
 
     public int hashCode() {

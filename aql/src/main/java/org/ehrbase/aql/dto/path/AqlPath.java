@@ -34,12 +34,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
-import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
-import org.ehrbase.aql.dto.path.predicate.PredicateDto;
+import org.ehrbase.aql.dto.path.predicate.Predicate;
+import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperator;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalAndOperation;
 import org.ehrbase.aql.dto.path.predicate.PredicateLogicalOrOperation;
-import org.ehrbase.aql.dto.path.predicate.SimplePredicateDto;
+import org.ehrbase.aql.dto.path.predicate.SimplePredicate;
 import org.ehrbase.util.exception.SdkException;
 
 public final class AqlPath implements Serializable {
@@ -393,18 +393,18 @@ public final class AqlPath implements Serializable {
         PredicateLogicalAndOperation otherPredicates;
 
         if (predicatesExp != null) {
-            PredicateDto predicateDto = PredicateHelper.buildPredicate(predicatesExp);
+            Predicate predicate = PredicateHelper.buildPredicate(predicatesExp);
 
-            if (predicateDto instanceof PredicateLogicalOrOperation) {
+            if (predicate instanceof PredicateLogicalOrOperation) {
                 throw new SdkException("Or in predicate not supported");
-            } else if (predicateDto instanceof PredicateLogicalAndOperation) {
-                otherPredicates = (PredicateLogicalAndOperation) predicateDto;
+            } else if (predicate instanceof PredicateLogicalAndOperation) {
+                otherPredicates = (PredicateLogicalAndOperation) predicate;
             } else {
-                otherPredicates = new PredicateLogicalAndOperation((SimplePredicateDto) predicateDto);
+                otherPredicates = new PredicateLogicalAndOperation((SimplePredicate) predicate);
             }
 
             atCode = find(otherPredicates, ARCHETYPE_NODE_ID)
-                    .map(PredicateComparisonOperatorDto::getValue)
+                    .map(PredicateComparisonOperator::getValue)
                     .map(Primitive.class::cast)
                     .map(Primitive::getValue)
                     .map(Object::toString)
@@ -509,8 +509,8 @@ public final class AqlPath implements Serializable {
          * @param newValue
          * @return new value; null means not found
          */
-        private static PredicateComparisonOperatorDto replaceValue(
-                PredicateComparisonOperatorDto cmpOp, String statement, String newValue) {
+        private static PredicateComparisonOperator replaceValue(
+                PredicateComparisonOperator cmpOp, String statement, String newValue) {
             if (cmpOp.getSymbol() == EQ && cmpOp.getStatement().equals(statement)) {
 
                 PathPredicateOperand v = cmpOp.getValue();
@@ -524,7 +524,7 @@ public final class AqlPath implements Serializable {
                         Primitive<String> clone = new StringPrimitive();
                         clone.setValue(newValue);
 
-                        return new PredicateComparisonOperatorDto(statement, EQ, clone);
+                        return new PredicateComparisonOperator(statement, EQ, clone);
                     }
                 }
             }
@@ -532,23 +532,22 @@ public final class AqlPath implements Serializable {
             return null;
         }
 
-        private static <P extends SimplePredicateDto> P replaceInternal(
-                P predicate, String statement, String newValue) {
-            if (predicate instanceof PredicateComparisonOperatorDto) {
-                return (P) replaceValue((PredicateComparisonOperatorDto) predicate, statement, newValue);
+        private static <P extends SimplePredicate> P replaceInternal(P predicate, String statement, String newValue) {
+            if (predicate instanceof PredicateComparisonOperator) {
+                return (P) replaceValue((PredicateComparisonOperator) predicate, statement, newValue);
 
             } else if (predicate instanceof PredicateLogicalAndOperation) {
-                for (SimplePredicateDto child : ((PredicateLogicalAndOperation) predicate).getValues()) {
-                    SimplePredicateDto newChild = replaceInternal(child, statement, newValue);
+                for (SimplePredicate child : ((PredicateLogicalAndOperation) predicate).getValues()) {
+                    SimplePredicate newChild = replaceInternal(child, statement, newValue);
                     if (newChild == child) {
                         // value unchanged
                         return predicate;
                     } else if (newChild != null) {
                         // value changed
-                        SimplePredicateDto[] newValues = ((PredicateLogicalAndOperation) predicate)
+                        SimplePredicate[] newValues = ((PredicateLogicalAndOperation) predicate)
                                 .getValues().stream()
                                         .map(p -> p == child ? newChild : p)
-                                        .toArray(SimplePredicateDto[]::new);
+                                        .toArray(SimplePredicate[]::new);
                         return (P) new PredicateLogicalAndOperation(newValues);
                     }
                 }
@@ -562,11 +561,11 @@ public final class AqlPath implements Serializable {
 
             if (newPredicateDto == null) {
                 // statement not found
-                SimplePredicateDto[] newValues = Stream.concat(
+                SimplePredicate[] newValues = Stream.concat(
                                 otherPredicate.getValues().stream(),
-                                Stream.of(new PredicateComparisonOperatorDto(
-                                        statement, EQ, new StringPrimitive(newValue))))
-                        .toArray(SimplePredicateDto[]::new);
+                                Stream.of(
+                                        new PredicateComparisonOperator(statement, EQ, new StringPrimitive(newValue))))
+                        .toArray(SimplePredicate[]::new);
                 return new PredicateLogicalAndOperation(newValues);
 
             } else {
@@ -598,7 +597,7 @@ public final class AqlPath implements Serializable {
 
         public String findOtherPredicate(String name) {
             return find(otherPredicate, name)
-                    .map(PredicateComparisonOperatorDto::getValue)
+                    .map(PredicateComparisonOperator::getValue)
                     .filter(Primitive.class::isInstance)
                     .map(Primitive.class::cast)
                     .map(Primitive::getValue)
@@ -612,7 +611,7 @@ public final class AqlPath implements Serializable {
                 otherPredicates = new PredicateLogicalAndOperation();
             } else {
                 otherPredicates = new PredicateLogicalAndOperation(
-                        new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new StringPrimitive(atCode)));
+                        new PredicateComparisonOperator(ARCHETYPE_NODE_ID, EQ, new StringPrimitive(atCode)));
             }
             return new AqlNode(name, atCode, otherPredicates);
         }

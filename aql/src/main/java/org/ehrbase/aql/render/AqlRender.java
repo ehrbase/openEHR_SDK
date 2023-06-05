@@ -392,10 +392,10 @@ public class AqlRender {
             sb.append(" ").append(dto.getIdentifier());
         }
 
-        if (dto.getOtherPredicates() != null) {
+        if (dto.getPredicates() != null) {
 
             sb.append("[")
-                    .append(PredicateHelper.format(dto.getOtherPredicates(), AqlPath.OtherPredicatesFormat.SHORTED))
+                    .append(PredicateHelper.format(dto.getPredicates(), AqlPath.OtherPredicatesFormat.SHORTED))
                     .append("]");
         }
 

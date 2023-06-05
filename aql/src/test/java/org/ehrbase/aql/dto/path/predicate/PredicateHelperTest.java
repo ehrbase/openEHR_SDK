@@ -73,21 +73,21 @@ class PredicateHelperTest {
     @EnumSource(TestCase.class)
     void roundTrip(TestCase testCase) {
 
-        PredicateDto predicateDto = PredicateHelper.buildPredicate(testCase.input);
+        Predicate predicate = PredicateHelper.buildPredicate(testCase.input);
 
         StringBuilder sb = new StringBuilder();
-        PredicateHelper.format(sb, predicateDto, testCase.format);
+        PredicateHelper.format(sb, predicate, testCase.format);
 
         assertThat(sb).hasToString(testCase.expected);
     }
 
     @Test
     void remove() {
-        PredicateDto predicateDto = PredicateHelper.buildPredicate("name/value='name1' and archetype_node_id=at001");
+        Predicate predicate = PredicateHelper.buildPredicate("name/value='name1' and archetype_node_id=at001");
 
         {
             PredicateLogicalAndOperation actual = PredicateHelper.remove(
-                    (PredicateLogicalAndOperation) predicateDto,
+                    (PredicateLogicalAndOperation) predicate,
                     ConditionComparisonOperatorSymbol.EQ,
                     PredicateHelper.NAME_VALUE);
             StringBuilder sb = new StringBuilder();
@@ -96,7 +96,7 @@ class PredicateHelperTest {
         }
         {
             PredicateLogicalAndOperation actual = PredicateHelper.remove(
-                    (PredicateLogicalAndOperation) predicateDto,
+                    (PredicateLogicalAndOperation) predicate,
                     ConditionComparisonOperatorSymbol.GT_EQ,
                     PredicateHelper.NAME_VALUE);
             StringBuilder sb = new StringBuilder();
@@ -104,8 +104,8 @@ class PredicateHelperTest {
             assertThat(sb).hasToString("at001,'name1'");
         }
         {
-            PredicateLogicalAndOperation actual = PredicateHelper.remove(
-                    (PredicateLogicalAndOperation) predicateDto, null, PredicateHelper.NAME_VALUE);
+            PredicateLogicalAndOperation actual =
+                    PredicateHelper.remove((PredicateLogicalAndOperation) predicate, null, PredicateHelper.NAME_VALUE);
             StringBuilder sb = new StringBuilder();
             PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);
             assertThat(sb).hasToString("at001");

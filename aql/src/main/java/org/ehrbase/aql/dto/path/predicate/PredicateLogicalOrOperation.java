@@ -27,12 +27,12 @@ import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
  * @author Stefan Spiska
  */
 public class PredicateLogicalOrOperation
-        implements PredicateDto, LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>, Serializable {
+        implements Predicate, LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicate>, Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.OR;
-    private List<SimplePredicateDto> values;
+    private List<SimplePredicate> values;
 
-    public PredicateLogicalOrOperation(SimplePredicateDto... values) {
+    public PredicateLogicalOrOperation(SimplePredicate... values) {
         this.values = List.of(values);
     }
 
@@ -46,14 +46,14 @@ public class PredicateLogicalOrOperation
     }
 
     @Override
-    public List<SimplePredicateDto> getValues() {
+    public List<SimplePredicate> getValues() {
         return values;
     }
 
     @Override
-    public PredicateLogicalOrOperation addValues(Stream<SimplePredicateDto> valuesStream) {
-        SimplePredicateDto[] newValues =
-                Stream.concat(values.stream(), valuesStream).toArray(SimplePredicateDto[]::new);
+    public PredicateLogicalOrOperation addValues(Stream<SimplePredicate> valuesStream) {
+        SimplePredicate[] newValues =
+                Stream.concat(values.stream(), valuesStream).toArray(SimplePredicate[]::new);
         return new PredicateLogicalOrOperation(newValues);
     }
 
