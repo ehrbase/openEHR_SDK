@@ -58,8 +58,8 @@ import org.ehrbase.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperatorSymbol;
 import org.ehrbase.aql.dto.containment.ContainmentVersionExpression;
-import org.ehrbase.aql.dto.operand.AQLFunction;
 import org.ehrbase.aql.dto.operand.AggregateFunction;
+import org.ehrbase.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.aql.dto.operand.BooleanPrimitive;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperand;
@@ -72,6 +72,7 @@ import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
+import org.ehrbase.aql.dto.operand.SingleRowFunction.SingleRowFunctionName;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.operand.TemporalPrimitive;
 import org.ehrbase.aql.dto.operand.TerminologyFunction;
@@ -187,7 +188,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
         AggregateFunction dto = new AggregateFunction();
 
-        final AQLFunction aqlFunction = findFunctionName(ctx.name);
+        final AggregateFunctionName aqlFunction = findFunctionName(ctx.name, AggregateFunctionName::valueOf);
 
         dto.setFunctionName(aqlFunction);
         dto.setIdentifiedPath(visitIdentifiedPath(ctx.identifiedPath()));
@@ -195,14 +196,12 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         return dto;
     }
 
-    private static AQLFunction findFunctionName(Token name) {
-        final AQLFunction aqlFunction;
+    private static <F> F findFunctionName(Token name, Function<String, F> toNameNumFunc) {
         try {
-            aqlFunction = AQLFunction.valueOf(name.getText().toUpperCase(Locale.ROOT));
+            return toNameNumFunc.apply(name.getText().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             throw new SdkException(String.format("Unknown function %s ", name.getText()));
         }
-        return aqlFunction;
     }
 
     @Override
@@ -259,7 +258,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     public SingleRowFunction visitFunctionCall(AqlParser.FunctionCallContext ctx) {
 
         SingleRowFunction dto = new SingleRowFunction();
-        dto.setFunctionName(findFunctionName(ctx.name));
+        dto.setFunctionName(findFunctionName(ctx.name, SingleRowFunctionName::valueOf));
 
         dto.setOperandList(ctx.terminal().stream().map(this::visitTerminal).toList());
 

@@ -20,5 +20,4 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class TerminologyFunction extends AbstractFunction
-        implements MatchesOperand, ColumnExpression, Operand, ComparisonLeftOperand {}
+public class TerminologyFunction implements MatchesOperand, ColumnExpression, Operand, ComparisonLeftOperand {}

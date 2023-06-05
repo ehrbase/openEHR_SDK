@@ -20,8 +20,9 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class AggregateFunction extends AbstractFunction implements ColumnExpression {
+public class AggregateFunction implements ColumnExpression {
 
+    private AggregateFunctionName functionName;
     private IdentifiedPath identifiedPath;
 
     public IdentifiedPath getIdentifiedPath() {
@@ -32,14 +33,18 @@ public class AggregateFunction extends AbstractFunction implements ColumnExpress
         this.identifiedPath = identifiedPath;
     }
 
-    @Override
-    public void setFunctionName(AQLFunction functionName) {
+    public void setFunctionName(AggregateFunctionName functionName) {
+        this.functionName = functionName;
+    }
 
-        if (functionName.getFunctionType() != AQLFunctionType.AGGREGATE) {
+    public AggregateFunctionName getFunctionName() {
+        return functionName;
+    }
 
-            throw new UnsupportedOperationException(
-                    String.format("%s is not a aggregate Function", functionName.name()));
-        }
-        super.setFunctionName(functionName);
+    public enum AggregateFunctionName {
+        COUNT,
+        MIN,
+        MAX,
+        AVG
     }
 }

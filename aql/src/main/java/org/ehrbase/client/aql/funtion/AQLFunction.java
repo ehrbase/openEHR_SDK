@@ -15,27 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operand;
+package org.ehrbase.client.aql.funtion;
 
 /**
  * @author Stefan Spiska
  */
-public enum AQLFunction {
-    COUNT(AQLFunctionType.AGGREGATE),
-    MIN(AQLFunctionType.AGGREGATE),
-    MAX(AQLFunctionType.AGGREGATE),
-    AVG(AQLFunctionType.AGGREGATE),
-    CONTAINS(AQLFunctionType.SINGLE_ROW),
-    CONCAT_WS(AQLFunctionType.SINGLE_ROW),
-    CEIL(AQLFunctionType.SINGLE_ROW);
-
-    private final AQLFunctionType functionType;
-
-    AQLFunction(AQLFunctionType functionType) {
-        this.functionType = functionType;
-    }
-
-    public AQLFunctionType getFunctionType() {
-        return functionType;
-    }
+enum AQLFunction {
+    COUNT,
+    MIN,
+    MAX,
+    AVG,
+    CONTAINS,
+    CONCAT_WS,
+    CEIL;
 }

@@ -22,8 +22,9 @@ import java.util.List;
 /**
  * @author Stefan Spiska
  */
-public class SingleRowFunction extends AbstractFunction implements ColumnExpression, Operand, ComparisonLeftOperand {
+public class SingleRowFunction implements ColumnExpression, Operand, ComparisonLeftOperand {
 
+    private SingleRowFunctionName functionName;
     private List<Operand> operandList;
 
     public List<Operand> getOperandList() {
@@ -34,14 +35,21 @@ public class SingleRowFunction extends AbstractFunction implements ColumnExpress
         this.operandList = operandList;
     }
 
-    @Override
-    public void setFunctionName(AQLFunction functionName) {
+    public void setFunctionName(SingleRowFunctionName functionName) {
+        this.functionName = functionName;
+    }
 
-        if (functionName.getFunctionType() != AQLFunctionType.SINGLE_ROW) {
+    public SingleRowFunctionName getFunctionName() {
+        return functionName;
+    }
 
-            throw new UnsupportedOperationException(
-                    String.format("%s is not a Single Row Function", functionName.name()));
-        }
-        super.setFunctionName(functionName);
+    public enum SingleRowFunctionName {
+        COUNT,
+        MIN,
+        MAX,
+        AVG,
+        CONTAINS,
+        CONCAT_WS,
+        CEIL;
     }
 }
