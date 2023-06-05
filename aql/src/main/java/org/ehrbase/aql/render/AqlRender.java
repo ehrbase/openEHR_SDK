@@ -41,15 +41,15 @@ import org.ehrbase.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.aql.dto.operand.AggregateFunction;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
-import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
+import org.ehrbase.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperand;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
+import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
-import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -139,7 +139,7 @@ public class AqlRender {
         Iterator<MatchesOperand> iterator = matchesCondition.getValues().iterator();
         while (iterator.hasNext()) {
             MatchesOperand next = iterator.next();
-            renderMatchesOperant(sb, next);
+            renderMatchesOperand(sb, next);
             if (iterator.hasNext()) {
                 sb.append(", ");
             }
@@ -147,7 +147,7 @@ public class AqlRender {
         sb.append("}");
     }
 
-    private void renderMatchesOperant(StringBuilder sb, MatchesOperand next) {
+    private void renderMatchesOperand(StringBuilder sb, MatchesOperand next) {
 
         if (next instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
@@ -161,10 +161,10 @@ public class AqlRender {
     private void renderLike(StringBuilder sb, LikeCondition likeCondition) {
         renderIdentifiedPath(sb, likeCondition.getStatement());
         sb.append(" ").append("LIKE").append(" ");
-        renderLikeOperant(sb, likeCondition.getValue());
+        renderLikeOperand(sb, likeCondition.getValue());
     }
 
-    private void renderLikeOperant(StringBuilder sb, LikeOperand value) {
+    private void renderLikeOperand(StringBuilder sb, LikeOperand value) {
 
         if (value instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
@@ -199,7 +199,7 @@ public class AqlRender {
 
     private void renderConditionComparisonOperatorDto(
             StringBuilder sb, ComparisonOperatorCondition comparisonOperatorCondition) {
-        ComparisonLeftOperator statement = comparisonOperatorCondition.getStatement();
+        ComparisonLeftOperand statement = comparisonOperatorCondition.getStatement();
 
         renderComparisonLeftOperator(sb, statement);
         sb.append(" ")
@@ -208,7 +208,7 @@ public class AqlRender {
         sb.append(renderTerminal(comparisonOperatorCondition.getValue()));
     }
 
-    private void renderComparisonLeftOperator(StringBuilder sb, ComparisonLeftOperator statement) {
+    private void renderComparisonLeftOperator(StringBuilder sb, ComparisonLeftOperand statement) {
         if (statement instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
         } else if (statement instanceof SingleRowFunction singleRowFunktion) {
@@ -271,26 +271,26 @@ public class AqlRender {
     private void renderSingleRowFunctionDto(StringBuilder sb, SingleRowFunction singleRowFunktion) {
 
         sb.append(singleRowFunktion.getFunctionName().name()).append("(");
-        sb.append(singleRowFunktion.getOperantList().stream()
+        sb.append(singleRowFunktion.getOperandList().stream()
                 .map(this::renderTerminal)
                 .collect(Collectors.joining(", ")));
         sb.append(")");
     }
 
-    private String renderTerminal(Terminal terminal) {
+    private String renderTerminal(Operand operand) {
 
         StringBuilder sb = new StringBuilder();
-        if (terminal instanceof SingleRowFunction singleRowFunktion) {
+        if (operand instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
-        } else if (terminal instanceof IdentifiedPath identifiedPath) {
+        } else if (operand instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
-        } else if (terminal instanceof Primitive<?> primitive) {
+        } else if (operand instanceof Primitive<?> primitive) {
             sb.append(renderValue(primitive.getValue()));
-        } else if (terminal instanceof QueryParameter queryParameter) {
+        } else if (operand instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
         } else {
             throw new UnsupportedOperationException(
-                    "Can not handle %s".formatted(terminal.getClass().getName()));
+                    "Can not handle %s".formatted(operand.getClass().getName()));
         }
         return sb.toString();
     }

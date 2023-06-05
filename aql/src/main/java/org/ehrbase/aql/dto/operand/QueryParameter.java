@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class QueryParameter implements MatchesOperand, Terminal, LikeOperand, PathPredicateOperand {
+public class QueryParameter implements MatchesOperand, Operand, LikeOperand, PathPredicateOperand {
 
     private String name;
 

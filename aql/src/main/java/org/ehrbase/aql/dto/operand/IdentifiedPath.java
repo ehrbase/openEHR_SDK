@@ -23,7 +23,7 @@ import org.ehrbase.aql.dto.path.AqlPath;
 /**
  * @author Stefan Spiska
  */
-public class IdentifiedPath implements ColumnExpression, Terminal, ComparisonLeftOperator {
+public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeftOperand {
 
     private AbstractContainmentExpression from;
     private AqlPath path;

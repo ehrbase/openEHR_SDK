@@ -24,8 +24,8 @@ import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.aql.dto.condition.LogicalOperatorCondition;
 import org.ehrbase.aql.dto.condition.WhereCondition;
+import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.QueryParameter;
-import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.parser.AqlToDtoParser;
 import org.ehrbase.aql.render.AqlRender;
 
@@ -52,7 +52,7 @@ public class AqlUtil {
 
     private static WhereCondition removeParameter(WhereCondition condition, String parameterName) {
         if (condition instanceof ComparisonOperatorCondition) {
-            Terminal value = ((ComparisonOperatorCondition) condition).getValue();
+            Operand value = ((ComparisonOperatorCondition) condition).getValue();
             if (value instanceof QueryParameter && Objects.equals(((QueryParameter) value).getName(), parameterName)) {
                 return null;
             }

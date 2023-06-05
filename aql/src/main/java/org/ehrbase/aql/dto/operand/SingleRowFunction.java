@@ -22,16 +22,16 @@ import java.util.List;
 /**
  * @author Stefan Spiska
  */
-public class SingleRowFunction extends AbstractFunction implements ColumnExpression, Terminal, ComparisonLeftOperator {
+public class SingleRowFunction extends AbstractFunction implements ColumnExpression, Operand, ComparisonLeftOperand {
 
-    private List<Terminal> operantList;
+    private List<Operand> operandList;
 
-    public List<Terminal> getOperantList() {
-        return operantList;
+    public List<Operand> getOperandList() {
+        return operandList;
     }
 
-    public void setOperantList(List<Terminal> operantList) {
-        this.operantList = operantList;
+    public void setOperandList(List<Operand> operandList) {
+        this.operandList = operandList;
     }
 
     @Override

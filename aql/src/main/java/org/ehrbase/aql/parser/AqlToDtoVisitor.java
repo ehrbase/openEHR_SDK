@@ -62,18 +62,18 @@ import org.ehrbase.aql.dto.operand.AQLFunction;
 import org.ehrbase.aql.dto.operand.AggregateFunction;
 import org.ehrbase.aql.dto.operand.BooleanPrimitive;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
-import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
+import org.ehrbase.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperand;
 import org.ehrbase.aql.dto.operand.LongPrimitive;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
+import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.operand.TemporalPrimitive;
-import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.orderby.OrderByExpression.OrderByDirection;
@@ -261,13 +261,13 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         SingleRowFunction dto = new SingleRowFunction();
         dto.setFunctionName(findFunctionName(ctx.name));
 
-        dto.setOperantList(ctx.terminal().stream().map(this::visitTerminal).toList());
+        dto.setOperandList(ctx.terminal().stream().map(this::visitTerminal).toList());
 
         return dto;
     }
 
     @Override
-    public Terminal visitTerminal(AqlParser.TerminalContext ctx) {
+    public Operand visitTerminal(AqlParser.TerminalContext ctx) {
 
         if (ctx.identifiedPath() != null) {
             return visitIdentifiedPath(ctx.identifiedPath());
@@ -464,7 +464,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             ComparisonOperatorCondition comparisonOperatorCondition = new ComparisonOperatorCondition();
             comparisonOperatorCondition.setSymbol(extractSymbol(ctx.COMPARISON_OPERATOR()));
             comparisonOperatorCondition.setValue(visitTerminal(ctx.terminal()));
-            ComparisonLeftOperator statement;
+            ComparisonLeftOperand statement;
 
             if (ctx.functionCall() != null) {
                 statement = visitFunctionCall(ctx.functionCall());

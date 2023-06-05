@@ -20,4 +20,4 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public interface ComparisonLeftOperator {}
+public interface ComparisonLeftOperand {}
