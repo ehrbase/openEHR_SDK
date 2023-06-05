@@ -23,10 +23,10 @@ import static org.assertj.core.api.Assertions.fail;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.containment.ContainmentClassExpressionDto;
-import org.ehrbase.aql.dto.containment.ContainmentDto;
-import org.ehrbase.aql.dto.containment.ContainmentExpresionDto;
-import org.ehrbase.aql.dto.containment.ContainmentLogicalOperator;
+import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
+import org.ehrbase.aql.dto.containment.Containment;
+import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
+import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.aql.dto.operant.StringPrimitiveDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
@@ -324,33 +324,32 @@ class AqlToDtoParserTest {
                 "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 --> CLUSTER OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
     }
 
-    String render(ContainmentExpresionDto containmentExpresion) {
+    String render(Containment containmentExpresion) {
         StringBuilder sb = new StringBuilder();
 
-        if (containmentExpresion instanceof ContainmentClassExpressionDto classExpressionDto) {
+        if (containmentExpresion instanceof ContainmentClassExpression classExpressionDto) {
 
             if (classExpressionDto.getType().equals("EHR")) {
                 sb.append(render(classExpressionDto.getContains()));
             } else {
-                PredicateDto otherPredicates =
-                        ((ContainmentClassExpressionDto) containmentExpresion).getOtherPredicates();
+                PredicateDto otherPredicates = ((ContainmentClassExpression) containmentExpresion).getOtherPredicates();
                 sb.append(PredicateHelper.find(otherPredicates, PredicateHelper.ARCHETYPE_NODE_ID)
                         .map(PredicateComparisonOperatorDto::getValue)
                         .map(StringPrimitiveDto.class::cast)
                         .map(StringPrimitiveDto::getValue)
                         .orElse(classExpressionDto.getType()));
-                ContainmentExpresionDto contains = ((ContainmentDto) containmentExpresion).getContains();
+                Containment contains = ((AbstractContainmentExpression) containmentExpresion).getContains();
                 if (contains != null) {
                     sb.append(" --> ").append(render(contains));
                 }
             }
-        } else if (containmentExpresion instanceof ContainmentLogicalOperator) {
+        } else if (containmentExpresion instanceof ContainmentSetOperator) {
             sb.append("(")
-                    .append(((ContainmentLogicalOperator) containmentExpresion)
+                    .append(((ContainmentSetOperator) containmentExpresion)
                             .getValues().stream()
                                     .map(this::render)
                                     .collect(Collectors.joining((StringUtils.wrap(
-                                            ((ContainmentLogicalOperator) containmentExpresion)
+                                            ((ContainmentSetOperator) containmentExpresion)
                                                     .getSymbol()
                                                     .toString(),
                                             " ")))))

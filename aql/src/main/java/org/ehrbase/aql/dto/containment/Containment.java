@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -17,7 +17,12 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-/**
- * @author Stefan Spiska
- */
-public class VersionDto extends ContainmentDto {}
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ContainmentClassExpression.class, name = "Containment"),
+    @JsonSubTypes.Type(value = ContainmentSetOperator.class, name = "LogicalOperator")
+})
+public interface Containment {}

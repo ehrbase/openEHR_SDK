@@ -17,20 +17,27 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-import org.ehrbase.aql.dto.LogicalOperatorSymbol;
+import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 
-public enum ContainmentLogicalOperatorSymbol implements LogicalOperatorSymbol {
-    OR(4),
-    AND(2);
+public class ContainmentClassExpression extends AbstractContainmentExpression {
 
-    private final int precedence;
+    private String type;
 
-    ContainmentLogicalOperatorSymbol(int precedence) {
-        this.precedence = precedence;
+    private PredicateDto otherPredicates;
+
+    public String getType() {
+        return type;
     }
 
-    @Override
-    public int getPrecedence() {
-        return precedence;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public PredicateDto getOtherPredicates() {
+        return otherPredicates;
+    }
+
+    public void setOtherPredicates(PredicateDto otherPredicates) {
+        this.otherPredicates = otherPredicates;
     }
 }

@@ -16,18 +16,28 @@
  * limitations under the License.
  */
 package org.ehrbase.aql.dto.containment;
-
 /**
  * @author Stefan Spiska
  */
-public class ContainmentLogicalNotOperator implements ContainmentExpresionDto {
-    private ContainmentExpresionDto containmentExpression;
+public abstract class AbstractContainmentExpression implements Containment {
 
-    public ContainmentExpresionDto getContainmentExpression() {
-        return containmentExpression;
+    private Containment contains;
+
+    private String identifier;
+
+    public void setContains(Containment contains) {
+        this.contains = contains;
     }
 
-    public void setContainmentExpression(ContainmentExpresionDto containmentExpression) {
-        this.containmentExpression = containmentExpression;
+    public Containment getContains() {
+        return this.contains;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -17,27 +17,7 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-import org.ehrbase.aql.dto.path.predicate.PredicateDto;
-
-public class ContainmentClassExpressionDto extends ContainmentDto {
-
-    private String type;
-
-    private PredicateDto otherPredicates;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public PredicateDto getOtherPredicates() {
-        return otherPredicates;
-    }
-
-    public void setOtherPredicates(PredicateDto otherPredicates) {
-        this.otherPredicates = otherPredicates;
-    }
-}
+/**
+ * @author Stefan Spiska
+ */
+public class ContainmentVersionExpression extends AbstractContainmentExpression {}

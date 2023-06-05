@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -17,7 +17,20 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-/**
- * @author Stefan Spiska
- */
-public class VersionExpressionDto extends ContainmentDto {}
+import org.ehrbase.aql.dto.LogicalOperatorSymbol;
+
+public enum ContainmentSetOperatorSymbol implements LogicalOperatorSymbol {
+    OR(4),
+    AND(2);
+
+    private final int precedence;
+
+    ContainmentSetOperatorSymbol(int precedence) {
+        this.precedence = precedence;
+    }
+
+    @Override
+    public int getPrecedence() {
+        return precedence;
+    }
+}

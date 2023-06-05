@@ -18,7 +18,15 @@
 package org.ehrbase.aql.parser;
 
 import com.nedap.archie.datetime.DateTimeParsers;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,20 +41,52 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.LogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.*;
-import org.ehrbase.aql.dto.containment.*;
-import org.ehrbase.aql.dto.operant.*;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.condition.ConditionDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
+import org.ehrbase.aql.dto.condition.LikeOperatorDto;
+import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
+import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
+import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
+import org.ehrbase.aql.dto.containment.Containment;
+import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
+import org.ehrbase.aql.dto.containment.ContainmentNotOperator;
+import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
+import org.ehrbase.aql.dto.containment.ContainmentSetOperatorSymbol;
+import org.ehrbase.aql.dto.containment.ContainmentVersionExpression;
+import org.ehrbase.aql.dto.operant.AQLFunction;
+import org.ehrbase.aql.dto.operant.AggregateFunctionDto;
+import org.ehrbase.aql.dto.operant.BooleanPrimitiveDto;
+import org.ehrbase.aql.dto.operant.ColumnExpression;
+import org.ehrbase.aql.dto.operant.ComparisonLeftOperator;
+import org.ehrbase.aql.dto.operant.DoublePrimitiveDto;
+import org.ehrbase.aql.dto.operant.IdentifiedPath;
+import org.ehrbase.aql.dto.operant.LikeOperant;
+import org.ehrbase.aql.dto.operant.LongPrimitiveDto;
+import org.ehrbase.aql.dto.operant.MatchesOperant;
+import org.ehrbase.aql.dto.operant.ParameterDto;
+import org.ehrbase.aql.dto.operant.Primitive;
+import org.ehrbase.aql.dto.operant.SingleRowFunktion;
+import org.ehrbase.aql.dto.operant.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operant.TemporalPrimitiveDto;
+import org.ehrbase.aql.dto.operant.Terminal;
+import org.ehrbase.aql.dto.operant.TerminologyFunctionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionSymbol;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.aql.dto.select.*;
+import org.ehrbase.aql.dto.select.SelectDto;
+import org.ehrbase.aql.dto.select.SelectExpressionDto;
 import org.ehrbase.util.exception.SdkException;
 
 public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
-    private final Map<String, ContainmentDto> identifierMap = new HashMap<>();
+    private final Map<String, AbstractContainmentExpression> identifierMap = new HashMap<>();
     private final MultiValuedMap<String, IdentifiedPath> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
 
     private List<String> errors;
@@ -252,21 +292,21 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public ContainmentExpresionDto visitFromClause(AqlParser.FromClauseContext ctx) {
+    public Containment visitFromClause(AqlParser.FromClauseContext ctx) {
 
         return visitFromExpr(ctx.fromExpr());
     }
 
     @Override
-    public ContainmentExpresionDto visitFromExpr(AqlParser.FromExprContext ctx) {
+    public Containment visitFromExpr(AqlParser.FromExprContext ctx) {
 
         return visitContainsExpr(ctx.containsExpr());
     }
 
     @Override
-    public ContainmentExpresionDto visitContainsExpr(AqlParser.ContainsExprContext ctx) {
+    public Containment visitContainsExpr(AqlParser.ContainsExprContext ctx) {
 
-        ContainmentLogicalOperatorSymbol symbol = extractSymbol(ctx);
+        ContainmentSetOperatorSymbol symbol = extractSymbol(ctx);
 
         if (symbol != null) {
 
@@ -294,7 +334,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
             AqlParser.ClassExprOperandContext classExprOperandContext = ctx.classExprOperand();
 
-            final ContainmentDto containmentDto;
+            final AbstractContainmentExpression containmentDto;
 
             if (classExprOperandContext instanceof AqlParser.ClassExpressionContext) {
 
@@ -305,10 +345,10 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             }
             if (ctx.CONTAINS() != null) {
 
-                ContainmentExpresionDto contains = visitContainsExpr(ctx.containsExpr(0));
+                Containment contains = visitContainsExpr(ctx.containsExpr(0));
                 if (ctx.NOT() != null) {
 
-                    ContainmentLogicalNotOperator not = new ContainmentLogicalNotOperator();
+                    ContainmentNotOperator not = new ContainmentNotOperator();
                     not.setContainmentExpression(contains);
                     containmentDto.setContains(not);
                 } else {
@@ -320,9 +360,9 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public ContainmentClassExpressionDto visitClassExpression(AqlParser.ClassExpressionContext ctx) {
+    public ContainmentClassExpression visitClassExpression(AqlParser.ClassExpressionContext ctx) {
 
-        ContainmentClassExpressionDto containmentDto = new ContainmentClassExpressionDto();
+        ContainmentClassExpression containmentDto = new ContainmentClassExpression();
         containmentDto.setType(ctx.IDENTIFIER(0).getText());
 
         if (ctx.IDENTIFIER().size() == 2) {
@@ -341,19 +381,18 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public VersionExpressionDto visitVersionClassExpr(AqlParser.VersionClassExprContext ctx) {
+    public ContainmentVersionExpression visitVersionClassExpr(AqlParser.VersionClassExprContext ctx) {
 
         errors.add("version not yet implemented");
-        return new VersionExpressionDto() {};
+        return new ContainmentVersionExpression() {};
     }
 
-    public ContainmentLogicalOperator buildContainmentLogicalOperator(List<Object> boolList) {
+    public ContainmentSetOperator buildContainmentLogicalOperator(List<Object> boolList) {
 
-        return (ContainmentLogicalOperator) buildLogicalOperator(boolList, (Function<
-                        ContainmentLogicalOperatorSymbol,
-                        LogicalOperatorDto<ContainmentLogicalOperatorSymbol, ContainmentExpresionDto>>)
+        return (ContainmentSetOperator) buildLogicalOperator(boolList, (Function<
+                        ContainmentSetOperatorSymbol, LogicalOperatorDto<ContainmentSetOperatorSymbol, Containment>>)
                 s -> {
-                    ContainmentLogicalOperator conditionLogicalOperatorDto = new ContainmentLogicalOperator();
+                    ContainmentSetOperator conditionLogicalOperatorDto = new ContainmentSetOperator();
                     conditionLogicalOperatorDto.setSymbol(s);
                     conditionLogicalOperatorDto.setValues(new ArrayList<>());
 
@@ -657,14 +696,14 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         }
     }
 
-    private ContainmentLogicalOperatorSymbol extractSymbol(AqlParser.ContainsExprContext ctx) {
+    private ContainmentSetOperatorSymbol extractSymbol(AqlParser.ContainsExprContext ctx) {
         if (ctx == null) {
             return null;
         }
         if (ctx.OR() != null) {
-            return ContainmentLogicalOperatorSymbol.OR;
+            return ContainmentSetOperatorSymbol.OR;
         } else if (ctx.AND() != null) {
-            return ContainmentLogicalOperatorSymbol.AND;
+            return ContainmentSetOperatorSymbol.AND;
         } else {
             return null;
         }

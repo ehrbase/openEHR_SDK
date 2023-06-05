@@ -18,39 +18,40 @@
 package org.ehrbase.aql.dto.containment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 
-public class ContainmentLogicalOperator
-        implements ContainmentExpresionDto,
-                LogicalOperatorDto<ContainmentLogicalOperatorSymbol, ContainmentExpresionDto> {
-    ContainmentLogicalOperatorSymbol symbol;
-    List<ContainmentExpresionDto> values;
+import java.util.List;
+
+public class ContainmentSetOperator
+        implements Containment,
+                LogicalOperatorDto<ContainmentSetOperatorSymbol, Containment> {
+    ContainmentSetOperatorSymbol symbol;
+    List<Containment> values;
 
     @Override
     @JsonProperty(index = 10)
-    public ContainmentLogicalOperatorSymbol getSymbol() {
+    public ContainmentSetOperatorSymbol getSymbol() {
         return this.symbol;
     }
 
-    public void setSymbol(ContainmentLogicalOperatorSymbol symbol) {
+    public void setSymbol(ContainmentSetOperatorSymbol symbol) {
         this.symbol = symbol;
     }
 
     @Override
     @JsonProperty(index = 20)
-    public List<ContainmentExpresionDto> getValues() {
+    public List<Containment> getValues() {
         return this.values;
     }
 
-    public void setValues(List<ContainmentExpresionDto> values) {
+    public void setValues(List<Containment> values) {
         this.values = values;
     }
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof ContainmentLogicalOperator)) return false;
-        final ContainmentLogicalOperator other = (ContainmentLogicalOperator) o;
+        if (!(o instanceof ContainmentSetOperator)) return false;
+        final ContainmentSetOperator other = (ContainmentSetOperator) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$symbol = this.getSymbol();
         final Object other$symbol = other.getSymbol();
@@ -62,7 +63,7 @@ public class ContainmentLogicalOperator
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof ContainmentLogicalOperator;
+        return other instanceof ContainmentSetOperator;
     }
 
     public int hashCode() {
@@ -76,6 +77,6 @@ public class ContainmentLogicalOperator
     }
 
     public String toString() {
-        return "ContainmentLogicalOperator(symbol=" + this.getSymbol() + ", values=" + this.getValues() + ")";
+        return "ContainmentSetOperator(symbol=" + this.getSymbol() + ", values=" + this.getValues() + ")";
     }
 }

@@ -27,9 +27,29 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.condition.*;
-import org.ehrbase.aql.dto.containment.*;
-import org.ehrbase.aql.dto.operant.*;
+import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
+import org.ehrbase.aql.dto.condition.ConditionDto;
+import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
+import org.ehrbase.aql.dto.condition.LikeOperatorDto;
+import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
+import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
+import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
+import org.ehrbase.aql.dto.containment.Containment;
+import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
+import org.ehrbase.aql.dto.containment.ContainmentNotOperator;
+import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
+import org.ehrbase.aql.dto.operant.AggregateFunctionDto;
+import org.ehrbase.aql.dto.operant.ColumnExpression;
+import org.ehrbase.aql.dto.operant.ComparisonLeftOperator;
+import org.ehrbase.aql.dto.operant.IdentifiedPath;
+import org.ehrbase.aql.dto.operant.LikeOperant;
+import org.ehrbase.aql.dto.operant.MatchesOperant;
+import org.ehrbase.aql.dto.operant.ParameterDto;
+import org.ehrbase.aql.dto.operant.Primitive;
+import org.ehrbase.aql.dto.operant.SingleRowFunktion;
+import org.ehrbase.aql.dto.operant.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operant.Terminal;
 import org.ehrbase.aql.dto.orderby.OrderByExpressionDto;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -283,7 +303,7 @@ public class AqlRender {
 
     private void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
 
-        ContainmentDto containmentDto = dto.getFrom();
+        AbstractContainmentExpression containmentDto = dto.getFrom();
 
         if (containmentDto == null) {
             throw new SdkException("Select without corresponding contains");
@@ -338,35 +358,33 @@ public class AqlRender {
         return sb.toString();
     }
 
-    private void renderContainmentExpresionDto(StringBuilder sb, ContainmentExpresionDto dto) {
+    private void renderContainmentExpresionDto(StringBuilder sb, Containment dto) {
 
-        if (dto instanceof ContainmentClassExpressionDto classExpressionDto) {
+        if (dto instanceof ContainmentClassExpression classExpressionDto) {
             renderContainmentDto(sb, classExpressionDto);
-        } else if (dto instanceof ContainmentLogicalOperator containmentLogicalOperator) {
-            renderContainmentLogicalOperator(sb, containmentLogicalOperator);
+        } else if (dto instanceof ContainmentSetOperator containmentSetOperator) {
+            renderContainmentLogicalOperator(sb, containmentSetOperator);
         } else {
             throw new UnsupportedOperationException(
                     "Can not handle %s".formatted(dto.getClass().getName()));
         }
     }
 
-    private void renderContainmentLogicalOperator(
-            StringBuilder sb, ContainmentLogicalOperator containmentLogicalOperator) {
+    private void renderContainmentLogicalOperator(StringBuilder sb, ContainmentSetOperator containmentSetOperator) {
 
-        Iterator<ContainmentExpresionDto> iterator =
-                containmentLogicalOperator.getValues().iterator();
+        Iterator<Containment> iterator = containmentSetOperator.getValues().iterator();
         sb.append("(");
         while (iterator.hasNext()) {
-            ContainmentExpresionDto next = iterator.next();
+            Containment next = iterator.next();
             renderContainmentExpresionDto(sb, next);
             if (iterator.hasNext()) {
-                sb.append(" ").append(containmentLogicalOperator.getSymbol()).append(" ");
+                sb.append(" ").append(containmentSetOperator.getSymbol()).append(" ");
             }
         }
         sb.append(")");
     }
 
-    private void renderContainmentDto(StringBuilder sb, ContainmentClassExpressionDto dto) {
+    private void renderContainmentDto(StringBuilder sb, ContainmentClassExpression dto) {
 
         sb.append(dto.getType());
 
@@ -383,9 +401,9 @@ public class AqlRender {
 
         if (dto.getContains() != null) {
 
-            if (dto.getContains() instanceof ContainmentLogicalNotOperator containmentLogicalNotOperator) {
+            if (dto.getContains() instanceof ContainmentNotOperator containmentNotOperator) {
                 sb.append(" NOT CONTAINS ");
-                renderContainmentExpresionDto(sb, containmentLogicalNotOperator.getContainmentExpression());
+                renderContainmentExpresionDto(sb, containmentNotOperator.getContainmentExpression());
             } else {
                 sb.append(" CONTAINS ");
                 renderContainmentExpresionDto(sb, dto.getContains());

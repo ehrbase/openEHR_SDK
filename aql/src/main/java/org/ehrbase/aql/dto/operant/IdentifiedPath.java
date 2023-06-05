@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.operant;
 
-import org.ehrbase.aql.dto.containment.ContainmentDto;
+import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 /**
@@ -25,14 +25,14 @@ import org.ehrbase.aql.dto.path.AqlPath;
  */
 public class IdentifiedPath implements ColumnExpression, Terminal, ComparisonLeftOperator {
 
-    private ContainmentDto from;
+    private AbstractContainmentExpression from;
     private AqlPath path;
 
-    public ContainmentDto getFrom() {
+    public AbstractContainmentExpression getFrom() {
         return from;
     }
 
-    public void setFrom(ContainmentDto from) {
+    public void setFrom(AbstractContainmentExpression from) {
         this.from = from;
     }
 
