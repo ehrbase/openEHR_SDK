@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.select;
 
-import org.ehrbase.aql.dto.operant.ColumnExpression;
+import org.ehrbase.aql.dto.operand.ColumnExpression;
 
 public class SelectExpressionDto {
 

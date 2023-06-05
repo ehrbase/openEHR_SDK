@@ -17,8 +17,8 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-import org.ehrbase.aql.dto.operant.ComparisonLeftOperator;
-import org.ehrbase.aql.dto.operant.Terminal;
+import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
+import org.ehrbase.aql.dto.operand.Terminal;
 
 public class ConditionComparisonOperatorDto implements ConditionDto {
 

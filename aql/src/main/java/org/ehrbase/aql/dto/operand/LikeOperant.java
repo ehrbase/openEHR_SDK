@@ -15,18 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
-
-import java.time.temporal.TemporalAccessor;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public class TemporalPrimitiveDto extends Primitive<TemporalAccessor> {
-
-    public TemporalPrimitiveDto() {}
-
-    public TemporalPrimitiveDto(TemporalAccessor value) {
-        super(value);
-    }
-}
+public interface LikeOperant {}

@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public class LongPrimitiveDto extends Primitive<Long> {
-
-    public LongPrimitiveDto() {}
-
-    public LongPrimitiveDto(Long value) {
-        super(value);
-    }
-}
+public interface ColumnExpression {}

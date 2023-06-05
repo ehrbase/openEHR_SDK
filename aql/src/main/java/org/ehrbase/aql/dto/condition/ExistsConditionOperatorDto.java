@@ -18,7 +18,7 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.util.Objects;
-import org.ehrbase.aql.dto.operant.IdentifiedPath;
+import org.ehrbase.aql.dto.operand.IdentifiedPath;
 
 /**
  * @author Stefan Spiska

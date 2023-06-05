@@ -19,8 +19,8 @@ package org.ehrbase.aql.dto.condition;
 
 import java.util.List;
 import java.util.Objects;
-import org.ehrbase.aql.dto.operant.IdentifiedPath;
-import org.ehrbase.aql.dto.operant.MatchesOperant;
+import org.ehrbase.aql.dto.operand.IdentifiedPath;
+import org.ehrbase.aql.dto.operand.MatchesOperant;
 
 public class MatchesOperatorDto implements ConditionDto {
 

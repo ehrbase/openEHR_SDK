@@ -15,31 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public class AggregateFunctionDto extends AbstractFunktion implements ColumnExpression {
+public class DoublePrimitiveDto extends Primitive<Double> {
 
-    private IdentifiedPath identifiedPath;
+    public DoublePrimitiveDto() {}
 
-    public IdentifiedPath getIdentifiedPath() {
-        return identifiedPath;
-    }
-
-    public void setIdentifiedPath(IdentifiedPath identifiedPath) {
-        this.identifiedPath = identifiedPath;
-    }
-
-    @Override
-    public void setFunctionName(AQLFunction functionName) {
-
-        if (functionName.getFunctionType() != AQLFunctionType.AGGREGATE) {
-
-            throw new UnsupportedOperationException(
-                    String.format("%s is not a aggregate Function", functionName.name()));
-        }
-        super.setFunctionName(functionName);
+    public DoublePrimitiveDto(Double value) {
+        super(value);
     }
 }

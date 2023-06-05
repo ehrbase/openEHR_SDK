@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,27 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public enum AQLFunction {
-    COUNT(AQLFunctionType.AGGREGATE),
-    MIN(AQLFunctionType.AGGREGATE),
-    MAX(AQLFunctionType.AGGREGATE),
-    AVG(AQLFunctionType.AGGREGATE),
-    CONTAINS(AQLFunctionType.SINGLE_ROW),
-    CONCAT_WS(AQLFunctionType.SINGLE_ROW),
-    CEIL(AQLFunctionType.SINGLE_ROW);
-
-    private final AQLFunctionType functionType;
-
-    AQLFunction(AQLFunctionType functionType) {
-        this.functionType = functionType;
-    }
-
-    public AQLFunctionType getFunctionType() {
-        return functionType;
-    }
-}
+public class TerminologyFunctionDto extends AbstractFunktion
+        implements MatchesOperant, ColumnExpression, Terminal, ComparisonLeftOperator {}

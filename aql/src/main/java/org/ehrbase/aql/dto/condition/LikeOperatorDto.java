@@ -17,8 +17,8 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-import org.ehrbase.aql.dto.operant.IdentifiedPath;
-import org.ehrbase.aql.dto.operant.LikeOperant;
+import org.ehrbase.aql.dto.operand.IdentifiedPath;
+import org.ehrbase.aql.dto.operand.LikeOperant;
 
 public class LikeOperatorDto implements ConditionDto {
 

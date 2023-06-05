@@ -20,9 +20,9 @@ package org.ehrbase.aql.dto.path.predicate;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.operant.ParameterDto;
-import org.ehrbase.aql.dto.operant.PathPredicateOperand;
-import org.ehrbase.aql.dto.operant.Primitive;
+import org.ehrbase.aql.dto.operand.ParameterDto;
+import org.ehrbase.aql.dto.operand.PathPredicateOperand;
+import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.util.exception.SdkException;
 
 public final class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {

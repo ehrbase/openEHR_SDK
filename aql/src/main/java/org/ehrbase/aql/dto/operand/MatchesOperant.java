@@ -15,17 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public class StringPrimitiveDto extends Primitive<String> implements LikeOperant {
-
-    public StringPrimitiveDto() {}
-
-    public StringPrimitiveDto(String newValue) {
-
-        super(newValue);
-    }
-}
+public interface MatchesOperant {}

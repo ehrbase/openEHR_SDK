@@ -18,9 +18,7 @@
 package org.ehrbase.aql.dto.path;
 
 import static org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol.EQ;
-import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.ARCHETYPE_NODE_ID;
-import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.NAME_VALUE;
-import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.find;
+import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.*;
 import static org.ehrbase.aql.util.CharSequenceHelper.subSequence;
 
 import java.io.Serializable;
@@ -33,9 +31,9 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.operant.PathPredicateOperand;
-import org.ehrbase.aql.dto.operant.Primitive;
-import org.ehrbase.aql.dto.operant.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operand.PathPredicateOperand;
+import org.ehrbase.aql.dto.operand.Primitive;
+import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;

@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public class BooleanPrimitiveDto extends Primitive<Boolean> {
-
-    public BooleanPrimitiveDto() {}
-
-    public BooleanPrimitiveDto(Boolean value) {
-        super(value);
-    }
-}
+public interface PathPredicateOperand {}

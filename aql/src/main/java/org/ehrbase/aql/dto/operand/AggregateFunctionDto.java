@@ -15,32 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
-
-import java.util.List;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public class SingleRowFunktion extends AbstractFunktion implements ColumnExpression, Terminal, ComparisonLeftOperator {
+public class AggregateFunctionDto extends AbstractFunktion implements ColumnExpression {
 
-    private List<Terminal> operantList;
+    private IdentifiedPath identifiedPath;
 
-    public List<Terminal> getOperantList() {
-        return operantList;
+    public IdentifiedPath getIdentifiedPath() {
+        return identifiedPath;
     }
 
-    public void setOperantList(List<Terminal> operantList) {
-        this.operantList = operantList;
+    public void setIdentifiedPath(IdentifiedPath identifiedPath) {
+        this.identifiedPath = identifiedPath;
     }
 
     @Override
     public void setFunctionName(AQLFunction functionName) {
 
-        if (functionName.getFunctionType() != AQLFunctionType.SINGLE_ROW) {
+        if (functionName.getFunctionType() != AQLFunctionType.AGGREGATE) {
 
             throw new UnsupportedOperationException(
-                    String.format("%s is not a Single Row Function", functionName.name()));
+                    String.format("%s is not a aggregate Function", functionName.name()));
         }
         super.setFunctionName(functionName);
     }

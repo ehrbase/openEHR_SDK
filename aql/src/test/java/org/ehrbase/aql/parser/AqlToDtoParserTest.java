@@ -27,7 +27,7 @@ import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
-import org.ehrbase.aql.dto.operant.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;

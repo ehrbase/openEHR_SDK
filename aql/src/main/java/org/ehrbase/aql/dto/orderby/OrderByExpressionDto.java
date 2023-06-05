@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.orderby;
 
-import org.ehrbase.aql.dto.operant.IdentifiedPath;
+import org.ehrbase.aql.dto.operand.IdentifiedPath;
 
 public class OrderByExpressionDto {
 

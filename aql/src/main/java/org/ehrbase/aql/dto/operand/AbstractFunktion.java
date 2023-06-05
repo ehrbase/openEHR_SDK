@@ -15,10 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public class TerminologyFunctionDto extends AbstractFunktion
-        implements MatchesOperant, ColumnExpression, Terminal, ComparisonLeftOperator {}
+public abstract class AbstractFunktion {
+
+    private AQLFunction functionName;
+
+    public AQLFunction getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(AQLFunction functionName) {
+        this.functionName = functionName;
+    }
+}

@@ -15,20 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public abstract class AbstractFunktion {
+public class BooleanPrimitiveDto extends Primitive<Boolean> {
 
-    private AQLFunction functionName;
+    public BooleanPrimitiveDto() {}
 
-    public AQLFunction getFunctionName() {
-        return functionName;
-    }
-
-    public void setFunctionName(AQLFunction functionName) {
-        this.functionName = functionName;
+    public BooleanPrimitiveDto(Boolean value) {
+        super(value);
     }
 }

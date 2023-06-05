@@ -24,8 +24,8 @@ import org.ehrbase.aql.dto.AqlDto;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.operant.ParameterDto;
-import org.ehrbase.aql.dto.operant.Terminal;
+import org.ehrbase.aql.dto.operand.ParameterDto;
+import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.parser.AqlToDtoParser;
 import org.ehrbase.aql.render.AqlRender;
 

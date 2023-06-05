@@ -15,41 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.aql.dto.operant;
+package org.ehrbase.aql.dto.operand;
 
-import java.util.Objects;
+import java.util.List;
 
 /**
  * @author Stefan Spiska
  */
-public class ParameterDto implements MatchesOperant, Terminal, LikeOperant, PathPredicateOperand {
+public class SingleRowFunktion extends AbstractFunktion implements ColumnExpression, Terminal, ComparisonLeftOperator {
 
-    private String name;
+    private List<Terminal> operantList;
 
-    public ParameterDto() {}
-
-    public ParameterDto(ParameterDto other) {
-        this.name = other.name;
+    public List<Terminal> getOperantList() {
+        return operantList;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setOperantList(List<Terminal> operantList) {
+        this.operantList = operantList;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ParameterDto that = (ParameterDto) o;
-        return Objects.equals(name, that.name);
-    }
+    public void setFunctionName(AQLFunction functionName) {
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
+        if (functionName.getFunctionType() != AQLFunctionType.SINGLE_ROW) {
+
+            throw new UnsupportedOperationException(
+                    String.format("%s is not a Single Row Function", functionName.name()));
+        }
+        super.setFunctionName(functionName);
     }
 }
