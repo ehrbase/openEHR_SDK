@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class ParameterDto implements MatchesOperant, Terminal, LikeOperant, PathPredicateOperand {
+public class ParameterDto implements MatchesOperand, Terminal, LikeOperant, PathPredicateOperand {
 
     private String name;
 

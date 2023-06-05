@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.aql.dto.operand.Primitive;
-import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -521,7 +521,7 @@ public final class AqlPath implements Serializable {
                         return cmpOp;
                     } else {
                         // value changed
-                        Primitive<String> clone = new StringPrimitiveDto();
+                        Primitive<String> clone = new StringPrimitive();
                         clone.setValue(newValue);
 
                         return new PredicateComparisonOperatorDto(statement, EQ, clone);
@@ -565,7 +565,7 @@ public final class AqlPath implements Serializable {
                 SimplePredicateDto[] newValues = Stream.concat(
                                 otherPredicate.getValues().stream(),
                                 Stream.of(new PredicateComparisonOperatorDto(
-                                        statement, EQ, new StringPrimitiveDto(newValue))))
+                                        statement, EQ, new StringPrimitive(newValue))))
                         .toArray(SimplePredicateDto[]::new);
                 return new PredicateLogicalAndOperation(newValues);
 
@@ -612,7 +612,7 @@ public final class AqlPath implements Serializable {
                 otherPredicates = new PredicateLogicalAndOperation();
             } else {
                 otherPredicates = new PredicateLogicalAndOperation(
-                        new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new StringPrimitiveDto(atCode)));
+                        new PredicateComparisonOperatorDto(ARCHETYPE_NODE_ID, EQ, new StringPrimitive(atCode)));
             }
             return new AqlNode(name, atCode, otherPredicates);
         }

@@ -34,12 +34,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.operand.DoublePrimitiveDto;
-import org.ehrbase.aql.dto.operand.LongPrimitiveDto;
+import org.ehrbase.aql.dto.operand.DoublePrimitive;
+import org.ehrbase.aql.dto.operand.LongPrimitive;
 import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.aql.dto.operand.Primitive;
-import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPathHelper;
 import org.ehrbase.aql.util.CharSequenceHelper;
@@ -173,14 +173,14 @@ public class PredicateHelper {
         }
 
         if (ARCHETYPE_NODE_ID.equals(statement)) {
-            return new StringPrimitiveDto(s.toString());
+            return new StringPrimitive(s.toString());
         } else if (s.length() > 1 && s.charAt(0) == '\'') {
-            return new StringPrimitiveDto(
+            return new StringPrimitive(
                     CharSequenceHelper.subSequence(s, 1, s.length() - 1).toString());
         } else if (StringUtils.contains(s, '.')) {
-            return new DoublePrimitiveDto(Double.parseDouble(s.toString()));
+            return new DoublePrimitive(Double.parseDouble(s.toString()));
         } else {
-            return new LongPrimitiveDto(Long.parseLong(s.toString()));
+            return new LongPrimitive(Long.parseLong(s.toString()));
         }
     }
 

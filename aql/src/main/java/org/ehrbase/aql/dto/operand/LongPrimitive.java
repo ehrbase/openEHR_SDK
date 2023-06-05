@@ -20,11 +20,11 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class BooleanPrimitiveDto extends Primitive<Boolean> {
+public class LongPrimitive extends Primitive<Long> {
 
-    public BooleanPrimitiveDto() {}
+    public LongPrimitive() {}
 
-    public BooleanPrimitiveDto(Boolean value) {
+    public LongPrimitive(Long value) {
         super(value);
     }
 }

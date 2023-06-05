@@ -17,16 +17,14 @@
  */
 package org.ehrbase.aql.dto.operand;
 
-import java.time.temporal.TemporalAccessor;
-
 /**
  * @author Stefan Spiska
  */
-public class TemporalPrimitiveDto extends Primitive<TemporalAccessor> {
+public class BooleanPrimitive extends Primitive<Boolean> {
 
-    public TemporalPrimitiveDto() {}
+    public BooleanPrimitive() {}
 
-    public TemporalPrimitiveDto(TemporalAccessor value) {
+    public BooleanPrimitive(Boolean value) {
         super(value);
     }
 }

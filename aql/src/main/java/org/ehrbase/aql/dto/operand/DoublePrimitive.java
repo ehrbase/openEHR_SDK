@@ -20,11 +20,11 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class DoublePrimitiveDto extends Primitive<Double> {
+public class DoublePrimitive extends Primitive<Double> {
 
-    public DoublePrimitiveDto() {}
+    public DoublePrimitive() {}
 
-    public DoublePrimitiveDto(Double value) {
+    public DoublePrimitive(Double value) {
         super(value);
     }
 }

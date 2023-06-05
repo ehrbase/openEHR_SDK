@@ -60,19 +60,19 @@ import org.ehrbase.aql.dto.containment.ContainmentSetOperatorSymbol;
 import org.ehrbase.aql.dto.containment.ContainmentVersionExpression;
 import org.ehrbase.aql.dto.operand.AQLFunction;
 import org.ehrbase.aql.dto.operand.AggregateFunction;
-import org.ehrbase.aql.dto.operand.BooleanPrimitiveDto;
+import org.ehrbase.aql.dto.operand.BooleanPrimitive;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
-import org.ehrbase.aql.dto.operand.DoublePrimitiveDto;
+import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperant;
-import org.ehrbase.aql.dto.operand.LongPrimitiveDto;
-import org.ehrbase.aql.dto.operand.MatchesOperant;
+import org.ehrbase.aql.dto.operand.LongPrimitive;
+import org.ehrbase.aql.dto.operand.MatchesOperand;
 import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
-import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
-import org.ehrbase.aql.dto.operand.TemporalPrimitiveDto;
+import org.ehrbase.aql.dto.operand.StringPrimitive;
+import org.ehrbase.aql.dto.operand.TemporalPrimitive;
 import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
@@ -210,15 +210,15 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         final Primitive selectPrimitiveDto;
 
         if (ctx.BOOLEAN() != null) {
-            selectPrimitiveDto = new BooleanPrimitiveDto(Boolean.parseBoolean(ctx.getText()));
+            selectPrimitiveDto = new BooleanPrimitive(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null) {
             String unwrap = unwrapText(ctx);
-            selectPrimitiveDto = new TemporalPrimitiveDto(DateTimeParsers.parseTimeValue(unwrap));
+            selectPrimitiveDto = new TemporalPrimitive(DateTimeParsers.parseTimeValue(unwrap));
         } else if (ctx.numericPrimitive() != null) {
             AqlParser.NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
             selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
         } else if (ctx.STRING() != null) {
-            selectPrimitiveDto = new StringPrimitiveDto(unwrapText(ctx));
+            selectPrimitiveDto = new StringPrimitive(unwrapText(ctx));
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
@@ -232,9 +232,9 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         Primitive value;
 
         if (ctx.REAL() != null) {
-            value = new DoublePrimitiveDto(Double.valueOf(ctx.getText()));
+            value = new DoublePrimitive(Double.valueOf(ctx.getText()));
         } else if (ctx.INTEGER() != null) {
-            value = new LongPrimitiveDto(Long.valueOf(ctx.getText()));
+            value = new LongPrimitive(Long.valueOf(ctx.getText()));
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
@@ -500,7 +500,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<MatchesOperant> visitMatchesOperand(AqlParser.MatchesOperandContext ctx) {
+    public List<MatchesOperand> visitMatchesOperand(AqlParser.MatchesOperandContext ctx) {
 
         if (CollectionUtils.isNotEmpty(ctx.valueListItem())) {
             return ctx.valueListItem().stream().map(this::visitValueListItem).toList();
@@ -510,7 +510,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public MatchesOperant visitValueListItem(AqlParser.ValueListItemContext ctx) {
+    public MatchesOperand visitValueListItem(AqlParser.ValueListItemContext ctx) {
 
         if (ctx.primitive() != null) {
             return visitPrimitive(ctx.primitive());
@@ -528,7 +528,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());
         } else {
-            return new StringPrimitiveDto(unwrapText(ctx));
+            return new StringPrimitive(unwrapText(ctx));
         }
     }
 

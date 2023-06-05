@@ -17,7 +17,16 @@
  */
 package org.ehrbase.aql.dto.operand;
 
+import java.time.temporal.TemporalAccessor;
+
 /**
  * @author Stefan Spiska
  */
-public interface MatchesOperant {}
+public class TemporalPrimitive extends Primitive<TemporalAccessor> {
+
+    public TemporalPrimitive() {}
+
+    public TemporalPrimitive(TemporalAccessor value) {
+        super(value);
+    }
+}

@@ -44,11 +44,11 @@ import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperant;
-import org.ehrbase.aql.dto.operand.MatchesOperant;
+import org.ehrbase.aql.dto.operand.MatchesOperand;
 import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
-import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -136,9 +136,9 @@ public class AqlRender {
         renderIdentifiedPath(sb, matchesOperatorDto.getStatement());
         sb.append(" ").append("MATCHES").append(" ");
         sb.append("{");
-        Iterator<MatchesOperant> iterator = matchesOperatorDto.getValues().iterator();
+        Iterator<MatchesOperand> iterator = matchesOperatorDto.getValues().iterator();
         while (iterator.hasNext()) {
-            MatchesOperant next = iterator.next();
+            MatchesOperand next = iterator.next();
             renderMatchesOperant(sb, next);
             if (iterator.hasNext()) {
                 sb.append(", ");
@@ -147,7 +147,7 @@ public class AqlRender {
         sb.append("}");
     }
 
-    private void renderMatchesOperant(StringBuilder sb, MatchesOperant next) {
+    private void renderMatchesOperant(StringBuilder sb, MatchesOperand next) {
 
         if (next instanceof ParameterDto parameterDto) {
             renderParameterDto(sb, parameterDto);
@@ -169,7 +169,7 @@ public class AqlRender {
         if (value instanceof ParameterDto parameterDto) {
             renderParameterDto(sb, parameterDto);
         } else {
-            sb.append(renderValue(((StringPrimitiveDto) value).getValue()));
+            sb.append(renderValue(((StringPrimitive) value).getValue()));
         }
     }
 

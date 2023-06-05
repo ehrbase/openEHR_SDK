@@ -27,7 +27,7 @@ import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
-import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
+import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperatorDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
@@ -335,8 +335,8 @@ class AqlToDtoParserTest {
                 PredicateDto otherPredicates = ((ContainmentClassExpression) containmentExpresion).getOtherPredicates();
                 sb.append(PredicateHelper.find(otherPredicates, PredicateHelper.ARCHETYPE_NODE_ID)
                         .map(PredicateComparisonOperatorDto::getValue)
-                        .map(StringPrimitiveDto.class::cast)
-                        .map(StringPrimitiveDto::getValue)
+                        .map(StringPrimitive.class::cast)
+                        .map(StringPrimitive::getValue)
                         .orElse(classExpressionDto.getType()));
                 Containment contains = ((AbstractContainmentExpression) containmentExpresion).getContains();
                 if (contains != null) {

@@ -20,12 +20,12 @@ package org.ehrbase.aql.dto.condition;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
-import org.ehrbase.aql.dto.operand.MatchesOperant;
+import org.ehrbase.aql.dto.operand.MatchesOperand;
 
 public class MatchesOperatorDto implements ConditionDto {
 
     private IdentifiedPath statement;
-    private List<MatchesOperant> values;
+    private List<MatchesOperand> values;
 
     public IdentifiedPath getStatement() {
         return statement;
@@ -35,11 +35,11 @@ public class MatchesOperatorDto implements ConditionDto {
         this.statement = statement;
     }
 
-    public List<MatchesOperant> getValues() {
+    public List<MatchesOperand> getValues() {
         return values;
     }
 
-    public void setValues(List<MatchesOperant> values) {
+    public void setValues(List<MatchesOperand> values) {
         this.values = values;
     }
 

@@ -20,11 +20,4 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class LongPrimitiveDto extends Primitive<Long> {
-
-    public LongPrimitiveDto() {}
-
-    public LongPrimitiveDto(Long value) {
-        super(value);
-    }
-}
+public interface MatchesOperand {}

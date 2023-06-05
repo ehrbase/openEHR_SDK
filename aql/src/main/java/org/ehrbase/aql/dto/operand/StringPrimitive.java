@@ -20,11 +20,11 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class StringPrimitiveDto extends Primitive<String> implements LikeOperant {
+public class StringPrimitive extends Primitive<String> implements LikeOperant {
 
-    public StringPrimitiveDto() {}
+    public StringPrimitive() {}
 
-    public StringPrimitiveDto(String newValue) {
+    public StringPrimitive(String newValue) {
 
         super(newValue);
     }
