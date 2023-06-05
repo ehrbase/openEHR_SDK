@@ -53,7 +53,7 @@ import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.aql.dto.select.Select;
+import org.ehrbase.aql.dto.select.SelectClause;
 import org.ehrbase.aql.dto.select.SelectExpression;
 import org.ehrbase.util.exception.SdkException;
 
@@ -220,7 +220,7 @@ public class AqlRender {
         }
     }
 
-    private void renderSelect(StringBuilder sb, Select dto) {
+    private void renderSelect(StringBuilder sb, SelectClause dto) {
 
         sb.append("SELECT ");
 
@@ -306,7 +306,7 @@ public class AqlRender {
         AbstractContainmentExpression containmentDto = dto.getFrom();
 
         if (containmentDto == null) {
-            throw new SdkException("Select without corresponding contains");
+            throw new SdkException("SelectClause without corresponding contains");
         }
 
         sb.append(containmentDto.getIdentifier());

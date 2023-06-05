@@ -22,11 +22,11 @@ import java.util.Objects;
 import org.ehrbase.aql.dto.condition.ConditionDto;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
-import org.ehrbase.aql.dto.select.Select;
+import org.ehrbase.aql.dto.select.SelectClause;
 
 public class AqlDto {
 
-    private Select select;
+    private SelectClause select;
 
     private Containment from;
     private ConditionDto where;
@@ -34,7 +34,7 @@ public class AqlDto {
     private Integer limit;
     private Integer offset;
 
-    public Select getSelect() {
+    public SelectClause getSelect() {
         return this.select;
     }
 
@@ -50,7 +50,7 @@ public class AqlDto {
         return this.orderBy;
     }
 
-    public void setSelect(Select select) {
+    public void setSelect(SelectClause select) {
         this.select = select;
     }
 

@@ -80,7 +80,7 @@ import org.ehrbase.aql.dto.orderby.OrderByExpression.OrderByDirection;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.predicate.PredicateDto;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.aql.dto.select.Select;
+import org.ehrbase.aql.dto.select.SelectClause;
 import org.ehrbase.aql.dto.select.SelectExpression;
 import org.ehrbase.util.exception.SdkException;
 
@@ -131,20 +131,21 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public Select visitSelectClause(AqlParser.SelectClauseContext ctx) {
+    public SelectClause visitSelectClause(AqlParser.SelectClauseContext ctx) {
 
-        Select select = new Select();
+        SelectClause selectClause = new SelectClause();
 
-        select.setDistinct(ctx.DISTINCT() != null);
+        selectClause.setDistinct(ctx.DISTINCT() != null);
 
         if (ctx.top() != null) {
 
             errors.add("top not yet implemented");
         }
 
-        select.setStatement(ctx.selectExpr().stream().map(this::visitSelectExpr).collect(Collectors.toList()));
+        selectClause.setStatement(
+                ctx.selectExpr().stream().map(this::visitSelectExpr).collect(Collectors.toList()));
 
-        return select;
+        return selectClause;
     }
 
     @Override

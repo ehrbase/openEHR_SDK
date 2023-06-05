@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import org.ehrbase.client.aql.top.Direction;
 
-public class Select {
+public class SelectClause {
 
     private Integer topCount;
     private Direction topDirection;
@@ -65,8 +65,8 @@ public class Select {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof Select)) return false;
-        final Select other = (Select) o;
+        if (!(o instanceof SelectClause)) return false;
+        final SelectClause other = (SelectClause) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$topCount = this.getTopCount();
         final Object other$topCount = other.getTopCount();
@@ -82,7 +82,7 @@ public class Select {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof Select;
+        return other instanceof SelectClause;
     }
 
     public int hashCode() {
@@ -98,7 +98,7 @@ public class Select {
     }
 
     public String toString() {
-        return "Select(topCount="
+        return "SelectClause(topCount="
                 + this.getTopCount()
                 + ", topDirection="
                 + this.getTopDirection()
