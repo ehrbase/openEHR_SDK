@@ -17,7 +17,39 @@
  */
 package org.ehrbase.aql.dto.operand;
 
+import java.util.Objects;
+
 /**
  * @author Stefan Spiska
  */
-public interface LikeOperant {}
+public class QueryParameter implements MatchesOperand, Terminal, LikeOperand, PathPredicateOperand {
+
+    private String name;
+
+    public QueryParameter() {}
+
+    public QueryParameter(QueryParameter other) {
+        this.name = other.name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QueryParameter that = (QueryParameter) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+}

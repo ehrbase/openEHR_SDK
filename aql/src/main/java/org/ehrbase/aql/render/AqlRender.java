@@ -43,10 +43,10 @@ import org.ehrbase.aql.dto.operand.AggregateFunction;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
-import org.ehrbase.aql.dto.operand.LikeOperant;
+import org.ehrbase.aql.dto.operand.LikeOperand;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
-import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.Primitive;
+import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.operand.Terminal;
@@ -149,8 +149,8 @@ public class AqlRender {
 
     private void renderMatchesOperant(StringBuilder sb, MatchesOperand next) {
 
-        if (next instanceof ParameterDto parameterDto) {
-            renderParameterDto(sb, parameterDto);
+        if (next instanceof QueryParameter queryParameter) {
+            renderParameterDto(sb, queryParameter);
         } else if (next instanceof Primitive<?> primitive) {
             sb.append(renderValue(primitive.getValue()));
         } else {
@@ -164,10 +164,10 @@ public class AqlRender {
         renderLikeOperant(sb, likeOperatorDto.getValue());
     }
 
-    private void renderLikeOperant(StringBuilder sb, LikeOperant value) {
+    private void renderLikeOperant(StringBuilder sb, LikeOperand value) {
 
-        if (value instanceof ParameterDto parameterDto) {
-            renderParameterDto(sb, parameterDto);
+        if (value instanceof QueryParameter queryParameter) {
+            renderParameterDto(sb, queryParameter);
         } else {
             sb.append(renderValue(((StringPrimitive) value).getValue()));
         }
@@ -287,8 +287,8 @@ public class AqlRender {
             renderIdentifiedPath(sb, identifiedPath);
         } else if (terminal instanceof Primitive<?> primitive) {
             sb.append(renderValue(primitive.getValue()));
-        } else if (terminal instanceof ParameterDto parameterDto) {
-            renderParameterDto(sb, parameterDto);
+        } else if (terminal instanceof QueryParameter queryParameter) {
+            renderParameterDto(sb, queryParameter);
         } else {
             throw new UnsupportedOperationException(
                     "Can not handle %s".formatted(terminal.getClass().getName()));
@@ -296,9 +296,9 @@ public class AqlRender {
         return sb.toString();
     }
 
-    private void renderParameterDto(StringBuilder sb, ParameterDto parameterDto) {
+    private void renderParameterDto(StringBuilder sb, QueryParameter queryParameter) {
 
-        sb.append("$").append(parameterDto.getName());
+        sb.append("$").append(queryParameter.getName());
     }
 
     private void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {

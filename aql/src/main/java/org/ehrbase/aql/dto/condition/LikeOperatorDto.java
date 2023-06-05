@@ -18,7 +18,7 @@
 package org.ehrbase.aql.dto.condition;
 
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
-import org.ehrbase.aql.dto.operand.LikeOperant;
+import org.ehrbase.aql.dto.operand.LikeOperand;
 
 public class LikeOperatorDto implements ConditionDto {
 
@@ -26,13 +26,13 @@ public class LikeOperatorDto implements ConditionDto {
 
     private IdentifiedPath statement;
 
-    private LikeOperant value;
+    private LikeOperand value;
 
     public IdentifiedPath getStatement() {
         return this.statement;
     }
 
-    public LikeOperant getValue() {
+    public LikeOperand getValue() {
         return this.value;
     }
 
@@ -40,7 +40,7 @@ public class LikeOperatorDto implements ConditionDto {
         this.statement = statement;
     }
 
-    public void setValue(LikeOperant value) {
+    public void setValue(LikeOperand value) {
         this.value = value;
     }
 

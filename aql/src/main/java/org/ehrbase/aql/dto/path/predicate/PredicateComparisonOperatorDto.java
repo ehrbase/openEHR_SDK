@@ -20,9 +20,9 @@ package org.ehrbase.aql.dto.path.predicate;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.aql.dto.operand.Primitive;
+import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.util.exception.SdkException;
 
 public final class PredicateComparisonOperatorDto implements SimplePredicateDto, Serializable {
@@ -35,8 +35,8 @@ public final class PredicateComparisonOperatorDto implements SimplePredicateDto,
         this.statement = other.statement;
         this.symbol = other.symbol;
 
-        if (other.value instanceof ParameterDto) {
-            this.value = new ParameterDto((ParameterDto) other.value);
+        if (other.value instanceof QueryParameter) {
+            this.value = new QueryParameter((QueryParameter) other.value);
         } else {
             try {
                 this.value = other.getValue()

@@ -17,39 +17,7 @@
  */
 package org.ehrbase.aql.dto.operand;
 
-import java.util.Objects;
-
 /**
  * @author Stefan Spiska
  */
-public class ParameterDto implements MatchesOperand, Terminal, LikeOperant, PathPredicateOperand {
-
-    private String name;
-
-    public ParameterDto() {}
-
-    public ParameterDto(ParameterDto other) {
-        this.name = other.name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ParameterDto that = (ParameterDto) o;
-        return Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-}
+public interface LikeOperand {}

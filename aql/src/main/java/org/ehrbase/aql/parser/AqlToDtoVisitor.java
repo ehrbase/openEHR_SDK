@@ -65,11 +65,11 @@ import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
 import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
-import org.ehrbase.aql.dto.operand.LikeOperant;
+import org.ehrbase.aql.dto.operand.LikeOperand;
 import org.ehrbase.aql.dto.operand.LongPrimitive;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
-import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.Primitive;
+import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.operand.TemporalPrimitive;
@@ -283,11 +283,11 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         throw new UnsupportedOperationException("Can not parse %s".formatted(ctx.getText()));
     }
 
-    private ParameterDto createParameter(TerminalNode node) {
+    private QueryParameter createParameter(TerminalNode node) {
 
-        ParameterDto parameterDto = new ParameterDto();
-        parameterDto.setName(StringUtils.removeStart(node.getText(), "$"));
-        return parameterDto;
+        QueryParameter queryParameter = new QueryParameter();
+        queryParameter.setName(StringUtils.removeStart(node.getText(), "$"));
+        return queryParameter;
     }
 
     @Override
@@ -523,7 +523,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public LikeOperant visitLikeOperand(AqlParser.LikeOperandContext ctx) {
+    public LikeOperand visitLikeOperand(AqlParser.LikeOperandContext ctx) {
 
         if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());

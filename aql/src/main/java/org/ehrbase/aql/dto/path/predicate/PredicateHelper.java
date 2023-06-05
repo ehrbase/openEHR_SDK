@@ -36,9 +36,9 @@ import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
 import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.LongPrimitive;
-import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.aql.dto.operand.Primitive;
+import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPathHelper;
@@ -167,7 +167,7 @@ public class PredicateHelper {
     private static PathPredicateOperand parseValue(String statement, CharSequence s) {
 
         if (s.length() > 0 && s.charAt(0) == '$') {
-            ParameterDto parameterValue = new ParameterDto();
+            QueryParameter parameterValue = new QueryParameter();
             parameterValue.setName(CharSequenceHelper.subSequence(s, 1).toString());
             return parameterValue;
         }
@@ -193,9 +193,9 @@ public class PredicateHelper {
             } else {
                 sb.append(o);
             }
-        } else if (value instanceof ParameterDto) {
+        } else if (value instanceof QueryParameter) {
 
-            sb.append('$').append(((ParameterDto) value).getName());
+            sb.append('$').append(((QueryParameter) value).getName());
         }
     }
 
@@ -208,8 +208,8 @@ public class PredicateHelper {
     public static void format(
             StringBuilder sb, PredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
-        if (predicateDto instanceof ParameterDto) {
-            sb.append('$').append(((ParameterDto) predicateDto).getName());
+        if (predicateDto instanceof QueryParameter) {
+            sb.append('$').append(((QueryParameter) predicateDto).getName());
         } else if (predicateDto instanceof PredicateComparisonOperatorDto) {
             formatPredicateComparisonOperatorDto(
                     sb, (PredicateComparisonOperatorDto) predicateDto, otherPredicatesFormat);
