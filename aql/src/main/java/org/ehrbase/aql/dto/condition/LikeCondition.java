@@ -17,50 +17,41 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
-import org.ehrbase.aql.dto.operand.Terminal;
+import org.ehrbase.aql.dto.operand.IdentifiedPath;
+import org.ehrbase.aql.dto.operand.LikeOperand;
 
-public class ConditionComparisonOperatorDto implements ConditionDto {
+public class LikeCondition implements WhereCondition {
 
-    private ComparisonLeftOperator statement;
-    private ConditionComparisonOperatorSymbol symbol;
-    private Terminal value;
+    public static final String SYMBOL = "like";
 
-    public ComparisonLeftOperator getStatement() {
+    private IdentifiedPath statement;
+
+    private LikeOperand value;
+
+    public IdentifiedPath getStatement() {
         return this.statement;
     }
 
-    public ConditionComparisonOperatorSymbol getSymbol() {
-        return this.symbol;
-    }
-
-    public Terminal getValue() {
+    public LikeOperand getValue() {
         return this.value;
     }
 
-    public void setStatement(ComparisonLeftOperator statement) {
+    public void setStatement(IdentifiedPath statement) {
         this.statement = statement;
     }
 
-    public void setSymbol(ConditionComparisonOperatorSymbol symbol) {
-        this.symbol = symbol;
-    }
-
-    public void setValue(Terminal value) {
+    public void setValue(LikeOperand value) {
         this.value = value;
     }
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof ConditionComparisonOperatorDto)) return false;
-        final ConditionComparisonOperatorDto other = (ConditionComparisonOperatorDto) o;
+        if (!(o instanceof LikeCondition)) return false;
+        final LikeCondition other = (LikeCondition) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$statement = this.getStatement();
         final Object other$statement = other.getStatement();
         if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
-        final Object this$symbol = this.getSymbol();
-        final Object other$symbol = other.getSymbol();
-        if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
         final Object this$value = this.getValue();
         final Object other$value = other.getValue();
         if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
@@ -68,7 +59,7 @@ public class ConditionComparisonOperatorDto implements ConditionDto {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof ConditionComparisonOperatorDto;
+        return other instanceof LikeCondition;
     }
 
     public int hashCode() {
@@ -76,20 +67,12 @@ public class ConditionComparisonOperatorDto implements ConditionDto {
         int result = 1;
         final Object $statement = this.getStatement();
         result = result * PRIME + ($statement == null ? 43 : $statement.hashCode());
-        final Object $symbol = this.getSymbol();
-        result = result * PRIME + ($symbol == null ? 43 : $symbol.hashCode());
         final Object $value = this.getValue();
         result = result * PRIME + ($value == null ? 43 : $value.hashCode());
         return result;
     }
 
     public String toString() {
-        return "ConditionComparisonOperatorDto(statement="
-                + this.getStatement()
-                + ", symbol="
-                + this.getSymbol()
-                + ", value="
-                + this.getValue()
-                + ")";
+        return "LikeCondition(statement=" + this.getStatement() + ", value=" + this.getValue() + ")";
     }
 }

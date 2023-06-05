@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.path;
 
-import static org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol.EQ;
+import static org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol.EQ;
 import static org.ehrbase.aql.dto.path.predicate.PredicateHelper.*;
 import static org.ehrbase.aql.util.CharSequenceHelper.subSequence;
 

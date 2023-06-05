@@ -153,9 +153,9 @@ class AqlToDtoParserTest {
         AqlToDtoParser cut = new AqlToDtoParser();
         AqlDto actual = cut.parse(aql);
 
-        ConditionDto contains = actual.getWhere();
+        WhereCondition contains = actual.getWhere();
 
-        MatchesOperatorDto matchesOperatorDto = new MatchesOperatorDto();
+        MatchesCondition matchesOperatorDto = new MatchesCondition();
 
         SelectFieldDto selectFieldDto = new SelectFieldDto();
         selectFieldDto.setAqlPath("/ehr_id/value");
@@ -166,7 +166,7 @@ class AqlToDtoParserTest {
                         .map(SimpleValue::new)
                         .collect(Collectors.toList()));
 
-        ConditionLogicalOperatorDto and = new ConditionLogicalOperatorDto();
+        LogicalOperatorCondition and = new LogicalOperatorCondition();
 
         and.setSymbol(ConditionLogicalOperatorSymbol.AND);
         and.setValues(new ArrayList<>());

@@ -19,7 +19,7 @@ package org.ehrbase.aql.dto;
 
 import java.util.List;
 import java.util.Objects;
-import org.ehrbase.aql.dto.condition.ConditionDto;
+import org.ehrbase.aql.dto.condition.WhereCondition;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.select.SelectClause;
@@ -29,7 +29,7 @@ public class AqlDto {
     private SelectClause select;
 
     private Containment from;
-    private ConditionDto where;
+    private WhereCondition where;
     private List<OrderByExpression> orderBy;
     private Integer limit;
     private Integer offset;
@@ -42,7 +42,7 @@ public class AqlDto {
         return this.from;
     }
 
-    public ConditionDto getWhere() {
+    public WhereCondition getWhere() {
         return this.where;
     }
 
@@ -58,7 +58,7 @@ public class AqlDto {
         this.from = from;
     }
 
-    public void setWhere(ConditionDto where) {
+    public void setWhere(WhereCondition where) {
         this.where = where;
     }
 

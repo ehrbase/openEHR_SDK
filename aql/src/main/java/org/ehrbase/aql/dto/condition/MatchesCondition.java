@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
 
-public class MatchesOperatorDto implements ConditionDto {
+public class MatchesCondition implements WhereCondition {
 
     private IdentifiedPath statement;
     private List<MatchesOperand> values;
@@ -47,7 +47,7 @@ public class MatchesOperatorDto implements ConditionDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MatchesOperatorDto that = (MatchesOperatorDto) o;
+        MatchesCondition that = (MatchesCondition) o;
         return Objects.equals(statement, that.statement) && Objects.equals(values, that.values);
     }
 
@@ -58,6 +58,6 @@ public class MatchesOperatorDto implements ConditionDto {
 
     @Override
     public String toString() {
-        return "MatchesOperatorDto{" + "statement=" + statement + ", values=" + values + '}';
+        return "MatchesCondition{" + "statement=" + statement + ", values=" + values + '}';
     }
 }

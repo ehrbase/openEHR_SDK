@@ -26,13 +26,12 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.LongPrimitive;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
@@ -53,8 +52,8 @@ public class PredicateHelper {
     public static final String ARCHETYPE_NODE_ID = "archetype_node_id";
 
     private static final AqlPathHelper.PrefixMatcher OPERATOR_SYMBOLS =
-            AqlPathHelper.PrefixMatcher.forStrings(Arrays.stream(ConditionComparisonOperatorSymbol.values())
-                    .map(ConditionComparisonOperatorSymbol::getSymbol)
+            AqlPathHelper.PrefixMatcher.forStrings(Arrays.stream(ComparisonOperatorSymbol.values())
+                    .map(ComparisonOperatorSymbol::getSymbol)
                     .toArray(String[]::new));
 
     private static final PredicateComparisonOperator NO_PREDICATE = new PredicateComparisonOperator(null, null, null);
@@ -91,17 +90,16 @@ public class PredicateHelper {
             return (Predicate) boolList[0];
         } else {
 
-            LogicalOperatorDto predicateLogicalOperatorSymbolPredicateDtoLogicalOperatorDto =
-                    buildLogicalOperator(Arrays.asList(boolList), (Function<
-                                    PredicateLogicalOperatorSymbol,
-                                    LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicate>>)
-                            s -> {
-                                if (PredicateLogicalOperatorSymbol.AND.equals(s)) {
-                                    return new PredicateLogicalAndOperation();
-                                } else {
-                                    return new PredicateLogicalOrOperation();
-                                }
-                            });
+            LogicalOperatorDto predicateLogicalOperatorSymbolPredicateDtoLogicalOperatorDto = buildLogicalOperator(
+                    Arrays.asList(boolList),
+                    s -> {
+                        if (PredicateLogicalOperatorSymbol.AND.equals(s)) {
+                            return new PredicateLogicalAndOperation();
+                        } else {
+                            return new PredicateLogicalOrOperation();
+                        }
+                    },
+                    PredicateLogicalOperatorSymbol::getPrecedence);
             return (Predicate) predicateLogicalOperatorSymbolPredicateDtoLogicalOperatorDto;
         }
     }
@@ -139,23 +137,23 @@ public class PredicateHelper {
         List<CharSequence> split = AqlPathHelper.split(sequence, 0, 3, true, OPERATOR_SYMBOLS);
 
         String statement;
-        ConditionComparisonOperatorSymbol operator;
+        ComparisonOperatorSymbol operator;
         PathPredicateOperand value;
         if (split.size() == 1) {
             if (i == 0) {
                 statement = ARCHETYPE_NODE_ID;
-                operator = ConditionComparisonOperatorSymbol.EQ;
+                operator = ComparisonOperatorSymbol.EQ;
                 value = parseValue(ARCHETYPE_NODE_ID, CharSequenceHelper.trim(split.get(0)));
             } else if (i == 2) {
                 statement = NAME_VALUE;
-                operator = ConditionComparisonOperatorSymbol.EQ;
+                operator = ComparisonOperatorSymbol.EQ;
                 value = parseValue(NAME_VALUE, CharSequenceHelper.trim(split.get(0)));
             } else {
                 throw new IllegalArgumentException();
             }
         } else {
             statement = CharSequenceHelper.trim(split.get(0)).toString();
-            operator = ConditionComparisonOperatorSymbol.fromSymbol(split.get(1));
+            operator = ComparisonOperatorSymbol.fromSymbol(split.get(1));
             value = parseValue(statement, CharSequenceHelper.trim(split.get(2)));
         }
 
@@ -291,7 +289,7 @@ public class PredicateHelper {
 
         if (isCompOp) {
             PredicateComparisonOperator cmpOpDto = (PredicateComparisonOperator) predicateDto;
-            return ConditionComparisonOperatorSymbol.EQ == cmpOpDto.getSymbol()
+            return ComparisonOperatorSymbol.EQ == cmpOpDto.getSymbol()
                     && List.of(NAME_VALUE, ARCHETYPE_NODE_ID).contains(cmpOpDto.getStatement());
 
         } else if (predicateDto instanceof PredicateLogicalOrOperation) {
@@ -379,7 +377,7 @@ public class PredicateHelper {
      * @return
      */
     public static PredicateLogicalAndOperation remove(
-            PredicateLogicalAndOperation and, ConditionComparisonOperatorSymbol symbol, String... remove) {
+            PredicateLogicalAndOperation and, ComparisonOperatorSymbol symbol, String... remove) {
         return removeInternal(
                 and,
                 cmpOp -> (symbol == null || symbol == cmpOp.getSymbol())

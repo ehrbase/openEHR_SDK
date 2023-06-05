@@ -23,13 +23,13 @@ import org.ehrbase.aql.dto.operand.IdentifiedPath;
 /**
  * @author Stefan Spiska
  */
-public class ExistsConditionOperatorDto implements ConditionDto {
+public class ExistsCondition implements WhereCondition {
 
     private IdentifiedPath value;
 
-    public ExistsConditionOperatorDto() {}
+    public ExistsCondition() {}
 
-    public ExistsConditionOperatorDto(IdentifiedPath value) {
+    public ExistsCondition(IdentifiedPath value) {
         this.value = value;
     }
 
@@ -43,7 +43,7 @@ public class ExistsConditionOperatorDto implements ConditionDto {
 
     @Override
     public String toString() {
-        return "ExistsConditionOperator{" + "value=" + value + '}';
+        return "ExistsCondition{" + "value=" + value + '}';
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ExistsConditionOperatorDto implements ConditionDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ExistsConditionOperatorDto that = (ExistsConditionOperatorDto) o;
+        ExistsCondition that = (ExistsCondition) o;
         return Objects.equals(value, that.value);
     }
 

@@ -17,12 +17,31 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.NoSuchElementException;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = ConditionComparisonOperatorDto.class, name = "ComparisonOperator"),
-    @JsonSubTypes.Type(value = ConditionLogicalOperatorDto.class, name = "LogicalOperator")
-})
-public interface ConditionDto {}
+public enum ComparisonOperatorSymbol {
+    EQ("="),
+    NEQ("!="),
+    GT_EQ(">="),
+    GT(">"),
+    LT_EQ("<="),
+    LT("<");
+    private final String symbol;
+
+    ComparisonOperatorSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public static ComparisonOperatorSymbol fromSymbol(CharSequence symbol) {
+        for (ComparisonOperatorSymbol s : values()) {
+            if (s.getSymbol().contentEquals(symbol)) {
+                return s;
+            }
+        }
+        throw new NoSuchElementException(symbol.toString());
+    }
+}

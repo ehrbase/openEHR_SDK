@@ -18,12 +18,14 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.util.List;
+import org.ehrbase.aql.dto.LogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.LogicalOperatorCondition.ConditionLogicalOperatorSymbol;
 
-public class ConditionLogicalOperatorDto
-        implements ConditionDto, LogicalOperatorDto<ConditionLogicalOperatorSymbol, ConditionDto> {
+public class LogicalOperatorCondition
+        implements WhereCondition, LogicalOperatorDto<ConditionLogicalOperatorSymbol, WhereCondition> {
 
     private ConditionLogicalOperatorSymbol symbol;
-    private List<ConditionDto> values;
+    private List<WhereCondition> values;
 
     @Override
     public ConditionLogicalOperatorSymbol getSymbol() {
@@ -31,7 +33,7 @@ public class ConditionLogicalOperatorDto
     }
 
     @Override
-    public List<ConditionDto> getValues() {
+    public List<WhereCondition> getValues() {
         return this.values;
     }
 
@@ -39,14 +41,14 @@ public class ConditionLogicalOperatorDto
         this.symbol = symbol;
     }
 
-    public void setValues(List<ConditionDto> values) {
+    public void setValues(List<WhereCondition> values) {
         this.values = values;
     }
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof ConditionLogicalOperatorDto)) return false;
-        final ConditionLogicalOperatorDto other = (ConditionLogicalOperatorDto) o;
+        if (!(o instanceof LogicalOperatorCondition)) return false;
+        final LogicalOperatorCondition other = (LogicalOperatorCondition) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$symbol = this.getSymbol();
         final Object other$symbol = other.getSymbol();
@@ -58,7 +60,7 @@ public class ConditionLogicalOperatorDto
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof ConditionLogicalOperatorDto;
+        return other instanceof LogicalOperatorCondition;
     }
 
     public int hashCode() {
@@ -72,6 +74,21 @@ public class ConditionLogicalOperatorDto
     }
 
     public String toString() {
-        return "ConditionLogicalOperatorDto(symbol=" + this.getSymbol() + ", values=" + this.getValues() + ")";
+        return "LogicalOperatorCondition(symbol=" + this.getSymbol() + ", values=" + this.getValues() + ")";
+    }
+
+    public enum ConditionLogicalOperatorSymbol {
+        OR(4),
+        AND(2);
+
+        private final int precedence;
+
+        ConditionLogicalOperatorSymbol(int precedence) {
+            this.precedence = precedence;
+        }
+
+        public int getPrecedence() {
+            return precedence;
+        }
     }
 }

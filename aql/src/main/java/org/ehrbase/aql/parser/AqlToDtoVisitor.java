@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -40,17 +41,16 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.LogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorSymbol;
-import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
-import org.ehrbase.aql.dto.condition.LikeOperatorDto;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperatorDto;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.condition.ExistsCondition;
+import org.ehrbase.aql.dto.condition.LikeCondition;
+import org.ehrbase.aql.dto.condition.LogicalOperatorCondition;
+import org.ehrbase.aql.dto.condition.LogicalOperatorCondition.ConditionLogicalOperatorSymbol;
+import org.ehrbase.aql.dto.condition.MatchesCondition;
+import org.ehrbase.aql.dto.condition.NotCondition;
+import org.ehrbase.aql.dto.condition.WhereCondition;
 import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
@@ -389,47 +389,48 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
     public ContainmentSetOperator buildContainmentLogicalOperator(List<Object> boolList) {
 
-        return (ContainmentSetOperator) buildLogicalOperator(boolList, (Function<
-                        ContainmentSetOperatorSymbol, LogicalOperatorDto<ContainmentSetOperatorSymbol, Containment>>)
+        return (ContainmentSetOperator) buildLogicalOperator(
+                boolList,
                 s -> {
                     ContainmentSetOperator conditionLogicalOperatorDto = new ContainmentSetOperator();
                     conditionLogicalOperatorDto.setSymbol(s);
                     conditionLogicalOperatorDto.setValues(new ArrayList<>());
 
                     return conditionLogicalOperatorDto;
-                });
+                },
+                ContainmentSetOperatorSymbol::getPrecedence);
     }
 
-    public ConditionLogicalOperatorDto buildConditionLogicalOperatorDto(List<Object> boolList) {
+    public LogicalOperatorCondition buildConditionLogicalOperatorDto(List<Object> boolList) {
 
-        return (ConditionLogicalOperatorDto) buildLogicalOperator(boolList, (Function<
-                        ConditionLogicalOperatorSymbol,
-                        LogicalOperatorDto<ConditionLogicalOperatorSymbol, ConditionDto>>)
+        return (LogicalOperatorCondition) buildLogicalOperator(
+                boolList,
                 s -> {
-                    ConditionLogicalOperatorDto conditionLogicalOperatorDto = new ConditionLogicalOperatorDto();
-                    conditionLogicalOperatorDto.setSymbol(s);
-                    conditionLogicalOperatorDto.setValues(new ArrayList<>());
+                    LogicalOperatorCondition logicalOperatorCondition = new LogicalOperatorCondition();
+                    logicalOperatorCondition.setSymbol(s);
+                    logicalOperatorCondition.setValues(new ArrayList<>());
 
-                    return conditionLogicalOperatorDto;
-                });
+                    return logicalOperatorCondition;
+                },
+                ConditionLogicalOperatorSymbol::getPrecedence);
     }
 
     @Override
-    public ConditionDto visitWhereClause(AqlParser.WhereClauseContext ctx) {
+    public WhereCondition visitWhereClause(AqlParser.WhereClauseContext ctx) {
 
         return visitWhereExpr(ctx.whereExpr());
     }
 
     @Override
-    public ConditionDto visitWhereExpr(AqlParser.WhereExprContext ctx) {
+    public WhereCondition visitWhereExpr(AqlParser.WhereExprContext ctx) {
 
         if (ctx.identifiedExpr() != null) {
             return visitIdentifiedExpr(ctx.identifiedExpr());
         } else if (ctx.NOT() != null) {
 
-            NotConditionOperatorDto notConditionOperatorDto = new NotConditionOperatorDto();
-            notConditionOperatorDto.setConditionDto(visitWhereExpr(ctx.whereExpr(0)));
-            return notConditionOperatorDto;
+            NotCondition notCondition = new NotCondition();
+            notCondition.setConditionDto(visitWhereExpr(ctx.whereExpr(0)));
+            return notCondition;
         } else if (ctx.SYM_RIGHT_PAREN() != null) {
             return visitWhereExpr(ctx.whereExpr(0));
         }
@@ -456,13 +457,13 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public ConditionDto visitIdentifiedExpr(AqlParser.IdentifiedExprContext ctx) {
+    public WhereCondition visitIdentifiedExpr(AqlParser.IdentifiedExprContext ctx) {
 
         if (ctx.COMPARISON_OPERATOR() != null) {
 
-            ConditionComparisonOperatorDto conditionComparisonOperatorDto = new ConditionComparisonOperatorDto();
-            conditionComparisonOperatorDto.setSymbol(extractSymbol(ctx.COMPARISON_OPERATOR()));
-            conditionComparisonOperatorDto.setValue(visitTerminal(ctx.terminal()));
+            ComparisonOperatorCondition comparisonOperatorCondition = new ComparisonOperatorCondition();
+            comparisonOperatorCondition.setSymbol(extractSymbol(ctx.COMPARISON_OPERATOR()));
+            comparisonOperatorCondition.setValue(visitTerminal(ctx.terminal()));
             ComparisonLeftOperator statement;
 
             if (ctx.functionCall() != null) {
@@ -470,29 +471,29 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             } else {
                 statement = visitIdentifiedPath(ctx.identifiedPath());
             }
-            conditionComparisonOperatorDto.setStatement(statement);
-            conditionComparisonOperatorDto.setValue(visitTerminal(ctx.terminal()));
-            return conditionComparisonOperatorDto;
+            comparisonOperatorCondition.setStatement(statement);
+            comparisonOperatorCondition.setValue(visitTerminal(ctx.terminal()));
+            return comparisonOperatorCondition;
         } else if (ctx.likeOperand() != null) {
 
-            LikeOperatorDto likeOperatorDto = new LikeOperatorDto();
-            likeOperatorDto.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
-            likeOperatorDto.setValue(visitLikeOperand(ctx.likeOperand()));
-            return likeOperatorDto;
+            LikeCondition likeCondition = new LikeCondition();
+            likeCondition.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
+            likeCondition.setValue(visitLikeOperand(ctx.likeOperand()));
+            return likeCondition;
         } else if (ctx.SYM_LEFT_PAREN() != null) {
 
             return visitIdentifiedExpr(ctx.identifiedExpr());
         } else if (ctx.EXISTS() != null) {
 
-            ExistsConditionOperatorDto existsConditionOperatorDto = new ExistsConditionOperatorDto();
-            existsConditionOperatorDto.setValue(visitIdentifiedPath(ctx.identifiedPath()));
-            return existsConditionOperatorDto;
+            ExistsCondition existsCondition = new ExistsCondition();
+            existsCondition.setValue(visitIdentifiedPath(ctx.identifiedPath()));
+            return existsCondition;
         } else if (ctx.MATCHES() != null) {
 
-            MatchesOperatorDto matchesOperatorDto = new MatchesOperatorDto();
-            matchesOperatorDto.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
-            matchesOperatorDto.setValues(visitMatchesOperand(ctx.matchesOperand()));
-            return matchesOperatorDto;
+            MatchesCondition matchesCondition = new MatchesCondition();
+            matchesCondition.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
+            matchesCondition.setValues(visitMatchesOperand(ctx.matchesOperand()));
+            return matchesCondition;
         } else {
 
             errors.add("Can not handle %s".formatted(ctx.getText()));
@@ -555,7 +556,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
                 .getText(Interval.of(context.start.getStartIndex(), context.stop.getStopIndex()));
     }
 
-    private static <T, S extends LogicalOperatorSymbol> LogicalOperatorDto<S, T> buildLogicalOperator(
+    private static <S, T> LogicalOperatorDto<S, T> buildLogicalOperator(
             OperatorStructure<S> structure, Function<S, LogicalOperatorDto<S, T>> creator) {
 
         LogicalOperatorDto<S, T> operator = creator.apply(structure.getSymbol());
@@ -570,13 +571,13 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         return operator.addValues(stream);
     }
 
-    public static <S extends LogicalOperatorSymbol, T> LogicalOperatorDto<S, T> buildLogicalOperator(
-            List<Object> boolList, Function<S, LogicalOperatorDto<S, T>> creator) {
-        OperatorStructure<S> structure = buildLogicalOperatorStructure(boolList);
+    public static <S, T> LogicalOperatorDto<S, T> buildLogicalOperator(
+            List<Object> boolList, Function<S, LogicalOperatorDto<S, T>> creator, ToIntFunction<S> precedenceFunction) {
+        OperatorStructure<S> structure = buildLogicalOperatorStructure(boolList, precedenceFunction);
         return buildLogicalOperator(structure, creator);
     }
 
-    private static final class OperatorStructure<S extends LogicalOperatorSymbol> {
+    private static final class OperatorStructure<S> {
         private final S symbol;
         private final List<Object> children;
 
@@ -598,8 +599,8 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         }
     }
 
-    private static <S extends LogicalOperatorSymbol> OperatorStructure<S> buildLogicalOperatorStructure(
-            List<Object> boolList) {
+    private static <S> OperatorStructure<S> buildLogicalOperatorStructure(
+            List<Object> boolList, ToIntFunction<S> precedenceFunction) {
 
         S currentSymbol = (S) boolList.get(1);
         OperatorStructure<S> currentOperator = new OperatorStructure(currentSymbol, boolList.get(0));
@@ -614,7 +615,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             } else {
                 OperatorStructure<S> nextOperator = new OperatorStructure<>(nextSymbol);
 
-                if (hasHigherPrecedence(currentSymbol, nextSymbol)) {
+                if (hasHigherPrecedence(currentSymbol, nextSymbol, precedenceFunction)) {
                     currentOperator.addChild(currentOpValue);
                     nextOperator.addChild(currentOperator);
                     lowestOperator = nextOperator;
@@ -668,31 +669,31 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         }
     }
 
-    private ConditionComparisonOperatorSymbol extractSymbol(TerminalNode comparisonOperator) {
+    private ComparisonOperatorSymbol extractSymbol(TerminalNode comparisonOperator) {
         switch (comparisonOperator.getText()) {
             case "=":
-                return ConditionComparisonOperatorSymbol.EQ;
+                return ComparisonOperatorSymbol.EQ;
             case "!=":
-                return ConditionComparisonOperatorSymbol.NEQ;
+                return ComparisonOperatorSymbol.NEQ;
             case ">":
-                return ConditionComparisonOperatorSymbol.GT;
+                return ComparisonOperatorSymbol.GT;
             case ">=":
-                return ConditionComparisonOperatorSymbol.GT_EQ;
+                return ComparisonOperatorSymbol.GT_EQ;
             case "<":
-                return ConditionComparisonOperatorSymbol.LT;
+                return ComparisonOperatorSymbol.LT;
             case "<=":
-                return ConditionComparisonOperatorSymbol.LT_EQ;
+                return ComparisonOperatorSymbol.LT_EQ;
             default:
                 throw new AqlParseException("Unknown Token " + comparisonOperator.getText());
         }
     }
 
-    private static boolean hasHigherPrecedence(
-            LogicalOperatorSymbol operatorSymbol, LogicalOperatorSymbol nextOperatorSymbol) {
+    private static <S> boolean hasHigherPrecedence(
+            S operatorSymbol, S nextOperatorSymbol, ToIntFunction<S> precedenceFunction) {
         if (nextOperatorSymbol == null) {
             return true;
         } else {
-            return operatorSymbol.getPrecedence() <= nextOperatorSymbol.getPrecedence();
+            return precedenceFunction.applyAsInt(operatorSymbol) <= precedenceFunction.applyAsInt(nextOperatorSymbol);
         }
     }
 

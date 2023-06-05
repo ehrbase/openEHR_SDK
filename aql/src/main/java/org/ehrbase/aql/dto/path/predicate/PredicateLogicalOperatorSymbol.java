@@ -17,9 +17,7 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
-import org.ehrbase.aql.dto.LogicalOperatorSymbol;
-
-public enum PredicateLogicalOperatorSymbol implements LogicalOperatorSymbol {
+public enum PredicateLogicalOperatorSymbol {
     OR(4),
     AND(2);
 

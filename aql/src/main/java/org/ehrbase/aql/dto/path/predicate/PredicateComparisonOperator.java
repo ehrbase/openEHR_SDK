@@ -19,7 +19,7 @@ package org.ehrbase.aql.dto.path.predicate;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
@@ -28,7 +28,7 @@ import org.ehrbase.util.exception.SdkException;
 public final class PredicateComparisonOperator implements SimplePredicate, Serializable {
 
     private String statement;
-    private ConditionComparisonOperatorSymbol symbol;
+    private ComparisonOperatorSymbol symbol;
     private PathPredicateOperand value;
 
     public PredicateComparisonOperator(PredicateComparisonOperator other) {
@@ -52,8 +52,7 @@ public final class PredicateComparisonOperator implements SimplePredicate, Seria
         }
     }
 
-    public PredicateComparisonOperator(
-            String statement, ConditionComparisonOperatorSymbol symbol, PathPredicateOperand value) {
+    public PredicateComparisonOperator(String statement, ComparisonOperatorSymbol symbol, PathPredicateOperand value) {
         this.statement = statement;
         this.symbol = symbol;
         this.value = value;
@@ -65,7 +64,7 @@ public final class PredicateComparisonOperator implements SimplePredicate, Seria
         return this.statement;
     }
 
-    public ConditionComparisonOperatorSymbol getSymbol() {
+    public ComparisonOperatorSymbol getSymbol() {
         return this.symbol;
     }
 
@@ -107,7 +106,7 @@ public final class PredicateComparisonOperator implements SimplePredicate, Seria
     }
 
     public String toString() {
-        return "ConditionComparisonOperatorDto(statement="
+        return "ComparisonOperatorCondition(statement="
                 + this.getStatement()
                 + ", symbol="
                 + this.getSymbol()

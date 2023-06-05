@@ -17,19 +17,12 @@
  */
 package org.ehrbase.aql.dto.condition;
 
-import org.ehrbase.aql.dto.LogicalOperatorSymbol;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public enum ConditionLogicalOperatorSymbol implements LogicalOperatorSymbol {
-    OR(4),
-    AND(2);
-
-    private final int precedence;
-
-    ConditionLogicalOperatorSymbol(int precedence) {
-        this.precedence = precedence;
-    }
-
-    public int getPrecedence() {
-        return precedence;
-    }
-}
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ComparisonOperatorCondition.class, name = "ComparisonOperator"),
+    @JsonSubTypes.Type(value = LogicalOperatorCondition.class, name = "LogicalOperator")
+})
+public interface WhereCondition {}

@@ -22,27 +22,27 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class NotConditionOperatorDto implements ConditionDto {
+public class NotCondition implements WhereCondition {
 
-    private ConditionDto conditionDto;
+    private WhereCondition condition;
 
-    public NotConditionOperatorDto() {}
+    public NotCondition() {}
 
-    public NotConditionOperatorDto(ConditionDto conditionDto) {
-        this.conditionDto = conditionDto;
+    public NotCondition(WhereCondition condition) {
+        this.condition = condition;
     }
 
-    public ConditionDto getConditionDto() {
-        return conditionDto;
+    public WhereCondition getConditionDto() {
+        return condition;
     }
 
-    public void setConditionDto(ConditionDto conditionDto) {
-        this.conditionDto = conditionDto;
+    public void setConditionDto(WhereCondition condition) {
+        this.condition = condition;
     }
 
     @Override
     public String toString() {
-        return "NotConditionOperator{" + "conditionDto=" + conditionDto + '}';
+        return "NotCondition{" + "condition=" + condition + '}';
     }
 
     @Override
@@ -53,12 +53,12 @@ public class NotConditionOperatorDto implements ConditionDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        NotConditionOperatorDto that = (NotConditionOperatorDto) o;
-        return Objects.equals(conditionDto, that.conditionDto);
+        NotCondition that = (NotCondition) o;
+        return Objects.equals(condition, that.condition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(conditionDto);
+        return Objects.hash(condition);
     }
 }

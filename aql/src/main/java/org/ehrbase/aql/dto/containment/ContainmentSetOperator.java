@@ -19,7 +19,7 @@ package org.ehrbase.aql.dto.containment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperatorDto;
 
 public class ContainmentSetOperator
         implements Containment, LogicalOperatorDto<ContainmentSetOperatorSymbol, Containment> {

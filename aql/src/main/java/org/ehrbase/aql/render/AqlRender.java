@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ExistsConditionOperatorDto;
-import org.ehrbase.aql.dto.condition.LikeOperatorDto;
-import org.ehrbase.aql.dto.condition.MatchesOperatorDto;
-import org.ehrbase.aql.dto.condition.NotConditionOperatorDto;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
+import org.ehrbase.aql.dto.condition.ExistsCondition;
+import org.ehrbase.aql.dto.condition.LikeCondition;
+import org.ehrbase.aql.dto.condition.LogicalOperatorCondition;
+import org.ehrbase.aql.dto.condition.MatchesCondition;
+import org.ehrbase.aql.dto.condition.NotCondition;
+import org.ehrbase.aql.dto.condition.WhereCondition;
 import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
@@ -112,31 +112,31 @@ public class AqlRender {
         }
     }
 
-    private void renderWhere(StringBuilder sb, ConditionDto where) {
-        if (where instanceof ConditionComparisonOperatorDto conditionComparisonOperatorDto) {
-            renderConditionComparisonOperatorDto(sb, conditionComparisonOperatorDto);
-        } else if (where instanceof NotConditionOperatorDto notConditionOperatorDto) {
-            renderNotConditionOperatorDto(sb, notConditionOperatorDto);
-        } else if (where instanceof ExistsConditionOperatorDto existsConditionOperatorDto) {
-            renderExistsCondition(sb, existsConditionOperatorDto);
-        } else if (where instanceof ConditionLogicalOperatorDto conditionLogicalOperatorDto) {
-            renderConditionLogical(sb, conditionLogicalOperatorDto);
-        } else if (where instanceof LikeOperatorDto likeOperatorDto) {
-            renderLike(sb, likeOperatorDto);
-        } else if (where instanceof MatchesOperatorDto matchesOperatorDto) {
-            renderMatches(sb, matchesOperatorDto);
+    private void renderWhere(StringBuilder sb, WhereCondition where) {
+        if (where instanceof ComparisonOperatorCondition comparisonOperatorCondition) {
+            renderConditionComparisonOperatorDto(sb, comparisonOperatorCondition);
+        } else if (where instanceof NotCondition notCondition) {
+            renderNotConditionOperatorDto(sb, notCondition);
+        } else if (where instanceof ExistsCondition existsCondition) {
+            renderExistsCondition(sb, existsCondition);
+        } else if (where instanceof LogicalOperatorCondition logicalOperatorCondition) {
+            renderConditionLogical(sb, logicalOperatorCondition);
+        } else if (where instanceof LikeCondition likeCondition) {
+            renderLike(sb, likeCondition);
+        } else if (where instanceof MatchesCondition matchesCondition) {
+            renderMatches(sb, matchesCondition);
         } else {
             throw new SdkException(
                     "Can not handle %s".formatted(where.getClass().getName()));
         }
     }
 
-    private void renderMatches(StringBuilder sb, MatchesOperatorDto matchesOperatorDto) {
+    private void renderMatches(StringBuilder sb, MatchesCondition matchesCondition) {
 
-        renderIdentifiedPath(sb, matchesOperatorDto.getStatement());
+        renderIdentifiedPath(sb, matchesCondition.getStatement());
         sb.append(" ").append("MATCHES").append(" ");
         sb.append("{");
-        Iterator<MatchesOperand> iterator = matchesOperatorDto.getValues().iterator();
+        Iterator<MatchesOperand> iterator = matchesCondition.getValues().iterator();
         while (iterator.hasNext()) {
             MatchesOperand next = iterator.next();
             renderMatchesOperant(sb, next);
@@ -158,10 +158,10 @@ public class AqlRender {
         }
     }
 
-    private void renderLike(StringBuilder sb, LikeOperatorDto likeOperatorDto) {
-        renderIdentifiedPath(sb, likeOperatorDto.getStatement());
+    private void renderLike(StringBuilder sb, LikeCondition likeCondition) {
+        renderIdentifiedPath(sb, likeCondition.getStatement());
         sb.append(" ").append("LIKE").append(" ");
-        renderLikeOperant(sb, likeOperatorDto.getValue());
+        renderLikeOperant(sb, likeCondition.getValue());
     }
 
     private void renderLikeOperant(StringBuilder sb, LikeOperand value) {
@@ -173,40 +173,39 @@ public class AqlRender {
         }
     }
 
-    private void renderConditionLogical(StringBuilder sb, ConditionLogicalOperatorDto conditionLogicalOperatorDto) {
+    private void renderConditionLogical(StringBuilder sb, LogicalOperatorCondition logicalOperatorCondition) {
 
-        Iterator<ConditionDto> iterator =
-                conditionLogicalOperatorDto.getValues().iterator();
+        Iterator<WhereCondition> iterator = logicalOperatorCondition.getValues().iterator();
         sb.append("(");
         while (iterator.hasNext()) {
 
             renderWhere(sb, iterator.next());
             if (iterator.hasNext()) {
-                sb.append(" ").append(conditionLogicalOperatorDto.getSymbol()).append(" ");
+                sb.append(" ").append(logicalOperatorCondition.getSymbol()).append(" ");
             }
         }
         sb.append(")");
     }
 
-    private void renderExistsCondition(StringBuilder sb, ExistsConditionOperatorDto existsConditionOperatorDto) {
+    private void renderExistsCondition(StringBuilder sb, ExistsCondition existsCondition) {
         sb.append("EXISTS ");
-        renderIdentifiedPath(sb, existsConditionOperatorDto.getValue());
+        renderIdentifiedPath(sb, existsCondition.getValue());
     }
 
-    private void renderNotConditionOperatorDto(StringBuilder sb, NotConditionOperatorDto notConditionOperatorDto) {
+    private void renderNotConditionOperatorDto(StringBuilder sb, NotCondition notCondition) {
         sb.append("NOT ");
-        renderWhere(sb, notConditionOperatorDto.getConditionDto());
+        renderWhere(sb, notCondition.getConditionDto());
     }
 
     private void renderConditionComparisonOperatorDto(
-            StringBuilder sb, ConditionComparisonOperatorDto conditionComparisonOperatorDto) {
-        ComparisonLeftOperator statement = conditionComparisonOperatorDto.getStatement();
+            StringBuilder sb, ComparisonOperatorCondition comparisonOperatorCondition) {
+        ComparisonLeftOperator statement = comparisonOperatorCondition.getStatement();
 
         renderComparisonLeftOperator(sb, statement);
         sb.append(" ")
-                .append(conditionComparisonOperatorDto.getSymbol().getSymbol())
+                .append(comparisonOperatorCondition.getSymbol().getSymbol())
                 .append(" ");
-        sb.append(renderTerminal(conditionComparisonOperatorDto.getValue()));
+        sb.append(renderTerminal(comparisonOperatorCondition.getValue()));
     }
 
     private void renderComparisonLeftOperator(StringBuilder sb, ComparisonLeftOperator statement) {

@@ -19,7 +19,7 @@ package org.ehrbase.aql.dto.path.predicate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -87,9 +87,7 @@ class PredicateHelperTest {
 
         {
             PredicateLogicalAndOperation actual = PredicateHelper.remove(
-                    (PredicateLogicalAndOperation) predicate,
-                    ConditionComparisonOperatorSymbol.EQ,
-                    PredicateHelper.NAME_VALUE);
+                    (PredicateLogicalAndOperation) predicate, ComparisonOperatorSymbol.EQ, PredicateHelper.NAME_VALUE);
             StringBuilder sb = new StringBuilder();
             PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);
             assertThat(sb).hasToString("at001");
@@ -97,7 +95,7 @@ class PredicateHelperTest {
         {
             PredicateLogicalAndOperation actual = PredicateHelper.remove(
                     (PredicateLogicalAndOperation) predicate,
-                    ConditionComparisonOperatorSymbol.GT_EQ,
+                    ComparisonOperatorSymbol.GT_EQ,
                     PredicateHelper.NAME_VALUE);
             StringBuilder sb = new StringBuilder();
             PredicateHelper.format(sb, actual, AqlPath.OtherPredicatesFormat.SHORTED);

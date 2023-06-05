@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperatorDto;
 
 /**
  * @author Stefan Spiska
