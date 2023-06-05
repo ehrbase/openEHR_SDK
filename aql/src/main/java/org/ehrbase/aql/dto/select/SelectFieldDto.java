@@ -17,12 +17,19 @@
  */
 package org.ehrbase.aql.dto.select;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.ehrbase.aql.dto.path.AqlPath;
 
 public class SelectFieldDto implements SelectStatementDto {
 
+    @JsonProperty(index = 10)
     private String name;
+
+    @JsonProperty(index = 30)
     private AqlPath aqlPath;
+
+    @JsonProperty(index = 20)
     private int containmentId;
 
     public String getName() {
@@ -33,6 +40,7 @@ public class SelectFieldDto implements SelectStatementDto {
         return this.aqlPath.format(AqlPath.OtherPredicatesFormat.SHORTED, false);
     }
 
+    @JsonIgnore
     public AqlPath getAqlPathDto() {
         return this.aqlPath;
     }

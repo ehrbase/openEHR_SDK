@@ -44,6 +44,8 @@ public interface OpenEhrClient {
      */
     ContributionEndpoint contributionEndpoint(UUID ehrId);
 
+    DirectoryCrudEndpoint directoryCrudEndpoint(UUID ehrId);
+
     FolderDAO folder(UUID ehrId, String path);
 
     /**
