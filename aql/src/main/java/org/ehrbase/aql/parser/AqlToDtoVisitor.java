@@ -59,7 +59,7 @@ import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperatorSymbol;
 import org.ehrbase.aql.dto.containment.ContainmentVersionExpression;
 import org.ehrbase.aql.dto.operand.AQLFunction;
-import org.ehrbase.aql.dto.operand.AggregateFunctionDto;
+import org.ehrbase.aql.dto.operand.AggregateFunction;
 import org.ehrbase.aql.dto.operand.BooleanPrimitiveDto;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
@@ -70,11 +70,11 @@ import org.ehrbase.aql.dto.operand.LongPrimitiveDto;
 import org.ehrbase.aql.dto.operand.MatchesOperant;
 import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.Primitive;
-import org.ehrbase.aql.dto.operand.SingleRowFunktion;
+import org.ehrbase.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
 import org.ehrbase.aql.dto.operand.TemporalPrimitiveDto;
 import org.ehrbase.aql.dto.operand.Terminal;
-import org.ehrbase.aql.dto.operand.TerminologyFunctionDto;
+import org.ehrbase.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.orderby.OrderByExpression.OrderByDirection;
 import org.ehrbase.aql.dto.path.AqlPath;
@@ -182,9 +182,9 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public AggregateFunctionDto visitAggregateFunctionCall(AqlParser.AggregateFunctionCallContext ctx) {
+    public AggregateFunction visitAggregateFunctionCall(AqlParser.AggregateFunctionCallContext ctx) {
 
-        AggregateFunctionDto dto = new AggregateFunctionDto();
+        AggregateFunction dto = new AggregateFunction();
 
         final AQLFunction aqlFunction = findFunctionName(ctx.name);
 
@@ -255,9 +255,9 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public SingleRowFunktion visitFunctionCall(AqlParser.FunctionCallContext ctx) {
+    public SingleRowFunction visitFunctionCall(AqlParser.FunctionCallContext ctx) {
 
-        SingleRowFunktion dto = new SingleRowFunktion();
+        SingleRowFunction dto = new SingleRowFunction();
         dto.setFunctionName(findFunctionName(ctx.name));
 
         dto.setOperantList(ctx.terminal().stream().map(this::visitTerminal).toList());
@@ -518,7 +518,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             return createParameter(ctx.PARAMETER());
         } else {
             errors.add("Terminology not yet implemented");
-            return new TerminologyFunctionDto();
+            return new TerminologyFunction();
         }
     }
 

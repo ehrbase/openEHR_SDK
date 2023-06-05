@@ -39,7 +39,7 @@ import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
-import org.ehrbase.aql.dto.operand.AggregateFunctionDto;
+import org.ehrbase.aql.dto.operand.AggregateFunction;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperator;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
@@ -47,7 +47,7 @@ import org.ehrbase.aql.dto.operand.LikeOperant;
 import org.ehrbase.aql.dto.operand.MatchesOperant;
 import org.ehrbase.aql.dto.operand.ParameterDto;
 import org.ehrbase.aql.dto.operand.Primitive;
-import org.ehrbase.aql.dto.operand.SingleRowFunktion;
+import org.ehrbase.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.aql.dto.operand.StringPrimitiveDto;
 import org.ehrbase.aql.dto.operand.Terminal;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
@@ -212,7 +212,7 @@ public class AqlRender {
     private void renderComparisonLeftOperator(StringBuilder sb, ComparisonLeftOperator statement) {
         if (statement instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
-        } else if (statement instanceof SingleRowFunktion singleRowFunktion) {
+        } else if (statement instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else {
             throw new SdkException(
@@ -246,10 +246,10 @@ public class AqlRender {
             renderIdentifiedPath(sb, (IdentifiedPath) columnExpression);
         } else if (columnExpression instanceof Primitive) {
             renderSelectPrimitiveDto(sb, (Primitive) columnExpression);
-        } else if (columnExpression instanceof AggregateFunctionDto) {
+        } else if (columnExpression instanceof AggregateFunction) {
 
-            renderAggregateFunctionDto(sb, (AggregateFunctionDto) columnExpression);
-        } else if (columnExpression instanceof SingleRowFunktion singleRowFunktion) {
+            renderAggregateFunctionDto(sb, (AggregateFunction) columnExpression);
+        } else if (columnExpression instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else {
             throw new UnsupportedOperationException(
@@ -261,15 +261,15 @@ public class AqlRender {
         }
     }
 
-    private void renderAggregateFunctionDto(StringBuilder sb, AggregateFunctionDto aggregateFunctionDto) {
+    private void renderAggregateFunctionDto(StringBuilder sb, AggregateFunction aggregateFunction) {
 
-        sb.append(aggregateFunctionDto.getFunctionName().name()).append("(");
+        sb.append(aggregateFunction.getFunctionName().name()).append("(");
 
-        renderIdentifiedPath(sb, aggregateFunctionDto.getIdentifiedPath());
+        renderIdentifiedPath(sb, aggregateFunction.getIdentifiedPath());
         sb.append(")");
     }
 
-    private void renderSingleRowFunctionDto(StringBuilder sb, SingleRowFunktion singleRowFunktion) {
+    private void renderSingleRowFunctionDto(StringBuilder sb, SingleRowFunction singleRowFunktion) {
 
         sb.append(singleRowFunktion.getFunctionName().name()).append("(");
         sb.append(singleRowFunktion.getOperantList().stream()
@@ -281,7 +281,7 @@ public class AqlRender {
     private String renderTerminal(Terminal terminal) {
 
         StringBuilder sb = new StringBuilder();
-        if (terminal instanceof SingleRowFunktion singleRowFunktion) {
+        if (terminal instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else if (terminal instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);

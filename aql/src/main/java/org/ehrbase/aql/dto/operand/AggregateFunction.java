@@ -20,5 +20,26 @@ package org.ehrbase.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class TerminologyFunctionDto extends AbstractFunktion
-        implements MatchesOperant, ColumnExpression, Terminal, ComparisonLeftOperator {}
+public class AggregateFunction extends AbstractFunction implements ColumnExpression {
+
+    private IdentifiedPath identifiedPath;
+
+    public IdentifiedPath getIdentifiedPath() {
+        return identifiedPath;
+    }
+
+    public void setIdentifiedPath(IdentifiedPath identifiedPath) {
+        this.identifiedPath = identifiedPath;
+    }
+
+    @Override
+    public void setFunctionName(AQLFunction functionName) {
+
+        if (functionName.getFunctionType() != AQLFunctionType.AGGREGATE) {
+
+            throw new UnsupportedOperationException(
+                    String.format("%s is not a aggregate Function", functionName.name()));
+        }
+        super.setFunctionName(functionName);
+    }
+}
