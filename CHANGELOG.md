@@ -2,7 +2,7 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## [unreleased]
+## [1.28.0]
 
 ### Added
 - new DirectoryCrudEndpoint ([#465](https://github.com/ehrbase/openEHR_SDK/pull/465))
@@ -296,4 +296,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 [1.27.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...v1.27.0
 
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.27.0...HEAD
+[1.28.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.27.0...v1.28.0
