@@ -8,8 +8,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Changed
 
-- switch to java 17 ([#462](https://github.com/ehrbase/openEHR_SDK/pull/464))
-- Change the implementation of AqlDto ([#462](https://github.com/ehrbase/openEHR_SDK/pull/464))
+- switch to java 17 ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
+- Change the implementation of AqlDto ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
 
 ### Fixed
 
