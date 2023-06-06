@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation;
+package org.ehrbase.serialisation.util;
 
-import static com.nedap.archie.datetime.DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS;
-import static com.nedap.archie.datetime.DateTimeFormatters.ISO8601_TIME_ZONE;
-
+import com.nedap.archie.datetime.DateTimeFormatters;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,10 +64,10 @@ public final class OpenEHRDateTimeParseUtils {
             .optionalStart()
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(ISO8601_OPTIONAL_NANOSECONDS)
+            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(ISO8601_TIME_ZONE)
+            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
     public static final DateTimeFormatter ISO_8601_DATE_TIME_PARSER = new DateTimeFormatterBuilder()
@@ -90,10 +88,10 @@ public final class OpenEHRDateTimeParseUtils {
             .optionalStart()
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(ISO8601_OPTIONAL_NANOSECONDS)
+            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(ISO8601_TIME_ZONE)
+            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
@@ -119,10 +117,10 @@ public final class OpenEHRDateTimeParseUtils {
             .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
             .optionalStart()
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(ISO8601_OPTIONAL_NANOSECONDS)
+            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(ISO8601_TIME_ZONE)
+            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
     // partial date-times are allowed in compact format but archie does not implement that
@@ -140,10 +138,10 @@ public final class OpenEHRDateTimeParseUtils {
             .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
             .optionalStart()
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(ISO8601_OPTIONAL_NANOSECONDS)
+            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(ISO8601_TIME_ZONE)
+            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()

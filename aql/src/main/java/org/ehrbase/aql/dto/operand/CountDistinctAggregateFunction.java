@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,24 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation.jsonencoding;
+package org.ehrbase.aql.dto.operand;
 
-import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import java.time.temporal.TemporalAccessor;
-import org.ehrbase.serialisation.util.OpenEHRDateTimeParseUtils;
+public class CountDistinctAggregateFunction extends AggregateFunction {
 
-/**
- * Workaround for archie date-time parsing issues
- */
-public class TimeDeserializer extends AbstractDvTemporalDeserializer<TemporalAccessor, DvTime> {
-
-    @Override
-    DvTime createInstance() {
-        return new DvTime();
+    public CountDistinctAggregateFunction() {
+        super.setFunctionName(AggregateFunctionName.COUNT);
     }
 
     @Override
-    TemporalAccessor parseValue(String valueString) {
-        return OpenEHRDateTimeParseUtils.parseTime(valueString);
+    public void setFunctionName(AggregateFunctionName functionName) {
+        throw new UnsupportedOperationException();
     }
 }

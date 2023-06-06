@@ -19,7 +19,7 @@ package org.ehrbase.serialisation.jsonencoding;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.time.temporal.TemporalAccessor;
-import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
+import org.ehrbase.serialisation.util.OpenEHRDateTimeParseUtils;
 
 /**
  * Workaround for archie date-time parsing issues

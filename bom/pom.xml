@@ -202,6 +202,11 @@
                 <version>${archie.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.nedap.healthcare.archie</groupId>
+                <artifactId>utils</artifactId>
+                <version>${archie.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>

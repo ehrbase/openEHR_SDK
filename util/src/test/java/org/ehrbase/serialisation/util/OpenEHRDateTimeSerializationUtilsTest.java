@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation;
+package org.ehrbase.serialisation.util;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -33,7 +33,6 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
-import org.ehrbase.serialisation.exception.MarshalException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -51,7 +50,7 @@ class OpenEHRDateTimeSerializationUtilsTest {
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
                 LocalTime.of(0, 0),
-                MarshalException.class,
+                IllegalArgumentException.class,
                 "The given TemporalAccessor does not support the minimal resolution defined by openEHR: YEAR");
 
         private final TemporalAccessor input;
@@ -116,7 +115,7 @@ class OpenEHRDateTimeSerializationUtilsTest {
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
                 Year.of(0),
-                MarshalException.class,
+                IllegalArgumentException.class,
                 "The given TemporalAccessor does not support the minimal resolution defined by openEHR: HOUR_OF_DAY");
 
         private final TemporalAccessor input;
@@ -193,7 +192,7 @@ class OpenEHRDateTimeSerializationUtilsTest {
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
                 LocalTime.of(0, 0),
-                MarshalException.class,
+                IllegalArgumentException.class,
                 "The given TemporalAccessor does not support the minimal resolution defined by openEHR: YEAR");
 
         private final TemporalAccessor input;

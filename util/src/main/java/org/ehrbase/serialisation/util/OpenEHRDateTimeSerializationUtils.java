@@ -15,9 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.serialisation;
-
-import static com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime.SECONDS_BETWEEN_0001_AND_1970;
+package org.ehrbase.serialisation.util;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
@@ -36,7 +34,6 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
-import org.ehrbase.serialisation.exception.MarshalException;
 
 /**
  * This helper class is used to work around some Archie issues with date/time parsing accepting invalid years or not following the specified format fully (i.e. 2023-13, ignoring leap years)
@@ -130,7 +127,7 @@ public final class OpenEHRDateTimeSerializationUtils {
         }
 
         if (!temporal.isSupported(lowestResolution)) {
-            throw new MarshalException(
+            throw new IllegalArgumentException(
                     "The given TemporalAccessor does not support the minimal resolution defined by openEHR: "
                             + lowestResolution.name());
         }
@@ -172,7 +169,7 @@ public final class OpenEHRDateTimeSerializationUtils {
             epochSecond = date.toEpochSecond(DEFAULT_TIME, ZoneOffset.UTC);
         }
 
-        return epochSecond + SECONDS_BETWEEN_0001_AND_1970;
+        return epochSecond + DvDateTime.SECONDS_BETWEEN_0001_AND_1970;
     }
 
     /**

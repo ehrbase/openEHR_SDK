@@ -17,9 +17,6 @@
  */
 package org.ehrbase.aql.render;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.nedap.archie.json.JacksonUtil;
-import java.time.temporal.TemporalAccessor;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -40,8 +37,10 @@ import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.aql.dto.operand.AggregateFunction;
+import org.ehrbase.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperand;
+import org.ehrbase.aql.dto.operand.CountDistinctAggregateFunction;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperand;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
@@ -264,7 +263,19 @@ public class AqlRender {
 
         sb.append(aggregateFunction.getFunctionName().name()).append("(");
 
-        renderIdentifiedPath(sb, aggregateFunction.getIdentifiedPath());
+        if (aggregateFunction instanceof CountDistinctAggregateFunction) {
+            if (aggregateFunction.getIdentifiedPath() == null) {
+                throw new IllegalStateException("COUNT(DISTINCT *) is not allowed");
+            }
+            sb.append("DISTINCT ");
+        }
+
+        if (AggregateFunctionName.COUNT.equals(aggregateFunction.getFunctionName())
+                && aggregateFunction.getIdentifiedPath() == null) {
+            sb.append('*');
+        } else {
+            renderIdentifiedPath(sb, aggregateFunction.getIdentifiedPath());
+        }
         sb.append(")");
     }
 
@@ -321,26 +332,12 @@ public class AqlRender {
     public String renderValue(Object value) {
 
         if (value == null) {
-
             return "NULL";
         }
-        if (Long.class.isAssignableFrom(value.getClass()) || Integer.class.isAssignableFrom(value.getClass())) {
-            return value.toString();
-        } else if (Double.class.isAssignableFrom(value.getClass()) || Float.class.isAssignableFrom(value.getClass())) {
-            return value.toString();
-        }
-        if (Boolean.class.isAssignableFrom(value.getClass())) {
+        if (Number.class.isAssignableFrom(value.getClass()) || Boolean.class.isAssignableFrom(value.getClass())) {
             return value.toString();
         } else if (String.class.isAssignableFrom(value.getClass()) || UUID.class.isAssignableFrom(value.getClass())) {
             return StringUtils.wrap(value.toString(), "'");
-        } else if (TemporalAccessor.class.isAssignableFrom(value.getClass())) {
-            String valueAsString;
-            try {
-                valueAsString = JacksonUtil.getObjectMapper().writeValueAsString(value);
-            } catch (JsonProcessingException e) {
-                throw new SdkException(e.getMessage(), e);
-            }
-            return StringUtils.wrap(valueAsString.replace("\"", ""), "'");
         } else {
             throw new SdkException(
                     "%s is not an valid AQL Value".formatted(value.getClass().getName()));

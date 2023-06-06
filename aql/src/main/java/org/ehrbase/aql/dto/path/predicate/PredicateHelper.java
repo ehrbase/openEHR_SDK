@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
-import static org.ehrbase.aql.parser.AqlQueryParserHelper.buildLogicalOperator;
+import static org.ehrbase.aql.parser.AqlQueryParserUtil.buildLogicalOperator;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

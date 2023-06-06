@@ -30,7 +30,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
+import org.ehrbase.serialisation.util.OpenEHRDateTimeParseUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

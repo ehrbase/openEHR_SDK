@@ -27,12 +27,15 @@ import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.aql.dto.containment.ContainmentSetOperator;
+import org.ehrbase.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.path.predicate.AqlPredicate;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperator;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.render.AqlRender;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 class AqlQueryParserTest {
 
@@ -259,11 +262,11 @@ class AqlQueryParserTest {
 
         String actualAql = new AqlRender(actual).render();
 
-        assertThat(actualAql.toUpperCase()).isEqualTo(expected.toUpperCase());
+        assertThat(actualAql).isEqualToIgnoringCase(expected);
 
         String roundtripAql = new AqlRender(cut.parse(expected)).render();
 
-        assertThat(roundtripAql.toUpperCase()).isEqualTo(expected.toUpperCase());
+        assertThat(roundtripAql).isEqualToIgnoringCase(expected);
     }
 
     @Test
@@ -367,6 +370,28 @@ class AqlQueryParserTest {
                 + "where (e/ehr_id/value matches {'b3a40b41-36e1-4802-8748-062d4000aaae'} "
                 + "and c1/archetype_details/template_id/value like '%test%' "
                 + "and c1/archetype_details/archetype_id/value like $archetype)";
+
+        testAql(aql, aql);
+    }
+
+    @ParameterizedTest
+    @EnumSource(AggregateFunctionName.class)
+    void testAggregateFunctions(AggregateFunctionName name) {
+        String aql = "SELECT " + name.name() + "(d/ehr_id/value) FROM EHR d";
+
+        testAql(aql, aql);
+    }
+
+    @Test
+    void testCountDistinct() {
+        String aql = "SELECT COUNT(DISTINCT d/ehr_id/value) FROM EHR d";
+
+        testAql(aql, aql);
+    }
+
+    @Test
+    void testCountAsterisk() {
+        String aql = "SELECT COUNT(*) FROM EHR d";
 
         testAql(aql, aql);
     }

@@ -27,16 +27,16 @@ public class AqlQueryParser {
     public AqlQuery parse(String aql) {
         try {
             AqlLexer aqlLexer = new AqlLexer(CharStreams.fromString(aql));
-            aqlLexer.addErrorListener(new SDKErrorListener());
+            aqlLexer.addErrorListener(SDKErrorListener.INSTANCE);
             CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
             AqlParser aqlParser = new AqlParser(commonTokenStream);
-            aqlParser.addErrorListener(new SDKErrorListener());
+            aqlParser.addErrorListener(SDKErrorListener.INSTANCE);
             AqlQueryVisitor listener = new AqlQueryVisitor();
             AqlQuery aqlQuery = listener.visitSelectQuery(aqlParser.selectQuery());
 
             if (!listener.getErrors().isEmpty()) {
                 throw new AqlParseException(
-                        String.format("Can not parse aql %s: %s", aql, String.join(",", listener.getErrors())));
+                        String.format("Cannot parse aql %s: %s", aql, String.join(",", listener.getErrors())));
             }
 
             return aqlQuery;

@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.ehrbase.aql.dto.LogicalOperator;
 
-public final class AqlQueryParserHelper {
+public final class AqlQueryParserUtil {
 
-    private AqlQueryParserHelper() {}
+    private AqlQueryParserUtil() {}
 
     public static <S, T> LogicalOperator<S, T> buildLogicalOperator(
             List<Object> boolList, Function<S, LogicalOperator<S, T>> creator, ToIntFunction<S> precedenceFunction) {

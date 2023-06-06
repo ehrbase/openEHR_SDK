@@ -17,16 +17,61 @@
  */
 package org.ehrbase.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.serialisation.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.serialisation.util.OpenEHRDateTimeSerializationUtils;
 
 /**
  * @author Stefan Spiska
  */
-public class TemporalPrimitive extends Primitive<TemporalAccessor> {
+public class TemporalPrimitive extends StringPrimitive {
+
+    private TemporalAccessor temporal;
 
     public TemporalPrimitive() {}
 
-    public TemporalPrimitive(TemporalAccessor value) {
-        super(value);
+    public TemporalPrimitive(String value) {
+        setValue(value);
+    }
+
+    @JsonProperty
+    @Override
+    public void setValue(String value) {
+        this.temporal = parseTemporal(value);
+        super.setValue(value);
+    }
+
+    static TemporalAccessor parseTemporal(String value) {
+        if (value == null) {
+            return null;
+        }
+        if (StringUtils.containsAny(value, 'T', '-')) {
+            return OpenEHRDateTimeParseUtils.parseDateTime(value);
+        }
+        if (StringUtils.containsAny(value, ':', '.', '+', '-', 'Z') || value.length() == 6) {
+            return OpenEHRDateTimeParseUtils.parseTime(value);
+        }
+        return OpenEHRDateTimeParseUtils.parseDateTime(value);
+    }
+
+    @JsonIgnore
+    public TemporalAccessor getTemporal() {
+        return temporal;
+    }
+
+    public void setTemporal(TemporalAccessor temporal) {
+        this.temporal = temporal;
+        if (temporal == null) {
+            setValue(null);
+        } else {
+            setValue(
+                    temporal.isSupported(ChronoField.YEAR)
+                            ? OpenEHRDateTimeSerializationUtils.formatDateTime(temporal)
+                            : OpenEHRDateTimeSerializationUtils.formatTime(temporal));
+        }
     }
 }

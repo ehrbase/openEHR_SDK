@@ -17,7 +17,6 @@
  */
 package org.ehrbase.aql.parser;
 
-import com.nedap.archie.datetime.DateTimeParsers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,6 +57,7 @@ import org.ehrbase.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.aql.dto.operand.BooleanPrimitive;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperand;
+import org.ehrbase.aql.dto.operand.CountDistinctAggregateFunction;
 import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperand;
@@ -78,19 +78,18 @@ import org.ehrbase.aql.dto.path.predicate.AqlPredicate;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectClause;
 import org.ehrbase.aql.dto.select.SelectExpression;
+import org.ehrbase.aql.parser.AqlParser.IdentifiedPathContext;
 import org.ehrbase.util.exception.SdkException;
 
 class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     private final Map<String, AbstractContainmentExpression> identifierMap = new HashMap<>();
     private final MultiValuedMap<String, IdentifiedPath> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
-
-    private List<String> errors;
+    private final List<String> errors = new ArrayList<>();
 
     @Override
     public AqlQuery visitSelectQuery(AqlParser.SelectQueryContext ctx) {
 
-        errors = new ArrayList<>();
         AqlQuery aqlQuery = new AqlQuery();
 
         // select
@@ -134,8 +133,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         selectClause.setDistinct(ctx.DISTINCT() != null);
 
         if (ctx.top() != null) {
-
-            errors.add("top not yet implemented");
+            errors.add("Deprecated keyword 'TOP' not implemented. Use 'LIMIT'.");
         }
 
         selectClause.setStatement(
@@ -151,8 +149,8 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         selectExpression.setColumnExpression(visitColumnExpr(ctx.columnExpr()));
 
-        if (ctx.IDENTIFIER() != null) {
-            selectExpression.setAlias(ctx.IDENTIFIER().getText());
+        if (ctx.aliasName != null) {
+            selectExpression.setAlias(ctx.aliasName.getText());
         }
 
         return selectExpression;
@@ -160,33 +158,26 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     @Override
     public ColumnExpression visitColumnExpr(AqlParser.ColumnExprContext ctx) {
-
-        if (ctx.identifiedPath() != null) {
-            return visitIdentifiedPath(ctx.identifiedPath());
-
-        } else if (ctx.functionCall() != null) {
-            return visitFunctionCall(ctx.functionCall());
-        } else if (ctx.aggregateFunctionCall() != null) {
-
-            return visitAggregateFunctionCall(ctx.aggregateFunctionCall());
-        } else if (ctx.primitive() != null) {
-
-            return visitPrimitive(ctx.primitive());
-        } else {
-
-            throw new AqlParseException("Invalid ColumnExpr");
-        }
+        return (ColumnExpression) super.visitColumnExpr(ctx);
     }
 
     @Override
     public AggregateFunction visitAggregateFunctionCall(AqlParser.AggregateFunctionCallContext ctx) {
 
-        AggregateFunction dto = new AggregateFunction();
-
         final AggregateFunctionName aqlFunction = findFunctionName(ctx.name, AggregateFunctionName::valueOf);
 
-        dto.setFunctionName(aqlFunction);
-        dto.setIdentifiedPath(visitIdentifiedPath(ctx.identifiedPath()));
+        final AggregateFunction dto;
+        if (AggregateFunctionName.COUNT.equals(aqlFunction) && ctx.DISTINCT() != null) {
+            dto = new CountDistinctAggregateFunction();
+        } else {
+            dto = new AggregateFunction();
+            dto.setFunctionName(aqlFunction);
+        }
+
+        IdentifiedPathContext identifiedPath = ctx.identifiedPath();
+        if (identifiedPath != null) {
+            dto.setIdentifiedPath(visitIdentifiedPath(identifiedPath));
+        }
 
         return dto;
     }
@@ -206,9 +197,8 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         if (ctx.BOOLEAN() != null) {
             selectPrimitiveDto = new BooleanPrimitive(Boolean.parseBoolean(ctx.getText()));
-        } else if (ctx.DATE() != null) {
-            String unwrap = unwrapText(ctx);
-            selectPrimitiveDto = new TemporalPrimitive(DateTimeParsers.parseTimeValue(unwrap));
+        } else if (ctx.DATE() != null || ctx.DATETIME() != null || ctx.TIME() != null) {
+            selectPrimitiveDto = new TemporalPrimitive(unwrapText(ctx));
         } else if (ctx.numericPrimitive() != null) {
             AqlParser.NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
             selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
@@ -383,7 +373,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     public ContainmentSetOperator buildContainmentLogicalOperator(List<Object> boolList) {
 
-        return (ContainmentSetOperator) AqlQueryParserHelper.buildLogicalOperator(
+        return (ContainmentSetOperator) AqlQueryParserUtil.buildLogicalOperator(
                 boolList,
                 s -> {
                     ContainmentSetOperator conditionLogicalOperatorDto = new ContainmentSetOperator();
@@ -397,7 +387,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     public LogicalOperatorCondition buildConditionLogicalOperatorDto(List<Object> boolList) {
 
-        return (LogicalOperatorCondition) AqlQueryParserHelper.buildLogicalOperator(
+        return (LogicalOperatorCondition) AqlQueryParserUtil.buildLogicalOperator(
                 boolList,
                 s -> {
                     LogicalOperatorCondition logicalOperatorCondition = new LogicalOperatorCondition();
