@@ -19,27 +19,27 @@ package org.ehrbase.aql.parser;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.util.exception.SDKErrorListener;
 
-public class AqlToDtoParser {
+public class AqlQueryParser {
 
-    public AqlDto parse(String aql) {
+    public AqlQuery parse(String aql) {
         try {
             AqlLexer aqlLexer = new AqlLexer(CharStreams.fromString(aql));
             aqlLexer.addErrorListener(new SDKErrorListener());
             CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
             AqlParser aqlParser = new AqlParser(commonTokenStream);
             aqlParser.addErrorListener(new SDKErrorListener());
-            AqlToDtoVisitor listener = new AqlToDtoVisitor();
-            AqlDto aqlDto = listener.visitSelectQuery(aqlParser.selectQuery());
+            AqlQueryVisitor listener = new AqlQueryVisitor();
+            AqlQuery aqlQuery = listener.visitSelectQuery(aqlParser.selectQuery());
 
             if (!listener.getErrors().isEmpty()) {
                 throw new AqlParseException(
                         String.format("Can not parse aql %s: %s", aql, String.join(",", listener.getErrors())));
             }
 
-            return aqlDto;
+            return aqlQuery;
         } catch (RuntimeException e) {
             throw new AqlParseException(e.getMessage(), e);
         }

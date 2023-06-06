@@ -19,8 +19,8 @@ package org.ehrbase.aql.roundtriptest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.parser.AqlToDtoParser;
+import org.ehrbase.aql.dto.AqlQuery;
+import org.ehrbase.aql.parser.AqlQueryParser;
 import org.ehrbase.aql.render.AqlRender;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -61,8 +61,8 @@ class AqlRoundTripTest {
     }
 
     void assertRoundTrip(AqlTestCase testData) {
-        AqlToDtoParser cut = new AqlToDtoParser();
-        AqlDto actual = cut.parse(testData.getTestAql());
+        AqlQueryParser cut = new AqlQueryParser();
+        AqlQuery actual = cut.parse(testData.getTestAql());
 
         assertThat(actual).isNotNull();
 

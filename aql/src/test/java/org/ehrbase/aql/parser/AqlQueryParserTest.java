@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.containment.ContainmentClassExpression;
@@ -34,7 +34,7 @@ import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.render.AqlRender;
 import org.junit.jupiter.api.Test;
 
-class AqlToDtoParserTest {
+class AqlQueryParserTest {
 
     @Test
     void parse() {
@@ -151,7 +151,7 @@ class AqlToDtoParserTest {
                 "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
 
         AqlToDtoParser cut = new AqlToDtoParser();
-        AqlDto actual = cut.parse(aql);
+        AqlQuery actual = cut.parse(aql);
 
         WhereCondition contains = actual.getWhere();
 
@@ -203,7 +203,7 @@ class AqlToDtoParserTest {
         String aql =
                 "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id  EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
-        AqlToDtoParser cut = new AqlToDtoParser();
+        AqlQueryParser cut = new AqlQueryParser();
         try {
             cut.parse(aql);
             fail("Expected AqlParseException");
@@ -252,8 +252,8 @@ class AqlToDtoParserTest {
     }
 
     void testAql(String aql, String expected) {
-        AqlToDtoParser cut = new AqlToDtoParser();
-        AqlDto actual = cut.parse(aql);
+        AqlQueryParser cut = new AqlQueryParser();
+        AqlQuery actual = cut.parse(aql);
 
         assertThat(actual).isNotNull();
 
@@ -305,8 +305,8 @@ class AqlToDtoParserTest {
     }
 
     void testContains(String aql, String s) {
-        AqlToDtoParser cut = new AqlToDtoParser();
-        AqlDto actual = cut.parse(aql);
+        AqlQueryParser cut = new AqlQueryParser();
+        AqlQuery actual = cut.parse(aql);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getFrom()).isNotNull();

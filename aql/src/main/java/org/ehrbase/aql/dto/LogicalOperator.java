@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 /**
  * @author Stefan Spiska
  */
-public interface LogicalOperatorDto<S, T> {
+public interface LogicalOperator<S, T> {
     S getSymbol();
 
     List<T> getValues();
@@ -35,7 +35,7 @@ public interface LogicalOperatorDto<S, T> {
      * @param valuesStream
      * @return
      */
-    default LogicalOperatorDto<S, T> addValues(Stream<T> valuesStream) {
+    default LogicalOperator<S, T> addValues(Stream<T> valuesStream) {
         valuesStream.forEach(getValues()::add);
         return this;
     }

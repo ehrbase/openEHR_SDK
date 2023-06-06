@@ -20,20 +20,20 @@ package org.ehrbase.aql.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.aql.dto.condition.LogicalOperatorCondition;
 import org.ehrbase.aql.dto.condition.WhereCondition;
 import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.QueryParameter;
-import org.ehrbase.aql.parser.AqlToDtoParser;
+import org.ehrbase.aql.parser.AqlQueryParser;
 import org.ehrbase.aql.render.AqlRender;
 
 public class AqlUtil {
 
     private AqlUtil() {}
 
-    private static final AqlToDtoParser PARSER = new AqlToDtoParser();
+    private static final AqlQueryParser PARSER = new AqlQueryParser();
 
     /**
      * Removes a parameter from the aql
@@ -44,7 +44,7 @@ public class AqlUtil {
      */
     public static String removeParameter(String aql, String parameterName) {
 
-        AqlDto dto = PARSER.parse(aql);
+        AqlQuery dto = PARSER.parse(aql);
 
         dto.setWhere(removeParameter(dto.getWhere(), parameterName));
         return new AqlRender(dto).render();

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.aql.render.AqlRender;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -336,14 +336,14 @@ public class AqlBinderTest {
 
     public void test(TestCase testCase) {
 
-        final AqlDto aqlDto;
+        final AqlQuery aqlQuery;
         try {
-            aqlDto = objectMapper.readValue(testCase.json, AqlDto.class);
+            aqlQuery = objectMapper.readValue(testCase.json, AqlQuery.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
-        String actual = new AqlRender(aqlDto).render();
+        String actual = new AqlRender(aqlQuery).render();
 
         assertThat(actual).as("Test: %s ", testCase.id).isEqualTo(testCase.expectedAql);
 

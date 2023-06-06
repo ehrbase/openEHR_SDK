@@ -19,8 +19,8 @@ package org.ehrbase.aql.render;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.parser.AqlToDtoParser;
+import org.ehrbase.aql.dto.AqlQuery;
+import org.ehrbase.aql.parser.AqlQueryParser;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -292,9 +292,9 @@ class AqlRenderTest {
     }
 
     private static void test(String aql, String expected) {
-        AqlDto aqlDto = new AqlToDtoParser().parse(aql);
+        AqlQuery aqlQuery = new AqlQueryParser().parse(aql);
 
-        String render = new AqlRender(aqlDto).render();
+        String render = new AqlRender(aqlQuery).render();
 
         assertThat(render).isEqualTo(expected);
     }

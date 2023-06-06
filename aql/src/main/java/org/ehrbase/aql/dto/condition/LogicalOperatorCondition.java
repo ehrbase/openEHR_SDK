@@ -18,11 +18,11 @@
 package org.ehrbase.aql.dto.condition;
 
 import java.util.List;
-import org.ehrbase.aql.dto.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperator;
 import org.ehrbase.aql.dto.condition.LogicalOperatorCondition.ConditionLogicalOperatorSymbol;
 
 public class LogicalOperatorCondition
-        implements WhereCondition, LogicalOperatorDto<ConditionLogicalOperatorSymbol, WhereCondition> {
+        implements WhereCondition, LogicalOperator<ConditionLogicalOperatorSymbol, WhereCondition> {
 
     private ConditionLogicalOperatorSymbol symbol;
     private List<WhereCondition> values;

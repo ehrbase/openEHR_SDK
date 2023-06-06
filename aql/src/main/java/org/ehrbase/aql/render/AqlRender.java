@@ -26,7 +26,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.AqlDto;
+import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.aql.dto.condition.ExistsCondition;
 import org.ehrbase.aql.dto.condition.LikeCondition;
@@ -62,9 +62,9 @@ import org.ehrbase.util.exception.SdkException;
  */
 public class AqlRender {
 
-    private final AqlDto dto;
+    private final AqlQuery dto;
 
-    public AqlRender(AqlDto dto) {
+    public AqlRender(AqlQuery dto) {
         this.dto = dto;
     }
 

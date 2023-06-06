@@ -24,7 +24,7 @@ import org.ehrbase.aql.dto.containment.Containment;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.select.SelectClause;
 
-public class AqlDto {
+public class AqlQuery {
 
     private SelectClause select;
 
@@ -86,13 +86,13 @@ public class AqlDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AqlDto aqlDto = (AqlDto) o;
-        return Objects.equals(select, aqlDto.select)
-                && Objects.equals(from, aqlDto.from)
-                && Objects.equals(where, aqlDto.where)
-                && Objects.equals(orderBy, aqlDto.orderBy)
-                && Objects.equals(limit, aqlDto.limit)
-                && Objects.equals(offset, aqlDto.offset);
+        AqlQuery aqlQuery = (AqlQuery) o;
+        return Objects.equals(select, aqlQuery.select)
+                && Objects.equals(from, aqlQuery.from)
+                && Objects.equals(where, aqlQuery.where)
+                && Objects.equals(orderBy, aqlQuery.orderBy)
+                && Objects.equals(limit, aqlQuery.limit)
+                && Objects.equals(offset, aqlQuery.offset);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class AqlDto {
 
     @Override
     public String toString() {
-        return "AqlDto{"
+        return "AqlQuery{"
                 + "select="
                 + select
                 + ", from="

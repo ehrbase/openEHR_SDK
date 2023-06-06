@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
-import static org.ehrbase.aql.parser.AqlToDtoVisitor.buildLogicalOperator;
+import static org.ehrbase.aql.parser.AqlQueryParserHelper.buildLogicalOperator;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperator;
 import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.LongPrimitive;
@@ -89,10 +89,10 @@ public class PredicateHelper {
             return (AqlPredicate) boolList[0];
         } else {
 
-            LogicalOperatorDto predicateLogicalOperatorSymbolPredicateDtoLogicalOperatorDto = buildLogicalOperator(
+            LogicalOperator predicateLogicalOperator = buildLogicalOperator(
                     Arrays.asList(boolList),
                     s -> {
-                        final LogicalOperatorDto ret;
+                        final LogicalOperator ret;
                         if (PredicateLogicalOperatorSymbol.AND.equals(s)) {
                             ret = new PredicateLogicalAndOperation();
                         } else {
@@ -101,7 +101,7 @@ public class PredicateHelper {
                         return ret;
                     },
                     PredicateLogicalOperatorSymbol::getPrecedence);
-            return (AqlPredicate) predicateLogicalOperatorSymbolPredicateDtoLogicalOperatorDto;
+            return (AqlPredicate) predicateLogicalOperator;
         }
     }
 

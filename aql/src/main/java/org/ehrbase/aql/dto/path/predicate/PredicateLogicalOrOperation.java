@@ -21,14 +21,14 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.ehrbase.aql.dto.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperator;
 
 /**
  * @author Stefan Spiska
  */
 public class PredicateLogicalOrOperation
         implements AqlPredicate,
-                LogicalOperatorDto<PredicateLogicalOperatorSymbol, DisjunctableAqlPredicate>,
+                LogicalOperator<PredicateLogicalOperatorSymbol, DisjunctableAqlPredicate>,
                 Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.OR;

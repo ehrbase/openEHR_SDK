@@ -19,18 +19,14 @@ package org.ehrbase.aql.parser;
 
 import com.nedap.archie.datetime.DateTimeParsers;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
@@ -40,8 +36,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.LogicalOperatorDto;
+import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
 import org.ehrbase.aql.dto.condition.ExistsCondition;
@@ -85,7 +80,7 @@ import org.ehrbase.aql.dto.select.SelectClause;
 import org.ehrbase.aql.dto.select.SelectExpression;
 import org.ehrbase.util.exception.SdkException;
 
-public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
+class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     private final Map<String, AbstractContainmentExpression> identifierMap = new HashMap<>();
     private final MultiValuedMap<String, IdentifiedPath> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
@@ -93,32 +88,32 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
     private List<String> errors;
 
     @Override
-    public AqlDto visitSelectQuery(AqlParser.SelectQueryContext ctx) {
+    public AqlQuery visitSelectQuery(AqlParser.SelectQueryContext ctx) {
 
         errors = new ArrayList<>();
-        AqlDto aqlDto = new AqlDto();
+        AqlQuery aqlQuery = new AqlQuery();
 
         // select
-        aqlDto.setSelect(visitSelectClause(ctx.selectClause()));
+        aqlQuery.setSelect(visitSelectClause(ctx.selectClause()));
         // from
-        aqlDto.setFrom(visitFromClause(ctx.fromClause()));
+        aqlQuery.setFrom(visitFromClause(ctx.fromClause()));
         // where
         if (ctx.whereClause() != null) {
-            aqlDto.setWhere(visitWhereClause(ctx.whereClause()));
+            aqlQuery.setWhere(visitWhereClause(ctx.whereClause()));
         }
         // oder by
         if (ctx.orderByClause() != null) {
-            aqlDto.setOrderBy(visitOrderByClause(ctx.orderByClause()));
+            aqlQuery.setOrderBy(visitOrderByClause(ctx.orderByClause()));
         }
 
         if (ctx.limitClause() != null) {
 
             AqlParser.LimitClauseContext limitClauseContext = ctx.limitClause();
 
-            aqlDto.setLimit(Integer.parseInt(limitClauseContext.limit.getText()));
+            aqlQuery.setLimit(Integer.parseInt(limitClauseContext.limit.getText()));
 
             if (limitClauseContext.offset != null) {
-                aqlDto.setOffset(Integer.parseInt(limitClauseContext.offset.getText()));
+                aqlQuery.setOffset(Integer.parseInt(limitClauseContext.offset.getText()));
             }
         }
 
@@ -128,7 +123,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
             }
         });
 
-        return aqlDto;
+        return aqlQuery;
     }
 
     @Override
@@ -388,7 +383,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
     public ContainmentSetOperator buildContainmentLogicalOperator(List<Object> boolList) {
 
-        return (ContainmentSetOperator) buildLogicalOperator(
+        return (ContainmentSetOperator) AqlQueryParserHelper.buildLogicalOperator(
                 boolList,
                 s -> {
                     ContainmentSetOperator conditionLogicalOperatorDto = new ContainmentSetOperator();
@@ -402,7 +397,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
 
     public LogicalOperatorCondition buildConditionLogicalOperatorDto(List<Object> boolList) {
 
-        return (LogicalOperatorCondition) buildLogicalOperator(
+        return (LogicalOperatorCondition) AqlQueryParserHelper.buildLogicalOperator(
                 boolList,
                 s -> {
                     LogicalOperatorCondition logicalOperatorCondition = new LogicalOperatorCondition();
@@ -543,7 +538,7 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
         return errors;
     }
 
-    public static String getFullText(ParserRuleContext context) {
+    private static String getFullText(ParserRuleContext context) {
 
         if (context.start == null
                 || context.stop == null
@@ -555,105 +550,12 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
                 .getText(Interval.of(context.start.getStartIndex(), context.stop.getStopIndex()));
     }
 
-    private static <S, T> LogicalOperatorDto<S, T> buildLogicalOperator(
-            OperatorStructure<S> structure, Function<S, LogicalOperatorDto<S, T>> creator) {
-
-        LogicalOperatorDto<S, T> operator = creator.apply(structure.getSymbol());
-
-        Stream<T> stream = structure.getChildren().stream().map(v -> {
-            if (v instanceof OperatorStructure) {
-                return (T) buildLogicalOperator((OperatorStructure<S>) v, creator);
-            } else {
-                return (T) v;
-            }
-        });
-        return operator.addValues(stream);
-    }
-
-    public static <S, T> LogicalOperatorDto<S, T> buildLogicalOperator(
-            List<Object> boolList, Function<S, LogicalOperatorDto<S, T>> creator, ToIntFunction<S> precedenceFunction) {
-        OperatorStructure<S> structure = buildLogicalOperatorStructure(boolList, precedenceFunction);
-        return buildLogicalOperator(structure, creator);
-    }
-
-    private static final class OperatorStructure<S> {
-        private final S symbol;
-        private final List<Object> children;
-
-        private OperatorStructure(S symbol, Object... children) {
-            this.symbol = symbol;
-            this.children = Arrays.stream(children).collect(Collectors.toList());
-        }
-
-        public S getSymbol() {
-            return symbol;
-        }
-
-        public List<Object> getChildren() {
-            return children;
-        }
-
-        public void addChild(Object child) {
-            children.add(child);
-        }
-    }
-
-    private static <S> OperatorStructure<S> buildLogicalOperatorStructure(
-            List<Object> boolList, ToIntFunction<S> precedenceFunction) {
-
-        S currentSymbol = (S) boolList.get(1);
-        OperatorStructure<S> currentOperator = new OperatorStructure(currentSymbol, boolList.get(0));
-
-        OperatorStructure<S> lowestOperator = currentOperator;
-        for (int i = 2, l = boolList.size(); i < l; i += 2) {
-            S nextSymbol = i + 1 < l ? (S) boolList.get(i + 1) : null;
-            Object currentOpValue = boolList.get(i);
-            if (nextSymbol == null || Objects.equals(currentSymbol, nextSymbol)) {
-                currentOperator.addChild(currentOpValue);
-
-            } else {
-                OperatorStructure<S> nextOperator = new OperatorStructure<>(nextSymbol);
-
-                if (hasHigherPrecedence(currentSymbol, nextSymbol, precedenceFunction)) {
-                    currentOperator.addChild(currentOpValue);
-                    nextOperator.addChild(currentOperator);
-                    lowestOperator = nextOperator;
-                } else {
-                    nextOperator.addChild(currentOpValue);
-                    currentOperator.addChild(nextOperator);
-                    lowestOperator = currentOperator;
-                }
-
-                currentOperator = nextOperator;
-            }
-            currentSymbol = nextSymbol;
-        }
-        return lowestOperator;
-    }
-
     @Override
     public OrderByExpression visitOrderByExpr(AqlParser.OrderByExprContext ctx) {
         OrderByExpression orderByExpression = new OrderByExpression();
         orderByExpression.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
         orderByExpression.setSymbol(extractSymbol(ctx));
         return orderByExpression;
-    }
-
-    private ConditionLogicalOperatorSymbol extractSymbolTerminal(TerminalNode child) {
-        if (child == null) {
-            return null;
-        }
-
-        switch (child.getSymbol().getText().toLowerCase(Locale.ROOT)) {
-            case "or":
-                return ConditionLogicalOperatorSymbol.OR;
-            case "and":
-                return ConditionLogicalOperatorSymbol.AND;
-            case "xor":
-                throw new AqlParseException("XOR not supported");
-            default:
-                return null;
-        }
     }
 
     private static String unwrapText(RuleContext ctx) {
@@ -684,15 +586,6 @@ public class AqlToDtoVisitor extends AqlParserBaseVisitor<Object> {
                 return ComparisonOperatorSymbol.LT_EQ;
             default:
                 throw new AqlParseException("Unknown Token " + comparisonOperator.getText());
-        }
-    }
-
-    private static <S> boolean hasHigherPrecedence(
-            S operatorSymbol, S nextOperatorSymbol, ToIntFunction<S> precedenceFunction) {
-        if (nextOperatorSymbol == null) {
-            return true;
-        } else {
-            return precedenceFunction.applyAsInt(operatorSymbol) <= precedenceFunction.applyAsInt(nextOperatorSymbol);
         }
     }
 
