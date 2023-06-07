@@ -174,11 +174,21 @@ public class PredicateHelper {
         } else if (s.length() > 1 && s.charAt(0) == '\'') {
             return new StringPrimitive(
                     CharSequenceHelper.subSequence(s, 1, s.length() - 1).toString());
-        } else if (StringUtils.contains(s, '.')) {
-            return new DoublePrimitive(Double.parseDouble(s.toString()));
-        } else {
+        } else if (representsPlainInteger(s)) {
             return new LongPrimitive(Long.parseLong(s.toString()));
+        } else {
+            return new DoublePrimitive(Double.parseDouble(s.toString()));
         }
+    }
+
+    static boolean representsPlainInteger(CharSequence s) {
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c > '9' || (c < '0' && c != '-')) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void format(String statement, StringBuilder sb, PathPredicateOperand value) {

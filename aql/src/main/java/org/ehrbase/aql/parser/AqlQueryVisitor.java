@@ -214,17 +214,21 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     @Override
     public Primitive visitNumericPrimitive(AqlParser.NumericPrimitiveContext ctx) {
 
-        Primitive value;
-
-        if (ctx.REAL() != null) {
-            value = new DoublePrimitive(Double.valueOf(ctx.getText()));
+        if (ctx.REAL() != null || ctx.SCI_REAL() != null || ctx.SCI_INTEGER() != null) {
+            Double d = Double.valueOf(ctx.getText());
+            if (d.isInfinite() || d.isNaN()) {
+                throw new AqlParseException("Precision of %s not supported".formatted(ctx.getText()));
+            }
+            return new DoublePrimitive(d);
         } else if (ctx.INTEGER() != null) {
-            value = new LongPrimitive(Long.valueOf(ctx.getText()));
+            try {
+                return new LongPrimitive(Long.valueOf(ctx.getText()));
+            } catch (NumberFormatException e) {
+                throw new AqlParseException("Precision of %s not supported".formatted(ctx.getText()), e);
+            }
         } else {
             throw new AqlParseException("Can not handle value " + ctx.getText());
         }
-
-        return value;
     }
 
     @Override
