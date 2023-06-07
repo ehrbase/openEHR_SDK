@@ -12,6 +12,12 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Fixed 
 
+## [1.29.0]
+
+ ### Changed
+ 
+ - Bump maven-plugin-annotations ([#466](https://github.com/ehrbase/openEHR_SDK/pull/466))
+
 ## [1.28.0]
 
 ### Added
@@ -304,4 +310,5 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.27.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...v1.27.0
 
 [1.28.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.27.0...v1.28.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.28.0...HEAD
+[1.29.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.28.0...v1.29.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.29.0...HEAD
