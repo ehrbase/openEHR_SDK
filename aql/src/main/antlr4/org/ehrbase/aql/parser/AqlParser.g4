@@ -1,19 +1,37 @@
-//
-//  description:  ANTLR4 parser grammar for Archetype Query Language (AQL)
-//  authors:      Sebastian Iancu, Code24, Netherlands
-//                Teun van Hemert, Nedap, Netherlands
-//                Thomas Beale, Ars Semantica UK, openEHR Foundation Management Board
-//  contributors: This version of the grammar is a complete rewrite of previously published antlr3 grammar,
-//                based on current AQL specifications in combination with grammars of AQL implementations.
-//                The openEHR Foundation would like to recognise the following people for their contributions:
-//                  - Chunlan Ma & Heath Frankel, Ocean Health Systems, Australia
-//                  - Bostjan Lah, Better, Slovenia
-//                  - Christian Chevalley, EHRBase, Germany
-//                  - Michael Böckers, Nedap, Netherlands
-//  support:      openEHR Specifications PR tracker <https://specifications.openehr.org/releases/QUERY/open_issues>
-//  copyright:    Copyright (c) 2021- openEHR Foundation
-//  license:      Creative Commons CC-BY-SA <https://creativecommons.org/licenses/by-sa/3.0/>
-//
+/*
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ //Based on: https://specifications.openehr.org/releases/QUERY/1.1.0/AQL.html#_aql_syntax_specification
+ //  description:  ANTLR4 parser grammar for Archetype Query Language (AQL)
+ //  authors:      Sebastian Iancu, Code24, Netherlands
+ //                Teun van Hemert, Nedap, Netherlands
+ //                Thomas Beale, Ars Semantica UK, openEHR Foundation Management Board
+ //  contributors: This version of the grammar is a complete rewrite of previously published antlr3 grammar,
+ //                based on current AQL specifications in combination with grammars of AQL implementations.
+ //                The openEHR Foundation would like to recognise the following people for their contributions:
+ //                  - Chunlan Ma & Heath Frankel, Ocean Health Systems, Australia
+ //                  - Bostjan Lah, Better, Slovenia
+ //                  - Christian Chevalley, EHRBase, Germany
+ //                  - Michael Böckers, Nedap, Netherlands
+ //  support:      openEHR Specifications PR tracker <https://specifications.openehr.org/releases/QUERY/open_issues>
+ //  copyright:    Copyright (c) 2021- openEHR Foundation
+ //  license:      Creative Commons CC-BY-SA <https://creativecommons.org/licenses/by-sa/3.0/>
+ //
+ //
 
 parser grammar AqlParser;
 
@@ -171,11 +189,7 @@ primitive
     ;
 
 numericPrimitive
-    : INTEGER
-    | REAL
-    | SCI_INTEGER
-    | SCI_REAL
-    | SYM_MINUS numericPrimitive
+    : SYM_MINUS? (INTEGER | REAL | SCI_INTEGER | SCI_REAL)
     ;
 
 functionCall

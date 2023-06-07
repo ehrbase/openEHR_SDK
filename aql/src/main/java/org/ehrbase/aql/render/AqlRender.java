@@ -19,7 +19,6 @@ package org.ehrbase.aql.render;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +40,7 @@ import org.ehrbase.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.aql.dto.operand.ColumnExpression;
 import org.ehrbase.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.aql.dto.operand.CountDistinctAggregateFunction;
+import org.ehrbase.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperand;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
@@ -151,7 +151,7 @@ public class AqlRender {
         if (next instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
         } else if (next instanceof Primitive<?> primitive) {
-            sb.append(renderValue(primitive.getValue()));
+            sb.append(renderPrimitive(primitive));
         } else {
             throw new SdkException("Can not handle %s".formatted(next.getClass().getName()));
         }
@@ -159,7 +159,7 @@ public class AqlRender {
 
     private void renderLike(StringBuilder sb, LikeCondition likeCondition) {
         renderIdentifiedPath(sb, likeCondition.getStatement());
-        sb.append(" ").append("LIKE").append(" ");
+        sb.append(" LIKE ");
         renderLikeOperand(sb, likeCondition.getValue());
     }
 
@@ -168,7 +168,7 @@ public class AqlRender {
         if (value instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
         } else {
-            sb.append(renderValue(((StringPrimitive) value).getValue()));
+            sb.append(renderPrimitive((StringPrimitive) value));
         }
     }
 
@@ -296,7 +296,7 @@ public class AqlRender {
         } else if (operand instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
         } else if (operand instanceof Primitive<?> primitive) {
-            sb.append(renderValue(primitive.getValue()));
+            sb.append(renderPrimitive(primitive));
         } else if (operand instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
         } else {
@@ -326,22 +326,21 @@ public class AqlRender {
 
     private void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
 
-        sb.append(renderValue(dto.getValue()));
+        sb.append(renderPrimitive(dto));
     }
 
-    public String renderValue(Object value) {
+    public String renderPrimitive(Primitive primitive) {
 
-        if (value == null) {
+        if (primitive.getValue() == null) {
             return "NULL";
         }
-        if (Number.class.isAssignableFrom(value.getClass()) || Boolean.class.isAssignableFrom(value.getClass())) {
-            return value.toString();
-        } else if (String.class.isAssignableFrom(value.getClass()) || UUID.class.isAssignableFrom(value.getClass())) {
-            return StringUtils.wrap(value.toString(), "'");
-        } else {
-            throw new SdkException(
-                    "%s is not an valid AQL Value".formatted(value.getClass().getName()));
+        if (primitive instanceof DoublePrimitive d) {
+            return d.getStringRepresentation();
         }
+        if (primitive instanceof StringPrimitive) {
+            return StringUtils.wrap(primitive.getValue().toString(), "'");
+        }
+        return primitive.getValue().toString();
     }
 
     private String buildFrom() {

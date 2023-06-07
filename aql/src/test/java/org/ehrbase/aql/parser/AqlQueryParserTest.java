@@ -36,6 +36,7 @@ import org.ehrbase.aql.render.AqlRender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AqlQueryParserTest {
 
@@ -378,21 +379,40 @@ class AqlQueryParserTest {
     @EnumSource(AggregateFunctionName.class)
     void testAggregateFunctions(AggregateFunctionName name) {
         String aql = "SELECT " + name.name() + "(d/ehr_id/value) FROM EHR d";
-
         testAql(aql, aql);
     }
 
     @Test
     void testCountDistinct() {
         String aql = "SELECT COUNT(DISTINCT d/ehr_id/value) FROM EHR d";
-
         testAql(aql, aql);
     }
 
     @Test
     void testCountAsterisk() {
         String aql = "SELECT COUNT(*) FROM EHR d";
+        testAql(aql, aql);
+    }
 
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "1",
+                "-1",
+                "1.1",
+                "-1.1",
+                "1e5",
+                "-1e5",
+                "1e-5",
+                "-1e-5",
+                "1.1e5",
+                "-1.1e5",
+                "1.1e-5",
+                "-1.1e-5",
+                "9007199254740992001.0"
+            })
+    void testSelectNumericPrimitive(String number) {
+        String aql = "SELECT " + number + " FROM EHR";
         testAql(aql, aql);
     }
 }

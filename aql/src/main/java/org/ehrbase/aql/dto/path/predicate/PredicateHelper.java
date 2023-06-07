@@ -182,9 +182,9 @@ public class PredicateHelper {
     }
 
     static boolean representsPlainInteger(CharSequence s) {
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0, l = s.length(); i < l; i++) {
             char c = s.charAt(i);
-            if (c > '9' || (c < '0' && c != '-')) {
+            if (Character.isDigit(c) || (i == 0 && c == '-')) {
                 return false;
             }
         }

@@ -63,6 +63,7 @@ import org.ehrbase.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.aql.dto.operand.LikeOperand;
 import org.ehrbase.aql.dto.operand.LongPrimitive;
 import org.ehrbase.aql.dto.operand.MatchesOperand;
+import org.ehrbase.aql.dto.operand.NullPrimitive;
 import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
@@ -204,8 +205,10 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
             selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
         } else if (ctx.STRING() != null) {
             selectPrimitiveDto = new StringPrimitive(unwrapText(ctx));
+        } else if (ctx.NULL() != null) {
+            selectPrimitiveDto = new NullPrimitive();
         } else {
-            throw new AqlParseException("Can not handle value " + ctx.getText());
+            throw new AqlParseException("Cannot handle value " + ctx.getText());
         }
 
         return selectPrimitiveDto;
@@ -215,11 +218,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     public Primitive visitNumericPrimitive(AqlParser.NumericPrimitiveContext ctx) {
 
         if (ctx.REAL() != null || ctx.SCI_REAL() != null || ctx.SCI_INTEGER() != null) {
-            Double d = Double.valueOf(ctx.getText());
-            if (d.isInfinite() || d.isNaN()) {
-                throw new AqlParseException("Precision of %s not supported".formatted(ctx.getText()));
+            try {
+                return new DoublePrimitive(ctx.getText());
+            } catch (NumberFormatException e) {
+                throw new AqlParseException("Precision of %s not supported".formatted(ctx.getText()), e);
             }
-            return new DoublePrimitive(d);
         } else if (ctx.INTEGER() != null) {
             try {
                 return new LongPrimitive(Long.valueOf(ctx.getText()));
@@ -227,7 +230,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
                 throw new AqlParseException("Precision of %s not supported".formatted(ctx.getText()), e);
             }
         } else {
-            throw new AqlParseException("Can not handle value " + ctx.getText());
+            throw new AqlParseException("Cannot handle value " + ctx.getText());
         }
     }
 
