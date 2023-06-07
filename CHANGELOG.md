@@ -7,8 +7,10 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  ### Fixed 
 
 ## [1.29.0]
- ### Added 
- ### Fixed 
+
+ ### Changed
+ 
+ - Bump maven-plugin-annotations ([#466](https://github.com/ehrbase/openEHR_SDK/pull/466))
 
 ## [1.28.0]
 
