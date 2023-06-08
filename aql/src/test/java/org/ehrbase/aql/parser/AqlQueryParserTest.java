@@ -415,4 +415,12 @@ class AqlQueryParserTest {
         String aql = "SELECT " + number + " FROM EHR";
         testAql(aql, aql);
     }
+
+    @Test
+    void parseStringLiterals() {
+        String aql =
+                "Select '\\\\☮\\'\\\"', '\\u20AC120 \\1001o1 \\53230€', d/ehr_id/value as ehr_id from EHR d[some_key='𝄞']";
+
+        testAql(aql, "Select '\\\\☮\\'\"', '€120 @1o1 +230€', d/ehr_id/value as ehr_id from EHR d[some_key='𝄞']");
+    }
 }

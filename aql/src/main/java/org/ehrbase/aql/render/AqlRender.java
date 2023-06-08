@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.aql.dto.condition.ExistsCondition;
@@ -337,10 +336,66 @@ public class AqlRender {
         if (primitive instanceof DoublePrimitive d) {
             return d.getStringRepresentation();
         }
-        if (primitive instanceof StringPrimitive) {
-            return StringUtils.wrap(primitive.getValue().toString(), "'");
+        if (primitive instanceof StringPrimitive s) {
+            return encodeString(s.getValue());
         }
         return primitive.getValue().toString();
+    }
+
+    /**
+     * @see org.ehrbase.aql.parser.AqlQueryVisitor::unwrapText
+     *
+     * @param value
+     * @return
+     */
+    static String encodeString(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder(value.length() + 5);
+        sb.append("'");
+
+        // ' \ abfnrtv
+
+        for (int i = 0, l = value.length(); i < l; i++) {
+            char ch = value.charAt(i);
+            switch (ch) {
+                case '\'':
+                case '\\':
+                    sb.append('\\').append(ch);
+                    break;
+
+                case 0x00007:
+                    sb.append('\\').append('a');
+                    break;
+                case 0x00008:
+                    sb.append('\\').append('b');
+                    break;
+                case 0x0000c:
+                    sb.append('\\').append('f');
+                    break;
+                case 0x0000a:
+                    sb.append('\\').append('n');
+                    break;
+                case 0x0000d:
+                    sb.append('\\').append('r');
+                    break;
+                case 0x00009:
+                    sb.append('\\').append('t');
+                    break;
+                case 0x0000b:
+                    sb.append('\\').append('v');
+                    break;
+
+                default:
+                    sb.append(ch);
+            }
+        }
+
+        sb.append("'");
+
+        return sb.toString();
     }
 
     private String buildFrom() {

@@ -556,7 +556,115 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     private static String unwrapText(RuleContext ctx) {
-        return StringUtils.unwrap(StringUtils.unwrap(ctx.getText(), "'"), "\"");
+
+        /*
+         *     STRING
+         *     : SYM_SINGLE_QUOTE ( ESCAPE_SEQ | UTF8CHAR | OCTAL_ESC | ~('\\'|'\'') )* SYM_SINGLE_QUOTE
+         *     | SYM_DOUBLE_QUOTE ( ESCAPE_SEQ | UTF8CHAR | OCTAL_ESC | ~('\\'|'"') )* SYM_DOUBLE_QUOTE
+         *
+         *     fragment ESCAPE_SEQ: '\\' ['"?abfnrtv\\] ;
+         *     fragment UTF8CHAR: '\\u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT ;
+         *     fragment DIGIT: [0-9];
+         *     fragment HEX_DIGIT: [0-9a-fA-F];
+         *
+         *     fragment OCTAL_ESC: '\\' [0-3] OCTAL_DIGIT OCTAL_DIGIT | '\\' OCTAL_DIGIT OCTAL_DIGIT | '\\' OCTAL_DIGIT;
+         *     fragment OCTAL_DIGIT: [0-7];
+         */
+        String text = ctx.getText();
+        StringBuilder sb = new StringBuilder(text.length() - 2);
+
+        // remove trailing quote
+        int end = text.length() - 1;
+
+        for (int pos = 1; pos < end; ) {
+            char ch = text.charAt(pos);
+
+            if (ch == '\\') {
+                ch = text.charAt(++pos);
+                switch (ch) {
+                    case '\\':
+                    case '"':
+                    case '\'':
+                        sb.append(ch);
+                        break;
+                    case 'a':
+                        sb.append((char) 0x0007);
+                        break;
+                    case 'b':
+                        sb.append((char) 0x0008);
+                        break;
+                    case 'f':
+                        sb.append((char) 0x000c);
+                        break;
+                    case 'n':
+                        sb.append((char) 0x000a);
+                        break;
+                    case 'r':
+                        sb.append((char) 0x000d);
+                        break;
+                    case 't':
+                        sb.append((char) 0x0009);
+                        break;
+                    case 'v':
+                        sb.append((char) 0x000b);
+                        break;
+                    case 'u':
+                        // UTF8CHAR
+                        sb.append(decodeUtf(16, text.substring(pos + 1, pos + 5)));
+                        pos += 4;
+                        break;
+                    default:
+                        if (isOctal(ch)) {
+                            // OCTAL_ESC
+                            // UTF8CHAR
+                            int oCount = countOctals(text, pos + 1, (ch <= '3') ? 2 : 1);
+                            sb.append(decodeUtf(8, text.substring(pos, pos + 1 + oCount)));
+                            pos += oCount;
+                            break;
+                        }
+                        throw new IllegalArgumentException(
+                                "Unsupported escaped character %s in %s".formatted(ch, text));
+                }
+                pos++;
+
+            } else {
+                pos++;
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
+    }
+
+    static boolean isOctal(char ch) {
+        return switch (ch) {
+            case '0', '1', '2', '3', '4', '5', '6', '7' -> true;
+            default -> false;
+        };
+    }
+
+    static int countOctals(String text, int pos, int max) {
+        int maxPos = Math.min(text.length(), pos + max);
+        int count = 0;
+        for (int p = pos; p < maxPos; p++) {
+            if (isOctal(text.charAt(p))) {
+                count++;
+            } else {
+                return count;
+            }
+        }
+        return maxPos - pos;
+    }
+
+    static String decodeUtf(int radix, String hex) {
+        int codePoint = Integer.parseInt(hex, radix);
+        if (Character.isISOControl(codePoint) || !Character.isValidCodePoint(codePoint)) {
+            throw new IllegalArgumentException("Unsupported unicode character u%s".formatted(hex));
+        }
+        String string = Character.toString(codePoint);
+        if (string.length() != 1 || string.codePointAt(0) != codePoint) {
+            throw new IllegalArgumentException("Unsupported unicode character u%s".formatted(hex));
+        }
+        return string;
     }
 
     private OrderByDirection extractSymbol(AqlParser.OrderByExprContext ctx) {

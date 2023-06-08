@@ -298,4 +298,14 @@ class AqlRenderTest {
 
         assertThat(render).isEqualTo(expected);
     }
+
+    @Test
+    void encodeString() {
+        assertThat(AqlRender.encodeString(null)).isNull();
+
+        assertThat(AqlRender.encodeString("foo bar baz")).isEqualTo("'foo bar baz'");
+        assertThat(AqlRender.encodeString("☮€𝄞")).isEqualTo("'☮€𝄞'");
+
+        assertThat(AqlRender.encodeString("f'oo\tbä\r\nbaz\b\\\"")).isEqualTo("'f\\'oo\\tbä\\r\\nbaz\\b\\\\\"'");
+    }
 }
