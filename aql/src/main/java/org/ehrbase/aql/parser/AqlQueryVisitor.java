@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
@@ -78,7 +80,9 @@ import org.ehrbase.aql.dto.path.predicate.AqlPredicate;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectClause;
 import org.ehrbase.aql.dto.select.SelectExpression;
+import org.ehrbase.aql.parser.AqlParser.ContainsExprContext;
 import org.ehrbase.aql.parser.AqlParser.IdentifiedPathContext;
+import org.ehrbase.aql.parser.AqlParser.WhereExprContext;
 import org.ehrbase.util.exception.SdkException;
 
 class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
@@ -316,19 +320,10 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         ContainmentSetOperatorSymbol setOperatorSymbol = extractSymbol(ctx);
         if (setOperatorSymbol != null) {
-
-            List<Object> boolList = new ArrayList<>();
-
-            if (ctx.containsExpr().size() == 2) {
-                boolList.add(visitContainsExpr(ctx.containsExpr(0)));
-                boolList.add(setOperatorSymbol);
-                boolList.add(visitContainsExpr(ctx.containsExpr(1)));
-            } else {
-                throw new AqlParseException("Found AND/OR in contains with only one operand: " + ctx.getText());
-            }
-
-            return buildContainmentLogicalOperator(boolList);
-
+            ContainmentSetOperator result = new ContainmentSetOperator();
+            result.setSymbol(setOperatorSymbol);
+            result.setValues(getOperands(ctx, setOperatorSymbol));
+            return result;
         } else if (ctx.SYM_LEFT_PAREN() != null) {
 
             return visitContainsExpr(ctx.containsExpr(0));
@@ -361,6 +356,16 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         }
     }
 
+    private List<Containment> getOperands(ContainsExprContext ctx, ContainmentSetOperatorSymbol symbol) {
+        return IntStream.of(0, 1)
+                .mapToObj(ctx::containsExpr)
+                .map(this::visitContainsExpr)
+                .flatMap(e -> (e instanceof ContainmentSetOperator s && s.getSymbol() == symbol)
+                        ? s.getValues().stream()
+                        : Stream.of(e))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public ContainmentClassExpression visitClassExpression(AqlParser.ClassExpressionContext ctx) {
 
@@ -389,34 +394,6 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         return new ContainmentVersionExpression() {};
     }
 
-    public ContainmentSetOperator buildContainmentLogicalOperator(List<Object> boolList) {
-
-        return (ContainmentSetOperator) AqlQueryParserUtil.buildLogicalOperator(
-                boolList,
-                s -> {
-                    ContainmentSetOperator conditionLogicalOperatorDto = new ContainmentSetOperator();
-                    conditionLogicalOperatorDto.setSymbol(s);
-                    conditionLogicalOperatorDto.setValues(new ArrayList<>());
-
-                    return conditionLogicalOperatorDto;
-                },
-                ContainmentSetOperatorSymbol::getPrecedence);
-    }
-
-    public LogicalOperatorCondition buildConditionLogicalOperatorDto(List<Object> boolList) {
-
-        return (LogicalOperatorCondition) AqlQueryParserUtil.buildLogicalOperator(
-                boolList,
-                s -> {
-                    LogicalOperatorCondition logicalOperatorCondition = new LogicalOperatorCondition();
-                    logicalOperatorCondition.setSymbol(s);
-                    logicalOperatorCondition.setValues(new ArrayList<>());
-
-                    return logicalOperatorCondition;
-                },
-                ConditionLogicalOperatorSymbol::getPrecedence);
-    }
-
     @Override
     public WhereCondition visitWhereClause(AqlParser.WhereClauseContext ctx) {
 
@@ -438,24 +415,22 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         }
         // AND /  OR
         else {
-            List<Object> boollist = new ArrayList<>();
-            var current = ctx;
-            ConditionLogicalOperatorSymbol symbol = extractSymbol(current);
-
-            while (current != null) {
-                if (symbol != null) {
-                    boollist.add(0, visitWhereExpr(current.whereExpr(1)));
-                    boollist.add(0, symbol);
-                    current = current.whereExpr(0);
-                    symbol = extractSymbol(current);
-                } else {
-                    boollist.add(0, visitWhereExpr(current));
-                    current = null;
-                }
-            }
-
-            return buildConditionLogicalOperatorDto(boollist);
+            LogicalOperatorCondition result = new LogicalOperatorCondition();
+            ConditionLogicalOperatorSymbol symbol = extractSymbol(ctx);
+            result.setSymbol(symbol);
+            result.setValues(getOperands(ctx, symbol));
+            return result;
         }
+    }
+
+    private List<WhereCondition> getOperands(WhereExprContext ctx, ConditionLogicalOperatorSymbol symbol) {
+        return IntStream.of(0, 1)
+                .mapToObj(ctx::whereExpr)
+                .map(this::visitWhereExpr)
+                .flatMap(e -> (e instanceof LogicalOperatorCondition s && s.getSymbol() == symbol)
+                        ? s.getValues().stream()
+                        : Stream.of(e))
+                .collect(Collectors.toList());
     }
 
     @Override
