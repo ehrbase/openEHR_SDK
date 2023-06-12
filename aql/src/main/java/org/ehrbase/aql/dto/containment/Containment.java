@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ContainmentClassExpression.class, name = "Containment"),
-    @JsonSubTypes.Type(value = ContainmentSetOperator.class, name = "LogicalOperator")
+    @JsonSubTypes.Type(value = ContainmentVersionExpression.class, name = "Version"),
+    @JsonSubTypes.Type(value = ContainmentSetOperator.class, name = "LogicalOperator"),
+    @JsonSubTypes.Type(value = ContainmentNotOperator.class, name = "Not")
 })
 public interface Containment {}
