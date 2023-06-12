@@ -61,7 +61,7 @@
         <javax-jaxb.version>2.3.1</javax-jaxb.version>
         <json.version>20230227</json.version>
         <json-path.version>2.8.0</json-path.version>
-        <json-smart.version>2.4.10</json-smart.version>
+        <json-smart.version>2.4.11</json-smart.version>
         <jsonassert.version>1.5.1</jsonassert.version>
         <junit.version>5.9.2</junit.version>
         <mockito.version>4.11.0</mockito.version>
