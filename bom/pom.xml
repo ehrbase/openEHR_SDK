@@ -76,8 +76,7 @@
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <jacoco.version>0.8.10</jacoco.version>
         <threeten-extra.version>1.7.2</threeten-extra.version>
-        <istack.version>3.0.7</istack.version>
-        <FastInfoset.version>1.2.15</FastInfoset.version>
+        <jaxb-runtime.version>2.3.8</jaxb-runtime.version>
     </properties>
 
     <distributionManagement>
@@ -299,14 +298,9 @@
                 <version>${ehcache.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.istack</groupId>
-                <artifactId>istack-commons-runtime</artifactId>
-                <version>${istack.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.fastinfoset</groupId>
-                <artifactId>FastInfoset</artifactId>
-                <version>${FastInfoset.version}</version>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb-runtime.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
