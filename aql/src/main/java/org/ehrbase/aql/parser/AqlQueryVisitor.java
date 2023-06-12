@@ -252,7 +252,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
                 .map(IdentifiedPathContext::objectPath)
                 .map(RuleContext::getText)
                 .map(AqlPath::parse)
-                .orElse(AqlPath.ROOT_PATH));
+                .orElse(AqlPath.EMPTY_PATH));
 
         return selectFieldDto;
     }
@@ -314,25 +314,19 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     @Override
     public Containment visitContainsExpr(AqlParser.ContainsExprContext ctx) {
 
-        ContainmentSetOperatorSymbol symbol = extractSymbol(ctx);
-
-        if (symbol != null) {
-
-            AqlParser.ContainsExprContext current = ctx;
+        ContainmentSetOperatorSymbol setOperatorSymbol = extractSymbol(ctx);
+        if (setOperatorSymbol != null) {
 
             List<Object> boolList = new ArrayList<>();
 
-            while (current != null) {
-
-                if (current.containsExpr().size() == 2) {
-                    boolList.add(visitContainsExpr(current.containsExpr(0)));
-                    Optional.ofNullable(extractSymbol(current)).ifPresent(boolList::add);
-                    current = current.containsExpr(1);
-                } else {
-                    boolList.add(visitContainsExpr(current));
-                    current = null;
-                }
+            if (ctx.containsExpr().size() == 2) {
+                boolList.add(visitContainsExpr(ctx.containsExpr(0)));
+                boolList.add(setOperatorSymbol);
+                boolList.add(visitContainsExpr(ctx.containsExpr(1)));
+            } else {
+                throw new AqlParseException("Found AND/OR in contains with only one operand: " + ctx.getText());
             }
+
             return buildContainmentLogicalOperator(boolList);
 
         } else if (ctx.SYM_LEFT_PAREN() != null) {

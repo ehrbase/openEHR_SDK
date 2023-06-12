@@ -41,9 +41,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 class AqlQueryParserTest {
 
     @Test
+    void test() {
+        AqlQueryParser cut = new AqlQueryParser();
+        AqlQuery actual = cut.parse("select e FROM EHR e CONTAINS OBSERVATION AND CLUSTER AND TEST AND SECTION");
+    }
+
+    @Test
     void parse() {
         String aql =
-                "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+                "SELECT c/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value, d/ehr_id/value AS ehr_id FROM EHR d CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
         testAql(aql, aql);
     }
@@ -51,7 +57,7 @@ class AqlQueryParserTest {
     @Test
     void parseEhrPredicate() {
         String aql =
-                "Select c/name/value, d/ehr_id/value as ehr_id from EHR d[some_key='some_value'] contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+                "SELECT c/name/value, d/ehr_id/value AS ehr_id FROM EHR d[some_key='some_value'] CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
         testAql(aql, aql);
     }
@@ -59,15 +65,15 @@ class AqlQueryParserTest {
     @Test
     void parseCompositionPredicate() {
         String aql =
-                "Select c/name/value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[some_key='some_value']";
+                "SELECT c/name/value, d/ehr_id/value AS ehr_id FROM EHR d CONTAINS COMPOSITION c[some_key='some_value']";
 
         testAql(aql, aql);
     }
 
     @Test
     void parseFromComposition() {
-        String aql = "Select e/name/value as name from COMPOSITION e";
-        String expected = aql; // .replace(" from ", " from EHR e contains ");
+        String aql = "SELECT e/name/value AS name FROM COMPOSITION e";
+        String expected = aql; // .replace(" FROM ", " FROM EHR e CONTAINS ");
 
         testAql(aql, expected);
     }
@@ -75,28 +81,28 @@ class AqlQueryParserTest {
     @Test
     void parseDoubleAlias() {
         String aql =
-                "Select e/ehr_id/value, c0 as F1 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+                "SELECT e/ehr_id/value, c0 AS F1 FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
 
         testAql(aql, aql);
     }
 
     @Test
     void parseEhrAliasSwap() {
-        String aql = "Select c/name/value as e from EHR[ehr_id/value!='anything'] contains COMPOSITION c";
+        String aql = "SELECT c/name/value AS e FROM EHR[ehr_id/value!='anything'] CONTAINS COMPOSITION c";
 
         testAql(aql, aql);
     }
 
     @Test
     void parsePlainEhr() {
-        String aql = "Select c/name/value from EHR CONTAINS COMPOSITION c";
+        String aql = "SELECT c/name/value FROM EHR CONTAINS COMPOSITION c";
 
         testAql(aql, aql);
     }
 
     @Test
     void parseDefaultEhrAliasCollision() {
-        String aql = "Select e/name/value as F1 from EHR[ehr_id/value!='anything'] contains COMPOSITION e";
+        String aql = "SELECT e/name/value AS F1 FROM EHR[ehr_id/value!='anything'] CONTAINS COMPOSITION e";
 
         testAql(aql, aql);
     }
@@ -104,7 +110,7 @@ class AqlQueryParserTest {
     @Test
     void parseDoubleAlias2() {
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
+                "SELECT c0 AS F1, e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
 
         testAql(aql, aql);
     }
@@ -119,7 +125,7 @@ class AqlQueryParserTest {
     @Test
     void parseObservation2() {
         String aql =
-                "Select e/ehr_id/value as F1, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value as F2, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value as F3 from EHR e contains (COMPOSITION c0 and SECTION s4[openEHR-EHR-SECTION.adhoc.v1] contains OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) where (e/ehr_id/value matches {'47dc21a2-7076-4a57-89dc-bd83729ed52f'} and c0/archetype_details/template_id/value matches {'Corona_Anamnese'})";
+                "SELECT e/ehr_id/value AS F1, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value AS F2, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value AS F3 FROM EHR e CONTAINS (COMPOSITION c0 and SECTION s4[openEHR-EHR-SECTION.adhoc.v1] CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) WHERE (e/ehr_id/value MATCHES {'47dc21a2-7076-4a57-89dc-bd83729ed52f'} and c0/archetype_details/template_id/value MATCHES {'Corona_Anamnese'})";
 
         testAql(aql, aql);
     }
@@ -127,7 +133,7 @@ class AqlQueryParserTest {
     @Test
     void parseMultiWhere() {
         String aql =
-                "Select c0 as openEHR_EHR_COMPOSITION_self_monitoring_v0, c1 as openEHR_EHR_COMPOSITION_report_v1 from EHR e contains (COMPOSITION c0[openEHR-EHR-COMPOSITION.self_monitoring.v0] and COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1]) where (e/ehr_id/value matches {'b3a40b41-36e1-4802-8748-062d4000aaae'} and c0/archetype_details/template_id/value matches {'Corona_Anamnese'} and c1/archetype_details/template_id/value matches {'Corona_Anamnese'})";
+                "SELECT c0 AS openEHR_EHR_COMPOSITION_self_monitoring_v0, c1 AS openEHR_EHR_COMPOSITION_report_v1 FROM EHR e CONTAINS (COMPOSITION c0[openEHR-EHR-COMPOSITION.self_monitoring.v0] and COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1]) WHERE (e/ehr_id/value MATCHES {'b3a40b41-36e1-4802-8748-062d4000aaae'} and c0/archetype_details/template_id/value MATCHES {'Corona_Anamnese'} and c1/archetype_details/template_id/value MATCHES {'Corona_Anamnese'})";
 
         testAql(aql, aql);
     }
@@ -135,7 +141,7 @@ class AqlQueryParserTest {
     @Test
     void parseMultiMixed() {
         String aql =
-                "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid or (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3))";
+                "SELECT c0 AS F1, e/ehr_id/value AS F2 FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] WHERE (e/ehr_id/value = $ehrid or (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3))";
 
         testAql(aql, aql);
     }
@@ -143,7 +149,7 @@ class AqlQueryParserTest {
     @Test
     void parseMatches() {
         String aql =
-                "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] where d/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7', '61861e76-1606-48c9-adcf-49ebbb2c6bbd'}";
+                "SELECT c/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value, d/ehr_id/value AS ehr_id FROM EHR d CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] WHERE d/ehr_id/value MATCHES {'f4da8646-8e36-4d9d-869c-af9dce5935c7', '61861e76-1606-48c9-adcf-49ebbb2c6bbd'}";
 
         testAql(aql, aql);
     }
@@ -152,12 +158,12 @@ class AqlQueryParserTest {
     @Test
     void addMatches() {
         String aql =
-                "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+                "SELECT o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude, e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
 
         AqlToDtoParser cut = new AqlToDtoParser();
         AqlQuery actual = cut.parse(aql);
 
-        WhereCondition contains = actual.getWhere();
+        WhereCondition CONTAINS = actual.getWhere();
 
         MatchesCondition matchesOperatorDto = new MatchesCondition();
 
@@ -174,7 +180,7 @@ class AqlQueryParserTest {
 
         and.setSymbol(ConditionLogicalOperatorSymbol.AND);
         and.setValues(new ArrayList<>());
-        and.getValues().add(contains);
+        and.getValues().add(CONTAINS);
         and.getValues().add(matchesOperatorDto);
 
         actual.setWhere(and);
@@ -183,7 +189,7 @@ class AqlQueryParserTest {
 
         assertThat(actualAql)
                 .isEqualTo(
-                        "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1 and e/ehr_id/value matches {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'})");
+                        "SELECT o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude, e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1 and e/ehr_id/value MATCHES {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'})");
     }
      */
 
@@ -197,7 +203,7 @@ class AqlQueryParserTest {
     @Test
     void parseLimitOffset() {
         String aql =
-                "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id from EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] LIMIT 5 OFFSET 1";
+                "SELECT c/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value, d/ehr_id/value AS ehr_id FROM EHR d CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1] LIMIT 5 OFFSET 1";
 
         testAql(aql, aql);
     }
@@ -205,7 +211,7 @@ class AqlQueryParserTest {
     @Test
     void parseError() {
         String aql =
-                "Select c/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value, d/ehr_id/value as ehr_id  EHR d contains COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
+                "SELECT c/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value, d/ehr_id/value AS ehr_id  EHR d CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
         AqlQueryParser cut = new AqlQueryParser();
         try {
@@ -219,7 +225,7 @@ class AqlQueryParserTest {
     @Test
     void parseWhere() {
         String aql =
-                "Select o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude as Systolic__magnitude, e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] where (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
+                "SELECT o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude, e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
 
         testAql(aql, aql);
     }
@@ -228,10 +234,10 @@ class AqlQueryParserTest {
     void parseOrderBy() {
 
         String aqlTwoOrderBy =
-                "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                "SELECT e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASCENDING, e/ehr_id/value DESCENDING";
         String aqlShortenedSymbols =
-                "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                "SELECT e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC, e/ehr_id/value DESC";
 
         testAql(aqlTwoOrderBy, aqlShortenedSymbols);
@@ -239,19 +245,19 @@ class AqlQueryParserTest {
         testAql(aqlShortenedSymbols, aqlShortenedSymbols);
 
         var sortDefault1 =
-                "select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                "select e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude, e/ehr_id/value";
         testAql(
                 sortDefault1,
-                "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                "SELECT e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC, e/ehr_id/value ASC");
 
         var sortDefault2 =
-                "select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                "select e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude DESC, e/ehr_id/value";
         testAql(
                 sortDefault2,
-                "Select e/ehr_id/value as ehr_id from EHR e contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                "SELECT e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
                         + " order by o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude DESC, e/ehr_id/value ASC");
     }
 
@@ -273,7 +279,7 @@ class AqlQueryParserTest {
     @Test
     void parseContains() {
         String aql =
-                "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bericht_ID__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]";
+                "SELECT c0/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value FROM EHR e  CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]";
 
         testContains(aql, "openEHR-EHR-COMPOSITION.report.v1 --> openEHR-EHR-OBSERVATION.sample_blood_pressure.v1");
     }
@@ -281,7 +287,7 @@ class AqlQueryParserTest {
     @Test
     void parseContainsLogical() {
         String aql =
-                "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] and OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] or OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
+                "SELECT c0/context/other_context[at0001]/items[at0002]/value/value AS Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value AS Kommentar__value FROM EHR e  CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] CONTAINS (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] and OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] or OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
         testContains(
                 aql,
@@ -291,7 +297,7 @@ class AqlQueryParserTest {
     @Test
     void parseContainsLogical2() {
         String aql =
-                "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
+                "SELECT c0/context/other_context[at0001]/items[at0002]/value/value AS Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value AS Kommentar__value FROM EHR e  CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] CONTAINS (OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0] and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
         testContains(
                 aql,
@@ -301,7 +307,7 @@ class AqlQueryParserTest {
     @Test
     void parseContainsLogical3() {
         String aql =
-                "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains ((OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
+                "SELECT c0/context/other_context[at0001]/items[at0002]/value/value AS Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value AS Kommentar__value FROM EHR e  CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] CONTAINS ((OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
         testContains(
                 aql,
@@ -321,7 +327,7 @@ class AqlQueryParserTest {
     @Test
     void parseContainsLogical4() {
         String aql =
-                "Select c0/context/other_context[at0001]/items[at0002]/value/value as Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value as Kommentar__value from EHR e  contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] contains (((OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] contains CLUSTER) or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
+                "SELECT c0/context/other_context[at0001]/items[at0002]/value/value AS Bezeichnung_des_Symptoms_oder_Anzeichens___value, o3/data[at0001]/events[at0002]/data[at0042]/items[at0055]/value/value AS Kommentar__value FROM EHR e  CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] CONTAINS (((OBSERVATION o1[openEHR-EHR-OBSERVATION.story.v1] CONTAINS CLUSTER) or OBSERVATION o2[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) and OBSERVATION o3[openEHR-EHR-OBSERVATION.exposure_assessment.v0])";
 
         testContains(
                 aql,
@@ -342,9 +348,9 @@ class AqlQueryParserTest {
                         .map(StringPrimitive.class::cast)
                         .map(StringPrimitive::getValue)
                         .orElse(classExpressionDto.getType()));
-                Containment contains = ((AbstractContainmentExpression) containmentExpresion).getContains();
-                if (contains != null) {
-                    sb.append(" --> ").append(render(contains));
+                Containment CONTAINS = ((AbstractContainmentExpression) containmentExpresion).getContains();
+                if (CONTAINS != null) {
+                    sb.append(" --> ").append(render(CONTAINS));
                 }
             }
         } else if (containmentExpresion instanceof ContainmentSetOperator) {
@@ -366,11 +372,11 @@ class AqlQueryParserTest {
 
     @Test
     void parseLike() {
-        String aql = "Select c0 as openEHR_EHR_COMPOSITION_self_monitoring_v0, c1 as openEHR_EHR_COMPOSITION_report_v1 "
-                + "from EHR e contains (COMPOSITION c0[openEHR-EHR-COMPOSITION.self_monitoring.v0] and COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1]) "
-                + "where (e/ehr_id/value matches {'b3a40b41-36e1-4802-8748-062d4000aaae'} "
-                + "and c1/archetype_details/template_id/value like '%test%' "
-                + "and c1/archetype_details/archetype_id/value like $archetype)";
+        String aql = "SELECT c0 AS openEHR_EHR_COMPOSITION_self_monitoring_v0, c1 AS openEHR_EHR_COMPOSITION_report_v1 "
+                + "FROM EHR e CONTAINS (COMPOSITION c0[openEHR-EHR-COMPOSITION.self_monitoring.v0] AND COMPOSITION c1[openEHR-EHR-COMPOSITION.report.v1]) "
+                + "WHERE (e/ehr_id/value MATCHES {'b3a40b41-36e1-4802-8748-062d4000aaae'} "
+                + "AND c1/archetype_details/template_id/value LIKE '%test%' "
+                + "AND c1/archetype_details/archetype_id/value LIKE $archetype)";
 
         testAql(aql, aql);
     }
@@ -419,8 +425,8 @@ class AqlQueryParserTest {
     @Test
     void parseStringLiterals() {
         String aql =
-                "Select '\\\\☮\\'\\\"', '\\u20AC120 \\1001o1 \\53230€', d/ehr_id/value as ehr_id from EHR d[some_key='𝄞']";
+                "SELECT '\\\\☮\\'\\\"', '\\u20AC120 \\1001o1 \\53230€', d/ehr_id/value AS ehr_id FROM EHR d[some_key='𝄞']";
 
-        testAql(aql, "Select '\\\\☮\\'\"', '€120 @1o1 +230€', d/ehr_id/value as ehr_id from EHR d[some_key='𝄞']");
+        testAql(aql, "SELECT '\\\\☮\\'\"', '€120 @1o1 +230€', d/ehr_id/value AS ehr_id FROM EHR d[some_key='𝄞']");
     }
 }

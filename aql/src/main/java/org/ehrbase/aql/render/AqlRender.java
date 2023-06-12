@@ -50,6 +50,7 @@ import org.ehrbase.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.aql.dto.path.AqlPath;
+import org.ehrbase.aql.dto.path.AqlPath.OtherPredicatesFormat;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.aql.dto.select.SelectClause;
 import org.ehrbase.aql.dto.select.SelectExpression;
@@ -319,8 +320,13 @@ public class AqlRender {
         }
 
         sb.append(containmentDto.getIdentifier());
+        if (dto.getRootPredicate() != null) {
+            sb.append('[');
+            PredicateHelper.format(sb, dto.getRootPredicate(), OtherPredicatesFormat.SHORTED);
+            sb.append(']');
+        }
 
-        sb.append(dto.getPath().format(AqlPath.OtherPredicatesFormat.SHORTED, false));
+        sb.append(dto.getPath().format(OtherPredicatesFormat.SHORTED, false));
     }
 
     private void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
