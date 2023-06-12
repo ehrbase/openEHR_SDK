@@ -148,45 +148,6 @@ class AqlQueryParserTest {
         testAql(aql, aql);
     }
 
-    /*
-    @Test
-    void addMatches() {
-        String aql =
-                "SELECT o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude, e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
-
-        AqlToDtoParser cut = new AqlToDtoParser();
-        AqlQuery actual = cut.parse(aql);
-
-        WhereCondition CONTAINS = actual.getWhere();
-
-        MatchesCondition matchesOperatorDto = new MatchesCondition();
-
-        SelectFieldDto selectFieldDto = new SelectFieldDto();
-        selectFieldDto.setAqlPath("/ehr_id/value");
-        selectFieldDto.setContainmentId(actual.getEhr().getContainmentId());
-        matchesOperatorDto.setStatement(selectFieldDto);
-        matchesOperatorDto.setValues(
-                Stream.of("f4da8646-8e36-4d9d-869c-af9dce5935c7", "61861e76-1606-48c9-adcf-49ebbb2c6bbd")
-                        .map(SimpleValue::new)
-                        .collect(Collectors.toList()));
-
-        LogicalOperatorCondition and = new LogicalOperatorCondition();
-
-        and.setSymbol(ConditionLogicalOperatorSymbol.AND);
-        and.setValues(new ArrayList<>());
-        and.getValues().add(CONTAINS);
-        and.getValues().add(matchesOperatorDto);
-
-        actual.setWhere(and);
-
-        String actualAql = new AqlRender(actual).render();
-
-        assertThat(actualAql)
-                .isEqualTo(
-                        "SELECT o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude, e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1 and e/ehr_id/value MATCHES {'f4da8646-8e36-4d9d-869c-af9dce5935c7','61861e76-1606-48c9-adcf-49ebbb2c6bbd'})");
-    }
-     */
-
     @Test
     void parseWithoutContains() {
         String aql = "SELECT e/ehr_id/value FROM EHR e";
