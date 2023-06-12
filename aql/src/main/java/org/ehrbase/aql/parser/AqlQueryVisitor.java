@@ -68,7 +68,6 @@ import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.Primitive;
 import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.dto.operand.SingleRowFunction;
-import org.ehrbase.aql.dto.operand.SingleRowFunction.SingleRowFunctionName;
 import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.operand.TemporalPrimitive;
 import org.ehrbase.aql.dto.operand.TerminologyFunction;
@@ -84,8 +83,9 @@ import org.ehrbase.util.exception.SdkException;
 
 class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
-    private final Map<String, AbstractContainmentExpression> identifierMap = new HashMap<>();
-    private final MultiValuedMap<String, IdentifiedPath> selectFieldDtoMultiMap = new ArrayListValuedHashMap<>();
+    private final Map<String, AbstractContainmentExpression> containmentByAlias = new HashMap<>();
+    private final MultiValuedMap<String, IdentifiedPath> identifiedPathByContainmentAlias =
+            new ArrayListValuedHashMap<>();
     private final List<String> errors = new ArrayList<>();
 
     @Override
@@ -117,9 +117,9 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
             }
         }
 
-        selectFieldDtoMultiMap.entries().forEach(e -> {
-            if (identifierMap.containsKey(e.getKey())) {
-                e.getValue().setFrom(identifierMap.get(e.getKey()));
+        identifiedPathByContainmentAlias.entries().forEach(e -> {
+            if (containmentByAlias.containsKey(e.getKey())) {
+                e.getValue().setFrom(containmentByAlias.get(e.getKey()));
             }
         });
 
@@ -239,9 +239,20 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         IdentifiedPath selectFieldDto = new IdentifiedPath();
 
-        selectFieldDtoMultiMap.put(ctx.IDENTIFIER().getText(), selectFieldDto);
-        selectFieldDto.setPath(AqlPath.parse(
-                StringUtils.removeStart(getFullText(ctx), ctx.IDENTIFIER().getText())));
+        String containsAlias = ctx.IDENTIFIER().getText();
+        identifiedPathByContainmentAlias.put(containsAlias, selectFieldDto);
+
+        Optional.of(ctx)
+                .map(IdentifiedPathContext::pathPredicate)
+                .map(RuleContext::getText)
+                .map(PredicateHelper::buildPredicate)
+                .ifPresent(selectFieldDto::setRootPredicate);
+
+        selectFieldDto.setPath(Optional.of(ctx)
+                .map(IdentifiedPathContext::objectPath)
+                .map(RuleContext::getText)
+                .map(AqlPath::parse)
+                .orElse(AqlPath.ROOT_PATH));
 
         return selectFieldDto;
     }
@@ -250,7 +261,13 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     public SingleRowFunction visitFunctionCall(AqlParser.FunctionCallContext ctx) {
 
         SingleRowFunction dto = new SingleRowFunction();
-        dto.setFunctionName(findFunctionName(ctx.name, SingleRowFunctionName::valueOf));
+
+        if (ctx.IDENTIFIER() == null) {
+            dto.setFunctionName(findFunctionName(ctx.name, SingleRowFunction.KnownFunctionName::valueOf));
+        } else {
+            dto.setFunctionName(
+                    new SingleRowFunction.CustomFunctionName(ctx.IDENTIFIER().getText()));
+        }
 
         dto.setOperandList(ctx.terminal().stream().map(this::visitTerminal).toList());
 
@@ -358,7 +375,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         if (ctx.IDENTIFIER().size() == 2) {
             containmentDto.setIdentifier(ctx.IDENTIFIER(1).getText());
-            identifierMap.put(containmentDto.getIdentifier(), containmentDto);
+            containmentByAlias.put(containmentDto.getIdentifier(), containmentDto);
         }
 
         if (ctx.pathPredicate() != null) {

@@ -43,13 +43,47 @@ public class SingleRowFunction implements ColumnExpression, Operand, ComparisonL
         return functionName;
     }
 
-    public enum SingleRowFunctionName {
-        COUNT,
-        MIN,
-        MAX,
-        AVG,
+    public interface SingleRowFunctionName {
+        String getName();
+    }
+
+    public static class CustomFunctionName implements SingleRowFunctionName {
+        private final String name;
+
+        public CustomFunctionName(String name) {
+            this.name = name.toUpperCase();
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
+    public enum KnownFunctionName implements SingleRowFunctionName {
+        // STRING_FUNCTION_ID
+        LENGTH,
         CONTAINS,
+        POSITION,
+        SUBSTRING,
         CONCAT_WS,
-        CEIL;
+        CONCAT,
+        // NUMERIC_FUNCTION_ID
+        ABS,
+        MOD,
+        CEIL,
+        FLOOR,
+        ROUND,
+        // DATE_TIME_FUNCTION_ID
+        NOW,
+        CURRENT_DATE_TIME,
+        CURRENT_DATE,
+        CURRENT_TIMEZONE,
+        CURRENT_TIME;
+
+        @Override
+        public String getName() {
+            return name();
+        }
     }
 }
