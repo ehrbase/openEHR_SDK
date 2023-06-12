@@ -22,11 +22,18 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import java.beans.IntrospectionException;
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -178,9 +185,12 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
 
     private Object extractAttribute(Object dto, String attributeName) {
         try {
-            PropertyDescriptor propertyDescriptor = new PropertyDescriptor(attributeName, dto.getClass());
-
-            return propertyDescriptor.getReadMethod().invoke(dto);
+            for (PropertyDescriptor p : Introspector.getBeanInfo(dto.getClass()).getPropertyDescriptors()) {
+                if (p.getName().equals(attributeName)) {
+                    return p.getReadMethod().invoke(dto);
+                }
+            }
+            throw new ClientException("Unknown property %s for type %s".formatted(attributeName, dto.getClass()));
         } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
             throw new ClientException(e.getMessage(), e);
         }
