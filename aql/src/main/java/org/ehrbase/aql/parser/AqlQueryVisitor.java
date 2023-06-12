@@ -247,13 +247,14 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         Optional.of(ctx)
                 .map(IdentifiedPathContext::pathPredicate)
-                .map(RuleContext::getText)
+                .map(AqlQueryVisitor::getFullText)
+                .map(p -> StringUtils.strip(p, "[]"))
                 .map(PredicateHelper::buildPredicate)
                 .ifPresent(selectFieldDto::setRootPredicate);
 
         selectFieldDto.setPath(Optional.of(ctx)
                 .map(IdentifiedPathContext::objectPath)
-                .map(RuleContext::getText)
+                .map(AqlQueryVisitor::getFullText)
                 .map(AqlPath::parse)
                 .orElse(AqlPath.EMPTY_PATH));
 

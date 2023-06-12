@@ -59,13 +59,13 @@ class AqlRenderTest {
     void renderPathWithName() {
 
         String aql = "SELECT "
-                + "c/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough "
+                + "c[openEHR-EHR-COMPOSITION.report.v1 and name/value='something']/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough "
                 + "FROM ehr e "
                 + "CONTAINS Composition c [openEHR-EHR-COMPOSITION.report.v1]";
 
         test(
                 aql,
-                "SELECT c/content[openEHR-EHR-SECTION.adhoc.v1,'Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0,'Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough FROM ehr e CONTAINS Composition c[openEHR-EHR-COMPOSITION.report.v1]");
+                "SELECT c[openEHR-EHR-COMPOSITION.report.v1,'something']/content[openEHR-EHR-SECTION.adhoc.v1,'Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0,'Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough FROM ehr e CONTAINS Composition c[openEHR-EHR-COMPOSITION.report.v1]");
     }
 
     @Test
