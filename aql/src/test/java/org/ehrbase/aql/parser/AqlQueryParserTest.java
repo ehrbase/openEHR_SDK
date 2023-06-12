@@ -41,12 +41,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 class AqlQueryParserTest {
 
     @Test
-    void test() {
-        AqlQueryParser cut = new AqlQueryParser();
-        AqlQuery actual = cut.parse("select e FROM EHR e CONTAINS OBSERVATION AND CLUSTER AND TEST AND SECTION");
-    }
-
-    @Test
     void parse() {
         String aql =
                 "SELECT c/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value, d/ehr_id/value AS ehr_id FROM EHR d CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";

@@ -18,7 +18,6 @@
 package org.ehrbase.aql.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -103,7 +102,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         aqlQuery.setFrom(visitFromClause(ctx.fromClause()));
         // where
         if (ctx.whereClause() != null) {
-            aqlQuery.setWhere(visitWhereClause(ctx.whereClause()));
+            aqlQuery.setWhere((WhereCondition) visitWhereClause(ctx.whereClause()));
         }
         // oder by
         if (ctx.orderByClause() != null) {
@@ -114,10 +113,10 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
             AqlParser.LimitClauseContext limitClauseContext = ctx.limitClause();
 
-            aqlQuery.setLimit(Integer.parseInt(limitClauseContext.limit.getText()));
+            aqlQuery.setLimit(Long.parseLong(limitClauseContext.limit.getText()));
 
             if (limitClauseContext.offset != null) {
-                aqlQuery.setOffset(Integer.parseInt(limitClauseContext.offset.getText()));
+                aqlQuery.setOffset(Long.parseLong(limitClauseContext.offset.getText()));
             }
         }
 
@@ -203,12 +202,12 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.BOOLEAN() != null) {
             selectPrimitiveDto = new BooleanPrimitive(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null || ctx.DATETIME() != null || ctx.TIME() != null) {
-            selectPrimitiveDto = new TemporalPrimitive(unwrapText(ctx));
+            selectPrimitiveDto = new TemporalPrimitive(unescapeText(ctx));
         } else if (ctx.numericPrimitive() != null) {
             AqlParser.NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
             selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
         } else if (ctx.STRING() != null) {
-            selectPrimitiveDto = new StringPrimitive(unwrapText(ctx));
+            selectPrimitiveDto = new StringPrimitive(unescapeText(ctx));
         } else if (ctx.NULL() != null) {
             selectPrimitiveDto = new NullPrimitive();
         } else {
@@ -273,7 +272,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
                     new SingleRowFunction.CustomFunctionName(ctx.IDENTIFIER().getText()));
         }
 
-        dto.setOperandList(ctx.terminal().stream().map(this::visitTerminal).toList());
+        dto.setOperandList(ctx.terminal().stream().map(this::visitTerminal).collect(Collectors.toList()));
 
         return dto;
     }
@@ -293,7 +292,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.primitive() != null) {
             return visitPrimitive(ctx.primitive());
         }
-        throw new UnsupportedOperationException("Can not parse %s".formatted(ctx.getText()));
+        throw new UnsupportedOperationException("Cannot parse %s".formatted(ctx.getText()));
     }
 
     private QueryParameter createParameter(TerminalNode node) {
@@ -372,8 +371,8 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         ContainmentClassExpression containmentDto = new ContainmentClassExpression();
         containmentDto.setType(ctx.IDENTIFIER(0).getText());
 
-        if (ctx.IDENTIFIER().size() == 2) {
-            containmentDto.setIdentifier(ctx.IDENTIFIER(1).getText());
+        if (ctx.variable != null) {
+            containmentDto.setIdentifier(ctx.variable.getText());
             containmentByAlias.put(containmentDto.getIdentifier(), containmentDto);
         }
 
@@ -395,18 +394,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public WhereCondition visitWhereClause(AqlParser.WhereClauseContext ctx) {
-
-        return visitWhereExpr(ctx.whereExpr());
-    }
-
-    @Override
     public WhereCondition visitWhereExpr(AqlParser.WhereExprContext ctx) {
 
         if (ctx.identifiedExpr() != null) {
             return visitIdentifiedExpr(ctx.identifiedExpr());
         } else if (ctx.NOT() != null) {
-
             NotCondition notCondition = new NotCondition();
             notCondition.setConditionDto(visitWhereExpr(ctx.whereExpr(0)));
             return notCondition;
@@ -437,12 +429,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     public WhereCondition visitIdentifiedExpr(AqlParser.IdentifiedExprContext ctx) {
 
         if (ctx.COMPARISON_OPERATOR() != null) {
-
             ComparisonOperatorCondition comparisonOperatorCondition = new ComparisonOperatorCondition();
-            comparisonOperatorCondition.setSymbol(extractSymbol(ctx.COMPARISON_OPERATOR()));
-            comparisonOperatorCondition.setValue(visitTerminal(ctx.terminal()));
-            ComparisonLeftOperand statement;
+            comparisonOperatorCondition.setSymbol(ComparisonOperatorSymbol.fromSymbol(
+                    ctx.COMPARISON_OPERATOR().getText()));
 
+            final ComparisonLeftOperand statement;
             if (ctx.functionCall() != null) {
                 statement = visitFunctionCall(ctx.functionCall());
             } else {
@@ -451,29 +442,27 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
             comparisonOperatorCondition.setStatement(statement);
             comparisonOperatorCondition.setValue(visitTerminal(ctx.terminal()));
             return comparisonOperatorCondition;
-        } else if (ctx.likeOperand() != null) {
 
+        } else if (ctx.likeOperand() != null) {
             LikeCondition likeCondition = new LikeCondition();
             likeCondition.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
             likeCondition.setValue(visitLikeOperand(ctx.likeOperand()));
             return likeCondition;
-        } else if (ctx.SYM_LEFT_PAREN() != null) {
 
+        } else if (ctx.SYM_LEFT_PAREN() != null) {
             return visitIdentifiedExpr(ctx.identifiedExpr());
         } else if (ctx.EXISTS() != null) {
-
             ExistsCondition existsCondition = new ExistsCondition();
             existsCondition.setValue(visitIdentifiedPath(ctx.identifiedPath()));
             return existsCondition;
-        } else if (ctx.MATCHES() != null) {
 
+        } else if (ctx.MATCHES() != null) {
             MatchesCondition matchesCondition = new MatchesCondition();
             matchesCondition.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
             matchesCondition.setValues(visitMatchesOperand(ctx.matchesOperand()));
             return matchesCondition;
         } else {
-
-            errors.add("Can not handle %s".formatted(ctx.getText()));
+            errors.add("Cannot handle %s".formatted(ctx.getText()));
             return null;
         }
     }
@@ -482,10 +471,14 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     public List<MatchesOperand> visitMatchesOperand(AqlParser.MatchesOperandContext ctx) {
 
         if (CollectionUtils.isNotEmpty(ctx.valueListItem())) {
-            return ctx.valueListItem().stream().map(this::visitValueListItem).toList();
+            return ctx.valueListItem().stream().map(this::visitValueListItem).collect(Collectors.toList());
+        } else if (ctx.terminologyFunction() != null) {
+            errors.add("Terminology not yet implemented");
+            return Stream.of(new TerminologyFunction()).collect(Collectors.toList());
+        } else {
+            errors.add("MATCHES URI not yet implemented");
+            return new ArrayList<>();
         }
-
-        return Collections.emptyList();
     }
 
     @Override
@@ -507,14 +500,14 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());
         } else {
-            return new StringPrimitive(unwrapText(ctx));
+            return new StringPrimitive(unescapeText(ctx));
         }
     }
 
     @Override
     public List<OrderByExpression> visitOrderByClause(AqlParser.OrderByClauseContext ctx) {
 
-        return ctx.orderByExpr().stream().map(this::visitOrderByExpr).toList();
+        return ctx.orderByExpr().stream().map(this::visitOrderByExpr).collect(Collectors.toList());
     }
 
     public List<String> getErrors() {
@@ -541,7 +534,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         return orderByExpression;
     }
 
-    private static String unwrapText(RuleContext ctx) {
+    private static String unescapeText(RuleContext ctx) {
 
         /*
          *     STRING
@@ -661,25 +654,6 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         }
     }
 
-    private ComparisonOperatorSymbol extractSymbol(TerminalNode comparisonOperator) {
-        switch (comparisonOperator.getText()) {
-            case "=":
-                return ComparisonOperatorSymbol.EQ;
-            case "!=":
-                return ComparisonOperatorSymbol.NEQ;
-            case ">":
-                return ComparisonOperatorSymbol.GT;
-            case ">=":
-                return ComparisonOperatorSymbol.GT_EQ;
-            case "<":
-                return ComparisonOperatorSymbol.LT;
-            case "<=":
-                return ComparisonOperatorSymbol.LT_EQ;
-            default:
-                throw new AqlParseException("Unknown Token " + comparisonOperator.getText());
-        }
-    }
-
     private ContainmentSetOperatorSymbol extractSymbol(AqlParser.ContainsExprContext ctx) {
         if (ctx == null) {
             return null;
@@ -694,9 +668,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     private ConditionLogicalOperatorSymbol extractSymbol(AqlParser.WhereExprContext ctx) {
-        if (ctx == null) {
-            return null;
-        }
+
         if (ctx.OR() != null) {
             return ConditionLogicalOperatorSymbol.OR;
         } else if (ctx.AND() != null) {
