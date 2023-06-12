@@ -8,7 +8,7 @@
 
     <artifactId>bom</artifactId>
     <groupId>org.ehrbase.openehr.sdk</groupId>
-    <version>1.27.0-SNAPSHOT</version>
+    <version>1.30.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>openEHR SDK</name>
@@ -74,7 +74,7 @@
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
-        <jacoco.version>0.8.9</jacoco.version>
+        <jacoco.version>0.8.10</jacoco.version>
         <threeten-extra.version>1.7.2</threeten-extra.version>
     </properties>
 

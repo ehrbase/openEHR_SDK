@@ -3,18 +3,49 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Changed 
- - Bump libraries
+ ### Added 
+ ### Fixed 
+
+## [1.29.0]
+
+ ### Changed
+ 
+ - Bump maven-plugin-annotations ([#466](https://github.com/ehrbase/openEHR_SDK/pull/466))
+
+## [1.28.0]
+
+### Added
+- new DirectoryCrudEndpoint ([#465](https://github.com/ehrbase/openEHR_SDK/pull/465))
+
+### Changed
+
+- Enhanced JSON representation of AqlDto ([#462](https://github.com/ehrbase/openEHR_SDK/pull/462))
+
+### Fixed
+
+## [1.27.0]
+
+### Changed
+
+- Bump libraries
 
 ## [1.26.0]
- ### Added  
-- Added client support for managing folders trough contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
+
+### Added
+
+- Added client support for managing folders trough
+  contributions ([#427](https://github.com/ehrbase/openEHR_SDK/pull/427))
 - update archie to 3.0.0 and antlr4 to 4.11.1 ([#428](https://github.com/ehrbase/openEHR_SDK/pull/428))
- ### Fixed 
-- Add workarounds for archie not handling date-time values according to spec when (de-)serializing (affects XML,JSON and Flat) ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
+
+### Fixed
+
+- Add workarounds for archie not handling date-time values according to spec when (de-)serializing (affects XML,JSON and
+  Flat) ([#420](https://github.com/ehrbase/openEHR_SDK/pull/420))
 
 ## [1.25.0]
+
 ### Added
+
 ### Changed
 
 - FlatPathDto is now immutable ([#425](https://github.com/ehrbase/openEHR_SDK/pull/425))
@@ -22,75 +53,102 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Fixed
 
 ## [1.24.0]
- ### Added 
-- Added client support for managing compositions trough contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
+
+### Added
+
+- Added client support for managing compositions trough
+  contributions ([#406](https://github.com/ehrbase/openEHR_SDK/pull/406))
 - Added null verification and change gson to jackson ([#416](https://github.com/ehrbase/openEHR_SDK/pull/416))
- ### Changed
+
+### Changed
+
 - Update libraries ([#422](https://github.com/ehrbase/openEHR_SDK/pull/422))
 
- ### Fixed 
+### Fixed
 
 ## [1.23.0]
- ### Added 
-   - Added handling of stored AQL query requests ([#384](https://github.com/ehrbase/openEHR_SDK/pull/384))
 
- ### Fixed 
-- update archie  to 2.1.0 ([#410](https://github.com/ehrbase/openEHR_SDK/pull/410))
+### Added
+
+- Added handling of stored AQL query requests ([#384](https://github.com/ehrbase/openEHR_SDK/pull/384))
+
+### Fixed
+
+- update archie to 2.1.0 ([#410](https://github.com/ehrbase/openEHR_SDK/pull/410))
+
 ## [1.22.0]
- ### Added 
- ### Fixed 
+
+### Added
+
+### Fixed
+
 - Folder creation
 - fix not unique rows in matrix formate ([#390](https://github.com/ehrbase/openEHR_SDK/pull/390))
 
 ## [1.21.0]
- ### Added
-- Get items from current folder ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
- ### Fixed 
-- Removed caching of root folders to prevent false conflicts and memory leaks ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
--  new Matrix serialisation use rm-model for index and fix section handling ([#386](https://github.com/ehrbase/openEHR_SDK/pull/386))
 
+### Added
+
+- Get items from current folder ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
+
+### Fixed
+
+- Removed caching of root folders to prevent false conflicts and memory leaks
+  ([#385](https://github.com/ehrbase/openEHR_SDK/pull/385))
+- new Matrix serialisation use rm-model for index and fix section handling
+  ([#386](https://github.com/ehrbase/openEHR_SDK/pull/386))
 
 ## [1.20.0]
- ### Added 
+
+### Added
+
 - Add spotless plugin, Add codestyle check to workflows ([#368](https://github.com/ehrbase/openEHR_SDK/pull/368))
 - Add new Tool to interpret AQL against a template ([#379](https://github.com/ehrbase/openEHR_SDK/pull/379))
 - Add new Matrix serialisation format ([#381](https://github.com/ehrbase/openEHR_SDK/pull/381))
- ### Fixed 
-- Skip archetype slots not used by the template in example generator ([#369](https://github.com/ehrbase/openEHR_SDK/pull/369))
+
+### Fixed
+
+- Skip archetype slots not used by the template in example
+  generator ([#369](https://github.com/ehrbase/openEHR_SDK/pull/369))
 - enhance sdk aql parser to handle more cases ([#376](https://github.com/ehrbase/openEHR_SDK/pull/376))
 - update update everit-json-schema to maven version ([#370](https://github.com/ehrbase/openEHR_SDK/pull/370))
-
 
 ## [1.19.0]
 
 ### Added
+
 - Maven plugin to generate code from templates ([#347](https://github.com/ehrbase/openEHR_SDK/pull/347))
-- Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349), [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
-- Flatencoding parsing: automatically handle date/time/date_time precision [#352](https://github.com/ehrbase/openEHR_SDK/pull/352)
+- Example
+  Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349), [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
+- Flatencoding parsing: automatically handle date/time/date_time
+  precision [#352](https://github.com/ehrbase/openEHR_SDK/pull/352)
 - Example Generator ([#349](https://github.com/ehrbase/openEHR_SDK/pull/349)
   , [#351](https://github.com/ehrbase/openEHR_SDK/pull/351))
 - use bom for dependency management ([#358](https://github.com/ehrbase/openEHR_SDK/pull/358))
 - created release action ([#362](https://github.com/ehrbase/openEHR_SDK/pull/362))
 
 ### Fixed
-- fix wrong escape in names attribute of the aql path ([#364](https://github.com/ehrbase/openEHR_SDK/pull/364))
 
+- fix wrong escape in names attribute of the aql path ([#364](https://github.com/ehrbase/openEHR_SDK/pull/364))
 
 ## [1.18.0]
 
 ### Added
+
 - Update archie to version 2.0.1 ([#345](https://github.com/ehrbase/openEHR_SDK/pull/345))
-- AQL: support `ORDER BY` and `LIMIT [OFFSET]` clauses in any order ([#344](https://github.com/ehrbase/openEHR_SDK/pull/344))
+- AQL: support `ORDER BY` and `LIMIT [OFFSET]` clauses in any
+  order ([#344](https://github.com/ehrbase/openEHR_SDK/pull/344))
 
 ### Fixed
 
 - Flat : corrected handling of PARTY_PROXY ( see https://github.com/ehrbase/openEHR_SDK/pull/320)
 - Flat : corrected handling of history origin and ISM_TRANSITION (see https://github.com/ehrbase/openEHR_SDK/pull/329)
 - Flat : handle fixed offset in template (see https://github.com/ehrbase/openEHR_SDK/pull/333)
-- Validation: fix validation of DV_TEXT with listopen (see https://github.com/ehrbase/openEHR_SDK/pull/335) 
+- Validation: fix validation of DV_TEXT with listopen (see https://github.com/ehrbase/openEHR_SDK/pull/335)
 - Walker, Flat, DTO, Validation  : enhance performance of path handling (
   see https://github.com/ehrbase/openEHR_SDK/pull/325, https://github.com/ehrbase/openEHR_SDK/pull/332 )
-- dto: Fix handling of element wich contains a choice with one an interval (see https://github.com/ehrbase/openEHR_SDK/pull/334)
+- dto: Fix handling of element wich contains a choice with one an interval (
+  see https://github.com/ehrbase/openEHR_SDK/pull/334)
 - Fixes AqlParseException while using boolean in where clause ([#338](https://github.com/ehrbase/openEHR_SDK/pull/338))
 - Fixes default ASC value for ORDER BY clause ([#342](https://github.com/ehrbase/openEHR_SDK/pull/342))
 - Fixes null nodeIds and annotations missing (https://github.com/ehrbase/openEHR_SDK/pull/343)
@@ -124,7 +182,6 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - db-serialising: fix handing of guideline_id & work_flow_id &
   wf_definition (https://github.com/ehrbase/openEHR_SDK/pull/315)
 - db-serialising: fix handling of locatable attributes  (https://github.com/ehrbase/openEHR_SDK/pull/318)
-
 
 ## 1.16.0
 
@@ -208,16 +265,16 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - New endpoint for retrieving all templates (see https://github.com/ehrbase/openEHR_SDK/pull/153)
 - New Dto -> RmClasses -> Dto mapper (see https://github.com/ehrbase/openEHR_SDK/pull/153)
 - New ClassGenerator
-  - Configurable via YAML
-  - Optimized class generation
-  - Optimized name Generation
-  - Support Language specific Characters
-  - Generate Interfaces for RM Attributes
-  - Add null_flavor fields
-  - Generate shared fields in Interfaces for Choice Elements
-  - Support IsmTransition
-  - Generate Javadoc
-  - Add Generated Annotation
+    - Configurable via YAML
+    - Optimized class generation
+    - Optimized name Generation
+    - Support Language specific Characters
+    - Generate Interfaces for RM Attributes
+    - Add null_flavor fields
+    - Generate shared fields in Interfaces for Choice Elements
+    - Support IsmTransition
+    - Generate Javadoc
+    - Add Generated Annotation
 
 ### Fixed
 
@@ -229,17 +286,26 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 - patch: openEHR SDK containing the contents of EHRbase serialization, response DTOs, terminology and validation
 
-
-
-
 [1.18.0]: https://github.com/ehrbase/openEHR_SDK/releases/tag/v1.18.0
+
 [1.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.18.0...v1.19.0
 
 [1.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.19.0...v1.20.0
+
 [1.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.20.0...v1.21.0
+
 [1.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.21.0...v1.22.0
+
 [1.23.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.22.0...v1.23.0
+
 [1.24.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.23.0...v1.24.0
+
 [1.25.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.24.0...v1.25.0
+
 [1.26.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.25.0...v1.26.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...HEAD
+
+[1.27.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...v1.27.0
+
+[1.28.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.27.0...v1.28.0
+[1.29.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.28.0...v1.29.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.29.0...HEAD
