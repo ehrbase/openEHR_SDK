@@ -280,7 +280,7 @@ public class AqlRender {
 
     private void renderSingleRowFunctionDto(StringBuilder sb, SingleRowFunction singleRowFunktion) {
 
-        sb.append(singleRowFunktion.getFunctionName().name()).append("(");
+        sb.append(singleRowFunktion.getFunctionName().getName()).append("(");
         sb.append(singleRowFunktion.getOperandList().stream()
                 .map(this::renderTerminal)
                 .collect(Collectors.joining(", ")));
