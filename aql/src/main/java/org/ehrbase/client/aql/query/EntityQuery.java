@@ -66,7 +66,8 @@ public class EntityQuery<T extends Record> implements Query<T> {
                 .filter(e -> e.getKey().getTypeName().equals("EHR"))
                 .map(Map.Entry::getValue)
                 .findAny()
-                .orElse("e");
+                // FIXME possible collision
+                .orElseGet(() -> this.variablesMap.values().contains("e") ? "e1" : "e");
         variablesMap.put(ehrContainment, ehrVariableName);
         ehrContainment.bindQuery(this);
         this.fields = Arrays.stream(fields).map(this::replace).toArray(SelectAqlField[]::new);
@@ -118,12 +119,17 @@ public class EntityQuery<T extends Record> implements Query<T> {
         }
         List<String> usedNames = new ArrayList<>();
         sb.append(Arrays.stream(fields)
-                        .map(field -> buildFieldAql(field, usedNames))
-                        .collect(Collectors.joining(", ")))
-                .append(" from EHR ")
-                .append(buildVariabelName(ehrContainment));
+                .map(field -> buildFieldAql(field, usedNames))
+                .collect(Collectors.joining(", ")));
+        sb.append(" from ");
+        if (ehrContainment.getVariableName() != null) {
+            sb.append("EHR ").append(buildVariabelName(ehrContainment));
+            if (containmentExpression != null) {
+                sb.append(" contains ");
+            }
+        }
         if (containmentExpression != null) {
-            sb.append(" contains ").append(containmentExpression.buildAQL());
+            sb.append(containmentExpression.buildAQL());
         }
         if (where != null) {
             sb.append(" where ").append(where.buildAql(ehrContainment));

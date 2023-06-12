@@ -17,7 +17,7 @@
  */
 package org.ehrbase.aql.dto.path.predicate;
 
-import static org.ehrbase.aql.parser.AqlToDtoVisitor.buildLogicalOperator;
+import static org.ehrbase.aql.parser.AqlQueryParserUtil.buildLogicalOperator;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -26,17 +26,17 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.SimpleValue;
-import org.ehrbase.aql.dto.condition.Value;
+import org.ehrbase.aql.dto.LogicalOperator;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.operand.DoublePrimitive;
+import org.ehrbase.aql.dto.operand.LongPrimitive;
+import org.ehrbase.aql.dto.operand.PathPredicateOperand;
+import org.ehrbase.aql.dto.operand.Primitive;
+import org.ehrbase.aql.dto.operand.QueryParameter;
+import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.path.AqlPath;
 import org.ehrbase.aql.dto.path.AqlPathHelper;
 import org.ehrbase.aql.util.CharSequenceHelper;
@@ -51,18 +51,17 @@ public class PredicateHelper {
     public static final String ARCHETYPE_NODE_ID = "archetype_node_id";
 
     private static final AqlPathHelper.PrefixMatcher OPERATOR_SYMBOLS =
-            AqlPathHelper.PrefixMatcher.forStrings(Arrays.stream(ConditionComparisonOperatorSymbol.values())
-                    .map(ConditionComparisonOperatorSymbol::getSymbol)
+            AqlPathHelper.PrefixMatcher.forStrings(Arrays.stream(ComparisonOperatorSymbol.values())
+                    .map(ComparisonOperatorSymbol::getSymbol)
                     .toArray(String[]::new));
 
-    private static final PredicateComparisonOperatorDto NO_PREDICATE =
-            new PredicateComparisonOperatorDto(null, null, null);
+    private static final PredicateComparisonOperator NO_PREDICATE = new PredicateComparisonOperator(null, null, null);
     private static final AqlPathHelper.PrefixMatcher PREDICATES_MATCHER =
             AqlPathHelper.PrefixMatcher.forStrings(" and ", " AND ", " or ", " OR ", ",");
 
-    private static int comparisonKey(PredicateDto dto) {
-        if (dto instanceof PredicateComparisonOperatorDto) {
-            switch (((PredicateComparisonOperatorDto) dto).getStatement()) {
+    private static int comparisonKey(AqlPredicate dto) {
+        if (dto instanceof PredicateComparisonOperator) {
+            switch (((PredicateComparisonOperator) dto).getStatement()) {
                 case ARCHETYPE_NODE_ID:
                     return 1;
                 case NAME_VALUE:
@@ -75,33 +74,34 @@ public class PredicateHelper {
         }
     }
 
-    static final Comparator<PredicateDto> PREDICATE_DTO_COMPARATOR =
+    static final Comparator<AqlPredicate> PREDICATE_DTO_COMPARATOR =
             Comparator.comparingInt(PredicateHelper::comparisonKey);
 
     private PredicateHelper() {
         // NOP
     }
 
-    public static PredicateDto buildPredicate(CharSequence predicate) {
+    public static AqlPredicate buildPredicate(CharSequence predicate) {
 
         Object[] boolList = parsePredicate(predicate);
 
         if (boolList.length == 1) {
-            return (PredicateDto) boolList[0];
+            return (AqlPredicate) boolList[0];
         } else {
 
-            LogicalOperatorDto predicateLogicalOperatorSymbolPredicateDtoLogicalOperatorDto =
-                    buildLogicalOperator(Arrays.asList(boolList), (Function<
-                                    PredicateLogicalOperatorSymbol,
-                                    LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>>)
-                            s -> {
-                                if (PredicateLogicalOperatorSymbol.AND.equals(s)) {
-                                    return new PredicateLogicalAndOperation();
-                                } else {
-                                    return new PredicateLogicalOrOperation();
-                                }
-                            });
-            return (PredicateDto) predicateLogicalOperatorSymbolPredicateDtoLogicalOperatorDto;
+            LogicalOperator predicateLogicalOperator = buildLogicalOperator(
+                    Arrays.asList(boolList),
+                    s -> {
+                        final LogicalOperator ret;
+                        if (PredicateLogicalOperatorSymbol.AND.equals(s)) {
+                            ret = new PredicateLogicalAndOperation();
+                        } else {
+                            ret = new PredicateLogicalOrOperation();
+                        }
+                        return ret;
+                    },
+                    PredicateLogicalOperatorSymbol::getPrecedence);
+            return (AqlPredicate) predicateLogicalOperator;
         }
     }
 
@@ -134,86 +134,95 @@ public class PredicateHelper {
         }
     }
 
-    private static PredicateComparisonOperatorDto handleOperator(CharSequence sequence, int i) {
+    private static PredicateComparisonOperator handleOperator(CharSequence sequence, int i) {
         List<CharSequence> split = AqlPathHelper.split(sequence, 0, 3, true, OPERATOR_SYMBOLS);
 
         String statement;
-        ConditionComparisonOperatorSymbol operator;
-        Value value;
+        ComparisonOperatorSymbol operator;
+        PathPredicateOperand value;
         if (split.size() == 1) {
             if (i == 0) {
                 statement = ARCHETYPE_NODE_ID;
-                operator = ConditionComparisonOperatorSymbol.EQ;
+                operator = ComparisonOperatorSymbol.EQ;
                 value = parseValue(ARCHETYPE_NODE_ID, CharSequenceHelper.trim(split.get(0)));
             } else if (i == 2) {
                 statement = NAME_VALUE;
-                operator = ConditionComparisonOperatorSymbol.EQ;
+                operator = ComparisonOperatorSymbol.EQ;
                 value = parseValue(NAME_VALUE, CharSequenceHelper.trim(split.get(0)));
             } else {
                 throw new IllegalArgumentException();
             }
         } else {
             statement = CharSequenceHelper.trim(split.get(0)).toString();
-            operator = ConditionComparisonOperatorSymbol.fromSymbol(split.get(1));
+            operator = ComparisonOperatorSymbol.fromSymbol(split.get(1));
             value = parseValue(statement, CharSequenceHelper.trim(split.get(2)));
         }
 
-        return new PredicateComparisonOperatorDto(statement, operator, value);
+        return new PredicateComparisonOperator(statement, operator, value);
     }
 
-    private static Value parseValue(String statement, CharSequence s) {
+    private static PathPredicateOperand parseValue(String statement, CharSequence s) {
 
         if (s.length() > 0 && s.charAt(0) == '$') {
-            ParameterValue parameterValue =
-                    new ParameterValue(CharSequenceHelper.subSequence(s, 1).toString(), null);
+            QueryParameter parameterValue = new QueryParameter();
+            parameterValue.setName(CharSequenceHelper.subSequence(s, 1).toString());
             return parameterValue;
         }
 
         if (ARCHETYPE_NODE_ID.equals(statement)) {
-            return new SimpleValue(s.toString());
+            return new StringPrimitive(s.toString());
         } else if (s.length() > 1 && s.charAt(0) == '\'') {
-            return new SimpleValue(
+            return new StringPrimitive(
                     CharSequenceHelper.subSequence(s, 1, s.length() - 1).toString());
-        } else if (StringUtils.contains(s, '.')) {
-            return new SimpleValue(Double.parseDouble(s.toString()));
+        } else if (representsPlainInteger(s)) {
+            return new LongPrimitive(Long.parseLong(s.toString()));
         } else {
-            return new SimpleValue(Long.parseLong(s.toString()));
+            return new DoublePrimitive(Double.parseDouble(s.toString()));
         }
     }
 
-    private static void format(String statement, StringBuilder sb, Value value) {
-        if (value instanceof SimpleValue) {
-            Object o = ((SimpleValue) value).getValue();
+    static boolean representsPlainInteger(CharSequence s) {
+        for (int i = 0, l = s.length(); i < l; i++) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c) || (i == 0 && c == '-')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void format(String statement, StringBuilder sb, PathPredicateOperand value) {
+        if (value instanceof Primitive) {
+            Object o = ((Primitive) value).getValue();
 
             if (o instanceof String && !ARCHETYPE_NODE_ID.equals(statement)) {
                 sb.append(StringUtils.wrap(o.toString(), "'"));
             } else {
                 sb.append(o);
             }
-        } else if (value instanceof ParameterValue) {
+        } else if (value instanceof QueryParameter) {
 
-            sb.append('$').append(((ParameterValue) value).getName());
+            sb.append('$').append(((QueryParameter) value).getName());
         }
     }
 
-    public static String format(PredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+    public static String format(AqlPredicate predicate, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
         StringBuilder sb = new StringBuilder();
-        format(sb, predicateDto, otherPredicatesFormat);
+        format(sb, predicate, otherPredicatesFormat);
         return sb.toString();
     }
 
     public static void format(
-            StringBuilder sb, PredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+            StringBuilder sb, AqlPredicate predicate, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
-        if (predicateDto instanceof ParameterValue) {
-            sb.append('$').append(((ParameterValue) predicateDto).getName());
-        } else if (predicateDto instanceof PredicateComparisonOperatorDto) {
-            formatPredicateComparisonOperatorDto(
-                    sb, (PredicateComparisonOperatorDto) predicateDto, otherPredicatesFormat);
-        } else if (predicateDto instanceof PredicateLogicalAndOperation) {
-            formatPredicateLogicalAndOperation(sb, (PredicateLogicalAndOperation) predicateDto, otherPredicatesFormat);
-        } else if (predicateDto instanceof PredicateLogicalOrOperation) {
-            formatPredicateLogicalOrOperation(sb, (PredicateLogicalOrOperation) predicateDto, otherPredicatesFormat);
+        if (predicate instanceof QueryParameter) {
+            sb.append('$').append(((QueryParameter) predicate).getName());
+        } else if (predicate instanceof PredicateComparisonOperator) {
+            formatPredicateComparisonOperatorDto(sb, (PredicateComparisonOperator) predicate, otherPredicatesFormat);
+        } else if (predicate instanceof PredicateLogicalAndOperation) {
+            formatPredicateLogicalAndOperation(sb, (PredicateLogicalAndOperation) predicate, otherPredicatesFormat);
+        } else if (predicate instanceof PredicateLogicalOrOperation) {
+            formatPredicateLogicalOrOperation(sb, (PredicateLogicalOrOperation) predicate, otherPredicatesFormat);
         }
     }
 
@@ -224,7 +233,7 @@ public class PredicateHelper {
         if (otherPredicatesFormat.equals(AqlPath.OtherPredicatesFormat.SHORTED)) {
             otherPredicatesFormat = AqlPath.OtherPredicatesFormat.FULL;
         }
-        List<SimplePredicateDto> values = predicateDto.getValues();
+        List<DisjunctableAqlPredicate> values = predicateDto.getValues();
         for (int i = 0; i < values.size(); i++) {
 
             if (i > 0 && !isNone(values.get(i), otherPredicatesFormat)) {
@@ -238,11 +247,11 @@ public class PredicateHelper {
             StringBuilder sb,
             PredicateLogicalAndOperation predicateDto,
             AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
-        SimplePredicateDto[] values = predicateDto.getValues().toArray(SimplePredicateDto[]::new);
+        DisjunctableAqlPredicate[] values = predicateDto.getValues().toArray(DisjunctableAqlPredicate[]::new);
         Arrays.sort(values, PREDICATE_DTO_COMPARATOR);
 
         for (int i = 0; i < values.length; i++) {
-            SimplePredicateDto value = values[i];
+            DisjunctableAqlPredicate value = values[i];
             if (isNone(value, otherPredicatesFormat)) {
                 continue;
             }
@@ -259,7 +268,7 @@ public class PredicateHelper {
 
     private static void formatPredicateComparisonOperatorDto(
             StringBuilder sb,
-            PredicateComparisonOperatorDto predicateDto,
+            PredicateComparisonOperator predicateDto,
             AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
         if (isShorten(predicateDto, otherPredicatesFormat)) {
             format(predicateDto.getStatement(), sb, predicateDto.getValue());
@@ -271,21 +280,19 @@ public class PredicateHelper {
     }
 
     private static boolean isNone(
-            SimplePredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+            DisjunctableAqlPredicate predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
         return AqlPath.OtherPredicatesFormat.NONE == otherPredicatesFormat
-                && predicateDto instanceof PredicateComparisonOperatorDto
-                && !ARCHETYPE_NODE_ID.equals(((PredicateComparisonOperatorDto) predicateDto).getStatement());
+                && predicateDto instanceof PredicateComparisonOperator
+                && !ARCHETYPE_NODE_ID.equals(((PredicateComparisonOperator) predicateDto).getStatement());
     }
 
     private static boolean isShorten(
-            SimplePredicateDto predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
+            DisjunctableAqlPredicate predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
-        boolean isCompOp = predicateDto instanceof PredicateComparisonOperatorDto;
+        boolean isCompOp = predicateDto instanceof PredicateComparisonOperator;
 
         if (isCompOp
-                && ((PredicateComparisonOperatorDto) predicateDto)
-                        .getStatement()
-                        .equals(ARCHETYPE_NODE_ID)) {
+                && ((PredicateComparisonOperator) predicateDto).getStatement().equals(ARCHETYPE_NODE_ID)) {
             return true;
         }
         if (otherPredicatesFormat == AqlPath.OtherPredicatesFormat.FULL) {
@@ -293,15 +300,15 @@ public class PredicateHelper {
         }
 
         if (isCompOp) {
-            PredicateComparisonOperatorDto cmpOpDto = (PredicateComparisonOperatorDto) predicateDto;
-            return ConditionComparisonOperatorSymbol.EQ == cmpOpDto.getSymbol()
+            PredicateComparisonOperator cmpOpDto = (PredicateComparisonOperator) predicateDto;
+            return ComparisonOperatorSymbol.EQ == cmpOpDto.getSymbol()
                     && List.of(NAME_VALUE, ARCHETYPE_NODE_ID).contains(cmpOpDto.getStatement());
 
         } else if (predicateDto instanceof PredicateLogicalOrOperation) {
             return false;
 
         } else if (predicateDto instanceof PredicateLogicalAndOperation) {
-            List<SimplePredicateDto> andOpVals = ((PredicateLogicalAndOperation) predicateDto).getValues();
+            List<PredicateComparisonOperator> andOpVals = ((PredicateLogicalAndOperation) predicateDto).getValues();
             return CollectionUtils.isNotEmpty(andOpVals)
                     && isShorten(andOpVals.get(andOpVals.size() - 1), otherPredicatesFormat);
         } else {
@@ -309,28 +316,28 @@ public class PredicateHelper {
         }
     }
 
-    public static Optional<PredicateComparisonOperatorDto> find(PredicateDto predicateDto, String statement) {
+    public static Optional<PredicateComparisonOperator> find(AqlPredicate predicate, String statement) {
 
-        if (predicateDto instanceof PredicateComparisonOperatorDto) {
-            return Optional.of(predicateDto)
-                    .map(PredicateComparisonOperatorDto.class::cast)
+        if (predicate instanceof PredicateComparisonOperator) {
+            return Optional.of(predicate)
+                    .map(PredicateComparisonOperator.class::cast)
                     .filter(op -> statement.equals(op.getStatement()));
         }
 
-        Deque<PredicateDto> deque;
+        Deque<AqlPredicate> deque;
         {
-            List<SimplePredicateDto> values;
-            if (predicateDto instanceof PredicateLogicalOrOperation) {
-                values = ((PredicateLogicalOrOperation) predicateDto).getValues();
-            } else if (predicateDto instanceof PredicateLogicalAndOperation) {
-                values = ((PredicateLogicalAndOperation) predicateDto).getValues();
+            List<? extends AqlPredicate> values;
+            if (predicate instanceof PredicateLogicalOrOperation) {
+                values = ((PredicateLogicalOrOperation) predicate).getValues();
+            } else if (predicate instanceof PredicateLogicalAndOperation) {
+                values = ((PredicateLogicalAndOperation) predicate).getValues();
             } else {
                 return Optional.empty();
             }
 
-            for (SimplePredicateDto v : values) {
-                if (v instanceof PredicateComparisonOperatorDto) {
-                    PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) v;
+            for (AqlPredicate v : values) {
+                if (v instanceof PredicateComparisonOperator) {
+                    PredicateComparisonOperator cmpOp = (PredicateComparisonOperator) v;
                     if (statement.equals(cmpOp.getStatement())) {
                         return Optional.of(cmpOp);
                     }
@@ -342,7 +349,7 @@ public class PredicateHelper {
         while (!deque.isEmpty()) {
             var pred = deque.pop();
 
-            List<SimplePredicateDto> values;
+            List<? extends AqlPredicate> values;
             if (pred instanceof PredicateLogicalOrOperation) {
                 values = ((PredicateLogicalOrOperation) pred).getValues();
             } else if (pred instanceof PredicateLogicalAndOperation) {
@@ -350,9 +357,9 @@ public class PredicateHelper {
             } else {
                 continue;
             }
-            for (SimplePredicateDto v : values) {
-                if (v instanceof PredicateComparisonOperatorDto) {
-                    PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) v;
+            for (AqlPredicate v : values) {
+                if (v instanceof PredicateComparisonOperator) {
+                    PredicateComparisonOperator cmpOp = (PredicateComparisonOperator) v;
                     if (statement.equals(cmpOp.getStatement())) {
                         return Optional.of(cmpOp);
                     }
@@ -364,35 +371,36 @@ public class PredicateHelper {
         return Optional.empty();
     }
 
-    public static SimplePredicateDto add(SimplePredicateDto simplePredicateDto, SimplePredicateDto add) {
-        if (simplePredicateDto instanceof PredicateLogicalAndOperation) {
-            return ((PredicateLogicalAndOperation) simplePredicateDto).addValues(Stream.of(add));
-        } else {
-            return new PredicateLogicalAndOperation(simplePredicateDto, add);
-        }
-    }
+    //    public static DisjunctableAqlPredicate add(DisjunctableAqlPredicate simplePredicateDto,
+    // DisjunctableAqlPredicate add) {
+    //        if (simplePredicateDto instanceof PredicateLogicalAndOperation) {
+    //            return ((PredicateLogicalAndOperation) simplePredicateDto).addValues(Stream.of(add));
+    //        } else {
+    //            return new PredicateLogicalAndOperation(simplePredicateDto, add);
+    //        }
+    //    }
 
     /**
-     * Return a clone of <code>and</code> with all {@link PredicateComparisonOperatorDto} removed where
+     * Return a clone of <code>and</code> with all {@link PredicateComparisonOperator} removed where
      * the operator <code>symbol</code> matches
-     * and {@link PredicateComparisonOperatorDto#getStatement()} is in <code>remove</code>
+     * and {@link PredicateComparisonOperator#getStatement()} is in <code>remove</code>
      * @param and
      * @param symbol the operator to be matched, or null
      * @param remove names of statements to be removed
      * @return
      */
     public static PredicateLogicalAndOperation remove(
-            PredicateLogicalAndOperation and, ConditionComparisonOperatorSymbol symbol, String... remove) {
+            PredicateLogicalAndOperation and, ComparisonOperatorSymbol symbol, String... remove) {
         return removeInternal(
                 and,
                 cmpOp -> (symbol == null || symbol == cmpOp.getSymbol())
                         && ArrayUtils.contains(remove, cmpOp.getStatement()));
     }
 
-    private static <P extends SimplePredicateDto> P removeInternal(
-            P predicate, Predicate<PredicateComparisonOperatorDto> filter) {
-        if (predicate instanceof PredicateComparisonOperatorDto) {
-            PredicateComparisonOperatorDto cmpOp = (PredicateComparisonOperatorDto) predicate;
+    private static <P extends DisjunctableAqlPredicate> P removeInternal(
+            P predicate, java.util.function.Predicate<PredicateComparisonOperator> filter) {
+        if (predicate instanceof PredicateComparisonOperator) {
+            PredicateComparisonOperator cmpOp = (PredicateComparisonOperator) predicate;
             if (filter.test(cmpOp)) {
                 return (P) NO_PREDICATE;
             }
@@ -400,13 +408,13 @@ public class PredicateHelper {
             return predicate;
 
         } else if (predicate instanceof PredicateLogicalAndOperation) {
-            List<SimplePredicateDto> newValues = null;
-            List<SimplePredicateDto> values = ((PredicateLogicalAndOperation) predicate).getValues();
+            List<DisjunctableAqlPredicate> newValues = null;
+            List<PredicateComparisonOperator> values = ((PredicateLogicalAndOperation) predicate).getValues();
             int newPos = 0;
             int s = values.size();
             for (int i = 0; i < s; i++) {
-                SimplePredicateDto child = values.get(i);
-                SimplePredicateDto newChild = removeInternal(child, filter);
+                PredicateComparisonOperator child = values.get(i);
+                PredicateComparisonOperator newChild = removeInternal(child, filter);
                 if (newChild != child) {
                     boolean removeNode = newChild == NO_PREDICATE;
                     if (newValues == null) {
@@ -429,7 +437,7 @@ public class PredicateHelper {
             if (newPos < s) {
                 newValues.addAll(values.subList(newPos, s));
             }
-            return (P) new PredicateLogicalAndOperation(newValues.toArray(SimplePredicateDto[]::new));
+            return (P) new PredicateLogicalAndOperation(newValues.toArray(PredicateComparisonOperator[]::new));
         }
         // statement not found
         return predicate;

@@ -21,3 +21,9 @@ It is recommended to update the generated classes. To do this:
 * Generate your classes new with the generator using generator/src/main/resources/LegacyConfig.yaml as config
 * Delete you old classes and replaces them with the new one
 * There may be some more changes regrading the naming or the class structure which you have to change in your code.
+
+## SDK 2.0.0
+### New Aql DTO model
+
+The Aql DTO modell now uses `org.ehrbase.aql.render` to be converted back to a AQL String. 
+Furthermore, the Modell was changed quit significantly so code wich manipulates ot introspects them will be needed to be reimplemented. 

@@ -3,8 +3,14 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
- ### Fixed 
+
+### Added
+### Changed
+
+- switch to java 17 ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
+- Change the implementation of AqlDto ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
+
+### Fixed 
 
 ## [1.29.0]
 
@@ -17,9 +23,6 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Added
 - new DirectoryCrudEndpoint ([#465](https://github.com/ehrbase/openEHR_SDK/pull/465))
 
-### Changed
-
-- Enhanced JSON representation of AqlDto ([#462](https://github.com/ehrbase/openEHR_SDK/pull/462))
 
 ### Fixed
 

@@ -24,7 +24,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
+import org.ehrbase.serialisation.util.OpenEHRDateTimeSerializationUtils;
 import org.ehrbase.serialisation.walker.Context;
 
 public class HistoryPostprocessor extends AbstractMarshalPostprocessor<History> {

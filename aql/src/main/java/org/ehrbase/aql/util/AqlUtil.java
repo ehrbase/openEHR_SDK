@@ -20,21 +20,20 @@ package org.ehrbase.aql.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.ehrbase.aql.binder.AqlBinder;
-import org.ehrbase.aql.dto.AqlDto;
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorDto;
-import org.ehrbase.aql.dto.condition.ConditionDto;
-import org.ehrbase.aql.dto.condition.ConditionLogicalOperatorDto;
-import org.ehrbase.aql.dto.condition.ParameterValue;
-import org.ehrbase.aql.dto.condition.Value;
-import org.ehrbase.aql.parser.AqlToDtoParser;
+import org.ehrbase.aql.dto.AqlQuery;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorCondition;
+import org.ehrbase.aql.dto.condition.LogicalOperatorCondition;
+import org.ehrbase.aql.dto.condition.WhereCondition;
+import org.ehrbase.aql.dto.operand.Operand;
+import org.ehrbase.aql.dto.operand.QueryParameter;
+import org.ehrbase.aql.parser.AqlQueryParser;
+import org.ehrbase.aql.render.AqlRender;
 
 public class AqlUtil {
 
     private AqlUtil() {}
 
-    private static final AqlToDtoParser PARSER = new AqlToDtoParser();
-    private static final AqlBinder BINDER = new AqlBinder();
+    private static final AqlQueryParser PARSER = new AqlQueryParser();
 
     /**
      * Removes a parameter from the aql
@@ -45,25 +44,25 @@ public class AqlUtil {
      */
     public static String removeParameter(String aql, String parameterName) {
 
-        AqlDto dto = PARSER.parse(aql);
+        AqlQuery dto = PARSER.parse(aql);
 
         dto.setWhere(removeParameter(dto.getWhere(), parameterName));
-        return BINDER.bind(dto).getLeft().buildAql();
+        return new AqlRender(dto).render();
     }
 
-    private static ConditionDto removeParameter(ConditionDto conditionDto, String parameterName) {
-        if (conditionDto instanceof ConditionComparisonOperatorDto) {
-            Value value = ((ConditionComparisonOperatorDto) conditionDto).getValue();
-            if (value instanceof ParameterValue && Objects.equals(((ParameterValue) value).getName(), parameterName)) {
+    private static WhereCondition removeParameter(WhereCondition condition, String parameterName) {
+        if (condition instanceof ComparisonOperatorCondition) {
+            Operand value = ((ComparisonOperatorCondition) condition).getValue();
+            if (value instanceof QueryParameter && Objects.equals(((QueryParameter) value).getName(), parameterName)) {
                 return null;
             }
-        } else if (conditionDto instanceof ConditionLogicalOperatorDto) {
-            List<ConditionDto> values = ((ConditionLogicalOperatorDto) conditionDto).getValues();
+        } else if (condition instanceof LogicalOperatorCondition) {
+            List<WhereCondition> values = ((LogicalOperatorCondition) condition).getValues();
 
-            for (ConditionDto value : new ArrayList<>(values)) {
+            for (WhereCondition value : new ArrayList<>(values)) {
                 values.remove(value);
 
-                ConditionDto newValue = removeParameter(value, parameterName);
+                WhereCondition newValue = removeParameter(value, parameterName);
 
                 if (newValue != null) {
                     values.add(newValue);
@@ -75,10 +74,10 @@ public class AqlUtil {
             } else if (values.size() == 1) {
                 return values.get(0);
             } else {
-                return conditionDto;
+                return condition;
             }
         }
 
-        return conditionDto;
+        return condition;
     }
 }

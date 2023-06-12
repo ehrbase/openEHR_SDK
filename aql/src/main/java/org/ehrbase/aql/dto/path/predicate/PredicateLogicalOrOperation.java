@@ -21,18 +21,20 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperator;
 
 /**
  * @author Stefan Spiska
  */
 public class PredicateLogicalOrOperation
-        implements PredicateDto, LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>, Serializable {
+        implements AqlPredicate,
+                LogicalOperator<PredicateLogicalOperatorSymbol, DisjunctableAqlPredicate>,
+                Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.OR;
-    private List<SimplePredicateDto> values;
+    private List<DisjunctableAqlPredicate> values;
 
-    public PredicateLogicalOrOperation(SimplePredicateDto... values) {
+    public PredicateLogicalOrOperation(DisjunctableAqlPredicate... values) {
         this.values = List.of(values);
     }
 
@@ -46,14 +48,14 @@ public class PredicateLogicalOrOperation
     }
 
     @Override
-    public List<SimplePredicateDto> getValues() {
+    public List<DisjunctableAqlPredicate> getValues() {
         return values;
     }
 
     @Override
-    public PredicateLogicalOrOperation addValues(Stream<SimplePredicateDto> valuesStream) {
-        SimplePredicateDto[] newValues =
-                Stream.concat(values.stream(), valuesStream).toArray(SimplePredicateDto[]::new);
+    public PredicateLogicalOrOperation addValues(Stream<DisjunctableAqlPredicate> valuesStream) {
+        DisjunctableAqlPredicate[] newValues =
+                Stream.concat(values.stream(), valuesStream).toArray(DisjunctableAqlPredicate[]::new);
         return new PredicateLogicalOrOperation(newValues);
     }
 

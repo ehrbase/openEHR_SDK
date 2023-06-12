@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -17,82 +17,14 @@
  */
 package org.ehrbase.aql.dto.containment;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serializable;
-import java.util.Objects;
-import org.ehrbase.aql.dto.path.predicate.PredicateDto;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class Containment implements Serializable {
-    private String type;
-    private String archetypeId;
-
-    private PredicateDto otherPredicates;
-
-    public Containment() {}
-
-    public Containment(Containment other) {
-        this.archetypeId = other.archetypeId;
-        this.type = other.type;
-        this.otherPredicates = other.otherPredicates;
-    }
-
-    public Containment(String type, String archetypeId, PredicateDto otherPredicates) {
-        this.archetypeId = archetypeId;
-        this.type = type;
-        this.otherPredicates = otherPredicates;
-    }
-
-    @JsonProperty(index = 10)
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @JsonProperty(index = 20)
-    public String getArchetypeId() {
-        return this.archetypeId;
-    }
-
-    public void setArchetypeId(String archetypeId) {
-        this.archetypeId = archetypeId;
-    }
-
-    @JsonProperty(index = 30)
-    public PredicateDto getOtherPredicates() {
-        return otherPredicates;
-    }
-
-    public void setOtherPredicates(PredicateDto otherPredicates) {
-        this.otherPredicates = otherPredicates;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Containment that = (Containment) o;
-        return Objects.equals(archetypeId, that.archetypeId)
-                && Objects.equals(type, that.type)
-                && Objects.equals(otherPredicates, that.otherPredicates);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(archetypeId, type, otherPredicates);
-    }
-
-    @Override
-    public String toString() {
-        return "Containment{" + "archetypeId='"
-                + archetypeId + '\'' + ", type='"
-                + type + '\'' + ", otherPredicates="
-                + otherPredicates + '}';
-    }
-}
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ContainmentClassExpression.class, name = "Containment"),
+    @JsonSubTypes.Type(value = ContainmentVersionExpression.class, name = "Version"),
+    @JsonSubTypes.Type(value = ContainmentSetOperator.class, name = "LogicalOperator"),
+    @JsonSubTypes.Type(value = ContainmentNotOperator.class, name = "Not")
+})
+public interface Containment {}

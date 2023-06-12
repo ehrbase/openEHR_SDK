@@ -841,7 +841,7 @@ commands:
                 *"[major]"*)
                 
                     echo "bump major release version"
-                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+                    mvn17 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
@@ -857,7 +857,7 @@ commands:
                 *"[minor]"*)
 
                     echo "bump minor release version"
-                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+                    mvn17 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
                     SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
@@ -873,8 +873,8 @@ commands:
                 *"[patch]"*)
 
                     echo "bump patch release version"
-                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-                    SDK_VERSION=$(mvn11 -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    mvn17 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+                    SDK_VERSION=$(mvn17 -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
                     git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b patch-snapshot-update
@@ -975,7 +975,7 @@ commands:
       - run:
           name: Run spotless plugin check goal
           command: |
-            mvn11 com.diffplug.spotless:spotless-maven-plugin:check
+            mvn17 com.diffplug.spotless:spotless-maven-plugin:check
 
 
   build-sdk:
@@ -985,8 +985,8 @@ commands:
       - run:
           name: Maven build, install openEHR_SDK (skip Tests!)
           command: |
-            mvn11 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
-            mvn11 install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
+            mvn17 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
+            mvn17 install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -1002,8 +1002,8 @@ commands:
       - run:
           name: Maven build, test (ONLY unit tests), install openEHR_SDK
           command: |
-            mvn11 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
-            mvn11 install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
+            mvn17 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
+            mvn17 install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -1024,7 +1024,7 @@ commands:
             This way only the Java integration tests are executed.
           command: |
             jps
-            mvn11 test -Pslow -Dmaven.javadoc.skip=true
+            mvn17 test -Pslow -Dmaven.javadoc.skip=true
 
 
   build-and-run-ehrbase-then-run-all-sdk-java-tests:
@@ -1065,7 +1065,7 @@ commands:
             grep -m 1 "Started EhrBase in" <(tail -f log)
             cd ..
             jps
-            mvn11 verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >>
+            mvn17 verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >>
 
 
   cache-out-sdk-m2-dependencies:

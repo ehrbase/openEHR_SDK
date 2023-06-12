@@ -19,7 +19,7 @@ package org.ehrbase.serialisation.jsonencoding;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import java.time.temporal.Temporal;
-import org.ehrbase.serialisation.OpenEHRDateTimeSerializationUtils;
+import org.ehrbase.serialisation.util.OpenEHRDateTimeSerializationUtils;
 import org.ehrbase.util.rmconstants.RmConstants;
 
 /**

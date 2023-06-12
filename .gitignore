@@ -87,3 +87,4 @@ report.html
 
 # VSCode Editor
 .vscode
+/aql/gen/

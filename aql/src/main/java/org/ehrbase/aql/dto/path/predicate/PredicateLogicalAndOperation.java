@@ -21,24 +21,24 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.ehrbase.aql.dto.condition.LogicalOperatorDto;
+import org.ehrbase.aql.dto.LogicalOperator;
 
 /**
  * @author Stefan Spiska
  */
 public final class PredicateLogicalAndOperation
-        implements LogicalOperatorDto<PredicateLogicalOperatorSymbol, SimplePredicateDto>,
-                SimplePredicateDto,
+        implements LogicalOperator<PredicateLogicalOperatorSymbol, PredicateComparisonOperator>,
+                DisjunctableAqlPredicate,
                 Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.AND;
-    private List<SimplePredicateDto> values;
+    private List<PredicateComparisonOperator> values;
 
     public PredicateLogicalAndOperation() {
         this.values = List.of();
     }
 
-    public PredicateLogicalAndOperation(SimplePredicateDto... values) {
+    public PredicateLogicalAndOperation(PredicateComparisonOperator... values) {
         this.values = List.of(values);
     }
 
@@ -48,14 +48,14 @@ public final class PredicateLogicalAndOperation
     }
 
     @Override
-    public List<SimplePredicateDto> getValues() {
+    public List<PredicateComparisonOperator> getValues() {
         return values;
     }
 
     @Override
-    public PredicateLogicalAndOperation addValues(Stream<SimplePredicateDto> valuesStream) {
-        SimplePredicateDto[] newValues =
-                Stream.concat(values.stream(), valuesStream).toArray(SimplePredicateDto[]::new);
+    public PredicateLogicalAndOperation addValues(Stream<PredicateComparisonOperator> valuesStream) {
+        PredicateComparisonOperator[] newValues =
+                Stream.concat(values.stream(), valuesStream).toArray(PredicateComparisonOperator[]::new);
         return new PredicateLogicalAndOperation(newValues);
     }
 

@@ -23,6 +23,9 @@ import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public class SDKErrorListener extends BaseErrorListener {
+
+    public static final SDKErrorListener INSTANCE = new SDKErrorListener();
+
     @Override
     public void syntaxError(
             Recognizer<?, ?> recognizer,

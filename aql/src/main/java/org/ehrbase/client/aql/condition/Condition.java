@@ -17,12 +17,10 @@
  */
 package org.ehrbase.client.aql.condition;
 
-import static org.ehrbase.client.aql.condition.ComparisonOperator.fieldComparison;
-import static org.ehrbase.client.aql.condition.ComparisonOperator.parameterComparison;
-import static org.ehrbase.client.aql.condition.ComparisonOperator.valueComparison;
+import static org.ehrbase.client.aql.condition.ComparisonOperator.*;
 
-import org.ehrbase.aql.dto.condition.ConditionComparisonOperatorSymbol;
-import org.ehrbase.aql.dto.condition.LikeOperatorDto;
+import org.ehrbase.aql.dto.condition.ComparisonOperatorSymbol;
+import org.ehrbase.aql.dto.condition.LikeCondition;
 import org.ehrbase.client.aql.containment.Containment;
 import org.ehrbase.client.aql.field.SelectAqlField;
 import org.ehrbase.client.aql.parameter.Parameter;
@@ -42,75 +40,75 @@ public interface Condition {
     }
 
     static <T> Condition equal(SelectAqlField<T> field, T value) {
-        return valueComparison(field, ConditionComparisonOperatorSymbol.EQ.getSymbol(), value);
+        return valueComparison(field, ComparisonOperatorSymbol.EQ.getSymbol(), value);
     }
 
     static <T> Condition equal(SelectAqlField<T> field, Parameter<T> parameter) {
-        return parameterComparison(field, ConditionComparisonOperatorSymbol.EQ.getSymbol(), parameter);
+        return parameterComparison(field, ComparisonOperatorSymbol.EQ.getSymbol(), parameter);
     }
 
     static <T> Condition equal(SelectAqlField<T> field, SelectAqlField<T> compareField) {
-        return fieldComparison(field, ConditionComparisonOperatorSymbol.EQ.getSymbol(), compareField);
+        return fieldComparison(field, ComparisonOperatorSymbol.EQ.getSymbol(), compareField);
     }
 
     static <T> Condition notEqual(SelectAqlField<T> field, T value) {
-        return valueComparison(field, ConditionComparisonOperatorSymbol.NEQ.getSymbol(), value);
+        return valueComparison(field, ComparisonOperatorSymbol.NEQ.getSymbol(), value);
     }
 
     static <T> Condition notEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        return parameterComparison(field, ConditionComparisonOperatorSymbol.NEQ.getSymbol(), parameter);
+        return parameterComparison(field, ComparisonOperatorSymbol.NEQ.getSymbol(), parameter);
     }
 
     static <T> Condition notEqual(SelectAqlField<T> field, SelectAqlField<T> compareField) {
-        return fieldComparison(field, ConditionComparisonOperatorSymbol.NEQ.getSymbol(), compareField);
+        return fieldComparison(field, ComparisonOperatorSymbol.NEQ.getSymbol(), compareField);
     }
 
     static <T> Condition greaterOrEqual(SelectAqlField<T> field, T value) {
-        return valueComparison(field, ConditionComparisonOperatorSymbol.GT_EQ.getSymbol(), value);
+        return valueComparison(field, ComparisonOperatorSymbol.GT_EQ.getSymbol(), value);
     }
 
     static <T> Condition greaterOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        return parameterComparison(field, ConditionComparisonOperatorSymbol.GT_EQ.getSymbol(), parameter);
+        return parameterComparison(field, ComparisonOperatorSymbol.GT_EQ.getSymbol(), parameter);
     }
 
     static <T> Condition greaterOrEqual(SelectAqlField<T> field, SelectAqlField<T> compareField) {
-        return fieldComparison(field, ConditionComparisonOperatorSymbol.GT_EQ.getSymbol(), compareField);
+        return fieldComparison(field, ComparisonOperatorSymbol.GT_EQ.getSymbol(), compareField);
     }
 
     static <T> Condition greaterThan(SelectAqlField<T> field, T value) {
-        return valueComparison(field, ConditionComparisonOperatorSymbol.GT.getSymbol(), value);
+        return valueComparison(field, ComparisonOperatorSymbol.GT.getSymbol(), value);
     }
 
     static <T> Condition greaterThan(SelectAqlField<T> field, Parameter<T> parameter) {
-        return parameterComparison(field, ConditionComparisonOperatorSymbol.GT.getSymbol(), parameter);
+        return parameterComparison(field, ComparisonOperatorSymbol.GT.getSymbol(), parameter);
     }
 
     static <T> Condition greaterThan(SelectAqlField<T> field, SelectAqlField<T> compareField) {
-        return fieldComparison(field, ConditionComparisonOperatorSymbol.GT.getSymbol(), compareField);
+        return fieldComparison(field, ComparisonOperatorSymbol.GT.getSymbol(), compareField);
     }
 
     static <T> Condition lessOrEqual(SelectAqlField<T> field, T value) {
-        return valueComparison(field, ConditionComparisonOperatorSymbol.LT_EQ.getSymbol(), value);
+        return valueComparison(field, ComparisonOperatorSymbol.LT_EQ.getSymbol(), value);
     }
 
     static <T> Condition lessOrEqual(SelectAqlField<T> field, Parameter<T> parameter) {
-        return parameterComparison(field, ConditionComparisonOperatorSymbol.LT_EQ.getSymbol(), parameter);
+        return parameterComparison(field, ComparisonOperatorSymbol.LT_EQ.getSymbol(), parameter);
     }
 
     static <T> Condition lessOrEqual(SelectAqlField<T> field, SelectAqlField<T> compareField) {
-        return fieldComparison(field, ConditionComparisonOperatorSymbol.LT_EQ.getSymbol(), compareField);
+        return fieldComparison(field, ComparisonOperatorSymbol.LT_EQ.getSymbol(), compareField);
     }
 
     static <T> Condition lessThan(SelectAqlField<T> field, T value) {
-        return valueComparison(field, ConditionComparisonOperatorSymbol.LT.getSymbol(), value);
+        return valueComparison(field, ComparisonOperatorSymbol.LT.getSymbol(), value);
     }
 
     static <T> Condition lessThCan(SelectAqlField<T> field, Parameter<T> parameter) {
-        return parameterComparison(field, ConditionComparisonOperatorSymbol.LT.getSymbol(), parameter);
+        return parameterComparison(field, ComparisonOperatorSymbol.LT.getSymbol(), parameter);
     }
 
     static <T> Condition lessThan(SelectAqlField<T> field, SelectAqlField<T> compareField) {
-        return fieldComparison(field, ConditionComparisonOperatorSymbol.LT.getSymbol(), compareField);
+        return fieldComparison(field, ComparisonOperatorSymbol.LT.getSymbol(), compareField);
     }
 
     static <T> Condition matches(SelectAqlField<T> field, T... value) {
@@ -140,11 +138,11 @@ public interface Condition {
     }
 
     static <T> Condition like(SelectAqlField<T> field, T value) {
-        return valueComparison(field, LikeOperatorDto.SYMBOL, value);
+        return valueComparison(field, LikeCondition.SYMBOL, value);
     }
 
     static <T> Condition like(SelectAqlField<T> field, Parameter<T> parameter) {
-        return parameterComparison(field, LikeOperatorDto.SYMBOL, parameter);
+        return parameterComparison(field, LikeCondition.SYMBOL, parameter);
     }
 
     String buildAql(Containment ehrContainment);

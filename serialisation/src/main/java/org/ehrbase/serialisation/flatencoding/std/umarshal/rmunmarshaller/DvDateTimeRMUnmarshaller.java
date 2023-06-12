@@ -22,7 +22,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Map;
 import java.util.Set;
-import org.ehrbase.serialisation.OpenEHRDateTimeParseUtils;
+import org.ehrbase.serialisation.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.serialisation.walker.Context;
 import org.ehrbase.webtemplate.path.flat.FlatPathDto;
 
