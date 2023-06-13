@@ -26,11 +26,10 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Stefan Spiska
  */
-class AqlRenderTest {
+class AqlRendererTest {
 
     @Test
     void renderAS() {
-
         String aql =
                 "SELECT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
@@ -39,7 +38,6 @@ class AqlRenderTest {
 
     @Test
     void renderDISTINCT() {
-
         String aql =
                 "SELECT DISTINCT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
@@ -48,7 +46,6 @@ class AqlRenderTest {
 
     @Test
     void renderSimplePath() {
-
         String aql =
                 "SELECT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
@@ -70,7 +67,6 @@ class AqlRenderTest {
 
     @Test
     void renderPathWithArbitraryPath() {
-
         String aql =
                 "SELECT o/data[at0001]/events[at0002 and time/value>'2021-12-03T16:05:19.513542+01:00']/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
@@ -79,7 +75,6 @@ class AqlRenderTest {
 
     @Test
     void renderPrimitive() {
-
         String aql =
                 "SELECT 1, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
@@ -88,7 +83,6 @@ class AqlRenderTest {
 
     @Test
     void renderAggregateFunction() {
-
         String aql = "SELECT"
                 + " e/ehr_id/value AS EhrId,"
                 + " MAX(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS max_Systolic,"
@@ -102,7 +96,6 @@ class AqlRenderTest {
 
     @Test
     void renderSingleRowFunction() {
-
         String aql = "SELECT"
                 + " CONCAT_WS(':', $Pos, o/data[at0001]/events[at0006]/state[at0007]/items[at0008]/value/value) AS position_"
                 + " FROM ehr e"
@@ -113,7 +106,6 @@ class AqlRenderTest {
 
     @Test
     void renderContainAnd() {
-
         String aql = "SELECT"
                 + " e/ehr_id/value AS Ehr_id,"
                 + " c/context/start_time AS start_time,"
@@ -129,7 +121,6 @@ class AqlRenderTest {
 
     @Test
     void renderContainNOT() {
-
         String aql = "SELECT"
                 + " e/ehr_id/value AS Ehr_id"
                 + " FROM EHR e"
@@ -140,7 +131,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhere() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
                 + " FROM EHR e"
@@ -152,7 +142,6 @@ class AqlRenderTest {
 
     @Test
     void renderWherePath() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
@@ -166,7 +155,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhereParameter() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
@@ -180,7 +168,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhereFunction() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
                 + " FROM EHR e"
@@ -193,7 +180,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhereExist() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
                 + " FROM EHR e"
@@ -206,7 +192,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhereAND() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
@@ -222,7 +207,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhereNot() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic"
                 + " FROM EHR e"
@@ -235,7 +219,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhereLike() {
-
         String aql = "SELECT"
                 + " o/data[at0002]/events[at0003.1]/state[at0008.1]/items[at0009]/value/value AS state_of_dress"
                 + " FROM EHR e"
@@ -248,7 +231,6 @@ class AqlRenderTest {
 
     @Test
     void renderWhereMatches() {
-
         String aql = "SELECT"
                 + " o/data[at0002]/events[at0003.1]/state[at0008.1]/items[at0009]/value/value AS state_of_dress"
                 + " FROM EHR e"
@@ -261,7 +243,6 @@ class AqlRenderTest {
 
     @Test
     void renderOrderBy() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
@@ -277,7 +258,6 @@ class AqlRenderTest {
 
     @Test
     void renderLimit() {
-
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
@@ -294,18 +274,18 @@ class AqlRenderTest {
     private static void test(String aql, String expected) {
         AqlQuery aqlQuery = new AqlQueryParser().parse(aql);
 
-        String render = new AqlRender(aqlQuery).render();
+        String rendered = AqlRenderer.render(aqlQuery);
 
-        assertThat(render).isEqualTo(expected);
+        assertThat(rendered).isEqualTo(expected);
     }
 
     @Test
     void encodeString() {
-        assertThat(AqlRender.encodeString(null)).isNull();
+        assertThat(AqlRenderer.encodeString(null)).isNull();
 
-        assertThat(AqlRender.encodeString("foo bar baz")).isEqualTo("'foo bar baz'");
-        assertThat(AqlRender.encodeString("☮€𝄞")).isEqualTo("'☮€𝄞'");
+        assertThat(AqlRenderer.encodeString("foo bar baz")).isEqualTo("'foo bar baz'");
+        assertThat(AqlRenderer.encodeString("☮€𝄞")).isEqualTo("'☮€𝄞'");
 
-        assertThat(AqlRender.encodeString("f'oo\tbä\r\nbaz\b\\\"")).isEqualTo("'f\\'oo\\tbä\\r\\nbaz\\b\\\\\"'");
+        assertThat(AqlRenderer.encodeString("f'oo\tbä\r\nbaz\b\\\"")).isEqualTo("'f\\'oo\\tbä\\r\\nbaz\\b\\\\\"'");
     }
 }

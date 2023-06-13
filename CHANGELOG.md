@@ -5,24 +5,27 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
 
 ### Added
+
 ### Changed
 
 - switch to java 17 ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
 - Change the implementation of AqlDto ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
 
-### Fixed 
+### Fixed
+
+- Workaroud for ([an issue in java 17.0.7]())  ([#468] (https://github.com/ehrbase/openEHR_SDK/pull/468))
 
 ## [1.29.0]
 
- ### Changed
- 
- - Bump maven-plugin-annotations ([#466](https://github.com/ehrbase/openEHR_SDK/pull/466))
+### Changed
+
+- Bump maven-plugin-annotations ([#466](https://github.com/ehrbase/openEHR_SDK/pull/466))
 
 ## [1.28.0]
 
 ### Added
-- new DirectoryCrudEndpoint ([#465](https://github.com/ehrbase/openEHR_SDK/pull/465))
 
+- new DirectoryCrudEndpoint ([#465](https://github.com/ehrbase/openEHR_SDK/pull/465))
 
 ### Fixed
 
@@ -310,5 +313,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.27.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...v1.27.0
 
 [1.28.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.27.0...v1.28.0
+
 [1.29.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.28.0...v1.29.0
+
 [unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v1.29.0...HEAD

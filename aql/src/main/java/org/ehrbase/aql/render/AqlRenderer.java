@@ -59,20 +59,15 @@ import org.ehrbase.util.exception.SdkException;
 /**
  * @author Stefan Spiska
  */
-public class AqlRender {
+public final class AqlRenderer {
 
-    private final AqlQuery dto;
+    private AqlRenderer() {}
 
-    public AqlRender(AqlQuery dto) {
-        this.dto = dto;
-    }
-
-    public String render() {
-
+    public static String render(AqlQuery dto) {
         StringBuilder sb = new StringBuilder();
 
         renderSelect(sb, dto.getSelect());
-        sb.append(buildFrom());
+        renderFromClause(sb, dto.getFrom());
 
         if (dto.getWhere() != null) {
             sb.append(" WHERE ");
@@ -94,24 +89,22 @@ public class AqlRender {
         return sb.toString();
     }
 
-    private void renderOrderByClause(StringBuilder sb, List<OrderByExpression> orderBy) {
+    private static void renderOrderByClause(StringBuilder sb, List<OrderByExpression> orderBy) {
         sb.append(" ORDER BY ");
 
-        Iterator<OrderByExpression> iterator = orderBy.iterator();
-
-        while (iterator.hasNext()) {
-
-            OrderByExpression next = iterator.next();
+        var it = orderBy.iterator();
+        while (it.hasNext()) {
+            OrderByExpression next = it.next();
             renderIdentifiedPath(sb, next.getStatement());
             sb.append(" ").append(next.getSymbol());
 
-            if (iterator.hasNext()) {
+            if (it.hasNext()) {
                 sb.append(", ");
             }
         }
     }
 
-    private void renderWhere(StringBuilder sb, WhereCondition where) {
+    private static void renderWhere(StringBuilder sb, WhereCondition where) {
         if (where instanceof ComparisonOperatorCondition comparisonOperatorCondition) {
             renderConditionComparisonOperatorDto(sb, comparisonOperatorCondition);
         } else if (where instanceof NotCondition notCondition) {
@@ -125,12 +118,11 @@ public class AqlRender {
         } else if (where instanceof MatchesCondition matchesCondition) {
             renderMatches(sb, matchesCondition);
         } else {
-            throw new SdkException(
-                    "Can not handle %s".formatted(where.getClass().getName()));
+            throw new SdkException("Cannot handle %s".formatted(where.getClass().getName()));
         }
     }
 
-    private void renderMatches(StringBuilder sb, MatchesCondition matchesCondition) {
+    private static void renderMatches(StringBuilder sb, MatchesCondition matchesCondition) {
 
         renderIdentifiedPath(sb, matchesCondition.getStatement());
         sb.append(" ").append("MATCHES").append(" ");
@@ -146,24 +138,24 @@ public class AqlRender {
         sb.append("}");
     }
 
-    private void renderMatchesOperand(StringBuilder sb, MatchesOperand next) {
+    private static void renderMatchesOperand(StringBuilder sb, MatchesOperand next) {
 
         if (next instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
         } else if (next instanceof Primitive<?> primitive) {
             sb.append(renderPrimitive(primitive));
         } else {
-            throw new SdkException("Can not handle %s".formatted(next.getClass().getName()));
+            throw new SdkException("Cannot handle %s".formatted(next.getClass().getName()));
         }
     }
 
-    private void renderLike(StringBuilder sb, LikeCondition likeCondition) {
+    private static void renderLike(StringBuilder sb, LikeCondition likeCondition) {
         renderIdentifiedPath(sb, likeCondition.getStatement());
         sb.append(" LIKE ");
         renderLikeOperand(sb, likeCondition.getValue());
     }
 
-    private void renderLikeOperand(StringBuilder sb, LikeOperand value) {
+    private static void renderLikeOperand(StringBuilder sb, LikeOperand value) {
 
         if (value instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
@@ -172,7 +164,7 @@ public class AqlRender {
         }
     }
 
-    private void renderConditionLogical(StringBuilder sb, LogicalOperatorCondition logicalOperatorCondition) {
+    private static void renderConditionLogical(StringBuilder sb, LogicalOperatorCondition logicalOperatorCondition) {
 
         Iterator<WhereCondition> iterator = logicalOperatorCondition.getValues().iterator();
         sb.append("(");
@@ -186,17 +178,17 @@ public class AqlRender {
         sb.append(")");
     }
 
-    private void renderExistsCondition(StringBuilder sb, ExistsCondition existsCondition) {
+    private static void renderExistsCondition(StringBuilder sb, ExistsCondition existsCondition) {
         sb.append("EXISTS ");
         renderIdentifiedPath(sb, existsCondition.getValue());
     }
 
-    private void renderNotConditionOperatorDto(StringBuilder sb, NotCondition notCondition) {
+    private static void renderNotConditionOperatorDto(StringBuilder sb, NotCondition notCondition) {
         sb.append("NOT ");
         renderWhere(sb, notCondition.getConditionDto());
     }
 
-    private void renderConditionComparisonOperatorDto(
+    private static void renderConditionComparisonOperatorDto(
             StringBuilder sb, ComparisonOperatorCondition comparisonOperatorCondition) {
         ComparisonLeftOperand statement = comparisonOperatorCondition.getStatement();
 
@@ -207,37 +199,36 @@ public class AqlRender {
         sb.append(renderTerminal(comparisonOperatorCondition.getValue()));
     }
 
-    private void renderComparisonLeftOperator(StringBuilder sb, ComparisonLeftOperand statement) {
+    private static void renderComparisonLeftOperator(StringBuilder sb, ComparisonLeftOperand statement) {
         if (statement instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
         } else if (statement instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else {
             throw new SdkException(
-                    "Can not handle %s".formatted(statement.getClass().getName()));
+                    "Cannot handle %s".formatted(statement.getClass().getName()));
         }
     }
 
-    private void renderSelect(StringBuilder sb, SelectClause dto) {
-
+    private static void renderSelect(StringBuilder sb, SelectClause dto) {
         sb.append("SELECT ");
 
         if (dto.isDistinct()) {
             sb.append("DISTINCT ");
         }
 
-        sb.append(dto.getStatement().stream()
-                .map(s -> {
-                    StringBuilder sbInner = new StringBuilder();
-                    renderSelectStatementDto(sbInner, s);
-                    return sbInner.toString();
-                })
-                .collect(Collectors.joining(", ")));
+        var it = dto.getStatement().stream().iterator();
+        while (it.hasNext()) {
+            renderSelectStatementDto(sb, it.next());
+            if (it.hasNext()) {
+                sb.append(", ");
+            }
+        }
 
         sb.append(" ");
     }
 
-    private void renderSelectStatementDto(StringBuilder sb, SelectExpression dto) {
+    private static void renderSelectStatementDto(StringBuilder sb, SelectExpression dto) {
         ColumnExpression columnExpression = dto.getColumnExpression();
 
         if (columnExpression instanceof IdentifiedPath) {
@@ -245,13 +236,12 @@ public class AqlRender {
         } else if (columnExpression instanceof Primitive) {
             renderSelectPrimitiveDto(sb, (Primitive) columnExpression);
         } else if (columnExpression instanceof AggregateFunction) {
-
             renderAggregateFunctionDto(sb, (AggregateFunction) columnExpression);
         } else if (columnExpression instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else {
             throw new UnsupportedOperationException(
-                    "Can not handle %s".formatted(dto.getClass().getName()));
+                    ("Cannot handle %s").formatted(dto.getClass().getName()));
         }
 
         if (dto.getAlias() != null) {
@@ -259,7 +249,7 @@ public class AqlRender {
         }
     }
 
-    private void renderAggregateFunctionDto(StringBuilder sb, AggregateFunction aggregateFunction) {
+    private static void renderAggregateFunctionDto(StringBuilder sb, AggregateFunction aggregateFunction) {
 
         sb.append(aggregateFunction.getFunctionName().name()).append("(");
 
@@ -279,16 +269,16 @@ public class AqlRender {
         sb.append(")");
     }
 
-    private void renderSingleRowFunctionDto(StringBuilder sb, SingleRowFunction singleRowFunktion) {
+    private static void renderSingleRowFunctionDto(StringBuilder sb, SingleRowFunction singleRowFunktion) {
 
         sb.append(singleRowFunktion.getFunctionName().getName()).append("(");
         sb.append(singleRowFunktion.getOperandList().stream()
-                .map(this::renderTerminal)
+                .map(AqlRenderer::renderTerminal)
                 .collect(Collectors.joining(", ")));
         sb.append(")");
     }
 
-    private String renderTerminal(Operand operand) {
+    private static String renderTerminal(Operand operand) {
 
         StringBuilder sb = new StringBuilder();
         if (operand instanceof SingleRowFunction singleRowFunktion) {
@@ -301,17 +291,17 @@ public class AqlRender {
             renderParameterDto(sb, queryParameter);
         } else {
             throw new UnsupportedOperationException(
-                    "Can not handle %s".formatted(operand.getClass().getName()));
+                    "Cannot handle %s".formatted(operand.getClass().getName()));
         }
         return sb.toString();
     }
 
-    private void renderParameterDto(StringBuilder sb, QueryParameter queryParameter) {
+    private static void renderParameterDto(StringBuilder sb, QueryParameter queryParameter) {
 
         sb.append("$").append(queryParameter.getName());
     }
 
-    private void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
+    private static void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
 
         AbstractContainmentExpression containmentDto = dto.getFrom();
 
@@ -329,23 +319,21 @@ public class AqlRender {
         sb.append(dto.getPath().format(OtherPredicatesFormat.SHORTED, false));
     }
 
-    private void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
-
+    private static void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
         sb.append(renderPrimitive(dto));
     }
 
-    public String renderPrimitive(Primitive primitive) {
+    private static String renderPrimitive(Primitive primitive) {
 
         if (primitive.getValue() == null) {
             return "NULL";
-        }
-        if (primitive instanceof DoublePrimitive d) {
+        } else if (primitive instanceof DoublePrimitive d) {
             return d.getStringRepresentation();
-        }
-        if (primitive instanceof StringPrimitive s) {
+        } else if (primitive instanceof StringPrimitive s) {
             return encodeString(s.getValue());
+        } else {
+            return primitive.getValue().toString();
         }
-        return primitive.getValue().toString();
     }
 
     /**
@@ -404,17 +392,12 @@ public class AqlRender {
         return sb.toString();
     }
 
-    private String buildFrom() {
-        StringBuilder sb = new StringBuilder();
-
+    private static void renderFromClause(StringBuilder sb, Containment from) {
         sb.append("FROM ");
-
-        renderContainmentExpresionDto(sb, dto.getFrom());
-
-        return sb.toString();
+        renderContainmentExpresionDto(sb, from);
     }
 
-    private void renderContainmentExpresionDto(StringBuilder sb, Containment dto) {
+    private static void renderContainmentExpresionDto(StringBuilder sb, Containment dto) {
 
         if (dto instanceof ContainmentClassExpression classExpressionDto) {
             renderContainmentDto(sb, classExpressionDto);
@@ -422,11 +405,12 @@ public class AqlRender {
             renderContainmentLogicalOperator(sb, containmentSetOperator);
         } else {
             throw new UnsupportedOperationException(
-                    "Can not handle %s".formatted(dto.getClass().getName()));
+                    "Cannot handle %s".formatted(dto.getClass().getName()));
         }
     }
 
-    private void renderContainmentLogicalOperator(StringBuilder sb, ContainmentSetOperator containmentSetOperator) {
+    private static void renderContainmentLogicalOperator(
+            StringBuilder sb, ContainmentSetOperator containmentSetOperator) {
 
         Iterator<Containment> iterator = containmentSetOperator.getValues().iterator();
         sb.append("(");
@@ -440,7 +424,7 @@ public class AqlRender {
         sb.append(")");
     }
 
-    private void renderContainmentDto(StringBuilder sb, ContainmentClassExpression dto) {
+    private static void renderContainmentDto(StringBuilder sb, ContainmentClassExpression dto) {
 
         sb.append(dto.getType());
 

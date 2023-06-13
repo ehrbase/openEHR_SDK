@@ -32,7 +32,7 @@ import org.ehrbase.aql.dto.operand.StringPrimitive;
 import org.ehrbase.aql.dto.path.predicate.AqlPredicate;
 import org.ehrbase.aql.dto.path.predicate.PredicateComparisonOperator;
 import org.ehrbase.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.aql.render.AqlRender;
+import org.ehrbase.aql.render.AqlRenderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -222,11 +222,11 @@ class AqlQueryParserTest {
 
         assertThat(actual).isNotNull();
 
-        String actualAql = new AqlRender(actual).render();
+        String actualAql = AqlRenderer.render(actual);
 
         assertThat(actualAql).isEqualToIgnoringCase(expected);
 
-        String roundtripAql = new AqlRender(cut.parse(expected)).render();
+        String roundtripAql = AqlRenderer.render(cut.parse(expected));
 
         assertThat(roundtripAql).isEqualToIgnoringCase(expected);
     }

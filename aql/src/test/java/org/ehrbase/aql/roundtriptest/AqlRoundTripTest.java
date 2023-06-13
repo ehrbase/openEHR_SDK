@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.ehrbase.aql.dto.AqlQuery;
 import org.ehrbase.aql.parser.AqlQueryParser;
-import org.ehrbase.aql.render.AqlRender;
+import org.ehrbase.aql.render.AqlRenderer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -66,7 +66,7 @@ class AqlRoundTripTest {
 
         assertThat(actual).isNotNull();
 
-        String actualAql = new AqlRender(actual).render();
+        String actualAql = AqlRenderer.render(actual);
 
         assertThat(actualAql).isEqualTo(testData.getExpectedAql());
     }

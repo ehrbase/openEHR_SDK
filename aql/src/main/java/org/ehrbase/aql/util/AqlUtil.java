@@ -27,7 +27,7 @@ import org.ehrbase.aql.dto.condition.WhereCondition;
 import org.ehrbase.aql.dto.operand.Operand;
 import org.ehrbase.aql.dto.operand.QueryParameter;
 import org.ehrbase.aql.parser.AqlQueryParser;
-import org.ehrbase.aql.render.AqlRender;
+import org.ehrbase.aql.render.AqlRenderer;
 
 public class AqlUtil {
 
@@ -47,7 +47,7 @@ public class AqlUtil {
         AqlQuery dto = PARSER.parse(aql);
 
         dto.setWhere(removeParameter(dto.getWhere(), parameterName));
-        return new AqlRender(dto).render();
+        return AqlRenderer.render(dto);
     }
 
     private static WhereCondition removeParameter(WhereCondition condition, String parameterName) {
