@@ -60,6 +60,10 @@
             <artifactId>json-path</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.threeten</groupId>
             <artifactId>threeten-extra</artifactId>
         </dependency>
