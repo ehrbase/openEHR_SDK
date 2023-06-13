@@ -390,7 +390,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     @Override
     public ContainmentVersionExpression visitVersionClassExpr(AqlParser.VersionClassExprContext ctx) {
 
-        errors.add("version not yet implemented");
+        errors.add("Not implemented: VERSION is not yet supported");
         return new ContainmentVersionExpression() {};
     }
 
@@ -474,10 +474,10 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (CollectionUtils.isNotEmpty(ctx.valueListItem())) {
             return ctx.valueListItem().stream().map(this::visitValueListItem).collect(Collectors.toList());
         } else if (ctx.terminologyFunction() != null) {
-            errors.add("Terminology not yet implemented");
+            errors.add("Not implemented: Terminology is not yet supported");
             return Stream.of(new TerminologyFunction()).collect(Collectors.toList());
         } else {
-            errors.add("MATCHES URI not yet implemented");
+            errors.add("Not implemented: MATCHES URI not yet supported");
             return new ArrayList<>();
         }
     }
@@ -490,7 +490,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         } else if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());
         } else {
-            errors.add("Terminology not yet implemented");
+            errors.add("Not implemented: Terminology not yet supported");
             return new TerminologyFunction();
         }
     }
