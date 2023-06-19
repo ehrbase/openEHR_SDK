@@ -35,6 +35,7 @@ Notable changes:
       * `VersionUid.getVersion()` (returns `long`) should be replaced by `ObjectVersionId.getVersionTreeId().getValue()` (returns `java.lang.String`) and parsed as long if needed (note that versions can follow the SemVer scheme and are therefore not necessarily numbers)
       * `VersionUid.toString()` (returns `java.lang.String`) should be replaced by `ObjectVersionId.getValue()` (returns `java.lang.String`) 
       * note that system and version parts are optional and that `ObjectVersionId.getObjectId()` and `ObjectVersionId.getVersionTreeId()` throw an exception if the respective part is not present
+* The client for Contributions `org.ehrbase.openehr.sdk.client.openehrclient.ContributionEndpoint` uses `java.util.UUID` instead of `org.ehrbase.client.openehrclient.VersionUid` since CONTRIBUTION itself does not have a version
 
 ## SDK 1.0.0
 

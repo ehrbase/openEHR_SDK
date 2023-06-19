@@ -6,10 +6,16 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ### Added
 
+- new module generator-commons ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+
 ### Changed
 
 - switch to java 17 ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
 - Change the implementation of AqlDto ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
+- Change package paths to start with `org.ehrbase.openehr.sdk` ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+- Moved classes to the modules they belong to semantically ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+- Removed ehrbase specific package `org.ehrbase.serialisation.dbenconding` ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+- Removed empty module "building" ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
 
 ### Fixed
 
