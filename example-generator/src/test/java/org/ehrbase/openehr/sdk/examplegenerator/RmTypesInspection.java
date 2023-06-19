@@ -37,7 +37,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
-import org.ehrbase.util.rmconstants.RmConstants;
+import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.junit.jupiter.api.Test;
 
 class RmTypesInspection {

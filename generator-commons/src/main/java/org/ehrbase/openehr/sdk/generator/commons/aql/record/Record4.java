@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.ehrbase.openehr.sdk.generator.commons.aql.record;
+
+import org.ehrbase.openehr.sdk.generator.commons.aql.field.AqlField;
+
+public interface Record4<T1, T2, T3, T4> extends Record {
+    T1 value1();
+
+    AqlField<T1> field1();
+
+    T2 value2();
+
+    AqlField<T2> field2();
+
+    T3 value3();
+
+    AqlField<T3> field3();
+
+    T4 value4();
+
+    AqlField<T4> field4();
+}

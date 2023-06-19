@@ -101,6 +101,11 @@
             </dependency>
             <dependency>
                 <groupId>org.ehrbase.openehr.sdk</groupId>
+                <artifactId>generator-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>generator</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -112,11 +117,6 @@
             <dependency>
                 <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>opt-1.4</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ehrbase.openehr.sdk</groupId>
-                <artifactId>building</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
