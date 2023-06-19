@@ -70,7 +70,7 @@
                             <classpathPrefix>libs/</classpathPrefix>
                             <useUniqueVersions>false</useUniqueVersions>
                             <mainClass>
-                                org.ehrbase.client.classgenerator.ClassGeneratorRunner
+                                org.ehrbase.openehr.sdk.generator.ClassGeneratorRunner
                             </mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
@@ -84,7 +84,11 @@
     <dependencies>
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
-            <artifactId>client</artifactId>
+            <artifactId>generator-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
+            <artifactId>util</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -114,6 +118,22 @@
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ehrbase.openehr.sdk</groupId>
+            <artifactId>serialisation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
         </dependency>
     </dependencies>
 </project>

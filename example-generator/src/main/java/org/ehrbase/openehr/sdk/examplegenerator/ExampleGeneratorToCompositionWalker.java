@@ -27,9 +27,9 @@ import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.util.Optional;
 import org.apache.commons.lang3.ObjectUtils;
-import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.serialisation.walker.ToCompositionWalker;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.serialisation.walker.Context;
+import org.ehrbase.openehr.sdk.serialisation.walker.ToCompositionWalker;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
