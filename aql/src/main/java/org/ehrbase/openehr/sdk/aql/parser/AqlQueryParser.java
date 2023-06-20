@@ -20,6 +20,8 @@ package org.ehrbase.openehr.sdk.aql.parser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
+import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlLexer;
+import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser;
 import org.ehrbase.openehr.sdk.util.exception.SDKErrorListener;
 
 public class AqlQueryParser {
