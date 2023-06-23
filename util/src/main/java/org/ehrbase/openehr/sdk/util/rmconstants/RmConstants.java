@@ -54,6 +54,7 @@ public class RmConstants {
 
     public static final String ACTIVITY = "ACTIVITY";
     public static final String ISM_TRANSITION = "ISM_TRANSITION";
+    public static final String CLUSTER = "CLUSTER";
     public static final String ELEMENT = "ELEMENT";
     public static final String CODE_PHRASE = "CODE_PHRASE";
     public static final String PARTY_PROXY = "PARTY_PROXY";
