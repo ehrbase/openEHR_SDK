@@ -17,6 +17,9 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import java.util.Objects;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
 import org.ehrbase.openehr.sdk.aql.dto.path.predicate.AqlPredicate;
@@ -54,5 +57,13 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
 
     public void setPath(AqlPath path) {
         this.path = path;
+    }
+
+    public int hashCode() {
+      return Objects.hash(from, path, rootPredicate);
+    }
+
+    public boolean equals(Object obj) {
+      return EqualsBuilder.reflectionEquals(this, obj);
     }
 }
