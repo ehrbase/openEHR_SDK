@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 public abstract class FromCompositionWalker<T> extends Walker<T> {

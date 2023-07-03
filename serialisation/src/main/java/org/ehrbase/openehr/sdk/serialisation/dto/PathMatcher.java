@@ -19,7 +19,7 @@ package org.ehrbase.openehr.sdk.serialisation.dto;
 
 import java.util.Map;
 import java.util.Objects;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.slf4j.Logger;

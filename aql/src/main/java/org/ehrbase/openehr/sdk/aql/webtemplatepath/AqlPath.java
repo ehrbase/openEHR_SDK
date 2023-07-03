@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.path;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath;
 
 import static org.ehrbase.openehr.sdk.util.CharSequenceHelper.subSequence;
 
@@ -33,12 +33,12 @@ import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorSymbol;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Primitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.AqlPredicate;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.DisjunctableAqlPredicate;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateComparisonOperator;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateHelper;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateLogicalAndOperation;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateLogicalOrOperation;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.DisjunctablePredicate;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateComparisonOperator;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateLogicalAndOperation;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateLogicalOrOperation;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
 public final class AqlPath implements Serializable {
@@ -392,7 +392,7 @@ public final class AqlPath implements Serializable {
         PredicateLogicalAndOperation otherPredicates;
 
         if (predicatesExp != null) {
-            AqlPredicate predicate = PredicateHelper.buildPredicate(predicatesExp);
+            Predicate predicate = PredicateHelper.buildPredicate(predicatesExp);
 
             if (predicate instanceof PredicateLogicalOrOperation) {
                 throw new SdkException("Or in predicate not supported");
@@ -534,7 +534,7 @@ public final class AqlPath implements Serializable {
             return null;
         }
 
-        private static <P extends DisjunctableAqlPredicate> P replaceInternal(
+        private static <P extends DisjunctablePredicate> P replaceInternal(
                 P predicate, String statement, String newValue) {
             if (predicate instanceof PredicateComparisonOperator) {
                 return (P) replaceValue((PredicateComparisonOperator) predicate, statement, newValue);

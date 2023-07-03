@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,19 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.path.predicate;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
 
-public enum PredicateLogicalOperatorSymbol {
-    OR(4),
-    AND(2);
-
-    private final int precedence;
-
-    PredicateLogicalOperatorSymbol(int precedence) {
-        this.precedence = precedence;
-    }
-
-    public int getPrecedence() {
-        return precedence;
-    }
-}
+/**
+ * @author Stefan Spiska
+ */
+public interface DisjunctablePredicate extends Predicate {}

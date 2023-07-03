@@ -74,9 +74,6 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.TemporalPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression.OrderByDirection;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.AqlPredicate;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.AggregateFunctionCallContext;
@@ -104,6 +101,9 @@ import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.ValueListItemContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.VersionClassExprContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.WhereExprContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParserBaseVisitor;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
 class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
@@ -400,7 +400,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         }
 
         if (ctx.pathPredicate() != null) {
-            AqlPredicate predicate = PredicateHelper.buildPredicate(
+            Predicate predicate = PredicateHelper.buildPredicate(
                     StringUtils.removeEnd(StringUtils.removeStart(getFullText(ctx.pathPredicate()), "["), "]"));
 
             containmentDto.setPredicates(predicate);

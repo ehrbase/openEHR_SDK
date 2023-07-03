@@ -49,11 +49,11 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath.OtherPredicatesFormat;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath.OtherPredicatesFormat;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
 /**

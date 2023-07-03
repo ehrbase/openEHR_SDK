@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.path;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath;
 
 import static org.ehrbase.openehr.sdk.util.CharSequenceHelper.subSequence;
 

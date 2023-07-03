@@ -15,27 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.serialisation.dto;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
 
-import java.lang.reflect.Field;
-import java.util.Map;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+public enum PredicateLogicalOperatorSymbol {
+    OR(4),
+    AND(2);
 
-class DtoWithMatchingFields {
+    private final int precedence;
 
-    private final Object dto;
-    private final Map<AqlPath, Field> fieldByPath;
-
-    DtoWithMatchingFields(Object dto, Map<AqlPath, Field> fieldByPath) {
-        this.dto = dto;
-        this.fieldByPath = fieldByPath;
+    PredicateLogicalOperatorSymbol(int precedence) {
+        this.precedence = precedence;
     }
 
-    Object getDto() {
-        return dto;
-    }
-
-    Map<AqlPath, Field> getFieldByPath() {
-        return fieldByPath;
+    public int getPrecedence() {
+        return precedence;
     }
 }

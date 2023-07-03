@@ -15,9 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.path.predicate;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.io.Serializable;
 
 /**
  * @author Stefan Spiska
  */
-public interface DisjunctableAqlPredicate extends AqlPredicate {}
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = PredicateLogicalOrOperation.class, name = "Or"),
+    @JsonSubTypes.Type(value = PredicateLogicalAndOperation.class, name = "And"),
+    @JsonSubTypes.Type(value = PredicateComparisonOperator.class, name = "Comparison")
+})
+public interface Predicate extends Serializable {}

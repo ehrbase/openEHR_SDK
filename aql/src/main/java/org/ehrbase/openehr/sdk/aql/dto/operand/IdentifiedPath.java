@@ -18,8 +18,8 @@
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.AqlPredicate;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
 
 /**
  * @author Stefan Spiska
@@ -28,7 +28,7 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
 
     private AbstractContainmentExpression from;
 
-    private AqlPredicate rootPredicate;
+    private Predicate rootPredicate;
 
     private AqlPath path;
 
@@ -40,11 +40,11 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
         this.from = from;
     }
 
-    public AqlPredicate getRootPredicate() {
+    public Predicate getRootPredicate() {
         return rootPredicate;
     }
 
-    public void setRootPredicate(AqlPredicate rootPredicate) {
+    public void setRootPredicate(Predicate rootPredicate) {
         this.rootPredicate = rootPredicate;
     }
 

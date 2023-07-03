@@ -30,7 +30,7 @@ import java.util.StringJoiner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CaseUtils;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.util.SnakeCase;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateAnnotation;

@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {

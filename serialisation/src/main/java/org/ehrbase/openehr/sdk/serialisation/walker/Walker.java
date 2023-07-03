@@ -17,17 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.walker;
 
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.ACTION;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.DV_CODED_TEXT;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.DV_TEXT;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.EVENT;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.INTERVAL_EVENT;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.ISM_TRANSITION;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_IDENTIFIED;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_PROXY;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_RELATED;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_SELF;
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.POINT_EVENT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.*;
 
 import com.nedap.archie.openehrtestrm.Element;
 import com.nedap.archie.rm.RMObject;
@@ -49,7 +39,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;

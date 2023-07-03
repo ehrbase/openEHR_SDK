@@ -52,7 +52,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlTokenSource;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.terminology.TermDefinition;
 import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.terminology.ValueSet;

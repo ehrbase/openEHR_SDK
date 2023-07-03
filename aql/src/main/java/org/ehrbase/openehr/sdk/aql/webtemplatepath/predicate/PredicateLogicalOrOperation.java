@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.path.predicate;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,14 +27,12 @@ import org.ehrbase.openehr.sdk.aql.dto.LogicalOperator;
  * @author Stefan Spiska
  */
 public class PredicateLogicalOrOperation
-        implements AqlPredicate,
-                LogicalOperator<PredicateLogicalOperatorSymbol, DisjunctableAqlPredicate>,
-                Serializable {
+        implements Predicate, LogicalOperator<PredicateLogicalOperatorSymbol, DisjunctablePredicate>, Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.OR;
-    private List<DisjunctableAqlPredicate> values;
+    private List<DisjunctablePredicate> values;
 
-    public PredicateLogicalOrOperation(DisjunctableAqlPredicate... values) {
+    public PredicateLogicalOrOperation(DisjunctablePredicate... values) {
         this.values = List.of(values);
     }
 
@@ -48,14 +46,14 @@ public class PredicateLogicalOrOperation
     }
 
     @Override
-    public List<DisjunctableAqlPredicate> getValues() {
+    public List<DisjunctablePredicate> getValues() {
         return values;
     }
 
     @Override
-    public PredicateLogicalOrOperation addValues(Stream<DisjunctableAqlPredicate> valuesStream) {
-        DisjunctableAqlPredicate[] newValues =
-                Stream.concat(values.stream(), valuesStream).toArray(DisjunctableAqlPredicate[]::new);
+    public PredicateLogicalOrOperation addValues(Stream<DisjunctablePredicate> valuesStream) {
+        DisjunctablePredicate[] newValues =
+                Stream.concat(values.stream(), valuesStream).toArray(DisjunctablePredicate[]::new);
         return new PredicateLogicalOrOperation(newValues);
     }
 

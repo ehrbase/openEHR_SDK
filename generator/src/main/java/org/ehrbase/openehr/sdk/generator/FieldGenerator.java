@@ -28,7 +28,7 @@ import com.squareup.javapoet.TypeSpec;
 import java.util.List;
 import javax.lang.model.element.Modifier;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.generator.commons.annotations.Archetype;
 import org.ehrbase.openehr.sdk.generator.commons.annotations.Path;
 import org.ehrbase.openehr.sdk.generator.commons.aql.containment.Containment;

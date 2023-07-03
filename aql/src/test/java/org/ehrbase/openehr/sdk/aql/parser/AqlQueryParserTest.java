@@ -29,10 +29,10 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.AqlPredicate;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateComparisonOperator;
-import org.ehrbase.openehr.sdk.aql.dto.path.predicate.PredicateHelper;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateComparisonOperator;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -297,7 +297,7 @@ class AqlQueryParserTest {
             if (classExpressionDto.getType().equals("EHR")) {
                 sb.append(render(classExpressionDto.getContains()));
             } else {
-                AqlPredicate otherPredicates = ((ContainmentClassExpression) containmentExpresion).getPredicates();
+                Predicate otherPredicates = ((ContainmentClassExpression) containmentExpresion).getPredicates();
                 sb.append(PredicateHelper.find(otherPredicates, PredicateHelper.ARCHETYPE_NODE_ID)
                         .map(PredicateComparisonOperator::getValue)
                         .map(StringPrimitive.class::cast)

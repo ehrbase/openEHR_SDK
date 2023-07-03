@@ -31,7 +31,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;

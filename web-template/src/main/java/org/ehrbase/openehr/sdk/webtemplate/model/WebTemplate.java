@@ -19,9 +19,14 @@ package org.ehrbase.openehr.sdk.webtemplate.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.webtemplate.parser.NodeId;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

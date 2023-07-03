@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.text.CaseUtils;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlPath;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.generator.commons.annotations.Entity;
 import org.ehrbase.openehr.sdk.generator.commons.annotations.OptionFor;
 import org.ehrbase.openehr.sdk.generator.commons.annotations.Path;

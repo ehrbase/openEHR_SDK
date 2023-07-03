@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.path.predicate;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.ehrbase.openehr.sdk.aql.dto.LogicalOperator;
  */
 public final class PredicateLogicalAndOperation
         implements LogicalOperator<PredicateLogicalOperatorSymbol, PredicateComparisonOperator>,
-                DisjunctableAqlPredicate,
+                DisjunctablePredicate,
                 Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.AND;

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.path.predicate;
+package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +25,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.Primitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
-public final class PredicateComparisonOperator implements DisjunctableAqlPredicate, Serializable {
+public final class PredicateComparisonOperator implements DisjunctablePredicate, Serializable {
 
     private String statement;
     private ComparisonOperatorSymbol symbol;
