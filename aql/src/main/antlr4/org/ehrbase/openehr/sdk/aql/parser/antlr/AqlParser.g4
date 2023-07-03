@@ -121,26 +121,36 @@ identifiedPath
     ;
 
 pathPredicate
-    : SYM_LEFT_BRACKET (standardPredicate | archetypePredicate | nodePredicate) SYM_RIGHT_BRACKET
+    : SYM_LEFT_BRACKET pathPredicateAnd (OR pathPredicateAnd)* SYM_RIGHT_BRACKET
+    ;
+
+pathPredicateAnd
+    : nodePredicate (AND nodePredicate)*
     ;
 
 standardPredicate
     : objectPath COMPARISON_OPERATOR pathPredicateOperand
     ;
 
-archetypePredicate
-    : ARCHETYPE_HRID
+nodePredicate
+    : nodeConstraint (SYM_COMMA nameConstraint)?
     | PARAMETER
+    | standardPredicate
+    | objectPath MATCHES CONTAINED_REGEX
     ;
 
-nodePredicate
-    : (ID_CODE | AT_CODE) (SYM_COMMA (STRING | PARAMETER | TERM_CODE | AT_CODE | ID_CODE))?
-    | ARCHETYPE_HRID (SYM_COMMA (STRING | PARAMETER | TERM_CODE | AT_CODE | ID_CODE))?
+nodeConstraint
+    : ID_CODE
+    | AT_CODE
+    | ARCHETYPE_HRID
+    ;
+
+nameConstraint
+    : STRING
     | PARAMETER
-    | objectPath COMPARISON_OPERATOR pathPredicateOperand
-    | objectPath MATCHES CONTAINED_REGEX
-    | nodePredicate AND nodePredicate
-    | nodePredicate OR nodePredicate
+    | TERM_CODE
+    | AT_CODE
+    | ID_CODE
     ;
 
 versionPredicate

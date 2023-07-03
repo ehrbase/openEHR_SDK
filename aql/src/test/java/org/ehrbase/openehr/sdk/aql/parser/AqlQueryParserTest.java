@@ -20,7 +20,9 @@ package org.ehrbase.openehr.sdk.aql.parser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
@@ -29,9 +31,9 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -289,6 +291,15 @@ class AqlQueryParserTest {
                 "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 --> CLUSTER OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
     }
 
+
+
+    private static Stream<ComparisonOperatorPredicate> streamPredicates(List<AndOperatorPredicate> condition) {
+        if (condition == null) {
+            return Stream.empty();
+        }
+        return condition.stream().map(AndOperatorPredicate::getOperands).flatMap(List::stream);
+    }
+
     String render(Containment containmentExpresion) {
         StringBuilder sb = new StringBuilder();
 
@@ -297,11 +308,13 @@ class AqlQueryParserTest {
             if (classExpressionDto.getType().equals("EHR")) {
                 sb.append(render(classExpressionDto.getContains()));
             } else {
-                Predicate otherPredicates = ((ContainmentClassExpression) containmentExpresion).getPredicates();
-                sb.append(PredicateHelper.find(otherPredicates, PredicateHelper.ARCHETYPE_NODE_ID)
-                        .map(PredicateComparisonOperator::getValue)
+                List<AndOperatorPredicate> otherPredicates = ((ContainmentClassExpression) containmentExpresion).getPredicates();
+                sb.append(streamPredicates(otherPredicates).filter(p -> p.getPath().getPathParts().size()==1)
+                        .filter(p -> PredicateHelper.ARCHETYPE_NODE_ID.equals(p.getPath().getPathParts().get(0).getAttribute()))
+                        .map(ComparisonOperatorPredicate::getValue)
                         .map(StringPrimitive.class::cast)
                         .map(StringPrimitive::getValue)
+                        .findFirst()
                         .orElse(classExpressionDto.getType()));
                 Containment CONTAINS = ((AbstractContainmentExpression) containmentExpresion).getContains();
                 if (CONTAINS != null) {

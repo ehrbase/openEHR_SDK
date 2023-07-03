@@ -19,7 +19,10 @@ package org.ehrbase.openehr.sdk.aql.render;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorCondition;
@@ -44,16 +47,18 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LikeOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.MatchesOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
+import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Primitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath.OtherPredicatesFormat;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
 /**
@@ -310,13 +315,72 @@ public final class AqlRenderer {
         }
 
         sb.append(containmentDto.getIdentifier());
-        if (dto.getRootPredicate() != null) {
-            sb.append('[');
-            PredicateHelper.format(sb, dto.getRootPredicate(), OtherPredicatesFormat.SHORTED);
-            sb.append(']');
+        Optional.of(dto).map(IdentifiedPath::getRootPredicate).ifPresent(p -> renderPredicate(sb, p));
+        Optional.of(dto).map(IdentifiedPath::getPath).ifPresent(p -> renderPath(sb, p));
+    }
+
+    private static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or){
+        if(or.isEmpty() || or.size() == 1 && or.get(0).isEmpty()){
+            return;
         }
 
-        sb.append(dto.getPath().format(OtherPredicatesFormat.SHORTED, false));
+        join(sb," OR ", "[","]", or.stream().map(a -> (s -> renderPredicateAnd(s, a))));
+    }
+
+    private static void renderPredicateAnd(StringBuilder sb, AndOperatorPredicate and){
+        if(and.isEmpty()){
+            throw new UnsupportedOperationException("Found empty AndOperatorPredicate");
+        }
+
+        join(sb," AND ", "","", and.getOperands().stream().map(a -> (s -> renderComparisonPredicate(s, a))));
+    }
+
+    private static void join(
+            StringBuilder sb, String delimiter, String prefix, String suffix, Stream<Consumer<StringBuilder>> stream) {
+        Iterator<Consumer<StringBuilder>> it = stream.iterator();
+        if (!it.hasNext()) {
+            return;
+        }
+        sb.append(prefix);
+        it.next().accept(sb);
+
+        while (it.hasNext()) {
+                sb.append(delimiter);
+            it.next().accept(sb);
+        }
+        sb.append(suffix);
+    }
+
+    private static String renderComparisonPredicate(StringBuilder sb, ComparisonOperatorPredicate predicate){
+        renderPath(sb, predicate.getPath());
+        sb.append(predicate.getOperator().getSymbol());
+        renderPathPredicateOperand(sb,predicate.getValue());
+        return sb.toString();
+    }
+
+    private static void renderPathPredicateOperand(StringBuilder sb, PathPredicateOperand operand) {
+
+        if(operand instanceof QueryParameter o){
+            renderParameterDto(sb, o);
+        } else if (operand instanceof Primitive o) {
+            sb.append(renderPrimitive(o));
+        } else if (operand instanceof AqlObjectPath o) {
+            renderPath(sb, o);
+        } else {
+            throw new UnsupportedOperationException("Unsupported operand type %s".formatted(operand.getClass()));
+        }
+    }
+
+    private static void renderPath(StringBuilder sb, AqlObjectPath p) {
+        if(p.getPathParts().isEmpty()){
+            throw new UnsupportedOperationException("Found empty AqlObjectPath");
+        }
+        join(sb,"/", "","", p.getPathParts().stream().map(a -> (s -> renderPathNode(s, a))));
+    }
+
+    private static void renderPathNode(StringBuilder sb,PathNode n) {
+        sb.append(n.getAttribute());
+        renderPredicate(sb,n.getPredicateOrOperands());
     }
 
     private static void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
@@ -337,7 +401,7 @@ public final class AqlRenderer {
     }
 
     /**
-     * @see org.ehrbase.aql.parser.AqlQueryVisitor::unwrapText
+     * @see org.ehrbase.openehr.sdk.aql.parser.AqlQueryVisitor::unwrapText
      *
      * @param value
      * @return
@@ -432,12 +496,7 @@ public final class AqlRenderer {
             sb.append(" ").append(dto.getIdentifier());
         }
 
-        if (dto.getPredicates() != null) {
-
-            sb.append("[")
-                    .append(PredicateHelper.format(dto.getPredicates(), AqlPath.OtherPredicatesFormat.SHORTED))
-                    .append("]");
-        }
+        Optional.of(dto).map(ContainmentClassExpression::getPredicates).ifPresent(p -> renderPredicate(sb, p));
 
         if (dto.getContains() != null) {
 
