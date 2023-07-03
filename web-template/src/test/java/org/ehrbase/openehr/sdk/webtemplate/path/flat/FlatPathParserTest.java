@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-public class EnhancedAqlPathParserTest {
+public class FlatPathParserTest {
 
     @Test
     public void parse() {
