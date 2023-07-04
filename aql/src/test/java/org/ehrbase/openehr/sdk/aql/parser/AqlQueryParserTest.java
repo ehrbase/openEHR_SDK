@@ -31,6 +31,7 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
@@ -41,6 +42,23 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class AqlQueryParserTest {
+
+    @Test
+    void parsePathNoPredicates() {
+        testPath("a","a");
+        testPath("a/b/c","a/b/c");
+    }
+
+    @Test
+    void parsePathWithPredicates() {
+        testPath("a[b=c]","a[b = c]");
+        testPath("a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d=e]","a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d = e]");
+    }
+
+    private void testPath(String toTest, String expected){
+        AqlObjectPath actual = AqlQueryParser.parsePath(toTest);
+        assertThat(AqlRenderer.renderPath(actual)).isEqualTo(expected);
+    }
 
     @Test
     void parse() {
@@ -65,8 +83,6 @@ class AqlQueryParserTest {
 
         testAql(aql, aql);
     }
-
-    // or
 
     @Test
     void parsePredicateOr() {
@@ -112,7 +128,6 @@ class AqlQueryParserTest {
                 + "] FROM COMPOSITION c";
         testAql(aql, aql);
     }
-    // nested
 
     @Test
     void parseFromComposition() {

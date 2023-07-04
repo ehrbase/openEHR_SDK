@@ -456,6 +456,12 @@ public final class AqlRenderer {
         }
     }
 
+    public static String renderPath(AqlObjectPath p) {
+        StringBuilder sb = new StringBuilder();
+        renderPath(sb, p);
+        return sb.toString();
+    }
+
     private static void renderPath(StringBuilder sb, AqlObjectPath p) {
         if (p.getPathParts().isEmpty()) {
             throw new UnsupportedOperationException("Found empty AqlObjectPath");
