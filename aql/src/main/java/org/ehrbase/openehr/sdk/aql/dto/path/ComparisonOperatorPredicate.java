@@ -93,6 +93,11 @@ public class ComparisonOperatorPredicate {
     }
 
     public void setOperator(PredicateComparisonOperator operator) {
+        if(operator == PredicateComparisonOperator.MATCHES){
+            this.value = null;
+        }else {
+            this.matchesOperand = null;
+        }
         this.operator = operator;
     }
 
@@ -101,6 +106,9 @@ public class ComparisonOperatorPredicate {
     }
 
     public void setValue(PathPredicateOperand value) {
+        if (operator == PredicateComparisonOperator.MATCHES) {
+            throw new IllegalStateException("value cannot be set for a matches predicate");
+        }
         this.value = value;
     }
 
@@ -127,6 +135,7 @@ public class ComparisonOperatorPredicate {
                 .append(operator, that.operator)
                 .append(path, that.path)
                 .append(value, that.value)
+                .append(matchesOperand, that.matchesOperand)
                 .isEquals();
     }
 
@@ -136,14 +145,19 @@ public class ComparisonOperatorPredicate {
                 .append(operator)
                 .append(path)
                 .append(value)
+                .append(matchesOperand)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return "ComparisonPredicate{" + "operator="
-                + operator + ", leftOperand="
-                + path + ", rightOperand="
-                + value + '}';
+        return "ComparisonOperatorPredicate{" +
+                "path=" + path +
+                ", operator=" + operator +
+                ", value=" + value +
+                ", matchesOperand=" + matchesOperand +
+                '}';
     }
+
+
 }

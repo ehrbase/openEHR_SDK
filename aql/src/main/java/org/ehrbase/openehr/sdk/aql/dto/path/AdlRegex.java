@@ -17,6 +17,9 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.path;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class AdlRegex {
     private String escapedRegex;
 
@@ -33,5 +36,28 @@ public class AdlRegex {
             throw new IllegalArgumentException("invalid ADL regex");
         }
         this.escapedRegex = escapedRegex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AdlRegex adlRegex = (AdlRegex) o;
+
+        return new EqualsBuilder().append(escapedRegex, adlRegex.escapedRegex).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(escapedRegex).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "AdlRegex{" +
+                "escapedRegex='" + escapedRegex + '\'' +
+                '}';
     }
 }
