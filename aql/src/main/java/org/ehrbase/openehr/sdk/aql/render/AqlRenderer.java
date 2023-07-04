@@ -344,29 +344,29 @@ public final class AqlRenderer {
                 getSpecialPredicate(operands, AqlObjectPathUtil.archetypeNodeIdPath(), true);
 
         if (archetypeNodeId != null) {
-            switch (operands.size()) {
-                case 2:
-                    ComparisonOperatorPredicate nameValue =
-                            getSpecialPredicate(operands, AqlObjectPathUtil.nameValuePath(), true);
-                    if (nameValue != null) {
-                        appendPlainValue(sb, archetypeNodeId);
-                        sb.append(", ");
-                        renderPathPredicateOperand(sb, nameValue.getValue());
-                        return;
-                    }
-                case 3:
-                    ComparisonOperatorPredicate nameTerminologyId =
-                            getSpecialPredicate(operands, AqlObjectPathUtil.nameTerminologyPath(), false);
-                    ComparisonOperatorPredicate nameCodeString =
-                            getSpecialPredicate(operands, AqlObjectPathUtil.nameCodeStringPath(), false);
-                    if (ObjectUtils.allNotNull(nameTerminologyId, nameCodeString)) {
-                        appendPlainValue(sb, archetypeNodeId);
-                        sb.append(", ");
-                        appendPlainValue(sb, nameTerminologyId);
-                        sb.append("::");
-                        appendPlainValue(sb, nameCodeString);
-                        return;
-                    }
+            if (operands.size() == 2) {
+                ComparisonOperatorPredicate nameValue =
+                        getSpecialPredicate(operands, AqlObjectPathUtil.nameValuePath(), true);
+                if (nameValue != null) {
+                    appendPlainValue(sb, archetypeNodeId);
+                    sb.append(", ");
+                    renderPathPredicateOperand(sb, nameValue.getValue());
+                    return;
+                }
+
+            } else if (operands.size() == 3) {
+                ComparisonOperatorPredicate nameTerminologyId =
+                        getSpecialPredicate(operands, AqlObjectPathUtil.nameTerminologyPath(), false);
+                ComparisonOperatorPredicate nameCodeString =
+                        getSpecialPredicate(operands, AqlObjectPathUtil.nameCodeStringPath(), false);
+                if (ObjectUtils.allNotNull(nameTerminologyId, nameCodeString)) {
+                    appendPlainValue(sb, archetypeNodeId);
+                    sb.append(", ");
+                    appendPlainValue(sb, nameTerminologyId);
+                    sb.append("::");
+                    appendPlainValue(sb, nameCodeString);
+                    return;
+                }
             }
         }
 
