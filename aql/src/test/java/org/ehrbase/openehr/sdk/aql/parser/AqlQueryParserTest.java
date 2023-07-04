@@ -57,6 +57,11 @@ class AqlQueryParserTest {
                 "a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d = e]");
     }
 
+    @Test
+    void parsePathWithMatches() {
+        testPath("a[b matches {/some_regex/;'foo'}]", "a[b matches {/some_regex/;'foo'}]");
+    }
+
     private void testPath(String toTest, String expected) {
         AqlObjectPath actual = AqlQueryParser.parsePath(toTest);
         assertThat(AqlRenderer.renderPath(actual)).isEqualTo(expected);

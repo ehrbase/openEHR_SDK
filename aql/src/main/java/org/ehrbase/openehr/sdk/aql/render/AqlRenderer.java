@@ -59,6 +59,7 @@ import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPathUtil;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
@@ -440,7 +441,11 @@ public final class AqlRenderer {
         if (comparingPaths) {
             sb.append(' ');
         }
-        renderPathPredicateOperand(sb, predicate.getValue());
+        if (predicate.getOperator() == PredicateComparisonOperator.MATCHES) {
+            sb.append(predicate.getMatchesOperand().getEscapedRegex());
+        } else {
+            renderPathPredicateOperand(sb, predicate.getValue());
+        }
     }
 
     private static void renderPathPredicateOperand(StringBuilder sb, PathPredicateOperand operand) {

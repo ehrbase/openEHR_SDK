@@ -33,7 +33,7 @@ public class ComparisonOperatorPredicate {
         GT(">"),
         LT_EQ("<="),
         LT("<"),
-        MATCHES("MATCHES");
+        MATCHES(" matches ");
 
         private final String symbol;
 
@@ -47,35 +47,72 @@ public class ComparisonOperatorPredicate {
 
         public static Optional<PredicateComparisonOperator> findBySymbol(String symbol) {
             return Arrays.stream(values())
-                    .filter(o -> o.getSymbol().equals(symbol))
+                    .filter(o -> o.getSymbol().trim().equalsIgnoreCase(symbol))
                     .findFirst();
         }
     }
 
-    private final AqlObjectPath path;
-    private final PredicateComparisonOperator operator;
-    private final PathPredicateOperand value;
+    private AqlObjectPath path;
+    private PredicateComparisonOperator operator;
+    private PathPredicateOperand value;
+    private AdlRegex matchesOperand;
+
+    public ComparisonOperatorPredicate() {}
 
     public ComparisonOperatorPredicate(
             AqlObjectPath path, PredicateComparisonOperator operator, PathPredicateOperand value) {
         if (ObjectUtils.anyNull(operator, path, value)) {
             throw new IllegalArgumentException("All constructor arguments are required to not be null");
         }
+        if (operator == PredicateComparisonOperator.MATCHES) {
+            throw new IllegalArgumentException("Cannot combine MATCHES with PathPredicateOperand");
+        }
         this.operator = operator;
         this.path = path;
         this.value = value;
     }
 
-    public PredicateComparisonOperator getOperator() {
-        return operator;
+    public static ComparisonOperatorPredicate matches(AqlObjectPath path, AdlRegex value) {
+        ComparisonOperatorPredicate p = new ComparisonOperatorPredicate();
+        p.setOperator(PredicateComparisonOperator.MATCHES);
+        p.setPath(path);
+        p.setMatchesOperand(value);
+        return p;
     }
 
     public AqlObjectPath getPath() {
         return path;
     }
 
+    public void setPath(AqlObjectPath path) {
+        this.path = path;
+    }
+
+    public PredicateComparisonOperator getOperator() {
+        return operator;
+    }
+
+    public void setOperator(PredicateComparisonOperator operator) {
+        this.operator = operator;
+    }
+
     public PathPredicateOperand getValue() {
         return value;
+    }
+
+    public void setValue(PathPredicateOperand value) {
+        this.value = value;
+    }
+
+    public AdlRegex getMatchesOperand() {
+        return matchesOperand;
+    }
+
+    public void setMatchesOperand(AdlRegex matchesOperand) {
+        if (operator != PredicateComparisonOperator.MATCHES) {
+            throw new IllegalStateException("matchesOperand can only be set for a matches predicate");
+        }
+        this.matchesOperand = matchesOperand;
     }
 
     @Override

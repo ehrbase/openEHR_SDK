@@ -76,6 +76,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.TemporalPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression.OrderByDirection;
+import org.ehrbase.openehr.sdk.aql.dto.path.AdlRegex;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
@@ -465,10 +466,9 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
             return visitStandardPredicate(ctx.standardPredicate());
         }
         if (ctx.MATCHES() != null) {
-            new ComparisonOperatorPredicate(
+            return ComparisonOperatorPredicate.matches(
                     visitObjectPath(ctx.objectPath()),
-                    PredicateComparisonOperator.MATCHES,
-                    new StringPrimitive(getFullText(ctx.CONTAINED_REGEX().getSymbol())));
+                    new AdlRegex(getFullText(ctx.CONTAINED_REGEX().getSymbol())));
         }
 
         throw new AqlParseException("Cannot parse nodePredicate %s".formatted(getFullText(ctx)));
