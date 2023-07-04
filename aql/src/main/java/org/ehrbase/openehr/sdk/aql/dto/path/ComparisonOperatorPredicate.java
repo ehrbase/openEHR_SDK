@@ -93,9 +93,9 @@ public class ComparisonOperatorPredicate {
     }
 
     public void setOperator(PredicateComparisonOperator operator) {
-        if(operator == PredicateComparisonOperator.MATCHES){
+        if (operator == PredicateComparisonOperator.MATCHES) {
             this.value = null;
-        }else {
+        } else {
             this.matchesOperand = null;
         }
         this.operator = operator;
@@ -151,13 +151,10 @@ public class ComparisonOperatorPredicate {
 
     @Override
     public String toString() {
-        return "ComparisonOperatorPredicate{" +
-                "path=" + path +
-                ", operator=" + operator +
-                ", value=" + value +
-                ", matchesOperand=" + matchesOperand +
-                '}';
+        return "ComparisonOperatorPredicate{" + "path="
+                + path + ", operator="
+                + operator + ", value="
+                + value + ", matchesOperand="
+                + matchesOperand + '}';
     }
-
-
 }

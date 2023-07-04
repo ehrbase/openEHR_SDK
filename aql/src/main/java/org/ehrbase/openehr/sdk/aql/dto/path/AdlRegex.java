@@ -56,8 +56,6 @@ public class AdlRegex {
 
     @Override
     public String toString() {
-        return "AdlRegex{" +
-                "escapedRegex='" + escapedRegex + '\'' +
-                '}';
+        return "AdlRegex{" + "escapedRegex='" + escapedRegex + '\'' + '}';
     }
 }
