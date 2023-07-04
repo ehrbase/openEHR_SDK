@@ -242,6 +242,17 @@ class AqlQueryParserTest {
     }
 
     @Test
+    void parseErrorUnknownFromAlias() {
+        String aql =
+                "SELECT c FROM COMPOSITION d";
+
+        AqlParseException aqlParseException =
+                Assertions.assertThrows(AqlParseException.class, () -> AqlQueryParser.parse(aql));
+
+        assertThat(aqlParseException).hasMessageContaining("unknown FROM alias 'c'");
+    }
+
+    @Test
     void parseWhere() {
         String aql =
                 "SELECT o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude, e/ehr_id/value AS ehr_id FROM EHR e CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude and o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)";
