@@ -243,8 +243,7 @@ class AqlQueryParserTest {
 
     @Test
     void parseErrorUnknownFromAlias() {
-        String aql =
-                "SELECT c FROM COMPOSITION d";
+        String aql = "SELECT c FROM COMPOSITION d";
 
         AqlParseException aqlParseException =
                 Assertions.assertThrows(AqlParseException.class, () -> AqlQueryParser.parse(aql));
