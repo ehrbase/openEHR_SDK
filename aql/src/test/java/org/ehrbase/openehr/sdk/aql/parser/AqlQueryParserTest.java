@@ -45,17 +45,19 @@ class AqlQueryParserTest {
 
     @Test
     void parsePathNoPredicates() {
-        testPath("a","a");
-        testPath("a/b/c","a/b/c");
+        testPath("a", "a");
+        testPath("a/b/c", "a/b/c");
     }
 
     @Test
     void parsePathWithPredicates() {
-        testPath("a[b=c]","a[b = c]");
-        testPath("a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d=e]","a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d = e]");
+        testPath("a[b=c]", "a[b = c]");
+        testPath(
+                "a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d=e]",
+                "a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d = e]");
     }
 
-    private void testPath(String toTest, String expected){
+    private void testPath(String toTest, String expected) {
         AqlObjectPath actual = AqlQueryParser.parsePath(toTest);
         assertThat(AqlRenderer.renderPath(actual)).isEqualTo(expected);
     }
