@@ -11,7 +11,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ### Changed
 
 - switch to java 17 ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
-- Change the implementation of AqlDto ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
+- Change the implementation of AqlDto ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464)[#483](https://github.com/ehrbase/openEHR_SDK/pull/483))
 - Change package paths to start with `org.ehrbase.openehr.sdk` ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
 - Moved classes to the modules they belong to semantically ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
 - Removed ehrbase specific package `org.ehrbase.serialisation.dbenconding` ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
