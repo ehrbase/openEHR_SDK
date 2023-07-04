@@ -27,6 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
+import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
+import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
 public class AqlObjectPath implements PathPredicateOperand {
 
@@ -95,6 +97,14 @@ public class AqlObjectPath implements PathPredicateOperand {
 
     public List<PathNode> getPathParts() {
         return pathNodes;
+    }
+
+    public static AqlObjectPath parse(String path) {
+        return AqlQueryParser.parsePath(path);
+    }
+
+    public String render() {
+        return AqlRenderer.renderPath(this);
     }
 
     @Override
