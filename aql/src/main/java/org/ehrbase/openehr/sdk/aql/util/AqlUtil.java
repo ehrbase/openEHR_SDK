@@ -33,8 +33,6 @@ public class AqlUtil {
 
     private AqlUtil() {}
 
-    private static final AqlQueryParser PARSER = new AqlQueryParser();
-
     /**
      * Removes a parameter from the aql
      *
@@ -44,7 +42,7 @@ public class AqlUtil {
      */
     public static String removeParameter(String aql, String parameterName) {
 
-        AqlQuery dto = PARSER.parse(aql);
+        AqlQuery dto = AqlQueryParser.parse(aql);
 
         dto.setWhere(removeParameter(dto.getWhere(), parameterName));
         return AqlRenderer.render(dto);

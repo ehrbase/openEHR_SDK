@@ -79,6 +79,7 @@ import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression.OrderByDirectio
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPathUtil;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
@@ -98,7 +99,6 @@ import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.LimitClauseContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.MatchesOperandContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.NameConstraintContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.NodeConstraintContext;
-import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.NodePredicateContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.NumericPrimitiveContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.ObjectPathContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.OrderByClauseContext;
@@ -113,6 +113,7 @@ import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.SelectExprContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.SelectQueryContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.StandardPredicateContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.TerminalContext;
+import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.TerminalPredicateContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.ValueListItemContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.VersionClassExprContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.WhereExprContext;
@@ -418,7 +419,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     @Override
     public List<AndOperatorPredicate> visitPathPredicate(PathPredicateContext ctx) {
-        if(ctx == null) {
+        if (ctx == null) {
             return new ArrayList<>();
         }
         return ctx.pathPredicateAnd().stream().map(this::visitPathPredicateAnd).collect(Collectors.toList());
@@ -426,36 +427,46 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     @Override
     public AndOperatorPredicate visitPathPredicateAnd(PathPredicateAndContext ctx) {
-        List<ComparisonOperatorPredicate> predicates = ctx.nodePredicate().stream().map(this::visitNodePredicate).flatMap(List::stream).collect(Collectors.toList());
-        return new AndOperatorPredicate(predicates);
+        Stream<ComparisonOperatorPredicate> predicates;
+        if (ctx.PARAMETER() != null) {
+            predicates = Stream.of(new ComparisonOperatorPredicate(
+                    AqlObjectPathUtil.archetypeNodeIdPath(),
+                    PredicateComparisonOperator.EQ,
+                    createParameter(ctx.PARAMETER())));
+
+        } else if (ctx.nodeConstraint() != null) {
+            predicates = Stream.concat(
+                    Stream.of(visitNodeConstraint(ctx.nodeConstraint())),
+                    visitNameConstraint(ctx.nameConstraint()).stream());
+
+        } else {
+            predicates = Stream.empty();
+        }
+
+        predicates = Stream.concat(predicates, ctx.terminalPredicate().stream().map(this::visitTerminalPredicate));
+        return new AndOperatorPredicate(predicates.collect(Collectors.toList()));
     }
 
     @Override
     public ComparisonOperatorPredicate visitStandardPredicate(StandardPredicateContext ctx) {
         String operatorSymbol = ctx.COMPARISON_OPERATOR().getText();
-        PredicateComparisonOperator operator = PredicateComparisonOperator.findBySymbol(operatorSymbol).orElseThrow(() -> new AqlParseException("Unknown comparison operator %s".formatted(operatorSymbol)));
-        return new ComparisonOperatorPredicate(visitObjectPath(ctx.objectPath()),operator,visitPathPredicateOperand(ctx.pathPredicateOperand()));
+        PredicateComparisonOperator operator = PredicateComparisonOperator.findBySymbol(operatorSymbol)
+                .orElseThrow(() -> new AqlParseException("Unknown comparison operator %s".formatted(operatorSymbol)));
+        return new ComparisonOperatorPredicate(
+                visitObjectPath(ctx.objectPath()), operator, visitPathPredicateOperand(ctx.pathPredicateOperand()));
     }
 
     @Override
-    public List<ComparisonOperatorPredicate> visitNodePredicate(NodePredicateContext ctx) {
+    public ComparisonOperatorPredicate visitTerminalPredicate(TerminalPredicateContext ctx) {
 
-        if(ctx.standardPredicate() != null){
-            return List.of(visitStandardPredicate(ctx.standardPredicate()));
+        if (ctx.standardPredicate() != null) {
+            return visitStandardPredicate(ctx.standardPredicate());
         }
-        if(ctx.PARAMETER() != null && ctx.SYM_COMMA() == null){
-            return List.of(new ComparisonOperatorPredicate(AqlObjectPath.builder().node("archetype_node_id").build(),PredicateComparisonOperator.EQ,createParameter(ctx.PARAMETER())));
-        }
-        if(ctx.nodeConstraint() != null){
-            List<ComparisonOperatorPredicate> predicates = new ArrayList<>();
-            predicates.add(visitNodeConstraint(ctx.nodeConstraint()));
-            if(ctx.nameConstraint() != null){
-                predicates.addAll(visitNameConstraint(ctx.nameConstraint()));
-            }
-            return predicates;
-        }
-        if(ctx.MATCHES() != null) {
-            return List.of(new ComparisonOperatorPredicate(visitObjectPath(ctx.objectPath()),PredicateComparisonOperator.MATCHES,new StringPrimitive(getFullText(ctx.CONTAINED_REGEX().getSymbol()))));
+        if (ctx.MATCHES() != null) {
+            new ComparisonOperatorPredicate(
+                    visitObjectPath(ctx.objectPath()),
+                    PredicateComparisonOperator.MATCHES,
+                    new StringPrimitive(getFullText(ctx.CONTAINED_REGEX().getSymbol())));
         }
 
         throw new AqlParseException("Cannot parse nodePredicate %s".formatted(getFullText(ctx)));
@@ -463,52 +474,70 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     @Override
     public ComparisonOperatorPredicate visitNodeConstraint(NodeConstraintContext ctx) {
-        return new ComparisonOperatorPredicate(AqlObjectPath.builder().node("archetype_node_id").build(),PredicateComparisonOperator.EQ,new StringPrimitive(ctx.getText()));
+        return new ComparisonOperatorPredicate(
+                AqlObjectPathUtil.archetypeNodeIdPath(),
+                PredicateComparisonOperator.EQ,
+                new StringPrimitive(ctx.getText()));
     }
 
     @Override
     public List<ComparisonOperatorPredicate> visitNameConstraint(NameConstraintContext ctx) {
-        //name/value cases
-        if(ctx.PARAMETER() != null){
-            return List.of(new ComparisonOperatorPredicate(AqlObjectPath.builder().node("name").node("value").build(),PredicateComparisonOperator.EQ,createParameter(ctx.PARAMETER())));
-        }
-        String text = getFullText(ctx);
-        if(ctx.STRING() != null) {
-            return List.of(new ComparisonOperatorPredicate(AqlObjectPath.builder().node("name").node("value").build(),PredicateComparisonOperator.EQ,new StringPrimitive(text)));
+        if (ctx == null) {
+            return List.of();
         }
 
-        //Terminology cases
+        // name/value cases
+        if (ctx.PARAMETER() != null) {
+            return List.of(new ComparisonOperatorPredicate(
+                    AqlObjectPathUtil.nameValuePath(),
+                    PredicateComparisonOperator.EQ,
+                    createParameter(ctx.PARAMETER())));
+        }
+        if (ctx.STRING() != null) {
+            return List.of(new ComparisonOperatorPredicate(
+                    AqlObjectPathUtil.nameValuePath(),
+                    PredicateComparisonOperator.EQ,
+                    new StringPrimitive(unescapeText(ctx))));
+        }
+
+        String text = getFullText(ctx);
+        // Terminology cases
         final String termId;
         final String code;
-        if(ObjectUtils.anyNotNull(ctx.ID_CODE(), ctx.AT_CODE())){
+        if (ObjectUtils.anyNotNull(ctx.ID_CODE(), ctx.AT_CODE())) {
             termId = "local";
             code = text;
-        }else if(ctx.TERM_CODE() != null){
+        } else if (ctx.TERM_CODE() != null) {
             int termIdEnd = text.indexOf("::");
-            int commentStart = text.indexOf('|', termIdEnd+2);
-            termId = text.substring(0,termIdEnd);
-            code = text.substring(termIdEnd+2, commentStart>0 ? commentStart : text.length());
-        }else {
+            int commentStart = text.indexOf('|', termIdEnd + 2);
+            termId = text.substring(0, termIdEnd);
+            code = text.substring(termIdEnd + 2, commentStart > 0 ? commentStart : text.length());
+        } else {
             throw new AqlParseException("Cannot parse name constraint %s".formatted(text));
         }
         return List.of(
-                new ComparisonOperatorPredicate(AqlObjectPath.builder().node("name").node("defining_code").node("code_string").build(),PredicateComparisonOperator.EQ,new StringPrimitive(code)),
-                new ComparisonOperatorPredicate(AqlObjectPath.builder().node("name").node("defining_code").node("terminology_id").node("value").build(),PredicateComparisonOperator.EQ,new StringPrimitive(termId))
-        );
+                new ComparisonOperatorPredicate(
+                        AqlObjectPathUtil.nameCodeStringPath(),
+                        PredicateComparisonOperator.EQ,
+                        new StringPrimitive(code)),
+                new ComparisonOperatorPredicate(
+                        AqlObjectPathUtil.nameTerminologyPath(),
+                        PredicateComparisonOperator.EQ,
+                        new StringPrimitive(termId)));
     }
 
     @Override
     public PathPredicateOperand visitPathPredicateOperand(PathPredicateOperandContext ctx) {
-        if(ctx.PARAMETER() != null){
+        if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());
         }
-        if(ctx.primitive() != null){
+        if (ctx.primitive() != null) {
             return visitPrimitive(ctx.primitive());
         }
-        if(ctx.AT_CODE() != null || ctx.ID_CODE() != null){
+        if (ctx.AT_CODE() != null || ctx.ID_CODE() != null) {
             return new StringPrimitive(ctx.getText());
         }
-        if(ctx.objectPath() != null){
+        if (ctx.objectPath() != null) {
             return visitObjectPath(ctx.objectPath());
         }
 
@@ -517,12 +546,13 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     @Override
     public AqlObjectPath visitObjectPath(ObjectPathContext ctx) {
-        return new AqlObjectPath(ctx.pathPart().stream().map(this::visitPathPart).toList());
+        return new AqlObjectPath(
+                ctx.pathPart().stream().map(this::visitPathPart).toList());
     }
 
     @Override
     public PathNode visitPathPart(PathPartContext ctx) {
-        return new PathNode(ctx.IDENTIFIER().getText(),visitPathPredicate(ctx.pathPredicate()));
+        return new PathNode(ctx.IDENTIFIER().getText(), visitPathPredicate(ctx.pathPredicate()));
     }
 
     @Override
@@ -666,8 +696,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     private static String getFullText(Token token) {
-        return token.getInputStream()
-                .getText(Interval.of(token.getStartIndex(), token.getStopIndex()));
+        return token.getInputStream().getText(Interval.of(token.getStartIndex(), token.getStopIndex()));
     }
 
     @Override

@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ExistsCondition;
@@ -56,6 +57,7 @@ import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPathUtil;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
@@ -316,23 +318,99 @@ public final class AqlRenderer {
 
         sb.append(containmentDto.getIdentifier());
         Optional.of(dto).map(IdentifiedPath::getRootPredicate).ifPresent(p -> renderPredicate(sb, p));
-        Optional.of(dto).map(IdentifiedPath::getPath).ifPresent(p -> renderPath(sb, p));
+
+        Optional.of(dto).map(IdentifiedPath::getPath).ifPresent(p -> {
+            sb.append('/');
+            renderPath(sb, p);
+        });
     }
 
-    private static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or){
-        if(or.isEmpty() || or.size() == 1 && or.get(0).isEmpty()){
+    private static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or) {
+        if (or.isEmpty() || or.size() == 1 && or.get(0).isEmpty()) {
             return;
         }
 
-        join(sb," OR ", "[","]", or.stream().map(a -> (s -> renderPredicateAnd(s, a))));
+        join(sb, " OR ", "[", "]", or.stream().map(a -> (s -> renderPredicateAnd(s, a))));
     }
 
-    private static void renderPredicateAnd(StringBuilder sb, AndOperatorPredicate and){
-        if(and.isEmpty()){
+    private static void renderPredicateAnd(StringBuilder sb, AndOperatorPredicate and) {
+        if (and.isEmpty()) {
             throw new UnsupportedOperationException("Found empty AndOperatorPredicate");
         }
+        List<ComparisonOperatorPredicate> operands = and.getOperands();
 
-        join(sb," AND ", "","", and.getOperands().stream().map(a -> (s -> renderComparisonPredicate(s, a))));
+        ComparisonOperatorPredicate archetypeNodeId =
+                getSpecialPredicate(operands, AqlObjectPathUtil.archetypeNodeIdPath(), true);
+
+        if (archetypeNodeId != null) {
+            switch (operands.size()) {
+                case 2:
+                    ComparisonOperatorPredicate nameValue =
+                            getSpecialPredicate(operands, AqlObjectPathUtil.nameValuePath(), true);
+                    if (nameValue != null) {
+                        appendPlainValue(sb, archetypeNodeId);
+                        sb.append(", ");
+                        renderPathPredicateOperand(sb, nameValue.getValue());
+                        return;
+                    }
+                case 3:
+                    ComparisonOperatorPredicate nameTerminologyId =
+                            getSpecialPredicate(operands, AqlObjectPathUtil.nameTerminologyPath(), false);
+                    ComparisonOperatorPredicate nameCodeString =
+                            getSpecialPredicate(operands, AqlObjectPathUtil.nameCodeStringPath(), false);
+                    if (ObjectUtils.allNotNull(nameTerminologyId, nameCodeString)) {
+                        appendPlainValue(sb, archetypeNodeId);
+                        sb.append(", ");
+                        appendPlainValue(sb, nameTerminologyId);
+                        sb.append("::");
+                        appendPlainValue(sb, nameCodeString);
+                        return;
+                    }
+            }
+        }
+
+        String prefix;
+        if (archetypeNodeId != null) {
+            appendPlainValue(sb, archetypeNodeId);
+            prefix = " AND ";
+        } else {
+            prefix = "";
+        }
+
+        // move archetypeNodeId to front, if present
+        Stream<ComparisonOperatorPredicate> stream = and.getOperands().stream().filter(a -> a != archetypeNodeId);
+
+        join(sb, " AND ", prefix, "", stream.map(a -> (s -> renderComparisonPredicate(s, a))));
+    }
+
+    private static void appendPlainValue(StringBuilder sb, ComparisonOperatorPredicate predicate) {
+        PathPredicateOperand value = predicate.getValue();
+        if (value instanceof StringPrimitive sp) {
+            sb.append(sp.getValue());
+        } else if (value instanceof QueryParameter qp) {
+            sb.append("$").append(qp.getName());
+        }
+    }
+
+    private static ComparisonOperatorPredicate getSpecialPredicate(
+            List<ComparisonOperatorPredicate> operands, AqlObjectPath path, boolean parameterAllowed) {
+        return operands.stream()
+                .filter(op -> isSpecialPredicate(op, path, parameterAllowed))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static boolean isSpecialPredicate(
+            ComparisonOperatorPredicate operand, AqlObjectPath path, boolean parameterAllowed) {
+        return Optional.of(operand)
+                .filter(op -> op.getOperator() == ComparisonOperatorPredicate.PredicateComparisonOperator.EQ)
+                .filter(op -> path.equals(op.getPath()))
+                .filter(op -> op.getValue() instanceof StringPrimitive || (parameterAllowed && isParameter(op)))
+                .isPresent();
+    }
+
+    private static boolean isParameter(ComparisonOperatorPredicate op) {
+        return op.getValue() instanceof QueryParameter;
     }
 
     private static void join(
@@ -345,22 +423,29 @@ public final class AqlRenderer {
         it.next().accept(sb);
 
         while (it.hasNext()) {
-                sb.append(delimiter);
+            sb.append(delimiter);
             it.next().accept(sb);
         }
         sb.append(suffix);
     }
 
-    private static String renderComparisonPredicate(StringBuilder sb, ComparisonOperatorPredicate predicate){
+    private static void renderComparisonPredicate(StringBuilder sb, ComparisonOperatorPredicate predicate) {
         renderPath(sb, predicate.getPath());
+
+        boolean comparingPaths = predicate.getValue() instanceof AqlObjectPath;
+        if (comparingPaths) {
+            sb.append(' ');
+        }
         sb.append(predicate.getOperator().getSymbol());
-        renderPathPredicateOperand(sb,predicate.getValue());
-        return sb.toString();
+        if (comparingPaths) {
+            sb.append(' ');
+        }
+        renderPathPredicateOperand(sb, predicate.getValue());
     }
 
     private static void renderPathPredicateOperand(StringBuilder sb, PathPredicateOperand operand) {
 
-        if(operand instanceof QueryParameter o){
+        if (operand instanceof QueryParameter o) {
             renderParameterDto(sb, o);
         } else if (operand instanceof Primitive o) {
             sb.append(renderPrimitive(o));
@@ -372,15 +457,15 @@ public final class AqlRenderer {
     }
 
     private static void renderPath(StringBuilder sb, AqlObjectPath p) {
-        if(p.getPathParts().isEmpty()){
+        if (p.getPathParts().isEmpty()) {
             throw new UnsupportedOperationException("Found empty AqlObjectPath");
         }
-        join(sb,"/", "","", p.getPathParts().stream().map(a -> (s -> renderPathNode(s, a))));
+        join(sb, "/", "", "", p.getPathParts().stream().map(a -> (s -> renderPathNode(s, a))));
     }
 
-    private static void renderPathNode(StringBuilder sb,PathNode n) {
+    private static void renderPathNode(StringBuilder sb, PathNode n) {
         sb.append(n.getAttribute());
-        renderPredicate(sb,n.getPredicateOrOperands());
+        renderPredicate(sb, n.getPredicateOrOperands());
     }
 
     private static void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {

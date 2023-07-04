@@ -125,17 +125,19 @@ pathPredicate
     ;
 
 pathPredicateAnd
-    : nodePredicate (AND nodePredicate)*
+    : (
+        terminalPredicate
+        | PARAMETER
+        | (nodeConstraint (SYM_COMMA nameConstraint)?)
+      ) (AND terminalPredicate)*
     ;
 
 standardPredicate
     : objectPath COMPARISON_OPERATOR pathPredicateOperand
     ;
 
-nodePredicate
-    : nodeConstraint (SYM_COMMA nameConstraint)?
-    | PARAMETER
-    | standardPredicate
+terminalPredicate
+    : standardPredicate
     | objectPath MATCHES CONTAINED_REGEX
     ;
 

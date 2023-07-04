@@ -61,8 +61,7 @@ class AqlRoundTripTest {
     }
 
     void assertRoundTrip(AqlTestCase testData) {
-        AqlQueryParser cut = new AqlQueryParser();
-        AqlQuery actual = cut.parse(testData.getTestAql());
+        AqlQuery actual = AqlQueryParser.parse(testData.getTestAql());
 
         assertThat(actual).isNotNull();
 
