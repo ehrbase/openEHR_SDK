@@ -23,6 +23,7 @@ import java.util.function.Function;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
@@ -70,6 +71,9 @@ public final class AqlQueryParser {
     }
 
     public static AqlObjectPath parsePath(String aqlPath) {
+        if (StringUtils.isEmpty(aqlPath)) {
+            return null;
+        }
         return parseQueryComponent(aqlPath, AqlParser::objectPath, AqlQueryVisitor::visitObjectPath);
     }
 
