@@ -14,9 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.ehrbase.openehr.sdk.aql.dto.path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +43,10 @@ class AqlObjectPathTest {
         assertEquals(pathStr, clone.render());
 
         PathNode firstClonedNode = clone.getPathNodes().get(0);
-        firstClonedNode.getPredicateOrOperands().get(0).add(AqlObjectPathUtil.NAME_CODE_STRING, PredicateComparisonOperator.EQ, new StringPrimitive("foo"));
+        firstClonedNode
+                .getPredicateOrOperands()
+                .get(0)
+                .add(AqlObjectPathUtil.NAME_CODE_STRING, PredicateComparisonOperator.EQ, new StringPrimitive("foo"));
 
         assertNotEquals(aqlObjectPath, clone);
         assertNotEquals(pathStr, clone.render());

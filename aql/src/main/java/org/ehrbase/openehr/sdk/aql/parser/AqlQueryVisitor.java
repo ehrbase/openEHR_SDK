@@ -491,9 +491,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         // name/value cases
         if (ctx.PARAMETER() != null) {
             return List.of(new ComparisonOperatorPredicate(
-                    AqlObjectPathUtil.NAME_VALUE,
-                    PredicateComparisonOperator.EQ,
-                    createParameter(ctx.PARAMETER())));
+                    AqlObjectPathUtil.NAME_VALUE, PredicateComparisonOperator.EQ, createParameter(ctx.PARAMETER())));
         }
         if (ctx.STRING() != null) {
             return List.of(new ComparisonOperatorPredicate(
@@ -519,9 +517,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         }
         return List.of(
                 new ComparisonOperatorPredicate(
-                        AqlObjectPathUtil.NAME_CODE_STRING,
-                        PredicateComparisonOperator.EQ,
-                        new StringPrimitive(code)),
+                        AqlObjectPathUtil.NAME_CODE_STRING, PredicateComparisonOperator.EQ, new StringPrimitive(code)),
                 new ComparisonOperatorPredicate(
                         AqlObjectPathUtil.NAME_TERMINOLOGY,
                         PredicateComparisonOperator.EQ,

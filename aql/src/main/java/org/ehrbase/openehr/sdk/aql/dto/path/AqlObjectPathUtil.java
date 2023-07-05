@@ -19,19 +19,23 @@ package org.ehrbase.openehr.sdk.aql.dto.path;
 
 public final class AqlObjectPathUtil {
 
-    public static final AqlObjectPath ARCHETYPE_NODE_ID = AqlObjectPath.builder().node("archetype_node_id").build().frozen();
-    public static final AqlObjectPath NAME_VALUE = AqlObjectPath.builder().node("name").node("value").build().frozen();
+    public static final AqlObjectPath ARCHETYPE_NODE_ID =
+            AqlObjectPath.builder().node("archetype_node_id").build().frozen();
+    public static final AqlObjectPath NAME_VALUE =
+            AqlObjectPath.builder().node("name").node("value").build().frozen();
     public static final AqlObjectPath NAME_CODE_STRING = AqlObjectPath.builder()
             .node("name")
             .node("defining_code")
             .node("code_string")
-            .build().frozen();
+            .build()
+            .frozen();
     public static final AqlObjectPath NAME_TERMINOLOGY = AqlObjectPath.builder()
             .node("name")
             .node("defining_code")
             .node("terminology_id")
             .node("value")
-            .build().frozen();
+            .build()
+            .frozen();
 
     private AqlObjectPathUtil() {
         // NOOP

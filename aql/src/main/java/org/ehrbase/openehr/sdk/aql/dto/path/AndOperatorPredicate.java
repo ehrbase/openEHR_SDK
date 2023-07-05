@@ -75,10 +75,9 @@ public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
         return "PredicateAndOperator{" + "operands=" + operands + '}';
     }
 
-
     @Override
     public AndOperatorPredicate thawed() {
-        return new AndOperatorPredicate(Freezable.thawed(getOperands()),false);
+        return new AndOperatorPredicate(Freezable.thawed(getOperands()), false);
     }
 
     @Override

@@ -197,7 +197,7 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
 
     @Override
     public AqlObjectPath thawed() {
-        return new AqlObjectPath(Freezable.thawed(pathNodes),false);
+        return new AqlObjectPath(Freezable.thawed(pathNodes), false);
     }
 
     @Override

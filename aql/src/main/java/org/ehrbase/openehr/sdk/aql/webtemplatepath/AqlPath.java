@@ -522,7 +522,8 @@ public final class AqlPath implements Serializable {
                         // value unchanged
                         return cmpOp;
                     } else {
-                        return new PredicateComparisonOperator(statement, ComparisonOperatorSymbol.EQ, new StringPrimitive(newValue));
+                        return new PredicateComparisonOperator(
+                                statement, ComparisonOperatorSymbol.EQ, new StringPrimitive(newValue));
                     }
                 }
             }
@@ -544,8 +545,8 @@ public final class AqlPath implements Serializable {
                     } else if (newChild != null) {
                         // value changed
                         PredicateComparisonOperator[] newValues = l.getValues().stream()
-                                        .map(p -> p == child ? newChild : p)
-                                        .toArray(PredicateComparisonOperator[]::new);
+                                .map(p -> p == child ? newChild : p)
+                                .toArray(PredicateComparisonOperator[]::new);
                         return (P) new PredicateLogicalAndOperation(newValues);
                     }
                 }
