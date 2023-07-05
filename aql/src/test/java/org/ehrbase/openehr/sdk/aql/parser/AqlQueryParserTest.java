@@ -384,9 +384,9 @@ class AqlQueryParserTest {
                 List<AndOperatorPredicate> otherPredicates =
                         ((ContainmentClassExpression) containmentExpresion).getPredicates();
                 sb.append(streamPredicates(otherPredicates)
-                        .filter(p -> p.getPath().getPathParts().size() == 1)
+                        .filter(p -> p.getPath().getPathNodes().size() == 1)
                         .filter(p -> PredicateHelper.ARCHETYPE_NODE_ID.equals(
-                                p.getPath().getPathParts().get(0).getAttribute()))
+                                p.getPath().getPathNodes().get(0).getAttribute()))
                         .map(ComparisonOperatorPredicate::getValue)
                         .map(StringPrimitive.class::cast)
                         .map(StringPrimitive::getValue)

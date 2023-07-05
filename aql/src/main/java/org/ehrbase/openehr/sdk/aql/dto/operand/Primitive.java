@@ -20,6 +20,7 @@ package org.ehrbase.openehr.sdk.aql.dto.operand;
 import java.lang.constant.Constable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
+import org.ehrbase.openehr.sdk.util.Freezable;
 
 /**
  * @author Stefan Spiska
@@ -62,12 +63,12 @@ public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
         return Objects.hash(value);
     }
 
-    public boolean isImmutable() {
+    public boolean isFrozen() {
         return immutable;
     }
 
-    public O immutable() {
-        return Freezable.immutable((O) this, t -> {
+    public O frozen() {
+        return Freezable.frozen((O) this, t -> {
             O clone = clone();
             clone.immutable = true;
             return clone;
@@ -75,10 +76,10 @@ public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
     }
 
     public O clone() {
-        return Freezable.clone((O) this, Primitive::mutableCopy);
+        return Freezable.clone((O) this, Primitive::thawed);
     }
 
-    public O mutableCopy() {
+    public O thawed() {
         try {
             O newInstance = (O) this.getClass().getDeclaredConstructor().newInstance();
             newInstance.setValue(this.getValue());

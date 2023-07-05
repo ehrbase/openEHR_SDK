@@ -510,7 +510,7 @@ public final class AqlPath implements Serializable {
          * @param newValue
          * @return new value; null means not found
          */
-        private static PredicateComparisonOperator replaceValue(
+        private static PredicateComparisonOperator replaceStringValue(
                 PredicateComparisonOperator cmpOp, String statement, String newValue) {
             if (cmpOp.getSymbol() == ComparisonOperatorSymbol.EQ
                     && cmpOp.getStatement().equals(statement)) {
@@ -522,11 +522,7 @@ public final class AqlPath implements Serializable {
                         // value unchanged
                         return cmpOp;
                     } else {
-                        // value changed
-                        Primitive<String> clone = new StringPrimitive();
-                        clone.setValue(newValue);
-
-                        return new PredicateComparisonOperator(statement, ComparisonOperatorSymbol.EQ, clone);
+                        return new PredicateComparisonOperator(statement, ComparisonOperatorSymbol.EQ, new StringPrimitive(newValue));
                     }
                 }
             }
@@ -536,19 +532,18 @@ public final class AqlPath implements Serializable {
 
         private static <P extends DisjunctablePredicate> P replaceInternal(
                 P predicate, String statement, String newValue) {
-            if (predicate instanceof PredicateComparisonOperator) {
-                return (P) replaceValue((PredicateComparisonOperator) predicate, statement, newValue);
+            if (predicate instanceof PredicateComparisonOperator p) {
+                return (P) replaceStringValue(p, statement, newValue);
 
-            } else if (predicate instanceof PredicateLogicalAndOperation) {
-                for (PredicateComparisonOperator child : ((PredicateLogicalAndOperation) predicate).getValues()) {
+            } else if (predicate instanceof PredicateLogicalAndOperation l) {
+                for (PredicateComparisonOperator child : l.getValues()) {
                     PredicateComparisonOperator newChild = replaceInternal(child, statement, newValue);
                     if (newChild == child) {
                         // value unchanged
                         return predicate;
                     } else if (newChild != null) {
                         // value changed
-                        PredicateComparisonOperator[] newValues = ((PredicateLogicalAndOperation) predicate)
-                                .getValues().stream()
+                        PredicateComparisonOperator[] newValues = l.getValues().stream()
                                         .map(p -> p == child ? newChild : p)
                                         .toArray(PredicateComparisonOperator[]::new);
                         return (P) new PredicateLogicalAndOperation(newValues);

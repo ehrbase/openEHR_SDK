@@ -22,15 +22,21 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.ehrbase.openehr.sdk.aql.dto.operand.Freezable;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
+import org.ehrbase.openehr.sdk.util.Freezable;
 
 public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
     private final List<ComparisonOperatorPredicate> operands;
+    private boolean immutable;
+
+    private AndOperatorPredicate(List<ComparisonOperatorPredicate> operands, boolean immutable) {
+        this.immutable = immutable;
+        this.operands = operands;
+    }
 
     public AndOperatorPredicate(List<ComparisonOperatorPredicate> operands) {
-        this.operands = Optional.ofNullable(operands).map(ArrayList::new).orElseGet(ArrayList::new);
+        this(Optional.ofNullable(operands).map(Freezable::clone).orElseGet(ArrayList::new), false);
     }
 
     public List<ComparisonOperatorPredicate> getOperands() {
@@ -38,7 +44,7 @@ public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
     }
 
     public ComparisonOperatorPredicate add(
-            AqlObjectPath path, PredicateComparisonOperator operator, PathPredicateOperand value) {
+            AqlObjectPath path, PredicateComparisonOperator operator, PathPredicateOperand<?> value) {
         ComparisonOperatorPredicate toAdd = new ComparisonOperatorPredicate(path, operator, value);
         this.operands.add(toAdd);
         return toAdd;
@@ -69,23 +75,24 @@ public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
         return "PredicateAndOperator{" + "operands=" + operands + '}';
     }
 
+
     @Override
-    public AndOperatorPredicate mutableCopy() {
-        return null;
+    public AndOperatorPredicate thawed() {
+        return new AndOperatorPredicate(Freezable.thawed(getOperands()),false);
     }
 
     @Override
-    public boolean isImmutable() {
-        return false;
+    public boolean isFrozen() {
+        return this.immutable;
     }
 
     @Override
-    public AndOperatorPredicate immutable() {
-        return null;
+    public AndOperatorPredicate frozen() {
+        return Freezable.frozen(this, o -> new AndOperatorPredicate(Freezable.frozen(o.getOperands()), true));
     }
 
     @Override
     public AndOperatorPredicate clone() {
-        return null;
+        return Freezable.clone(this, o -> new AndOperatorPredicate(o.getOperands()));
     }
 }

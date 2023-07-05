@@ -17,7 +17,7 @@
  *
  */
 
-package org.ehrbase.openehr.sdk.aql.dto.operand;
+package org.ehrbase.openehr.sdk.util;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,33 +25,33 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public interface Freezable<O extends Freezable<O>> extends Cloneable {
-    O mutableCopy();
+    O thawed();
 
-    boolean isImmutable();
+    boolean isFrozen();
 
-    O immutable();
+    O frozen();
 
     O clone();
 
-    static <T extends Freezable<T>> List<T> mutableCopy(List<T> list) {
-        return list.stream().map(Freezable::mutableCopy).collect(Collectors.toList());
+    static <T extends Freezable<T>> List<T> thawed(List<T> list) {
+        return list.stream().map(Freezable::thawed).collect(Collectors.toList());
     }
 
     static <T extends Freezable<T>> List<T> clone(List<T> list) {
         return list.stream().map(Freezable::clone).collect(Collectors.toList());
     }
 
-    static <T extends Freezable<T>> List<T> immutable(List<T> list) {
-        return list.stream().map(Freezable::immutable).toList();
+    static <T extends Freezable<T>> List<T> frozen(List<T> list) {
+        return list.stream().map(Freezable::frozen).toList();
     }
 
     static <F extends Freezable<F>> F clone(F object, UnaryOperator<F> cloneOp) {
-        return Optional.of(object).filter(t -> !t.isImmutable()).map(cloneOp).orElse(object);
+        return Optional.of(object).filter(t -> !t.isFrozen()).map(cloneOp).orElse(object);
     }
 
-    static <F extends Freezable<F>> F immutable(F object, UnaryOperator<F> immutableCloneOp) {
+    static <F extends Freezable<F>> F frozen(F object, UnaryOperator<F> immutableCloneOp) {
         return Optional.of(object)
-                .filter(t -> !t.isImmutable())
+                .filter(t -> !t.isFrozen())
                 .map(immutableCloneOp)
                 .orElse(object);
     }

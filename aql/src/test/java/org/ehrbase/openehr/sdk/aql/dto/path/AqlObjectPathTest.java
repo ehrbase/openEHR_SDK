@@ -20,7 +20,11 @@
 package org.ehrbase.openehr.sdk.aql.dto.path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 import org.junit.jupiter.api.Test;
 
 class AqlObjectPathTest {
@@ -39,5 +43,13 @@ class AqlObjectPathTest {
 
         assertEquals(aqlObjectPath, clone);
         assertEquals(pathStr, clone.render());
+
+        PathNode firstClonedNode = clone.getPathNodes().get(0);
+        firstClonedNode.getPredicateOrOperands().get(0).add(AqlObjectPathUtil.NAME_CODE_STRING, PredicateComparisonOperator.EQ, new StringPrimitive("foo"));
+
+        assertNotEquals(aqlObjectPath, clone);
+        assertNotEquals(pathStr, clone.render());
+
+        assertEquals(pathStr, aqlObjectPath.render());
     }
 }

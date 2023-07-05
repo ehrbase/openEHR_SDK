@@ -150,7 +150,7 @@ public final class AqlRenderer {
 
         if (next instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
-        } else if (next instanceof Primitive<?> primitive) {
+        } else if (next instanceof Primitive primitive) {
             sb.append(renderPrimitive(primitive));
         } else {
             throw new SdkException("Cannot handle %s".formatted(next.getClass().getName()));
@@ -293,7 +293,7 @@ public final class AqlRenderer {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else if (operand instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
-        } else if (operand instanceof Primitive<?> primitive) {
+        } else if (operand instanceof Primitive primitive) {
             sb.append(renderPrimitive(primitive));
         } else if (operand instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
@@ -341,12 +341,12 @@ public final class AqlRenderer {
         List<ComparisonOperatorPredicate> operands = and.getOperands();
 
         ComparisonOperatorPredicate archetypeNodeId =
-                getSpecialPredicate(operands, AqlObjectPathUtil.archetypeNodeIdPath(), true);
+                getSpecialPredicate(operands, AqlObjectPathUtil.ARCHETYPE_NODE_ID, true);
 
         if (archetypeNodeId != null) {
             if (operands.size() == 2) {
                 ComparisonOperatorPredicate nameValue =
-                        getSpecialPredicate(operands, AqlObjectPathUtil.nameValuePath(), true);
+                        getSpecialPredicate(operands, AqlObjectPathUtil.NAME_VALUE, true);
                 if (nameValue != null) {
                     appendPlainValue(sb, archetypeNodeId);
                     sb.append(", ");
@@ -356,9 +356,9 @@ public final class AqlRenderer {
 
             } else if (operands.size() == 3) {
                 ComparisonOperatorPredicate nameTerminologyId =
-                        getSpecialPredicate(operands, AqlObjectPathUtil.nameTerminologyPath(), false);
+                        getSpecialPredicate(operands, AqlObjectPathUtil.NAME_TERMINOLOGY, false);
                 ComparisonOperatorPredicate nameCodeString =
-                        getSpecialPredicate(operands, AqlObjectPathUtil.nameCodeStringPath(), false);
+                        getSpecialPredicate(operands, AqlObjectPathUtil.NAME_CODE_STRING, false);
                 if (ObjectUtils.allNotNull(nameTerminologyId, nameCodeString)) {
                     appendPlainValue(sb, archetypeNodeId);
                     sb.append(", ");
@@ -468,10 +468,10 @@ public final class AqlRenderer {
     }
 
     private static void renderPath(StringBuilder sb, AqlObjectPath p) {
-        if (p.getPathParts().isEmpty()) {
+        if (p.getPathNodes().isEmpty()) {
             throw new UnsupportedOperationException("Found empty AqlObjectPath");
         }
-        join(sb, "/", "", "", p.getPathParts().stream().map(a -> (s -> renderPathNode(s, a))));
+        join(sb, "/", "", "", p.getPathNodes().stream().map(a -> (s -> renderPathNode(s, a))));
     }
 
     private static void renderPathNode(StringBuilder sb, PathNode n) {

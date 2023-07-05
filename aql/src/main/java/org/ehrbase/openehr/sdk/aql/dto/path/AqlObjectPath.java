@@ -17,21 +17,17 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.path;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.ehrbase.openehr.sdk.aql.dto.operand.Freezable;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
-import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
+import org.ehrbase.openehr.sdk.util.Freezable;
 
 public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
 
@@ -40,16 +36,21 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
         private final List<AndOperatorPredicate> predicateOrOperands;
         private boolean immutable = false;
 
+        private PathNode(String attribute, List<AndOperatorPredicate> predicateOrOperands, boolean immutable) {
+            if (StringUtils.isBlank(attribute)) {
+                throw new IllegalArgumentException("attribute must not be blank/empty/null");
+            }
+            this.immutable = immutable;
+            this.attribute = attribute;
+            this.predicateOrOperands = predicateOrOperands;
+        }
+
         public PathNode(String attribute) {
             this(attribute, List.of());
         }
 
         public PathNode(String attribute, List<AndOperatorPredicate> predicateOrOperands) {
-            if (StringUtils.isBlank(attribute)) {
-                throw new IllegalArgumentException("attribute must not be blank/empty/null");
-            }
-            this.attribute = attribute;
-            this.predicateOrOperands = Freezable.mutableCopy(predicateOrOperands);
+            this(attribute, Freezable.clone(predicateOrOperands), false);
         }
 
         public String getAttribute() {
@@ -88,41 +89,44 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
         }
 
         @Override
-        public PathNode mutableCopy() {
-            return new PathNode(this.getAttribute(), Freezable.mutableCopy(getPredicateOrOperands()));
+        public PathNode thawed() {
+            return new PathNode(this.getAttribute(), Freezable.thawed(getPredicateOrOperands()), false);
         }
 
         @Override
-        public boolean isImmutable() {
+        public boolean isFrozen() {
             return immutable;
         }
 
         @Override
-        public PathNode immutable() {
-            return Freezable.immutable(this, t -> {
-                PathNode pathNode = new PathNode(attribute, Freezable.immutable(predicateOrOperands));
-                pathNode.immutable = true;
-                return pathNode;
-            });
+        public PathNode frozen() {
+            return Freezable.frozen(
+                    this, t -> new PathNode(t.attribute, Freezable.frozen(t.predicateOrOperands), true));
         }
 
         @Override
         public PathNode clone() {
-            return Freezable.clone(this, t -> new PathNode(t.attribute, Freezable.clone(t.predicateOrOperands)));
+            return Freezable.clone(this, t -> new PathNode(t.attribute, t.predicateOrOperands));
         }
     }
 
     private final List<PathNode> pathNodes;
+    private boolean immutable = false;
+
+    private AqlObjectPath(List<PathNode> pathNodes, boolean immutable) {
+        this.immutable = immutable;
+        this.pathNodes = pathNodes;
+    }
 
     public AqlObjectPath(List<PathNode> pathNodes) {
-        this.pathNodes = new ArrayList<>(pathNodes);
+        this(Freezable.clone(pathNodes), false);
     }
 
     public AqlObjectPath(PathNode... pathNodes) {
         this(Arrays.asList(pathNodes));
     }
 
-    public List<PathNode> getPathParts() {
+    public List<PathNode> getPathNodes() {
         return pathNodes;
     }
 
@@ -170,6 +174,11 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
             return new AqlObjectPath(nodes.build().toList());
         }
 
+        public AqlObjectPathBuilder nodes(AqlObjectPath path) {
+            path.getPathNodes().stream().map(PathNode::clone).forEach(nodes::add);
+            return this;
+        }
+
         public AqlObjectPathBuilder node(String attribute) {
             nodes.add(new PathNode(attribute));
             return this;
@@ -187,16 +196,22 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
     }
 
     @Override
-    public AqlObjectPath clone() {
-        if (isImmutable()) {
-            return (this;
-        } else {
-            pathNodes.s
+    public AqlObjectPath thawed() {
+        return new AqlObjectPath(Freezable.thawed(pathNodes),false);
+    }
 
-            return mutableCopy();
-        }
-        AqlObjectPathBuilder builder = builder();
-        pathNodes.forEach(n -> builder.node(n.getAttribute(), n.getPredicateOrOperands()));
-        return builder.build();
+    @Override
+    public boolean isFrozen() {
+        return this.immutable;
+    }
+
+    @Override
+    public AqlObjectPath frozen() {
+        return Freezable.frozen(this, o -> new AqlObjectPath(Freezable.frozen(o.getPathNodes()), true));
+    }
+
+    @Override
+    public AqlObjectPath clone() {
+        return Freezable.clone(this, o -> new AqlObjectPath(o.getPathNodes()));
     }
 }

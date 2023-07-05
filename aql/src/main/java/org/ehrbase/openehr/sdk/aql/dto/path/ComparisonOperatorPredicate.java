@@ -22,10 +22,10 @@ import java.util.Optional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.ehrbase.openehr.sdk.aql.dto.operand.Freezable;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
+import org.ehrbase.openehr.sdk.util.Freezable;
 
-public class ComparisonOperatorPredicate implements Cloneable {
+public class ComparisonOperatorPredicate implements Freezable<ComparisonOperatorPredicate> {
 
     public enum PredicateComparisonOperator {
         EQ("="),
@@ -55,7 +55,7 @@ public class ComparisonOperatorPredicate implements Cloneable {
 
     private AqlObjectPath path;
     private PredicateComparisonOperator operator;
-    private PathPredicateOperand value;
+    private PathPredicateOperand<?> value;
     private AdlRegex matchesOperand;
 
     private boolean immutable = false;
@@ -104,11 +104,11 @@ public class ComparisonOperatorPredicate implements Cloneable {
         this.operator = operator;
     }
 
-    public PathPredicateOperand getValue() {
+    public PathPredicateOperand<?> getValue() {
         return value;
     }
 
-    public void setValue(PathPredicateOperand value) {
+    public void setValue(PathPredicateOperand<?> value) {
         if (operator == PredicateComparisonOperator.MATCHES) {
             throw new IllegalStateException("value cannot be set for a matches predicate");
         }
@@ -161,22 +161,23 @@ public class ComparisonOperatorPredicate implements Cloneable {
                 + matchesOperand + '}';
     }
 
-    public boolean isImmutable() {
+    @Override
+    public boolean isFrozen() {
         return immutable;
     }
 
-    public ComparisonOperatorPredicate immutable() {
-        return Freezable.immutable(this, t -> {
-            ComparisonOperatorPredicate clone = clone();
+    @Override
+    public ComparisonOperatorPredicate frozen() {
+        return Freezable.frozen(this, t -> {
+            ComparisonOperatorPredicate clone = t.clone();
             clone.immutable = true;
             return clone;
         });
     }
 
+    @Override
     public ComparisonOperatorPredicate clone() {
-        if (isImmutable()) {
-            return this;
-        } else {
+        return Freezable.clone(this, o -> {
             AqlObjectPath path = this.path.clone();
             if (this.operator == PredicateComparisonOperator.MATCHES) {
                 return ComparisonOperatorPredicate.matches(path, matchesOperand.clone());
@@ -184,17 +185,18 @@ public class ComparisonOperatorPredicate implements Cloneable {
                 return new ComparisonOperatorPredicate(
                         path, this.operator, this.getValue().clone());
             }
-        }
+        });
     }
 
-    public ComparisonOperatorPredicate mutableCopy() {
-        AqlObjectPath path = this.path.mutableCopy();
+    @Override
+    public ComparisonOperatorPredicate thawed() {
+        AqlObjectPath path = this.path.thawed();
 
         if (this.operator == PredicateComparisonOperator.MATCHES) {
-            return ComparisonOperatorPredicate.matches(path, matchesOperand.mutableCopy());
+            return ComparisonOperatorPredicate.matches(path, matchesOperand.thawed());
         } else {
             return new ComparisonOperatorPredicate(
-                    path, this.operator, this.getValue().mutableCopy());
+                    path, this.operator, this.getValue().thawed());
         }
     }
 }

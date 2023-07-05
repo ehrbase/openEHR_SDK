@@ -248,7 +248,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         } else if (ctx.STRING() != null) {
             selectPrimitiveDto = new StringPrimitive(unescapeText(ctx));
         } else if (ctx.NULL() != null) {
-            selectPrimitiveDto = new NullPrimitive();
+            selectPrimitiveDto = NullPrimitive.INSTANCE;
         } else {
             throw new AqlParseException("Cannot handle value " + ctx.getText());
         }
@@ -433,7 +433,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         Stream<ComparisonOperatorPredicate> predicates;
         if (ctx.PARAMETER() != null) {
             predicates = Stream.of(new ComparisonOperatorPredicate(
-                    AqlObjectPathUtil.archetypeNodeIdPath(),
+                    AqlObjectPathUtil.ARCHETYPE_NODE_ID,
                     PredicateComparisonOperator.EQ,
                     createParameter(ctx.PARAMETER())));
 
@@ -477,7 +477,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     @Override
     public ComparisonOperatorPredicate visitNodeConstraint(NodeConstraintContext ctx) {
         return new ComparisonOperatorPredicate(
-                AqlObjectPathUtil.archetypeNodeIdPath(),
+                AqlObjectPathUtil.ARCHETYPE_NODE_ID,
                 PredicateComparisonOperator.EQ,
                 new StringPrimitive(ctx.getText()));
     }
@@ -491,13 +491,13 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         // name/value cases
         if (ctx.PARAMETER() != null) {
             return List.of(new ComparisonOperatorPredicate(
-                    AqlObjectPathUtil.nameValuePath(),
+                    AqlObjectPathUtil.NAME_VALUE,
                     PredicateComparisonOperator.EQ,
                     createParameter(ctx.PARAMETER())));
         }
         if (ctx.STRING() != null) {
             return List.of(new ComparisonOperatorPredicate(
-                    AqlObjectPathUtil.nameValuePath(),
+                    AqlObjectPathUtil.NAME_VALUE,
                     PredicateComparisonOperator.EQ,
                     new StringPrimitive(unescapeText(ctx))));
         }
@@ -519,11 +519,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         }
         return List.of(
                 new ComparisonOperatorPredicate(
-                        AqlObjectPathUtil.nameCodeStringPath(),
+                        AqlObjectPathUtil.NAME_CODE_STRING,
                         PredicateComparisonOperator.EQ,
                         new StringPrimitive(code)),
                 new ComparisonOperatorPredicate(
-                        AqlObjectPathUtil.nameTerminologyPath(),
+                        AqlObjectPathUtil.NAME_TERMINOLOGY,
                         PredicateComparisonOperator.EQ,
                         new StringPrimitive(termId)));
     }

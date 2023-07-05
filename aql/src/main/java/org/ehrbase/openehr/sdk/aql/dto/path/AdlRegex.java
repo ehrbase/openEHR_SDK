@@ -19,8 +19,9 @@ package org.ehrbase.openehr.sdk.aql.dto.path;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.ehrbase.openehr.sdk.util.Freezable;
 
-public final class AdlRegex implements Cloneable {
+public final class AdlRegex implements Freezable<AdlRegex> {
     private String escapedRegex;
 
     private boolean immutable = false;
@@ -65,29 +66,27 @@ public final class AdlRegex implements Cloneable {
         return "AdlRegex{" + "escapedRegex='" + escapedRegex + '\'' + '}';
     }
 
-    public boolean isImmutable() {
+    @Override
+    public boolean isFrozen() {
         return immutable;
     }
 
-    public AdlRegex immutable() {
-        if (immutable) {
-            return this;
-        } else {
-            AdlRegex clone = clone();
+    @Override
+    public AdlRegex frozen() {
+        return Freezable.frozen(this, t -> {
+            AdlRegex clone = t.clone();
             clone.immutable = true;
             return clone;
-        }
+        });
     }
 
+    @Override
     public AdlRegex clone() {
-        if (isImmutable()) {
-            return this;
-        } else {
-            return mutableCopy();
-        }
+        return Freezable.clone(this, AdlRegex::thawed);
     }
 
-    public AdlRegex mutableCopy() {
+    @Override
+    public AdlRegex thawed() {
         return new AdlRegex(getEscapedRegex());
     }
 }

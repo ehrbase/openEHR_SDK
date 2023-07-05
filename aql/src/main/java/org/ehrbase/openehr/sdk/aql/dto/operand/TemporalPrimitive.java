@@ -75,7 +75,7 @@ public class TemporalPrimitive extends StringPrimitive {
         }
     }
 
-    public TemporalPrimitive immutable() {
-        return (TemporalPrimitive) super.immutable();
+    public TemporalPrimitive frozen() {
+        return (TemporalPrimitive) super.frozen();
     }
 }

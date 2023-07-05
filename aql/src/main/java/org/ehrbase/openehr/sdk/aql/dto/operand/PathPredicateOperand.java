@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import org.ehrbase.openehr.sdk.util.Freezable;
+
 /**
  * @author Stefan Spiska
  */
