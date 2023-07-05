@@ -18,9 +18,10 @@
 package org.ehrbase.openehr.sdk.aql.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
@@ -29,16 +30,42 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class AqlQueryParserTest {
+
+    @Test
+    void parsePathNoPredicates() {
+        testPath("a", "a");
+        testPath("a/b/c", "a/b/c");
+    }
+
+    @Test
+    void parsePathWithPredicates() {
+        testPath("a[b=c]", "a[b = c]");
+        testPath(
+                "a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d=e]",
+                "a[at001, 'name' OR at002 AND x=1 AND y='z']/b/c[d = e]");
+    }
+
+    @Test
+    void parsePathWithMatches() {
+        testPath("a[b matches {/some_regex/;'foo'}]", "a[b matches {/some_regex/;'foo'}]");
+    }
+
+    private void testPath(String toTest, String expected) {
+        AqlObjectPath actual = AqlQueryParser.parsePath(toTest);
+        assertThat(AqlRenderer.renderPath(actual)).isEqualTo(expected);
+    }
 
     @Test
     void parse() {
@@ -65,8 +92,53 @@ class AqlQueryParserTest {
     }
 
     @Test
+    void parsePredicateOr() {
+        String aql = "SELECT c[at001 or at002 or data=1] FROM COMPOSITION c";
+        testAql(aql, aql);
+    }
+
+    @Test
+    void parsePredicateAnd() {
+        String aql = "SELECT c[at001 and archetype_node_id='at002' and data=1] FROM COMPOSITION c";
+        testAql(aql, aql);
+
+        aql =
+                "SELECT c[at001 and archetype_node_id='at002' and data=1 or at003 and archetype_node_id='at004'] FROM COMPOSITION c";
+        testAql(aql, aql);
+    }
+
+    @Test
+    void parsePredicateNameValue() {
+        String aql = "SELECT c[at001, 'Name'] FROM COMPOSITION c";
+        testAql(aql, aql);
+
+        aql = "SELECT c[at001, 'Name' OR at002, $Same] FROM COMPOSITION c";
+        testAql(aql, aql);
+    }
+
+    @Test
+    void parseTerminology() {
+        testAql(
+                "SELECT c[at001, at002 OR at002, ICD10::F10.3] FROM COMPOSITION c",
+                "SELECT c[at001, local::at002 OR at002, ICD10::F10.3] FROM COMPOSITION c");
+    }
+
+    @Test
+    void parseNested() {
+        String aql = "SELECT c["
+                //
+                + "content[name/value=$contentName]"
+                + "/data["
+                + "name[value>'2' AND value<'200']"
+                + "/value = protocol[at001]/name/value"
+                + "]/data/origin>'2013'"
+                + "] FROM COMPOSITION c";
+        testAql(aql, aql);
+    }
+
+    @Test
     void parseFromComposition() {
-        String aql = "SELECT e/name/value AS name FROM COMPOSITION e";
+        String aql = "SELECT c/name/value AS name FROM COMPOSITION c";
         String expected = aql; // .replace(" FROM ", " FROM EHR e CONTAINS ");
 
         testAql(aql, expected);
@@ -168,13 +240,20 @@ class AqlQueryParserTest {
         String aql =
                 "SELECT c/context/other_context[at0001]/items[at0002]/value/value AS Bericht_ID__value, d/ehr_id/value AS ehr_id  EHR d CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.report.v1]";
 
-        AqlQueryParser cut = new AqlQueryParser();
-        try {
-            cut.parse(aql);
-            fail("Expected AqlParseException");
-        } catch (AqlParseException e) {
-            assertThat(e.getMessage()).isEqualTo("Parse exception: line 1: char 113 missing FROM at 'EHR'");
-        }
+        AqlParseException aqlParseException =
+                Assertions.assertThrows(AqlParseException.class, () -> AqlQueryParser.parse(aql));
+
+        assertThat(aqlParseException).hasMessage("Parse exception: line 1: char 113 missing FROM at 'EHR'");
+    }
+
+    @Test
+    void parseErrorUnknownFromAlias() {
+        String aql = "SELECT c FROM COMPOSITION d";
+
+        AqlParseException aqlParseException =
+                Assertions.assertThrows(AqlParseException.class, () -> AqlQueryParser.parse(aql));
+
+        assertThat(aqlParseException).hasMessageContaining("unknown FROM alias 'c'");
     }
 
     @Test
@@ -217,8 +296,7 @@ class AqlQueryParserTest {
     }
 
     void testAql(String aql, String expected) {
-        AqlQueryParser cut = new AqlQueryParser();
-        AqlQuery actual = cut.parse(aql);
+        AqlQuery actual = AqlQueryParser.parse(aql);
 
         assertThat(actual).isNotNull();
 
@@ -226,7 +304,7 @@ class AqlQueryParserTest {
 
         assertThat(actualAql).isEqualToIgnoringCase(expected);
 
-        String roundtripAql = AqlRenderer.render(cut.parse(expected));
+        String roundtripAql = AqlRenderer.render(AqlQueryParser.parse(expected));
 
         assertThat(roundtripAql).isEqualToIgnoringCase(expected);
     }
@@ -270,8 +348,7 @@ class AqlQueryParserTest {
     }
 
     void testContains(String aql, String s) {
-        AqlQueryParser cut = new AqlQueryParser();
-        AqlQuery actual = cut.parse(aql);
+        AqlQuery actual = AqlQueryParser.parse(aql);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getFrom()).isNotNull();
@@ -289,6 +366,13 @@ class AqlQueryParserTest {
                 "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 --> CLUSTER OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
     }
 
+    private static Stream<ComparisonOperatorPredicate> streamPredicates(List<AndOperatorPredicate> condition) {
+        if (condition == null) {
+            return Stream.empty();
+        }
+        return condition.stream().map(AndOperatorPredicate::getOperands).flatMap(List::stream);
+    }
+
     String render(Containment containmentExpresion) {
         StringBuilder sb = new StringBuilder();
 
@@ -297,11 +381,16 @@ class AqlQueryParserTest {
             if (classExpressionDto.getType().equals("EHR")) {
                 sb.append(render(classExpressionDto.getContains()));
             } else {
-                Predicate otherPredicates = ((ContainmentClassExpression) containmentExpresion).getPredicates();
-                sb.append(PredicateHelper.find(otherPredicates, PredicateHelper.ARCHETYPE_NODE_ID)
-                        .map(PredicateComparisonOperator::getValue)
+                List<AndOperatorPredicate> otherPredicates =
+                        ((ContainmentClassExpression) containmentExpresion).getPredicates();
+                sb.append(streamPredicates(otherPredicates)
+                        .filter(p -> p.getPath().getPathNodes().size() == 1)
+                        .filter(p -> PredicateHelper.ARCHETYPE_NODE_ID.equals(
+                                p.getPath().getPathNodes().get(0).getAttribute()))
+                        .map(ComparisonOperatorPredicate::getValue)
                         .map(StringPrimitive.class::cast)
                         .map(StringPrimitive::getValue)
+                        .findFirst()
                         .orElse(classExpressionDto.getType()));
                 Containment CONTAINS = ((AbstractContainmentExpression) containmentExpresion).getContains();
                 if (CONTAINS != null) {

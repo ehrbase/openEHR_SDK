@@ -17,7 +17,9 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import org.ehrbase.openehr.sdk.util.Freezable;
+
 /**
  * @author Stefan Spiska
  */
-public interface PathPredicateOperand {}
+public interface PathPredicateOperand<O extends PathPredicateOperand<O>> extends Freezable<O> {}

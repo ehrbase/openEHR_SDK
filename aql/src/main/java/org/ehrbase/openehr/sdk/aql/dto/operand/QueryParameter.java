@@ -18,13 +18,16 @@
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
 import java.util.Objects;
+import org.ehrbase.openehr.sdk.util.Freezable;
 
 /**
  * @author Stefan Spiska
  */
-public class QueryParameter implements MatchesOperand, Operand, LikeOperand, PathPredicateOperand {
+public class QueryParameter implements MatchesOperand, Operand, LikeOperand, PathPredicateOperand<QueryParameter> {
 
     private String name;
+
+    private boolean immutable = false;
 
     public QueryParameter() {}
 
@@ -32,11 +35,19 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
         this.name = other.name;
     }
 
+    public QueryParameter(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
+        if (immutable) {
+            throw new IllegalStateException(
+                    "%s is immutable".formatted(getClass().getSimpleName()));
+        }
         this.name = name;
     }
 
@@ -51,5 +62,26 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public boolean isFrozen() {
+        return immutable;
+    }
+
+    @Override
+    public QueryParameter clone() {
+        return Freezable.clone(this, Freezable::thawed);
+    }
+
+    public QueryParameter frozen() {
+        return Freezable.frozen(this, t -> {
+            QueryParameter clone = clone();
+            clone.immutable = true;
+            return clone;
+        });
+    }
+
+    public QueryParameter thawed() {
+        return new QueryParameter(getName());
     }
 }

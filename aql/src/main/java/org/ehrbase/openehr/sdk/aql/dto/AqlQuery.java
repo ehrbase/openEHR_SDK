@@ -23,6 +23,8 @@ import org.ehrbase.openehr.sdk.aql.dto.condition.WhereCondition;
 import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
+import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
+import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
 public class AqlQuery {
 
@@ -116,5 +118,13 @@ public class AqlQuery {
                 + ", offset="
                 + offset
                 + '}';
+    }
+
+    public static AqlQuery parse(String aqlStr) {
+        return AqlQueryParser.parse(aqlStr);
+    }
+
+    public String render() {
+        return AqlRenderer.render(this);
     }
 }

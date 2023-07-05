@@ -17,9 +17,11 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 
 /**
  * @author Stefan Spiska
@@ -28,9 +30,9 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
 
     private AbstractContainmentExpression from;
 
-    private Predicate rootPredicate;
+    private List<AndOperatorPredicate> rootPredicate;
 
-    private AqlPath path;
+    private AqlObjectPath path;
 
     public AbstractContainmentExpression getFrom() {
         return from;
@@ -40,19 +42,19 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
         this.from = from;
     }
 
-    public Predicate getRootPredicate() {
+    public List<AndOperatorPredicate> getRootPredicate() {
         return rootPredicate;
     }
 
-    public void setRootPredicate(Predicate rootPredicate) {
-        this.rootPredicate = rootPredicate;
+    public void setRootPredicate(List<AndOperatorPredicate> rootPredicate) {
+        this.rootPredicate = new ArrayList<>(rootPredicate);
     }
 
-    public AqlPath getPath() {
+    public AqlObjectPath getPath() {
         return path;
     }
 
-    public void setPath(AqlPath path) {
+    public void setPath(AqlObjectPath path) {
         this.path = path;
     }
 }

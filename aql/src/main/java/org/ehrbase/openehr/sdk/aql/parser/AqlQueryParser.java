@@ -17,33 +17,51 @@
  */
 package org.ehrbase.openehr.sdk.aql.parser;
 
+import java.util.function.BiFunction;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlLexer;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser;
 import org.ehrbase.openehr.sdk.util.exception.SDKErrorListener;
 
-public class AqlQueryParser {
+public final class AqlQueryParser {
 
-    public AqlQuery parse(String aql) {
+    private AqlQueryParser() {
+        // NOOP
+    }
+
+    public static AqlQuery parse(String aql) {
+        return parseQueryComponent(aql, (p, l) -> l.visitSelectQuery(p.selectQuery()));
+    }
+
+    private static <T> T parseQueryComponent(String source, BiFunction<AqlParser, AqlQueryVisitor, T> extractor) {
+
+        AqlLexer aqlLexer = new AqlLexer(CharStreams.fromString(source));
+        aqlLexer.removeErrorListeners();
+        aqlLexer.addErrorListener(SDKErrorListener.INSTANCE);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
+        AqlParser aqlParser = new AqlParser(commonTokenStream);
+        aqlParser.removeErrorListeners();
+        aqlParser.addErrorListener(SDKErrorListener.INSTANCE);
+        AqlQueryVisitor listener = new AqlQueryVisitor();
+
+        T component;
         try {
-            AqlLexer aqlLexer = new AqlLexer(CharStreams.fromString(aql));
-            aqlLexer.addErrorListener(SDKErrorListener.INSTANCE);
-            CommonTokenStream commonTokenStream = new CommonTokenStream(aqlLexer);
-            AqlParser aqlParser = new AqlParser(commonTokenStream);
-            aqlParser.addErrorListener(SDKErrorListener.INSTANCE);
-            AqlQueryVisitor listener = new AqlQueryVisitor();
-            AqlQuery aqlQuery = listener.visitSelectQuery(aqlParser.selectQuery());
-
-            if (!listener.getErrors().isEmpty()) {
-                throw new AqlParseException(
-                        String.format("Cannot parse aql %s: %s", aql, String.join(",", listener.getErrors())));
-            }
-
-            return aqlQuery;
-        } catch (RuntimeException e) {
+            component = extractor.apply(aqlParser, listener);
+        } catch (ParseCancellationException e) {
             throw new AqlParseException(e.getMessage(), e);
         }
+        if (!listener.getErrors().isEmpty()) {
+            throw new AqlParseException(
+                    String.format("Cannot parse %s: %s", source, String.join(",", listener.getErrors())));
+        }
+        return component;
+    }
+
+    public static AqlObjectPath parsePath(String aqlPath) {
+        return parseQueryComponent(aqlPath, (p, l) -> l.visitObjectPath(p.objectPath()));
     }
 }

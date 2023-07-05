@@ -19,8 +19,12 @@ package org.ehrbase.openehr.sdk.aql.render;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ExistsCondition;
@@ -44,16 +48,20 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LikeOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.MatchesOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
+import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Primitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPathUtil;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath.OtherPredicatesFormat;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.PredicateHelper;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
 /**
@@ -142,7 +150,7 @@ public final class AqlRenderer {
 
         if (next instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
-        } else if (next instanceof Primitive<?> primitive) {
+        } else if (next instanceof Primitive primitive) {
             sb.append(renderPrimitive(primitive));
         } else {
             throw new SdkException("Cannot handle %s".formatted(next.getClass().getName()));
@@ -285,7 +293,7 @@ public final class AqlRenderer {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
         } else if (operand instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
-        } else if (operand instanceof Primitive<?> primitive) {
+        } else if (operand instanceof Primitive primitive) {
             sb.append(renderPrimitive(primitive));
         } else if (operand instanceof QueryParameter queryParameter) {
             renderParameterDto(sb, queryParameter);
@@ -310,13 +318,165 @@ public final class AqlRenderer {
         }
 
         sb.append(containmentDto.getIdentifier());
-        if (dto.getRootPredicate() != null) {
-            sb.append('[');
-            PredicateHelper.format(sb, dto.getRootPredicate(), OtherPredicatesFormat.SHORTED);
-            sb.append(']');
+        Optional.of(dto).map(IdentifiedPath::getRootPredicate).ifPresent(p -> renderPredicate(sb, p));
+
+        Optional.of(dto).map(IdentifiedPath::getPath).ifPresent(p -> {
+            sb.append('/');
+            renderPath(sb, p);
+        });
+    }
+
+    private static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or) {
+        if (or.isEmpty() || or.size() == 1 && or.get(0).isEmpty()) {
+            return;
         }
 
-        sb.append(dto.getPath().format(OtherPredicatesFormat.SHORTED, false));
+        join(sb, " OR ", "[", "]", or.stream().map(a -> (s -> renderPredicateAnd(s, a))));
+    }
+
+    private static void renderPredicateAnd(StringBuilder sb, AndOperatorPredicate and) {
+        if (and.isEmpty()) {
+            throw new UnsupportedOperationException("Found empty AndOperatorPredicate");
+        }
+        List<ComparisonOperatorPredicate> operands = and.getOperands();
+
+        ComparisonOperatorPredicate archetypeNodeId =
+                getSpecialPredicate(operands, AqlObjectPathUtil.ARCHETYPE_NODE_ID, true);
+
+        if (archetypeNodeId != null) {
+            if (operands.size() == 2) {
+                ComparisonOperatorPredicate nameValue =
+                        getSpecialPredicate(operands, AqlObjectPathUtil.NAME_VALUE, true);
+                if (nameValue != null) {
+                    appendPlainValue(sb, archetypeNodeId);
+                    sb.append(", ");
+                    renderPathPredicateOperand(sb, nameValue.getValue());
+                    return;
+                }
+
+            } else if (operands.size() == 3) {
+                ComparisonOperatorPredicate nameTerminologyId =
+                        getSpecialPredicate(operands, AqlObjectPathUtil.NAME_TERMINOLOGY, false);
+                ComparisonOperatorPredicate nameCodeString =
+                        getSpecialPredicate(operands, AqlObjectPathUtil.NAME_CODE_STRING, false);
+                if (ObjectUtils.allNotNull(nameTerminologyId, nameCodeString)) {
+                    appendPlainValue(sb, archetypeNodeId);
+                    sb.append(", ");
+                    appendPlainValue(sb, nameTerminologyId);
+                    sb.append("::");
+                    appendPlainValue(sb, nameCodeString);
+                    return;
+                }
+            }
+        }
+
+        String prefix;
+        if (archetypeNodeId != null) {
+            appendPlainValue(sb, archetypeNodeId);
+            prefix = " AND ";
+        } else {
+            prefix = "";
+        }
+
+        // move archetypeNodeId to front, if present
+        Stream<ComparisonOperatorPredicate> stream = and.getOperands().stream().filter(a -> a != archetypeNodeId);
+
+        join(sb, " AND ", prefix, "", stream.map(a -> (s -> renderComparisonPredicate(s, a))));
+    }
+
+    private static void appendPlainValue(StringBuilder sb, ComparisonOperatorPredicate predicate) {
+        PathPredicateOperand value = predicate.getValue();
+        if (value instanceof StringPrimitive sp) {
+            sb.append(sp.getValue());
+        } else if (value instanceof QueryParameter qp) {
+            sb.append("$").append(qp.getName());
+        }
+    }
+
+    private static ComparisonOperatorPredicate getSpecialPredicate(
+            List<ComparisonOperatorPredicate> operands, AqlObjectPath path, boolean parameterAllowed) {
+        return operands.stream()
+                .filter(op -> isSpecialPredicate(op, path, parameterAllowed))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static boolean isSpecialPredicate(
+            ComparisonOperatorPredicate operand, AqlObjectPath path, boolean parameterAllowed) {
+        return Optional.of(operand)
+                .filter(op -> op.getOperator() == ComparisonOperatorPredicate.PredicateComparisonOperator.EQ)
+                .filter(op -> path.equals(op.getPath()))
+                .filter(op -> op.getValue() instanceof StringPrimitive || (parameterAllowed && isParameter(op)))
+                .isPresent();
+    }
+
+    private static boolean isParameter(ComparisonOperatorPredicate op) {
+        return op.getValue() instanceof QueryParameter;
+    }
+
+    private static void join(
+            StringBuilder sb, String delimiter, String prefix, String suffix, Stream<Consumer<StringBuilder>> stream) {
+        Iterator<Consumer<StringBuilder>> it = stream.iterator();
+        if (!it.hasNext()) {
+            return;
+        }
+        sb.append(prefix);
+        it.next().accept(sb);
+
+        while (it.hasNext()) {
+            sb.append(delimiter);
+            it.next().accept(sb);
+        }
+        sb.append(suffix);
+    }
+
+    private static void renderComparisonPredicate(StringBuilder sb, ComparisonOperatorPredicate predicate) {
+        renderPath(sb, predicate.getPath());
+
+        boolean comparingPaths = predicate.getValue() instanceof AqlObjectPath;
+        if (comparingPaths) {
+            sb.append(' ');
+        }
+        sb.append(predicate.getOperator().getSymbol());
+        if (comparingPaths) {
+            sb.append(' ');
+        }
+        if (predicate.getOperator() == PredicateComparisonOperator.MATCHES) {
+            sb.append(predicate.getMatchesOperand().getEscapedRegex());
+        } else {
+            renderPathPredicateOperand(sb, predicate.getValue());
+        }
+    }
+
+    private static void renderPathPredicateOperand(StringBuilder sb, PathPredicateOperand operand) {
+
+        if (operand instanceof QueryParameter o) {
+            renderParameterDto(sb, o);
+        } else if (operand instanceof Primitive o) {
+            sb.append(renderPrimitive(o));
+        } else if (operand instanceof AqlObjectPath o) {
+            renderPath(sb, o);
+        } else {
+            throw new UnsupportedOperationException("Unsupported operand type %s".formatted(operand.getClass()));
+        }
+    }
+
+    public static String renderPath(AqlObjectPath p) {
+        StringBuilder sb = new StringBuilder();
+        renderPath(sb, p);
+        return sb.toString();
+    }
+
+    private static void renderPath(StringBuilder sb, AqlObjectPath p) {
+        if (p.getPathNodes().isEmpty()) {
+            throw new UnsupportedOperationException("Found empty AqlObjectPath");
+        }
+        join(sb, "/", "", "", p.getPathNodes().stream().map(a -> (s -> renderPathNode(s, a))));
+    }
+
+    private static void renderPathNode(StringBuilder sb, PathNode n) {
+        sb.append(n.getAttribute());
+        renderPredicate(sb, n.getPredicateOrOperands());
     }
 
     private static void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
@@ -337,7 +497,7 @@ public final class AqlRenderer {
     }
 
     /**
-     * @see org.ehrbase.aql.parser.AqlQueryVisitor::unwrapText
+     * @see org.ehrbase.openehr.sdk.aql.parser.AqlQueryVisitor::unwrapText
      *
      * @param value
      * @return
@@ -432,12 +592,7 @@ public final class AqlRenderer {
             sb.append(" ").append(dto.getIdentifier());
         }
 
-        if (dto.getPredicates() != null) {
-
-            sb.append("[")
-                    .append(PredicateHelper.format(dto.getPredicates(), AqlPath.OtherPredicatesFormat.SHORTED))
-                    .append("]");
-        }
+        Optional.of(dto).map(ContainmentClassExpression::getPredicates).ifPresent(p -> renderPredicate(sb, p));
 
         if (dto.getContains() != null) {
 

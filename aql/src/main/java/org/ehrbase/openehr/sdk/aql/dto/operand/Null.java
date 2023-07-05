@@ -17,11 +17,4 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
-public class NullPrimitive extends Primitive<Null, NullPrimitive> {
-    public static NullPrimitive INSTANCE = new NullPrimitive();
-
-    private NullPrimitive() {
-        // NOOP
-        immutable = true;
-    }
-}
+public enum Null {}

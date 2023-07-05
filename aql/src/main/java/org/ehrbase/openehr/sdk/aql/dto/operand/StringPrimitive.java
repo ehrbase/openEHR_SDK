@@ -20,7 +20,7 @@ package org.ehrbase.openehr.sdk.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class StringPrimitive extends Primitive<String> implements LikeOperand {
+public class StringPrimitive extends Primitive<String, StringPrimitive> implements LikeOperand {
 
     public StringPrimitive() {}
 

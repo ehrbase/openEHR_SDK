@@ -17,13 +17,15 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.containment;
 
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate.Predicate;
+import java.util.ArrayList;
+import java.util.List;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 
 public class ContainmentClassExpression extends AbstractContainmentExpression {
 
     private String type;
 
-    private Predicate predicates;
+    private List<AndOperatorPredicate> predicates;
 
     public String getType() {
         return type;
@@ -33,11 +35,11 @@ public class ContainmentClassExpression extends AbstractContainmentExpression {
         this.type = type;
     }
 
-    public Predicate getPredicates() {
+    public List<AndOperatorPredicate> getPredicates() {
         return predicates;
     }
 
-    public void setPredicates(Predicate predicates) {
-        this.predicates = predicates;
+    public void setPredicates(List<AndOperatorPredicate> predicates) {
+        this.predicates = new ArrayList<>(predicates);
     }
 }

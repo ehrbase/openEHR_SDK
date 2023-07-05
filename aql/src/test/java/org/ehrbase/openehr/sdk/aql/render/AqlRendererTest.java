@@ -62,13 +62,13 @@ class AqlRendererTest {
 
         test(
                 aql,
-                "SELECT c[openEHR-EHR-COMPOSITION.report.v1,'something']/content[openEHR-EHR-SECTION.adhoc.v1,'Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0,'Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough FROM ehr e CONTAINS Composition c[openEHR-EHR-COMPOSITION.report.v1]");
+                "SELECT c[openEHR-EHR-COMPOSITION.report.v1, 'something']/content[openEHR-EHR-SECTION.adhoc.v1, 'Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0, 'Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough FROM ehr e CONTAINS Composition c[openEHR-EHR-COMPOSITION.report.v1]");
     }
 
     @Test
     void renderPathWithArbitraryPath() {
         String aql =
-                "SELECT o/data[at0001]/events[at0002 and time/value>'2021-12-03T16:05:19.513542+01:00']/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
+                "SELECT o/data[at0001]/events[at0002 AND time/value>'2021-12-03T16:05:19.513542+01:00']/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
         test(aql, aql);
     }
@@ -272,7 +272,7 @@ class AqlRendererTest {
     }
 
     private static void test(String aql, String expected) {
-        AqlQuery aqlQuery = new AqlQueryParser().parse(aql);
+        AqlQuery aqlQuery = AqlQueryParser.parse(aql);
 
         String rendered = AqlRenderer.render(aqlQuery);
 

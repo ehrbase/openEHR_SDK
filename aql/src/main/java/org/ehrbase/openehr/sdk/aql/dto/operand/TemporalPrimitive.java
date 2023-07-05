@@ -74,4 +74,8 @@ public class TemporalPrimitive extends StringPrimitive {
                             : OpenEHRDateTimeSerializationUtils.formatTime(temporal));
         }
     }
+
+    public TemporalPrimitive frozen() {
+        return (TemporalPrimitive) super.frozen();
+    }
 }
