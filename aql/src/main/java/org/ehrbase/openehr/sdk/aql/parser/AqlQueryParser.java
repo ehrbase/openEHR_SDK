@@ -17,11 +17,14 @@
  */
 package org.ehrbase.openehr.sdk.aql.parser;
 
+import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlLexer;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser;
@@ -34,7 +37,7 @@ public final class AqlQueryParser {
     }
 
     public static AqlQuery parse(String aql) {
-        return parseQueryComponent(aql, (p, l) -> l.visitSelectQuery(p.selectQuery()));
+        return parseQueryComponent(aql, AqlParser::selectQuery, AqlQueryVisitor::visitSelectQuery);
     }
 
     private static <T> T parseQueryComponent(String source, BiFunction<AqlParser, AqlQueryVisitor, T> extractor) {
@@ -61,7 +64,16 @@ public final class AqlQueryParser {
         return component;
     }
 
+    public static <T, U> U parseQueryComponent(
+            String source, Function<AqlParser, T> parserFunc, BiFunction<AqlQueryVisitor, T, U> visitorFunc) {
+        return parseQueryComponent(source, (p, l) -> visitorFunc.apply(l, parserFunc.apply(p)));
+    }
+
     public static AqlObjectPath parsePath(String aqlPath) {
-        return parseQueryComponent(aqlPath, (p, l) -> l.visitObjectPath(p.objectPath()));
+        return parseQueryComponent(aqlPath, AqlParser::objectPath, AqlQueryVisitor::visitObjectPath);
+    }
+
+    public static List<AndOperatorPredicate> parsePredicate(String aqlPathPredicate) {
+        return parseQueryComponent(aqlPathPredicate, AqlParser::pathPredicate, AqlQueryVisitor::visitPathPredicate);
     }
 }
