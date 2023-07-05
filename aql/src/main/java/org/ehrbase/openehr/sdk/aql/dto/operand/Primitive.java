@@ -17,19 +17,23 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import java.lang.constant.Constable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 /**
  * @author Stefan Spiska
  */
-public abstract class Primitive<T> implements Operand, ColumnExpression, MatchesOperand, PathPredicateOperand {
+public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
+        implements Operand, ColumnExpression, MatchesOperand, PathPredicateOperand<O> {
 
     T value;
 
-    public Primitive() {}
+    protected boolean immutable = false;
 
-    public Primitive(T value) {
+    protected Primitive() {}
+
+    protected Primitive(T value) {
         this.value = value;
     }
 
@@ -38,6 +42,10 @@ public abstract class Primitive<T> implements Operand, ColumnExpression, Matches
     }
 
     public void setValue(T value) {
+        if (immutable) {
+            throw new IllegalStateException(
+                    "%s is immutable".formatted(getClass().getSimpleName()));
+        }
         this.value = value;
     }
 
@@ -54,22 +62,32 @@ public abstract class Primitive<T> implements Operand, ColumnExpression, Matches
         return Objects.hash(value);
     }
 
-    public static <U> Primitive<U> clone(Primitive<U> other) {
+    public boolean isImmutable() {
+        return immutable;
+    }
 
-        Primitive newInstance = null;
+    public O immutable() {
+        return Freezable.immutable((O) this, t -> {
+            O clone = clone();
+            clone.immutable = true;
+            return clone;
+        });
+    }
+
+    public O clone() {
+        return Freezable.clone((O) this, Primitive::mutableCopy);
+    }
+
+    public O mutableCopy() {
         try {
-            newInstance = other.getClass().getConstructor().newInstance();
-            newInstance.setValue(other.getValue());
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
+            O newInstance = (O) this.getClass().getDeclaredConstructor().newInstance();
+            newInstance.setValue(this.getValue());
+            return newInstance;
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-
-        return newInstance;
     }
 }

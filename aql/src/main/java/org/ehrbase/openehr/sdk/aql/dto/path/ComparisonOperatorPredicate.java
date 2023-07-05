@@ -22,9 +22,10 @@ import java.util.Optional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.ehrbase.openehr.sdk.aql.dto.operand.Freezable;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 
-public class ComparisonOperatorPredicate {
+public class ComparisonOperatorPredicate implements Cloneable {
 
     public enum PredicateComparisonOperator {
         EQ("="),
@@ -56,6 +57,8 @@ public class ComparisonOperatorPredicate {
     private PredicateComparisonOperator operator;
     private PathPredicateOperand value;
     private AdlRegex matchesOperand;
+
+    private boolean immutable = false;
 
     public ComparisonOperatorPredicate() {}
 
@@ -156,5 +159,42 @@ public class ComparisonOperatorPredicate {
                 + operator + ", value="
                 + value + ", matchesOperand="
                 + matchesOperand + '}';
+    }
+
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    public ComparisonOperatorPredicate immutable() {
+        return Freezable.immutable(this, t -> {
+            ComparisonOperatorPredicate clone = clone();
+            clone.immutable = true;
+            return clone;
+        });
+    }
+
+    public ComparisonOperatorPredicate clone() {
+        if (isImmutable()) {
+            return this;
+        } else {
+            AqlObjectPath path = this.path.clone();
+            if (this.operator == PredicateComparisonOperator.MATCHES) {
+                return ComparisonOperatorPredicate.matches(path, matchesOperand.clone());
+            } else {
+                return new ComparisonOperatorPredicate(
+                        path, this.operator, this.getValue().clone());
+            }
+        }
+    }
+
+    public ComparisonOperatorPredicate mutableCopy() {
+        AqlObjectPath path = this.path.mutableCopy();
+
+        if (this.operator == PredicateComparisonOperator.MATCHES) {
+            return ComparisonOperatorPredicate.matches(path, matchesOperand.mutableCopy());
+        } else {
+            return new ComparisonOperatorPredicate(
+                    path, this.operator, this.getValue().mutableCopy());
+        }
     }
 }

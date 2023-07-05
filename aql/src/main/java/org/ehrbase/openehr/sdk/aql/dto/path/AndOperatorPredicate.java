@@ -22,10 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.ehrbase.openehr.sdk.aql.dto.operand.Freezable;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 
-public class AndOperatorPredicate {
+public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
     private final List<ComparisonOperatorPredicate> operands;
 
     public AndOperatorPredicate(List<ComparisonOperatorPredicate> operands) {
@@ -66,5 +67,25 @@ public class AndOperatorPredicate {
     @Override
     public String toString() {
         return "PredicateAndOperator{" + "operands=" + operands + '}';
+    }
+
+    @Override
+    public AndOperatorPredicate mutableCopy() {
+        return null;
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return false;
+    }
+
+    @Override
+    public AndOperatorPredicate immutable() {
+        return null;
+    }
+
+    @Override
+    public AndOperatorPredicate clone() {
+        return null;
     }
 }

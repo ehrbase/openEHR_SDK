@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Stefan Spiska
  */
-public class DoublePrimitive extends Primitive<Double> {
+public class DoublePrimitive extends Primitive<Double, DoublePrimitive> {
 
     private String stringRepresentation;
 

@@ -22,9 +22,11 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class QueryParameter implements MatchesOperand, Operand, LikeOperand, PathPredicateOperand {
+public class QueryParameter implements MatchesOperand, Operand, LikeOperand, PathPredicateOperand<QueryParameter> {
 
     private String name;
+
+    private boolean immutable = false;
 
     public QueryParameter() {}
 
@@ -32,11 +34,19 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
         this.name = other.name;
     }
 
+    public QueryParameter(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
+        if (immutable) {
+            throw new IllegalStateException(
+                    "%s is immutable".formatted(getClass().getSimpleName()));
+        }
         this.name = name;
     }
 
@@ -51,5 +61,26 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    @Override
+    public QueryParameter clone() {
+        return Freezable.clone(this, Freezable::mutableCopy);
+    }
+
+    public QueryParameter immutable() {
+        return Freezable.immutable(this, t -> {
+            QueryParameter clone = clone();
+            clone.immutable = true;
+            return clone;
+        });
+    }
+
+    public QueryParameter mutableCopy() {
+        return new QueryParameter(getName());
     }
 }

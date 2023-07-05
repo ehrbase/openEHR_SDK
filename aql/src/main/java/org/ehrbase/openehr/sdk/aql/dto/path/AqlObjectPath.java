@@ -21,23 +21,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.ehrbase.openehr.sdk.aql.dto.operand.Freezable;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
+import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
-public class AqlObjectPath implements PathPredicateOperand {
+public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
 
-    public static class PathNode {
+    public static class PathNode implements Freezable<PathNode> {
         private final String attribute;
         private final List<AndOperatorPredicate> predicateOrOperands;
+        private boolean immutable = false;
 
         public PathNode(String attribute) {
-            this(attribute, null);
+            this(attribute, List.of());
         }
 
         public PathNode(String attribute, List<AndOperatorPredicate> predicateOrOperands) {
@@ -45,8 +49,7 @@ public class AqlObjectPath implements PathPredicateOperand {
                 throw new IllegalArgumentException("attribute must not be blank/empty/null");
             }
             this.attribute = attribute;
-            this.predicateOrOperands =
-                    Optional.ofNullable(predicateOrOperands).map(ArrayList::new).orElseGet(ArrayList::new);
+            this.predicateOrOperands = Freezable.mutableCopy(predicateOrOperands);
         }
 
         public String getAttribute() {
@@ -82,6 +85,30 @@ public class AqlObjectPath implements PathPredicateOperand {
         @Override
         public String toString() {
             return "PathPart{" + "attribute='" + attribute + '\'' + ", predicate=" + predicateOrOperands + '}';
+        }
+
+        @Override
+        public PathNode mutableCopy() {
+            return new PathNode(this.getAttribute(), Freezable.mutableCopy(getPredicateOrOperands()));
+        }
+
+        @Override
+        public boolean isImmutable() {
+            return immutable;
+        }
+
+        @Override
+        public PathNode immutable() {
+            return Freezable.immutable(this, t -> {
+                PathNode pathNode = new PathNode(attribute, Freezable.immutable(predicateOrOperands));
+                pathNode.immutable = true;
+                return pathNode;
+            });
+        }
+
+        @Override
+        public PathNode clone() {
+            return Freezable.clone(this, t -> new PathNode(t.attribute, Freezable.clone(t.predicateOrOperands)));
         }
     }
 
@@ -157,5 +184,19 @@ public class AqlObjectPath implements PathPredicateOperand {
             nodes.add(new PathNode(attribute, List.of(new AndOperatorPredicate(Arrays.asList(predicates)))));
             return this;
         }
+    }
+
+    @Override
+    public AqlObjectPath clone() {
+        if (isImmutable()) {
+            return (this;
+        } else {
+            pathNodes.s
+
+            return mutableCopy();
+        }
+        AqlObjectPathBuilder builder = builder();
+        pathNodes.forEach(n -> builder.node(n.getAttribute(), n.getPredicateOrOperands()));
+        return builder.build();
     }
 }

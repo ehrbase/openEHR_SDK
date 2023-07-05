@@ -20,8 +20,10 @@ package org.ehrbase.openehr.sdk.aql.dto.path;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class AdlRegex {
+public final class AdlRegex implements Cloneable {
     private String escapedRegex;
+
+    private boolean immutable = false;
 
     public AdlRegex(String escapedRegex) {
         setEscapedRegex(escapedRegex);
@@ -32,6 +34,10 @@ public class AdlRegex {
     }
 
     public void setEscapedRegex(String escapedRegex) {
+        if (immutable) {
+            throw new IllegalStateException(
+                    "%s is immutable".formatted(getClass().getSimpleName()));
+        }
         if (!escapedRegex.matches("\\{\\s*/.*/\\s*(;\\s*[\"'].*[\"']\\s*)?}")) {
             throw new IllegalArgumentException("invalid ADL regex");
         }
@@ -57,5 +63,31 @@ public class AdlRegex {
     @Override
     public String toString() {
         return "AdlRegex{" + "escapedRegex='" + escapedRegex + '\'' + '}';
+    }
+
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    public AdlRegex immutable() {
+        if (immutable) {
+            return this;
+        } else {
+            AdlRegex clone = clone();
+            clone.immutable = true;
+            return clone;
+        }
+    }
+
+    public AdlRegex clone() {
+        if (isImmutable()) {
+            return this;
+        } else {
+            return mutableCopy();
+        }
+    }
+
+    public AdlRegex mutableCopy() {
+        return new AdlRegex(getEscapedRegex());
     }
 }
