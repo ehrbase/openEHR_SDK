@@ -58,7 +58,7 @@ public class ComparisonOperatorPredicate implements Freezable<ComparisonOperator
     private PathPredicateOperand<?> value;
     private AdlRegex matchesOperand;
 
-    private boolean immutable = false;
+    private boolean frozen = false;
 
     public ComparisonOperatorPredicate() {}
 
@@ -163,14 +163,14 @@ public class ComparisonOperatorPredicate implements Freezable<ComparisonOperator
 
     @Override
     public boolean isFrozen() {
-        return immutable;
+        return frozen;
     }
 
     @Override
     public ComparisonOperatorPredicate frozen() {
         return Freezable.frozen(this, t -> {
             ComparisonOperatorPredicate clone = t.clone();
-            clone.immutable = true;
+            clone.frozen = true;
             return clone;
         });
     }

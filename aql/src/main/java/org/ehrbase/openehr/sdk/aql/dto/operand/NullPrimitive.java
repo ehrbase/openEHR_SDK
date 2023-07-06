@@ -22,6 +22,6 @@ public class NullPrimitive extends Primitive<Null, NullPrimitive> {
 
     private NullPrimitive() {
         // NOOP
-        immutable = true;
+        frozen = true;
     }
 }

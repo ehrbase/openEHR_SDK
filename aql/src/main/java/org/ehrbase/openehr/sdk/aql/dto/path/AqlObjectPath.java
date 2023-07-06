@@ -34,13 +34,13 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
     public static class PathNode implements Freezable<PathNode> {
         private final String attribute;
         private final List<AndOperatorPredicate> predicateOrOperands;
-        private boolean immutable = false;
+        private boolean frozen = false;
 
-        private PathNode(String attribute, List<AndOperatorPredicate> predicateOrOperands, boolean immutable) {
+        private PathNode(String attribute, List<AndOperatorPredicate> predicateOrOperands, boolean frozen) {
             if (StringUtils.isBlank(attribute)) {
                 throw new IllegalArgumentException("attribute must not be blank/empty/null");
             }
-            this.immutable = immutable;
+            this.frozen = frozen;
             this.attribute = attribute;
             this.predicateOrOperands = predicateOrOperands;
         }
@@ -95,7 +95,7 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
 
         @Override
         public boolean isFrozen() {
-            return immutable;
+            return frozen;
         }
 
         @Override

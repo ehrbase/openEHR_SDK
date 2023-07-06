@@ -22,6 +22,11 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+/**
+ * Allows for dynamically creating a tree data structure and then freezing it by creating an immutable clone.<br>
+ * In order to edit a frozen model, a "thawed" mutable clone can be produced.<br>
+ * Mutable models may contain frozen values, but frozen values must only consist of frozen and immutable objects.
+ */
 public interface Freezable<O extends Freezable<O>> extends Cloneable {
     O thawed();
 

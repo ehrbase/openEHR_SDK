@@ -28,10 +28,10 @@ import org.ehrbase.openehr.sdk.util.Freezable;
 
 public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
     private final List<ComparisonOperatorPredicate> operands;
-    private boolean immutable;
+    private boolean frozen;
 
-    private AndOperatorPredicate(List<ComparisonOperatorPredicate> operands, boolean immutable) {
-        this.immutable = immutable;
+    private AndOperatorPredicate(List<ComparisonOperatorPredicate> operands, boolean frozen) {
+        this.frozen = frozen;
         this.operands = operands;
     }
 
@@ -82,7 +82,7 @@ public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
 
     @Override
     public boolean isFrozen() {
-        return this.immutable;
+        return this.frozen;
     }
 
     @Override

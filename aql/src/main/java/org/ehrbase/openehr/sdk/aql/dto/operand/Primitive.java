@@ -30,7 +30,7 @@ public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
 
     T value;
 
-    protected boolean immutable = false;
+    protected boolean frozen = false;
 
     protected Primitive() {}
 
@@ -43,7 +43,7 @@ public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
     }
 
     public void setValue(T value) {
-        if (immutable) {
+        if (frozen) {
             throw new IllegalStateException(
                     "%s is immutable".formatted(getClass().getSimpleName()));
         }
@@ -64,13 +64,13 @@ public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
     }
 
     public boolean isFrozen() {
-        return immutable;
+        return frozen;
     }
 
     public O frozen() {
         return Freezable.frozen((O) this, t -> {
             O clone = clone();
-            clone.immutable = true;
+            clone.frozen = true;
             return clone;
         });
     }

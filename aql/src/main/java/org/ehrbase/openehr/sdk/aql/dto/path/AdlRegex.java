@@ -24,7 +24,7 @@ import org.ehrbase.openehr.sdk.util.Freezable;
 public final class AdlRegex implements Freezable<AdlRegex> {
     private String escapedRegex;
 
-    private boolean immutable = false;
+    private boolean frozen = false;
 
     public AdlRegex(String escapedRegex) {
         setEscapedRegex(escapedRegex);
@@ -35,7 +35,7 @@ public final class AdlRegex implements Freezable<AdlRegex> {
     }
 
     public void setEscapedRegex(String escapedRegex) {
-        if (immutable) {
+        if (frozen) {
             throw new IllegalStateException(
                     "%s is immutable".formatted(getClass().getSimpleName()));
         }
@@ -68,14 +68,14 @@ public final class AdlRegex implements Freezable<AdlRegex> {
 
     @Override
     public boolean isFrozen() {
-        return immutable;
+        return frozen;
     }
 
     @Override
     public AdlRegex frozen() {
         return Freezable.frozen(this, t -> {
             AdlRegex clone = t.clone();
-            clone.immutable = true;
+            clone.frozen = true;
             return clone;
         });
     }

@@ -27,7 +27,7 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
 
     private String name;
 
-    private boolean immutable = false;
+    private boolean frozen = false;
 
     public QueryParameter() {}
 
@@ -44,7 +44,7 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
     }
 
     public void setName(String name) {
-        if (immutable) {
+        if (frozen) {
             throw new IllegalStateException(
                     "%s is immutable".formatted(getClass().getSimpleName()));
         }
@@ -65,7 +65,7 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
     }
 
     public boolean isFrozen() {
-        return immutable;
+        return frozen;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
     public QueryParameter frozen() {
         return Freezable.frozen(this, t -> {
             QueryParameter clone = clone();
-            clone.immutable = true;
+            clone.frozen = true;
             return clone;
         });
     }

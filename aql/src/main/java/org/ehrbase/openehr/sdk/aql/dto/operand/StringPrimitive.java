@@ -25,7 +25,6 @@ public class StringPrimitive extends Primitive<String, StringPrimitive> implemen
     public StringPrimitive() {}
 
     public StringPrimitive(String newValue) {
-
         super(newValue);
     }
 }
