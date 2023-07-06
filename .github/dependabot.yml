@@ -12,3 +12,5 @@ updates:
     ignore:
        - dependency-name: "*"
          update-types: ["version-update:semver-major"]
+       - dependency-name: "org.antlr:*"
+         update-types: ["version-update:semver-minor"] 
