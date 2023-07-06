@@ -111,10 +111,10 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
     }
 
     private final List<PathNode> pathNodes;
-    private boolean immutable = false;
+    private boolean frozen = false;
 
-    private AqlObjectPath(List<PathNode> pathNodes, boolean immutable) {
-        this.immutable = immutable;
+    private AqlObjectPath(List<PathNode> pathNodes, boolean frozen) {
+        this.frozen = frozen;
         this.pathNodes = pathNodes;
     }
 
@@ -202,7 +202,7 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
 
     @Override
     public boolean isFrozen() {
-        return this.immutable;
+        return this.frozen;
     }
 
     @Override
