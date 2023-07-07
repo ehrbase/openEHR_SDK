@@ -19,6 +19,7 @@ package org.ehrbase.openehr.sdk.aql.dto.path;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.util.Freezable;
 
 public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
@@ -213,5 +215,21 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
     @Override
     public AqlObjectPath clone() {
         return Freezable.clone(this, o -> new AqlObjectPath(o.getPathNodes()));
+    }
+
+    public static AqlObjectPath fromAqlPath(AqlPath aqlPath) {
+        return Optional.of(aqlPath)
+                .filter(AqlPath::hasPath)
+                .map(p -> p.format(true))
+                .map(s -> StringUtils.removeStart(s, "/"))
+                .map(AqlObjectPath::parse)
+                .orElse(null);
+    }
+
+    public static AqlPath toAqlPath(AqlObjectPath aqlObjectPath) {
+        return Optional.ofNullable(aqlObjectPath)
+                .map(AqlObjectPath::render)
+                .map(AqlPath::parse)
+                .orElse(AqlPath.EMPTY_PATH);
     }
 }

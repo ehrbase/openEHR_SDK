@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.junit.jupiter.api.Test;
 
 class AqlObjectPathTest {
@@ -52,5 +53,16 @@ class AqlObjectPathTest {
         assertNotEquals(pathStr, clone.render());
 
         assertEquals(pathStr, aqlObjectPath.render());
+    }
+
+    @Test
+    void aqlPathRoundtrip() {
+        String path = "content[name/value='1234']/data[at001]/events[at001,'1234']";
+
+        AqlObjectPath aop = AqlObjectPath.parse(path);
+        AqlPath ap = AqlPath.parse(path);
+
+        assertEquals(aop, AqlObjectPath.fromAqlPath(ap));
+        assertEquals(ap, AqlObjectPath.toAqlPath(aop));
     }
 }
