@@ -326,6 +326,13 @@ public final class AqlRenderer {
         });
     }
 
+    public static String renderPredicate(List<AndOperatorPredicate> or) {
+        StringBuilder sb = new StringBuilder();
+        renderPredicate(sb, or);
+
+        return sb.toString();
+    }
+
     private static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or) {
         if (or.isEmpty() || or.size() == 1 && or.get(0).isEmpty()) {
             return;

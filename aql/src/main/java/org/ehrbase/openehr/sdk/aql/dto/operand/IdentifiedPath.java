@@ -17,17 +17,21 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.parser.serializer.AbstractContainmentExpressionSerializer;
+import org.ehrbase.openehr.sdk.aql.parser.serializer.PredicateSerializer;
 
 /**
  * @author Stefan Spiska
  */
 public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeftOperand {
 
+    @JsonSerialize(using = AbstractContainmentExpressionSerializer.class)
     private AbstractContainmentExpression from;
 
     private List<AndOperatorPredicate> rootPredicate;
@@ -42,6 +46,7 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
         this.from = from;
     }
 
+    @JsonSerialize(using = PredicateSerializer.class)
     public List<AndOperatorPredicate> getRootPredicate() {
         return rootPredicate;
     }

@@ -17,7 +17,22 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * @author Stefan Spiska
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = QueryParameter.class, name = "QueryParameter"),
+    @JsonSubTypes.Type(value = BooleanPrimitive.class, name = "BooleanPrimitive"),
+    @JsonSubTypes.Type(value = DoublePrimitive.class, name = "DoublePrimitive"),
+    @JsonSubTypes.Type(value = LongPrimitive.class, name = "LongPrimitive"),
+    @JsonSubTypes.Type(value = NullPrimitive.class, name = "NullPrimitive"),
+    @JsonSubTypes.Type(value = SingleRowFunction.class, name = "SingleRowFunction"),
+    @JsonSubTypes.Type(value = StringPrimitive.class, name = "StringPrimitive"),
+    @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "TemporalPrimitive"),
+    @JsonSubTypes.Type(value = TerminologyFunction.class, name = "TerminologyFunction")
+})
 public interface MatchesOperand {}
