@@ -17,13 +17,17 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.parser.serializer.AbstractContainmentExpressionDeserializer;
 import org.ehrbase.openehr.sdk.aql.parser.serializer.AbstractContainmentExpressionSerializer;
+import org.ehrbase.openehr.sdk.aql.parser.serializer.PredicateDeSerializer;
 import org.ehrbase.openehr.sdk.aql.parser.serializer.PredicateSerializer;
 
 /**
@@ -32,6 +36,7 @@ import org.ehrbase.openehr.sdk.aql.parser.serializer.PredicateSerializer;
 public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeftOperand {
 
     @JsonSerialize(using = AbstractContainmentExpressionSerializer.class)
+    @JsonDeserialize(using = AbstractContainmentExpressionDeserializer.class)
     private AbstractContainmentExpression from;
 
     private List<AndOperatorPredicate> rootPredicate;
@@ -51,6 +56,8 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
         return rootPredicate;
     }
 
+    @JsonIgnore
+    @JsonDeserialize(using = PredicateDeSerializer.class)
     public void setRootPredicate(List<AndOperatorPredicate> rootPredicate) {
         this.rootPredicate = new ArrayList<>(rootPredicate);
     }

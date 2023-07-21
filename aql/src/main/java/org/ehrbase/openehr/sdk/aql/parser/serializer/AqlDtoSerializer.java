@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.parser.serializer;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
@@ -41,8 +42,10 @@ public class AqlDtoSerializer {
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(AqlObjectPath.class, new ObjectPathSerializer());
+        simpleModule.addDeserializer(AqlObjectPath.class, new ObjectPathDeSerializer());
 
         aqlobjectMapper.registerModule(simpleModule);
+        aqlobjectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         return aqlobjectMapper;
     }
 }

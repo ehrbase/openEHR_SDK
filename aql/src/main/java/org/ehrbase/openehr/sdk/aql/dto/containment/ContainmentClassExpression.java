@@ -17,10 +17,12 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.containment;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.parser.serializer.PredicateDeSerializer;
 import org.ehrbase.openehr.sdk.aql.parser.serializer.PredicateSerializer;
 
 public class ContainmentClassExpression extends AbstractContainmentExpression {
@@ -42,6 +44,7 @@ public class ContainmentClassExpression extends AbstractContainmentExpression {
         return predicates;
     }
 
+    @JsonDeserialize(using = PredicateDeSerializer.class)
     public void setPredicates(List<AndOperatorPredicate> predicates) {
         this.predicates = new ArrayList<>(predicates);
     }

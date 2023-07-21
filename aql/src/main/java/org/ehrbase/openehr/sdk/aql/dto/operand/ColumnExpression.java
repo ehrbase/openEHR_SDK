@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = AggregateFunction.class, name = "AggregateFunction"),
+    @JsonSubTypes.Type(value = IdentifiedPath.class, name = "IdentifiedPath"),
     @JsonSubTypes.Type(value = BooleanPrimitive.class, name = "BooleanPrimitive"),
     @JsonSubTypes.Type(value = CountDistinctAggregateFunction.class, name = "CountDistinctAggregateFunction"),
     @JsonSubTypes.Type(value = DoublePrimitive.class, name = "DoublePrimitive"),
