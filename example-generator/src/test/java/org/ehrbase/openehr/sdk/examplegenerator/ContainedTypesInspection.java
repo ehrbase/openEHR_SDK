@@ -22,9 +22,9 @@ import java.util.Comparator;
 import java.util.Deque;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.ehrbase.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.webtemplate.model.WebTemplate;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.junit.jupiter.api.Test;
 
 class ContainedTypesInspection {

@@ -2,18 +2,36 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.0.0]
+
+### Added
+
+- new module generator-commons ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+
+### Changed
+
+- switch to java 17 ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464))
+- Change the implementation of AqlDto ([#464](https://github.com/ehrbase/openEHR_SDK/pull/464)[#483](https://github.com/ehrbase/openEHR_SDK/pull/483))
+- Change package paths to start with `org.ehrbase.openehr.sdk` ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+- Moved classes to the modules they belong to semantically ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+- Removed ehrbase specific package `org.ehrbase.serialisation.dbenconding` ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+- Removed empty module "building" ([#472](https://github.com/ehrbase/openEHR_SDK/pull/472))
+
+### Fixed
+
+- Workaroud for ([an issue in java 17.0.7]())  ([#468] (https://github.com/ehrbase/openEHR_SDK/pull/468))
+
 ## [1.29.0]
- ### Added 
- ### Fixed 
+
+### Changed
+
+- Bump maven-plugin-annotations ([#466](https://github.com/ehrbase/openEHR_SDK/pull/466))
 
 ## [1.28.0]
 
 ### Added
+
 - new DirectoryCrudEndpoint ([#465](https://github.com/ehrbase/openEHR_SDK/pull/465))
-
-### Changed
-
-- Enhanced JSON representation of AqlDto ([#462](https://github.com/ehrbase/openEHR_SDK/pull/462))
 
 ### Fixed
 
@@ -301,4 +319,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [1.27.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.26.0...v1.27.0
 
 [1.28.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.27.0...v1.28.0
+
 [1.29.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.28.0...v1.29.0
+
+[2.0.0]: https://github.com/ehrbase/openEHR_SDK/compare/v1.29.0...v2.0.0

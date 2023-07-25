@@ -31,9 +31,9 @@
         <value>01b4f52a-63b4-4b38-9d79-6ec196996042</value>
     </uid>
     <template_id>
-        <value>used-item-archetype-slot</value>
+        <value>used-item-archetypeslot</value>
     </template_id>
-    <concept>used-item-archetype-slot</concept>
+    <concept>used-item-archetypeslot</concept>
     <definition>
         <rm_type_name>COMPOSITION</rm_type_name>
         <occurrences>
@@ -2487,7 +2487,7 @@
             <value>openEHR-EHR-COMPOSITION.lifestyle_factors.v0</value>
         </archetype_id>
         <template_id>
-            <value>used-item-archetype-slot</value>
+            <value>used-item-archetypeslot</value>
         </template_id>
         <term_definitions code="at0002">
             <items id="text">Tree</items>
@@ -2499,7 +2499,7 @@
             <items id="comment">For example: local information requirements; or additional metadata to align with FHIR.</items>
         </term_definitions>
         <term_definitions code="at0000">
-            <items id="text">used-item-archetype-slot</items>
+            <items id="text">used-item-archetypeslot</items>
             <items id="description">A persistent and evolving summary record of information about lifestyle risk factors that may influence health outcomes, clinical decision-making and provision of care.</items>
         </term_definitions>
     </definition>

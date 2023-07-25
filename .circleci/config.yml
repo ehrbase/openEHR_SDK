@@ -841,7 +841,7 @@ commands:
                 *"[major]"*)
                 
                     echo "bump major release version"
-                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
+                    mvn17 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0 versions:commit
                     SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated major version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
@@ -857,7 +857,7 @@ commands:
                 *"[minor]"*)
 
                     echo "bump minor release version"
-                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
+                    mvn17 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0 versions:commit
                     SDK_VERSION=$(xmlstarlet sel -t -m "/_:project/_:version" -v .   pom.xml )
                     
                     git commit -am "updated minor version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
@@ -873,8 +873,8 @@ commands:
                 *"[patch]"*)
 
                     echo "bump patch release version"
-                    mvn11 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-                    SDK_VERSION=$(mvn11 -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+                    mvn17 build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+                    SDK_VERSION=$(mvn17 -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
                     
                     git commit -am "updated patch version to v${SDK_VERSION}-SNAPSHOT [skip ci]"
                     git checkout -b patch-snapshot-update
@@ -975,7 +975,7 @@ commands:
       - run:
           name: Run spotless plugin check goal
           command: |
-            mvn11 com.diffplug.spotless:spotless-maven-plugin:check
+            mvn17 com.diffplug.spotless:spotless-maven-plugin:check
 
 
   build-sdk:
@@ -983,10 +983,10 @@ commands:
       - install-java-maven
       - install-xml-cli-tool
       - run:
-          name: Maven build, install openEHR_SDK (skip Tests!)
+          name: Maven build, install openEHR_SDK
           command: |
-            mvn11 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
-            mvn11 install -Dmaven.javadoc.skip=true -Djacoco.skip=true -Dmaven.test.skip
+            mvn17 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL$(cat /proc/sys/kernel/random/uuid)  -DprocessAllModules=true versions:commit
+            mvn17 install -Dmaven.javadoc.skip=true -Djacoco.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -1002,8 +1002,8 @@ commands:
       - run:
           name: Maven build, test (ONLY unit tests), install openEHR_SDK
           command: |
-            mvn11 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
-            mvn11 install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
+            mvn17 build-helper:parse-version versions:set -DnewVersion=\${project.version}-LOCAL -DprocessAllModules=true versions:commit
+            mvn17 install dependency:go-offline -Djacoco.skip=true -Dmaven.javadoc.skip=true
       - run:
           name: Save the version number of locally installed SDK into a file
           command: |
@@ -1024,7 +1024,7 @@ commands:
             This way only the Java integration tests are executed.
           command: |
             jps
-            mvn11 test -Pslow -Dmaven.javadoc.skip=true
+            mvn17 test -Pslow -Dmaven.javadoc.skip=true
 
 
   build-and-run-ehrbase-then-run-all-sdk-java-tests:
@@ -1065,7 +1065,7 @@ commands:
             grep -m 1 "Started EhrBase in" <(tail -f log)
             cd ..
             jps
-            mvn11 verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >>
+            mvn17 verify -DskipIntegrationTests=false -Dmaven.javadoc.skip=true -Djacoco.skip=<< parameters.skip-jacoco >>
 
 
   cache-out-sdk-m2-dependencies:
@@ -1276,18 +1276,8 @@ commands:
 # ///////////////////////////////////////////////////////////////////////////
 
   install-java-maven:
-    description: Install Java 11, 17 and maven (if not already installed)
+    description: Install Java 17 and maven (if not already installed)
     steps:
-      - run:
-          name: Install Java 11
-          command: |
-            if [ ! -d "/usr/lib/jvm/jdk-11.0.17+8" ]; then
-              wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.17%2B8/OpenJDK11U-jdk_x64_linux_hotspot_11.0.17_8.tar.gz -O /tmp/openjdk-11.tar.gz
-              sudo mkdir -p /usr/lib/jvm
-              sudo tar xfvz /tmp/openjdk-11.tar.gz --directory /usr/lib/jvm
-              rm -f /tmp/openjdk-11.tar.gz
-              sudo ln -s /usr/lib/jvm/jdk-11.0.17+8 /opt/jdk11
-            fi
       - run:
           name: Install Java 17
           command: |
@@ -1317,13 +1307,10 @@ commands:
           name: Setup aliases and variables
           command: |
             #We default to JDK17 so we do not run into problems with running ehrbase through mvn
-            #To make sure Byte code and jvm libs of SDK are compatible with JRE11 maven.compiler.release property is used in SDK main pom.xml
             sudo sh -c "echo 'export JAVA_HOME=/opt/jdk17' >> /etc/bash.bashrc"
             sudo sh -c "echo 'export MAVEN_HOME=/opt/maven' >> /etc/bash.bashrc"
             sudo sh -c "echo 'export M2_HOME=\$MAVEN_HOME' >> /etc/bash.bashrc"
-            sudo sh -c "echo 'alias java11=\"/opt/jdk11/bin/java\"' >> /etc/bash.bashrc"
             sudo sh -c "echo 'alias java17=\"/opt/jdk17/bin/java\"' >> /etc/bash.bashrc"
-            sudo sh -c "echo 'alias mvn11=\"JAVA_HOME=/opt/jdk11 /opt/maven/bin/mvn\"' >> /etc/bash.bashrc"
             sudo sh -c "echo 'alias mvn17=\"JAVA_HOME=/opt/jdk17 /opt/maven/bin/mvn\"' >> /etc/bash.bashrc"
             sudo chmod +x /etc/bash.bashrc
             sudo chmod +x /etc/profile
@@ -1333,7 +1320,7 @@ commands:
       - verify-java-maven-install
 
   verify-java-maven-install:
-    description: Install Java 11, 17 and maven (if not already installed)
+    description: Verify installed Java 17 and maven
     steps:
       - run:
           name: Show active and installed JDK/Maven versions
@@ -1344,14 +1331,10 @@ commands:
             echo "M2_HOME: $M2_HOME"
             echo 'JDK 17 (java17):'
             java17 --version
-            echo 'JDK 11 (java11):'
-            java11 --version
             echo 'JDK default (java):'
             java --version
             echo 'Maven with JDK 17 (mvn17):'
             mvn17 --version
-            echo 'Maven with JDK 11 (mvn11):'
-            mvn11 --version
             echo 'Maven default (mvn):'
             mvn --version
             

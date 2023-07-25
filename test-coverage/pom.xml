@@ -7,8 +7,8 @@
 
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
-        <artifactId>root</artifactId>
-        <version>1.29.0</version>
+        <artifactId>sdk-parent</artifactId>
+        <version>2.0.0</version>
     </parent>
 
     <artifactId>test-coverage</artifactId>
@@ -50,10 +50,6 @@
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>web-template</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ehrbase.openehr.sdk</groupId>
-            <artifactId>building</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>

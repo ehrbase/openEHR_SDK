@@ -91,16 +91,16 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.ehrbase.client.classgenerator.shareddefinition.State;
-import org.ehrbase.client.classgenerator.shareddefinition.Transition;
-import org.ehrbase.util.rmconstants.RmConstants;
-import org.ehrbase.webtemplate.model.ProportionType;
-import org.ehrbase.webtemplate.model.WebTemplateComparisonSymbol;
-import org.ehrbase.webtemplate.model.WebTemplateInput;
-import org.ehrbase.webtemplate.model.WebTemplateInputValue;
-import org.ehrbase.webtemplate.model.WebTemplateInterval;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
-import org.ehrbase.webtemplate.model.WebTemplateValidation;
+import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.State;
+import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.Transition;
+import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
+import org.ehrbase.openehr.sdk.webtemplate.model.ProportionType;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateComparisonSymbol;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInterval;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateValidation;
 import org.threeten.extra.PeriodDuration;
 
 public class ExampleGeneratorConfig {

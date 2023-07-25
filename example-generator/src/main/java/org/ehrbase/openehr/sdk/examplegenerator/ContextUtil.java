@@ -20,8 +20,8 @@ package org.ehrbase.openehr.sdk.examplegenerator;
 import com.nedap.archie.rm.RMObject;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import org.ehrbase.serialisation.walker.Context;
-import org.ehrbase.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.serialisation.walker.Context;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 public class ContextUtil {
 
