@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- Added json Serialisation for the AQL-DTO model ([#496](https://github.com/ehrbase/openEHR_SDK/pull/496))  
  ### Fixed 
 
 ## [2.0.0]
