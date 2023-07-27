@@ -17,7 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.constant.Constable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
@@ -64,7 +63,6 @@ public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
         return Objects.hash(value);
     }
 
-    @JsonIgnore
     public boolean isFrozen() {
         return frozen;
     }

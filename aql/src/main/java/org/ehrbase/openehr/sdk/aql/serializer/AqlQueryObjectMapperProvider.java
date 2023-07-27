@@ -15,24 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.parser.serializer;
+package org.ehrbase.openehr.sdk.aql.serializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 
 /**
  * @author Stefan Spiska
  */
-public class AqlDtoSerializer {
+public class AqlQueryObjectMapperProvider {
 
-    private static ObjectMapper objectMapper;
+    private AqlQueryObjectMapperProvider() {
+        // NOP
+    }
+
+    private static ObjectMapper objectMapper = init();
 
     public static ObjectMapper getObjectMapper() {
-        if (objectMapper == null) {
-            objectMapper = init();
-        }
+
         return objectMapper;
     }
 
@@ -42,7 +45,8 @@ public class AqlDtoSerializer {
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(AqlObjectPath.class, new ObjectPathSerializer());
-        simpleModule.addDeserializer(AqlObjectPath.class, new ObjectPathDeSerializer());
+        simpleModule.addDeserializer(AqlObjectPath.class, new ObjectPathDeserializer());
+        simpleModule.addDeserializer(AqlQuery.class, new AqlQueryDeserializer());
 
         aqlobjectMapper.registerModule(simpleModule);
         aqlobjectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);

@@ -15,26 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.parser.serializer;
+package org.ehrbase.openehr.sdk.aql.serializer;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
-import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
+import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
 /**
  * @author Stefan Spiska
  */
-public class ObjectPathDeSerializer extends StdDeserializer<AqlObjectPath> {
-    protected ObjectPathDeSerializer() {
+public class ObjectPathSerializer extends StdSerializer<AqlObjectPath> {
+    protected ObjectPathSerializer() {
         super(AqlObjectPath.class);
     }
 
     @Override
-    public AqlObjectPath deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-        return AqlQueryParser.parsePath(p.getValueAsString());
+    public void serialize(AqlObjectPath value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+
+        gen.writeString(AqlRenderer.renderPath(value));
     }
 }

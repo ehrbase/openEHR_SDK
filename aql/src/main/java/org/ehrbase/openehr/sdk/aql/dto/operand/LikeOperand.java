@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = QueryParameter.class, name = "QueryParameter"),
-    @JsonSubTypes.Type(value = StringPrimitive.class, name = "StringPrimitive"),
-    @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "TemporalPrimitive")
+    @JsonSubTypes.Type(value = StringPrimitive.class, name = "String"),
+    @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "Temporal")
 })
 public interface LikeOperand {}

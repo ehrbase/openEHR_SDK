@@ -15,26 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.parser.serializer;
+package org.ehrbase.openehr.sdk.aql.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import java.util.List;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
 /**
  * @author Stefan Spiska
  */
-public class ObjectPathSerializer extends StdSerializer<AqlObjectPath> {
-    protected ObjectPathSerializer() {
-        super(AqlObjectPath.class);
+public class PredicateSerializer extends StdSerializer<List<AndOperatorPredicate>> {
+
+    protected PredicateSerializer() {
+        super((Class<List<AndOperatorPredicate>>) null);
     }
 
     @Override
-    public void serialize(AqlObjectPath value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(List<AndOperatorPredicate> value, JsonGenerator gen, SerializerProvider provider)
+            throws IOException {
 
-        gen.writeString(AqlRenderer.renderPath(value));
+        gen.writeString(AqlRenderer.renderPredicate(value));
     }
 }

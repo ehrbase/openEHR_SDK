@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 package org.ehrbase.openehr.sdk.aql.dto.containment;
+
+import java.util.Objects;
+
 /**
  * @author Stefan Spiska
  */
@@ -39,5 +42,23 @@ public abstract class AbstractContainmentExpression implements Containment {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractContainmentExpression that = (AbstractContainmentExpression) o;
+        return Objects.equals(contains, that.contains) && Objects.equals(identifier, that.identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contains, identifier);
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractContainmentExpression{" + "contains=" + contains + ", identifier='" + identifier + '\'' + '}';
     }
 }

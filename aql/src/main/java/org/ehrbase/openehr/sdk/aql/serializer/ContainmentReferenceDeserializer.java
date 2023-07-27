@@ -15,29 +15,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.parser.serializer;
+package org.ehrbase.openehr.sdk.aql.serializer;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import java.io.IOException;
-import java.util.List;
-import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
-import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
+import java.util.Map;
+import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 
 /**
  * @author Stefan Spiska
  */
-public class PredicateDeSerializer extends StdDeserializer<List<AndOperatorPredicate>> {
-
-    protected PredicateDeSerializer() {
-        super((Class<List<AndOperatorPredicate>>) null);
+public class ContainmentReferenceDeserializer extends StdDeserializer<AbstractContainmentExpression> {
+    protected ContainmentReferenceDeserializer() {
+        super(AbstractContainmentExpression.class);
     }
 
     @Override
-    public List<AndOperatorPredicate> deserialize(JsonParser p, DeserializationContext ctxt)
+    public AbstractContainmentExpression deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException, JacksonException {
-        return AqlQueryParser.parsePredicate(p.getValueAsString());
+
+        return ((Map<String, AbstractContainmentExpression>) ctxt.getAttribute("listById")).get(p.getValueAsString());
+    }
+
+    @Override
+    public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer)
+            throws IOException {
+        return deserialize(p, ctxt);
     }
 }

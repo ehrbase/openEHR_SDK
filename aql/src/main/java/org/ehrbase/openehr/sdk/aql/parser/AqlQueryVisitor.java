@@ -159,7 +159,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         identifiedPathByContainmentAlias.entries().forEach(e -> {
             if (containmentByAlias.containsKey(e.getKey())) {
-                e.getValue().setFrom(containmentByAlias.get(e.getKey()));
+                e.getValue().setRoot(containmentByAlias.get(e.getKey()));
             } else {
                 errors.add("unknown FROM alias '%s'".formatted(e.getKey()));
             }

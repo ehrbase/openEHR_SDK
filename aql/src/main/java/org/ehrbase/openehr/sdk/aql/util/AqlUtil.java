@@ -18,12 +18,16 @@
 package org.ehrbase.openehr.sdk.aql.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.LogicalOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.WhereCondition;
+import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
+import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
@@ -77,5 +81,19 @@ public class AqlUtil {
         }
 
         return condition;
+    }
+
+    public static Map<String, AbstractContainmentExpression> listById(Containment containment) {
+
+        HashMap<String, AbstractContainmentExpression> stringAbstractContainmentExpressionHashMap = new HashMap<>();
+        if (containment instanceof AbstractContainmentExpression abstractContainmentExpression) {
+            stringAbstractContainmentExpressionHashMap.put(
+                    abstractContainmentExpression.getIdentifier(), abstractContainmentExpression);
+            if (abstractContainmentExpression.getContains() != null) {
+                stringAbstractContainmentExpressionHashMap.putAll(
+                        listById(abstractContainmentExpression.getContains()));
+            }
+        }
+        return stringAbstractContainmentExpressionHashMap;
     }
 }

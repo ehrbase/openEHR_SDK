@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.parser.serializer;
+package org.ehrbase.openehr.sdk.aql.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -27,8 +27,8 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression
 /**
  * @author Stefan Spiska
  */
-public class AbstractContainmentExpressionSerializer extends StdSerializer<AbstractContainmentExpression> {
-    protected AbstractContainmentExpressionSerializer() {
+public class ContainmentReferenceSerializer extends StdSerializer<AbstractContainmentExpression> {
+    protected ContainmentReferenceSerializer() {
         super(AbstractContainmentExpression.class);
     }
 

@@ -24,10 +24,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ComparisonOperatorCondition.class, name = "ComparisonOperator"),
     @JsonSubTypes.Type(value = LogicalOperatorCondition.class, name = "LogicalOperator"),
-    @JsonSubTypes.Type(value = LogicalOperatorCondition.class, name = "LogicalOperator"),
-    @JsonSubTypes.Type(value = ExistsCondition.class, name = "ExistsCondition"),
-    @JsonSubTypes.Type(value = LikeCondition.class, name = "LikeCondition"),
-    @JsonSubTypes.Type(value = MatchesCondition.class, name = "MatchesCondition"),
-    @JsonSubTypes.Type(value = NotCondition.class, name = "NotCondition")
+    @JsonSubTypes.Type(value = ExistsCondition.class, name = "Exists"),
+    @JsonSubTypes.Type(value = LikeCondition.class, name = "Like"),
+    @JsonSubTypes.Type(value = MatchesCondition.class, name = "Matches"),
+    @JsonSubTypes.Type(value = NotCondition.class, name = "Not")
 })
 public interface WhereCondition {}

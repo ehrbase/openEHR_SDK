@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public interface Freezable<O extends Freezable<O>> extends Cloneable {
     O thawed();
 
+    @JsonIgnore
     boolean isFrozen();
 
     O frozen();

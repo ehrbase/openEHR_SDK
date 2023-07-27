@@ -36,6 +36,20 @@ public class AqlQuery {
     private Long limit;
     private Long offset;
 
+    public AqlQuery() {}
+    /*
+       @JsonCreator
+       public AqlQuery(@JsonProperty("select") SelectClause select,@JsonProperty("from") Containment from, @JsonProperty("where")WhereCondition where, @JsonProperty("orderBy") List<OrderByExpression> orderBy, @JsonProperty("limit") Long limit,@JsonProperty("offset") Long offset) {
+           this.select = select;
+           this.from = from;
+           this.where = where;
+           this.orderBy = orderBy;
+           this.limit = limit;
+           this.offset = offset;
+       }
+
+    */
+
     public SelectClause getSelect() {
         return this.select;
     }

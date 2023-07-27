@@ -26,13 +26,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = QueryParameter.class, name = "QueryParameter"),
-    @JsonSubTypes.Type(value = BooleanPrimitive.class, name = "BooleanPrimitive"),
-    @JsonSubTypes.Type(value = DoublePrimitive.class, name = "DoublePrimitive"),
-    @JsonSubTypes.Type(value = LongPrimitive.class, name = "LongPrimitive"),
-    @JsonSubTypes.Type(value = NullPrimitive.class, name = "NullPrimitive"),
+    @JsonSubTypes.Type(value = BooleanPrimitive.class, name = "Boolean"),
+    @JsonSubTypes.Type(value = DoublePrimitive.class, name = "Double"),
+    @JsonSubTypes.Type(value = LongPrimitive.class, name = "Long"),
+    @JsonSubTypes.Type(value = NullPrimitive.class, name = "Null"),
     @JsonSubTypes.Type(value = SingleRowFunction.class, name = "SingleRowFunction"),
-    @JsonSubTypes.Type(value = StringPrimitive.class, name = "StringPrimitive"),
-    @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "TemporalPrimitive"),
+    @JsonSubTypes.Type(value = StringPrimitive.class, name = "String"),
+    @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "Temporal"),
     @JsonSubTypes.Type(value = TerminologyFunction.class, name = "TerminologyFunction")
 })
 public interface MatchesOperand {}

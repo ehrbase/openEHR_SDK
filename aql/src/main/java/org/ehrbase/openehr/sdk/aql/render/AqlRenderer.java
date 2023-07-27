@@ -311,7 +311,7 @@ public final class AqlRenderer {
 
     private static void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
 
-        AbstractContainmentExpression containmentDto = dto.getFrom();
+        AbstractContainmentExpression containmentDto = dto.getRoot();
 
         if (containmentDto == null) {
             throw new SdkException("SelectClause without corresponding contains");
