@@ -17,11 +17,14 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.containment;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.Objects;
 
 /**
  * @author Stefan Spiska
  */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "identifier")
 public abstract class AbstractContainmentExpression implements Containment {
 
     private Containment contains;

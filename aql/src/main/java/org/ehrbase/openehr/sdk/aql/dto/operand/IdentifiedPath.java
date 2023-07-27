@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -26,8 +27,6 @@ import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
-import org.ehrbase.openehr.sdk.aql.serializer.ContainmentReferenceDeserializer;
-import org.ehrbase.openehr.sdk.aql.serializer.ContainmentReferenceSerializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 
@@ -35,9 +34,7 @@ import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
  * @author Stefan Spiska
  */
 public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeftOperand {
-
-    @JsonSerialize(using = ContainmentReferenceSerializer.class)
-    @JsonDeserialize(using = ContainmentReferenceDeserializer.class)
+    @JsonIdentityReference(alwaysAsId = true)
     private AbstractContainmentExpression root;
 
     private List<AndOperatorPredicate> rootPredicate;

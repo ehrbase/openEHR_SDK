@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Stefan Spiska
  */
-class AqlQueryObjectMapperProiderTest {
+class AqlQueryObjectMapperProviderTest {
 
     @Test
     void to() throws JsonProcessingException {
@@ -66,6 +66,7 @@ class AqlQueryObjectMapperProiderTest {
                   },
                   "from" : {
                     "_type" : "Containment",
+                    "identifier" : "e",
                     "contains" : {
                       "_type" : "Containment",
                       "contains" : {
@@ -76,7 +77,6 @@ class AqlQueryObjectMapperProiderTest {
                       },
                       "type" : "COMPOSITION"
                     },
-                    "identifier" : "e",
                     "type" : "EHR"
                   },
                   "where" : {
