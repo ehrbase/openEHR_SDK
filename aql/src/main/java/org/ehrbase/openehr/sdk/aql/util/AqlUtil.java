@@ -28,6 +28,8 @@ import org.ehrbase.openehr.sdk.aql.dto.condition.LogicalOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.WhereCondition;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentNotOperator;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
@@ -85,15 +87,22 @@ public class AqlUtil {
 
     public static Map<String, AbstractContainmentExpression> listById(Containment containment) {
 
-        HashMap<String, AbstractContainmentExpression> stringAbstractContainmentExpressionHashMap = new HashMap<>();
+        HashMap<String, AbstractContainmentExpression> map = new HashMap<>();
         if (containment instanceof AbstractContainmentExpression abstractContainmentExpression) {
-            stringAbstractContainmentExpressionHashMap.put(
-                    abstractContainmentExpression.getIdentifier(), abstractContainmentExpression);
+            map.put(abstractContainmentExpression.getIdentifier(), abstractContainmentExpression);
             if (abstractContainmentExpression.getContains() != null) {
-                stringAbstractContainmentExpressionHashMap.putAll(
-                        listById(abstractContainmentExpression.getContains()));
+                map.putAll(listById(abstractContainmentExpression.getContains()));
             }
+        } else if (containment instanceof ContainmentSetOperator containmentSetOperator) {
+
+            containmentSetOperator.getValues().stream().map(AqlUtil::listById).forEach(map::putAll);
+        } else if (containment instanceof ContainmentNotOperator containmentNotOperator) {
+
+            map.putAll(listById(containmentNotOperator.getContainmentExpression()));
+        } else {
+            throw new UnsupportedOperationException(
+                    "Unsupported class %s".formatted(containment.getClass().getSimpleName()));
         }
-        return stringAbstractContainmentExpressionHashMap;
+        return map;
     }
 }
