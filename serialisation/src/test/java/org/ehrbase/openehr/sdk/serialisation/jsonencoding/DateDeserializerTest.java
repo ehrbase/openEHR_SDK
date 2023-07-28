@@ -38,7 +38,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
-class DateObjectPathDeserializerTest {
+class DateDeserializerTest {
 
     @ParameterizedTest
     @EnumSource(DateDeserializerTestData.class)

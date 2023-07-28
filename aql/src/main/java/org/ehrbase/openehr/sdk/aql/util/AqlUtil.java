@@ -85,20 +85,25 @@ public class AqlUtil {
         return condition;
     }
 
-    public static Map<String, AbstractContainmentExpression> listById(Containment containment) {
+    public static Map<String, AbstractContainmentExpression> containmentExpressionsByIdentifier(
+            Containment containment) {
 
         HashMap<String, AbstractContainmentExpression> map = new HashMap<>();
         if (containment instanceof AbstractContainmentExpression abstractContainmentExpression) {
-            map.put(abstractContainmentExpression.getIdentifier(), abstractContainmentExpression);
+            if (abstractContainmentExpression.getIdentifier() != null) {
+                map.put(abstractContainmentExpression.getIdentifier(), abstractContainmentExpression);
+            }
             if (abstractContainmentExpression.getContains() != null) {
-                map.putAll(listById(abstractContainmentExpression.getContains()));
+                map.putAll(containmentExpressionsByIdentifier(abstractContainmentExpression.getContains()));
             }
         } else if (containment instanceof ContainmentSetOperator containmentSetOperator) {
 
-            containmentSetOperator.getValues().stream().map(AqlUtil::listById).forEach(map::putAll);
+            containmentSetOperator.getValues().stream()
+                    .map(AqlUtil::containmentExpressionsByIdentifier)
+                    .forEach(map::putAll);
         } else if (containment instanceof ContainmentNotOperator containmentNotOperator) {
 
-            map.putAll(listById(containmentNotOperator.getContainmentExpression()));
+            map.putAll(containmentExpressionsByIdentifier(containmentNotOperator.getContainmentExpression()));
         } else {
             throw new UnsupportedOperationException(
                     "Unsupported class %s".formatted(containment.getClass().getSimpleName()));

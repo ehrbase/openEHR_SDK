@@ -19,6 +19,11 @@ package org.ehrbase.openehr.sdk.aql.util;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.ArrayList;
+import java.util.Map;
+import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
+import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
+import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.junit.Test;
 
 public class AqlUtilTest {
@@ -121,5 +126,18 @@ public class AqlUtilTest {
         String actual = AqlUtil.removeParameter(aql, "ehrid9999");
 
         assertThat(actual).isEqualToIgnoringCase(aql);
+    }
+
+    @Test
+    public void containmentExpressionsByIdentifier() {
+
+        String aql =
+                "SELECT o_659/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic FROM EHR e CONTAINS COMPOSITION NOT CONTAINS (OBSERVATION o_659[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] and  OBSERVATION o_659[openEHR-EHR-OBSERVATION.sample_blood_pressure.v2])";
+
+        AqlQuery aqlQuery = AqlQueryParser.parse(aql);
+
+        Map<String, AbstractContainmentExpression> cut = AqlUtil.containmentExpressionsByIdentifier(aqlQuery.getFrom());
+
+        assertThat(new ArrayList<>(cut.keySet())).asList().containsExactlyInAnyOrder("e", "o_659");
     }
 }
