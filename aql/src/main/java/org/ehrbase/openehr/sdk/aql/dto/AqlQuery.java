@@ -36,8 +36,6 @@ public class AqlQuery {
     private Long limit;
     private Long offset;
 
-    public AqlQuery() {}
-
     public SelectClause getSelect() {
         return this.select;
     }
