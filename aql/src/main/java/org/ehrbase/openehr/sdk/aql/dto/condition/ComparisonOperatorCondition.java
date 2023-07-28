@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.condition;
 
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
 
@@ -50,46 +51,24 @@ public class ComparisonOperatorCondition implements WhereCondition {
         this.value = value;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ComparisonOperatorCondition)) return false;
-        final ComparisonOperatorCondition other = (ComparisonOperatorCondition) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$statement = this.getStatement();
-        final Object other$statement = other.getStatement();
-        if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
-        final Object this$symbol = this.getSymbol();
-        final Object other$symbol = other.getSymbol();
-        if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
-        final Object this$value = this.getValue();
-        final Object other$value = other.getValue();
-        if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
-        return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComparisonOperatorCondition that = (ComparisonOperatorCondition) o;
+        return Objects.equals(statement, that.statement) && symbol == that.symbol && Objects.equals(value, that.value);
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof ComparisonOperatorCondition;
-    }
-
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $statement = this.getStatement();
-        result = result * PRIME + ($statement == null ? 43 : $statement.hashCode());
-        final Object $symbol = this.getSymbol();
-        result = result * PRIME + ($symbol == null ? 43 : $symbol.hashCode());
-        final Object $value = this.getValue();
-        result = result * PRIME + ($value == null ? 43 : $value.hashCode());
-        return result;
+        return Objects.hash(statement, symbol, value);
     }
 
+    @Override
     public String toString() {
-        return "ComparisonOperatorCondition(statement="
-                + this.getStatement()
-                + ", symbol="
-                + this.getSymbol()
-                + ", value="
-                + this.getValue()
-                + ")";
+        return "ComparisonOperatorCondition{" + "statement="
+                + statement + ", symbol="
+                + symbol + ", value="
+                + value + '}';
     }
 }

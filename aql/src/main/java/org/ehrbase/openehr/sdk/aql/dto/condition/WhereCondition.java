@@ -23,6 +23,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ComparisonOperatorCondition.class, name = "ComparisonOperator"),
-    @JsonSubTypes.Type(value = LogicalOperatorCondition.class, name = "LogicalOperator")
+    @JsonSubTypes.Type(value = LogicalOperatorCondition.class, name = "LogicalOperator"),
+    @JsonSubTypes.Type(value = ExistsCondition.class, name = "Exists"),
+    @JsonSubTypes.Type(value = LikeCondition.class, name = "Like"),
+    @JsonSubTypes.Type(value = MatchesCondition.class, name = "Matches"),
+    @JsonSubTypes.Type(value = NotCondition.class, name = "Not")
 })
 public interface WhereCondition {}

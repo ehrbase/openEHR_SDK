@@ -18,6 +18,7 @@
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Stefan Spiska
@@ -85,5 +86,23 @@ public class SingleRowFunction implements ColumnExpression, Operand, ComparisonL
         public String getName() {
             return name();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SingleRowFunction that = (SingleRowFunction) o;
+        return Objects.equals(functionName, that.functionName) && Objects.equals(operandList, that.operandList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(functionName, operandList);
+    }
+
+    @Override
+    public String toString() {
+        return "SingleRowFunction{" + "functionName=" + functionName + ", operandList=" + operandList + '}';
     }
 }

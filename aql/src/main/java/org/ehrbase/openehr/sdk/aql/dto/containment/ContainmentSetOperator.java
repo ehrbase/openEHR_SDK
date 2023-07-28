@@ -19,6 +19,7 @@ package org.ehrbase.openehr.sdk.aql.dto.containment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.LogicalOperator;
 
 public class ContainmentSetOperator implements Containment, LogicalOperator<ContainmentSetOperatorSymbol, Containment> {
@@ -45,35 +46,21 @@ public class ContainmentSetOperator implements Containment, LogicalOperator<Cont
         this.values = values;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ContainmentSetOperator)) return false;
-        final ContainmentSetOperator other = (ContainmentSetOperator) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$symbol = this.getSymbol();
-        final Object other$symbol = other.getSymbol();
-        if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
-        final Object this$values = this.getValues();
-        final Object other$values = other.getValues();
-        if (this$values == null ? other$values != null : !this$values.equals(other$values)) return false;
-        return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContainmentSetOperator that = (ContainmentSetOperator) o;
+        return symbol == that.symbol && Objects.equals(values, that.values);
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof ContainmentSetOperator;
-    }
-
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $symbol = this.getSymbol();
-        result = result * PRIME + ($symbol == null ? 43 : $symbol.hashCode());
-        final Object $values = this.getValues();
-        result = result * PRIME + ($values == null ? 43 : $values.hashCode());
-        return result;
+        return Objects.hash(symbol, values);
     }
 
+    @Override
     public String toString() {
-        return "ContainmentSetOperator(symbol=" + this.getSymbol() + ", values=" + this.getValues() + ")";
+        return "ContainmentSetOperator{" + "symbol=" + symbol + ", values=" + values + '}';
     }
 }

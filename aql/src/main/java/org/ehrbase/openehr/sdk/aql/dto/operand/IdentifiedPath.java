@@ -17,35 +17,45 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
+import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 
 /**
  * @author Stefan Spiska
  */
 public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeftOperand {
-
-    private AbstractContainmentExpression from;
+    @JsonIdentityReference(alwaysAsId = true)
+    private AbstractContainmentExpression root;
 
     private List<AndOperatorPredicate> rootPredicate;
 
     private AqlObjectPath path;
 
-    public AbstractContainmentExpression getFrom() {
-        return from;
+    public AbstractContainmentExpression getRoot() {
+        return root;
     }
 
-    public void setFrom(AbstractContainmentExpression from) {
-        this.from = from;
+    public void setRoot(AbstractContainmentExpression root) {
+        this.root = root;
     }
 
+    @JsonSerialize(using = PredicateSerializer.class)
     public List<AndOperatorPredicate> getRootPredicate() {
         return rootPredicate;
     }
 
+    @JsonIgnore
+    @JsonDeserialize(using = PredicateDeserializer.class)
     public void setRootPredicate(List<AndOperatorPredicate> rootPredicate) {
         this.rootPredicate = new ArrayList<>(rootPredicate);
     }
@@ -56,5 +66,25 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
 
     public void setPath(AqlObjectPath path) {
         this.path = path;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IdentifiedPath that = (IdentifiedPath) o;
+        return Objects.equals(root, that.root)
+                && Objects.equals(rootPredicate, that.rootPredicate)
+                && Objects.equals(path, that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(root, rootPredicate, path);
+    }
+
+    @Override
+    public String toString() {
+        return "IdentifiedPath{" + "root=" + root + ", rootPredicate=" + rootPredicate + ", path=" + path + '}';
     }
 }

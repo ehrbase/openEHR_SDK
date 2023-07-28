@@ -17,7 +17,24 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * @author Stefan Spiska
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = AggregateFunction.class, name = "AggregateFunction"),
+    @JsonSubTypes.Type(value = IdentifiedPath.class, name = "IdentifiedPath"),
+    @JsonSubTypes.Type(value = BooleanPrimitive.class, name = "Boolean"),
+    @JsonSubTypes.Type(value = CountDistinctAggregateFunction.class, name = "CountDistinctAggregateFunction"),
+    @JsonSubTypes.Type(value = DoublePrimitive.class, name = "Double"),
+    @JsonSubTypes.Type(value = LongPrimitive.class, name = "Long"),
+    @JsonSubTypes.Type(value = NullPrimitive.class, name = "Null"),
+    @JsonSubTypes.Type(value = SingleRowFunction.class, name = "SingleRowFunction"),
+    @JsonSubTypes.Type(value = StringPrimitive.class, name = "String"),
+    @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "Temporal"),
+    @JsonSubTypes.Type(value = TerminologyFunction.class, name = "TerminologyFunction")
+})
 public interface ColumnExpression {}

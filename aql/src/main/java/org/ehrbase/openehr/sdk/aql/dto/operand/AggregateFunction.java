@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import java.util.Objects;
+
 /**
  * @author Stefan Spiska
  */
@@ -46,5 +48,23 @@ public class AggregateFunction implements ColumnExpression {
         MIN,
         MAX,
         AVG
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AggregateFunction that = (AggregateFunction) o;
+        return functionName == that.functionName && Objects.equals(identifiedPath, that.identifiedPath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(functionName, identifiedPath);
+    }
+
+    @Override
+    public String toString() {
+        return "AggregateFunction{" + "functionName=" + functionName + ", identifiedPath=" + identifiedPath + '}';
     }
 }
