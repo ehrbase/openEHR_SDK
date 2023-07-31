@@ -17,9 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.aql.util;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Map;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
@@ -30,10 +29,12 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameter() {
-
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where e/ehr_id/value = $ehrid";
-
+                """
+                Select c0 as F1, e/ehr_id/value
+                from EHR e
+                contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                where e/ehr_id/value = $ehrid""";
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
@@ -43,10 +44,13 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithOr() {
-
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where  e/ehr_id/value = $ehrid or e/ehr_id/value = $ehrid2";
-
+                """
+                Select c0 as F1, e/ehr_id/value
+                from EHR e
+                contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                where  e/ehr_id/value = $ehrid
+                or e/ehr_id/value = $ehrid2""";
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
@@ -56,10 +60,14 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithTripleOr() {
-
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where  e/ehr_id/value = $ehrid or e/ehr_id/value = $ehrid2 or e/ehr_id/value = $ehrid3";
-
+                """
+                Select c0 as F1, e/ehr_id/value
+                from EHR e
+                contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                where e/ehr_id/value = $ehrid
+                or e/ehr_id/value = $ehrid2
+                or e/ehr_id/value = $ehrid3""";
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
@@ -69,10 +77,14 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterMultiple() {
-
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where e/ehr_id/value = $ehrid or e/ehr_id/value = $ehrid or e/ehr_id/value = $ehrid";
-
+                """
+                Select c0 as F1, e/ehr_id/value
+                from EHR e
+                contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                where e/ehr_id/value = $ehrid
+                or e/ehr_id/value = $ehrid
+                or e/ehr_id/value = $ehrid""";
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
@@ -82,10 +94,18 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithMixedOrAnd() {
-
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where  (e/ehr_id/value = $ehrid or (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3))";
-
+                """
+                Select c0 as F1, e/ehr_id/value
+                from EHR e
+                contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                where (
+                  e/ehr_id/value = $ehrid
+                  or (
+                    e/ehr_id/value = $ehrid2
+                    and e/ehr_id/value = $ehrid3
+                  )
+                )""";
         String actual = AqlUtil.removeParameter(aql, "ehrid");
 
         assertThat(actual)
@@ -95,10 +115,18 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithMixedAndOr() {
-
         String aql =
-                "Select c0 as F1, e/ehr_id/value from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where  (e/ehr_id/value = $ehrid or (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3))";
-
+                """
+                Select c0 as F1, e/ehr_id/value
+                from EHR e
+                contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                where (
+                  e/ehr_id/value = $ehrid
+                  or (
+                    e/ehr_id/value = $ehrid2
+                    and e/ehr_id/value = $ehrid3
+                  )
+                )""";
         String actual = AqlUtil.removeParameter(aql, "ehrid2");
 
         assertThat(actual)
@@ -108,7 +136,6 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterParameterNotfound() {
-
         String aql =
                 "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid or (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3))";
 
@@ -119,7 +146,6 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterNoWhere() {
-
         String aql =
                 "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
 
@@ -130,14 +156,27 @@ public class AqlUtilTest {
 
     @Test
     public void containmentExpressionsByIdentifier() {
-
-        String aql =
-                "SELECT o_659/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic FROM EHR e CONTAINS COMPOSITION NOT CONTAINS (OBSERVATION o_659[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] and  OBSERVATION o_659[openEHR-EHR-OBSERVATION.sample_blood_pressure.v2])";
-
-        AqlQuery aqlQuery = AqlQueryParser.parse(aql);
+        AqlQuery aqlQuery = AqlQueryParser.parse(
+                """
+        SELECT o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic
+        FROM EHR e
+        CONTAINS (
+          COMPOSITION
+          and (
+            (
+              SECTION s_en[openEHR-EHR-SECTION.adhoc.v1, 'Vital Signs']
+              NOT CONTAINS OBSERVATION o1[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
+            )
+            or
+            (
+             SECTION s_de[openEHR-EHR-SECTION.adhoc.v1, 'Vitalzeichen']
+             NOT CONTAINS OBSERVATION o2[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
+             )
+          )
+        )""");
 
         Map<String, AbstractContainmentExpression> cut = AqlUtil.containmentExpressionsByIdentifier(aqlQuery.getFrom());
 
-        assertThat(new ArrayList<>(cut.keySet())).asList().containsExactlyInAnyOrder("e", "o_659");
+        assertThat(cut).containsOnlyKeys("e", "s_en", "o_658", "s_de", "o_659");
     }
 }

@@ -18,10 +18,11 @@
 package org.ehrbase.openehr.sdk.aql.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.LogicalOperatorCondition;
@@ -87,27 +88,24 @@ public class AqlUtil {
 
     public static Map<String, AbstractContainmentExpression> containmentExpressionsByIdentifier(
             Containment containment) {
+        return streamContainmentExpressions(containment)
+                .collect(Collectors.toMap(AbstractContainmentExpression::getIdentifier, e -> e));
+    }
 
-        HashMap<String, AbstractContainmentExpression> map = new HashMap<>();
-        if (containment instanceof AbstractContainmentExpression abstractContainmentExpression) {
-            if (abstractContainmentExpression.getIdentifier() != null) {
-                map.put(abstractContainmentExpression.getIdentifier(), abstractContainmentExpression);
-            }
-            if (abstractContainmentExpression.getContains() != null) {
-                map.putAll(containmentExpressionsByIdentifier(abstractContainmentExpression.getContains()));
-            }
-        } else if (containment instanceof ContainmentSetOperator containmentSetOperator) {
-
-            containmentSetOperator.getValues().stream()
-                    .map(AqlUtil::containmentExpressionsByIdentifier)
-                    .forEach(map::putAll);
-        } else if (containment instanceof ContainmentNotOperator containmentNotOperator) {
-
-            map.putAll(containmentExpressionsByIdentifier(containmentNotOperator.getContainmentExpression()));
+    private static Stream<AbstractContainmentExpression> streamContainmentExpressions(Containment containment) {
+        if (containment == null) {
+            return Stream.empty();
+        } else if (containment instanceof AbstractContainmentExpression containmentExp) {
+            return Stream.concat(
+                    Stream.of(containmentExp).filter(e -> e.getIdentifier() != null),
+                    streamContainmentExpressions(containmentExp.getContains()));
+        } else if (containment instanceof ContainmentSetOperator containmentSetOp) {
+            return containmentSetOp.getValues().stream().flatMap(AqlUtil::streamContainmentExpressions);
+        } else if (containment instanceof ContainmentNotOperator containmentNotOp) {
+            return streamContainmentExpressions(containmentNotOp.getContainmentExpression());
         } else {
-            throw new UnsupportedOperationException(
+            throw new IllegalArgumentException(
                     "Unsupported class %s".formatted(containment.getClass().getSimpleName()));
         }
-        return map;
     }
 }
