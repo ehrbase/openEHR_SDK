@@ -177,6 +177,6 @@ public class AqlUtilTest {
 
         Map<String, AbstractContainmentExpression> cut = AqlUtil.containmentExpressionsByIdentifier(aqlQuery.getFrom());
 
-        assertThat(cut).containsOnlyKeys("e", "s_en", "o_658", "s_de", "o_659");
+        assertThat(cut).containsOnlyKeys("e", "s_en", "o1", "s_de", "o2");
     }
 }
