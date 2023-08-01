@@ -347,8 +347,37 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
     @Override
     public Containment visitFromExpr(FromExprContext ctx) {
+        if (ctx.SYM_LEFT_PAREN() != null) {
+            return visitFromExpr(ctx.fromExpr());
+        }
 
-        return visitContainsExpr(ctx.containsExpr());
+        return handleContainsChain(ctx.classExprOperand(), ctx.NOT(), ctx.CONTAINS(), ctx.containsExpr());
+    }
+
+    private Containment handleContainsChain(
+            ClassExprOperandContext classExprOperandContext,
+            TerminalNode notNode,
+            TerminalNode containsNode,
+            ContainsExprContext containsExprContext) {
+
+        final AbstractContainmentExpression containmentDto;
+
+        if (classExprOperandContext instanceof ClassExpressionContext clc) {
+            containmentDto = visitClassExpression(clc);
+        } else {
+            containmentDto = visitVersionClassExpr((VersionClassExprContext) classExprOperandContext);
+        }
+        if (containsNode != null) {
+            Containment contains = visitContainsExpr(containsExprContext);
+            if (notNode != null) {
+                ContainmentNotOperator not = new ContainmentNotOperator();
+                not.setContainmentExpression(contains);
+                containmentDto.setContains(not);
+            } else {
+                containmentDto.setContains(contains);
+            }
+        }
+        return containmentDto;
     }
 
     @Override
@@ -364,31 +393,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
             return visitContainsExpr(ctx.containsExpr(0));
         } else {
-
-            ClassExprOperandContext classExprOperandContext = ctx.classExprOperand();
-
-            final AbstractContainmentExpression containmentDto;
-
-            if (classExprOperandContext instanceof ClassExpressionContext) {
-
-                containmentDto = visitClassExpression((ClassExpressionContext) classExprOperandContext);
-            } else {
-
-                containmentDto = visitVersionClassExpr((VersionClassExprContext) classExprOperandContext);
-            }
-            if (ctx.CONTAINS() != null) {
-
-                Containment contains = visitContainsExpr(ctx.containsExpr(0));
-                if (ctx.NOT() != null) {
-
-                    ContainmentNotOperator not = new ContainmentNotOperator();
-                    not.setContainmentExpression(contains);
-                    containmentDto.setContains(not);
-                } else {
-                    containmentDto.setContains(contains);
-                }
-            }
-            return containmentDto;
+            return handleContainsChain(ctx.classExprOperand(), ctx.NOT(), ctx.CONTAINS(), ctx.containsExpr(0));
         }
     }
 

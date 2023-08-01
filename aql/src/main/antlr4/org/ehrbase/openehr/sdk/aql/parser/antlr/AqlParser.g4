@@ -66,7 +66,8 @@ selectExpr
     ;
 
 fromExpr
-    : containsExpr
+    : classExprOperand (NOT? CONTAINS containsExpr)?
+    | SYM_LEFT_PAREN fromExpr SYM_RIGHT_PAREN
     ;
 
 whereExpr

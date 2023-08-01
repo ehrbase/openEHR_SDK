@@ -191,7 +191,7 @@ class AqlQueryParserTest {
     @Test
     void parseObservation2() {
         String aql =
-                "SELECT e/ehr_id/value AS F1, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value AS F2, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value AS F3 FROM EHR e CONTAINS (COMPOSITION c0 and SECTION s4[openEHR-EHR-SECTION.adhoc.v1] CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0]) WHERE (e/ehr_id/value MATCHES {'47dc21a2-7076-4a57-89dc-bd83729ed52f'} and c0/archetype_details/template_id/value MATCHES {'Corona_Anamnese'})";
+                "SELECT e/ehr_id/value AS F1, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value/value AS F2, o/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0004]/value/value AS F3 FROM EHR e CONTAINS (COMPOSITION c0 and (SECTION s4[openEHR-EHR-SECTION.adhoc.v1] CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0])) WHERE (e/ehr_id/value MATCHES {'47dc21a2-7076-4a57-89dc-bd83729ed52f'} and c0/archetype_details/template_id/value MATCHES {'Corona_Anamnese'})";
 
         testAql(aql, aql);
     }
