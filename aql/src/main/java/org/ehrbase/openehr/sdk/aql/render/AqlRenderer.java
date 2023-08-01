@@ -583,12 +583,23 @@ public final class AqlRenderer {
         sb.append("(");
         while (iterator.hasNext()) {
             Containment next = iterator.next();
+            boolean requiresParenthesis = requiresParenthesis(next);
+            if (requiresParenthesis) {
+                sb.append('(');
+            }
             renderContainmentExpresionDto(sb, next);
+            if (requiresParenthesis) {
+                sb.append(')');
+            }
             if (iterator.hasNext()) {
                 sb.append(" ").append(containmentSetOperator.getSymbol()).append(" ");
             }
         }
         sb.append(")");
+    }
+
+    private static boolean requiresParenthesis(Containment c) {
+        return c instanceof AbstractContainmentExpression e && e.getContains() != null;
     }
 
     private static void renderContainmentDto(StringBuilder sb, ContainmentClassExpression dto) {
