@@ -1,4 +1,4 @@
-# openEHR SDK ![Maven Central](https://img.shields.io/maven-central/v/org.ehrbase.openehr.sdk/root) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ehrbase_openEHR_SDK&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ehrbase_openEHR_SDK) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+# openEHR SDK ![Maven Central](https://img.shields.io/maven-central/v/org.ehrbase.openehr.sdk/sdk-parent) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ehrbase_openEHR_SDK&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ehrbase_openEHR_SDK) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
 
 ## Features of the SDK
