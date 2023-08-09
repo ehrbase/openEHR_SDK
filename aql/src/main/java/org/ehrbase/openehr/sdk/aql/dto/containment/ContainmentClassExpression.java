@@ -17,9 +17,14 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.containment;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
+import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 
 public class ContainmentClassExpression extends AbstractContainmentExpression {
 
@@ -35,11 +40,35 @@ public class ContainmentClassExpression extends AbstractContainmentExpression {
         this.type = type;
     }
 
+    @JsonSerialize(using = PredicateSerializer.class)
     public List<AndOperatorPredicate> getPredicates() {
         return predicates;
     }
 
+    @JsonDeserialize(using = PredicateDeserializer.class)
     public void setPredicates(List<AndOperatorPredicate> predicates) {
         this.predicates = new ArrayList<>(predicates);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ContainmentClassExpression that = (ContainmentClassExpression) o;
+        return Objects.equals(type, that.type) && Objects.equals(predicates, that.predicates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), type, predicates);
+    }
+
+    @Override
+    public String toString() {
+        return "ContainmentClassExpression{" + "type='"
+                + type + '\'' + ", predicates="
+                + predicates + "} "
+                + super.toString();
     }
 }

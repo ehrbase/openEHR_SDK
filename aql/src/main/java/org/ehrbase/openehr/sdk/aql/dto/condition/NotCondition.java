@@ -41,18 +41,9 @@ public class NotCondition implements WhereCondition {
     }
 
     @Override
-    public String toString() {
-        return "NotCondition{" + "condition=" + condition + '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         NotCondition that = (NotCondition) o;
         return Objects.equals(condition, that.condition);
     }
@@ -60,5 +51,10 @@ public class NotCondition implements WhereCondition {
     @Override
     public int hashCode() {
         return Objects.hash(condition);
+    }
+
+    @Override
+    public String toString() {
+        return "NotCondition{" + "condition=" + condition + '}';
     }
 }

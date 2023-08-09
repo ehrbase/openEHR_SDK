@@ -114,9 +114,32 @@ class AqlRendererTest {
                 + " FROM EHR e"
                 + " CONTAINS COMPOSITION c"
                 + " CONTAINS"
-                + " (OBSERVATION o1[openEHR-EHR-OBSERVATION.blood_pressure.v2] AND OBSERVATION o2[openEHR-EHR-OBSERVATION.body_weight.v2])";
+                + " ((OBSERVATION o1[openEHR-EHR-OBSERVATION.blood_pressure.v2] CONTAINS POINT_EVENT) AND OBSERVATION o2[openEHR-EHR-OBSERVATION.body_weight.v2])";
 
         test(aql, aql);
+    }
+
+    @Test
+    void renderContainAnd2() {
+        String aql = "SELECT"
+                + " e/ehr_id/value AS Ehr_id,"
+                + " c/context/start_time AS start_time,"
+                + " o1/data[at0001]/events[at0006]/state[at0007]/items[at0008]/value/value AS position_"
+                + " FROM EHR e"
+                + " CONTAINS COMPOSITION c"
+                + " CONTAINS"
+                + " (OBSERVATION o1[openEHR-EHR-OBSERVATION.blood_pressure.v2] CONTAINS POINT_EVENT AND CLUSTER)";
+
+        String expected = "SELECT"
+                + " e/ehr_id/value AS Ehr_id,"
+                + " c/context/start_time AS start_time,"
+                + " o1/data[at0001]/events[at0006]/state[at0007]/items[at0008]/value/value AS position_"
+                + " FROM EHR e"
+                + " CONTAINS COMPOSITION c"
+                + " CONTAINS OBSERVATION o1[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
+                + " CONTAINS (POINT_EVENT AND CLUSTER)";
+
+        test(aql, expected);
     }
 
     @Test

@@ -311,7 +311,7 @@ public final class AqlRenderer {
 
     private static void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
 
-        AbstractContainmentExpression containmentDto = dto.getFrom();
+        AbstractContainmentExpression containmentDto = dto.getRoot();
 
         if (containmentDto == null) {
             throw new SdkException("SelectClause without corresponding contains");
@@ -324,6 +324,13 @@ public final class AqlRenderer {
             sb.append('/');
             renderPath(sb, p);
         });
+    }
+
+    public static String renderPredicate(List<AndOperatorPredicate> or) {
+        StringBuilder sb = new StringBuilder();
+        renderPredicate(sb, or);
+
+        return sb.toString();
     }
 
     private static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or) {
@@ -576,12 +583,23 @@ public final class AqlRenderer {
         sb.append("(");
         while (iterator.hasNext()) {
             Containment next = iterator.next();
+            boolean requiresParenthesis = requiresParenthesis(next);
+            if (requiresParenthesis) {
+                sb.append('(');
+            }
             renderContainmentExpresionDto(sb, next);
+            if (requiresParenthesis) {
+                sb.append(')');
+            }
             if (iterator.hasNext()) {
                 sb.append(" ").append(containmentSetOperator.getSymbol()).append(" ");
             }
         }
         sb.append(")");
+    }
+
+    private static boolean requiresParenthesis(Containment c) {
+        return c instanceof AbstractContainmentExpression e && e.getContains() != null;
     }
 
     private static void renderContainmentDto(StringBuilder sb, ContainmentClassExpression dto) {

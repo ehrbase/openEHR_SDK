@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.containment;
 
+import java.util.Objects;
+
 /**
  * @author Stefan Spiska
  */
@@ -29,5 +31,23 @@ public class ContainmentNotOperator implements Containment {
 
     public void setContainmentExpression(Containment containmentExpression) {
         this.containmentExpression = containmentExpression;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContainmentNotOperator that = (ContainmentNotOperator) o;
+        return Objects.equals(containmentExpression, that.containmentExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(containmentExpression);
+    }
+
+    @Override
+    public String toString() {
+        return "ContainmentNotOperator{" + "containmentExpression=" + containmentExpression + '}';
     }
 }

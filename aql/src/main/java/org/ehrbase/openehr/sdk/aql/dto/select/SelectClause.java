@@ -19,8 +19,7 @@ package org.ehrbase.openehr.sdk.aql.dto.select;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.util.Objects;
 
 public class SelectClause {
 
@@ -49,17 +48,17 @@ public class SelectClause {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         SelectClause that = (SelectClause) o;
-
-        return new EqualsBuilder()
-                .append(isDistinct, that.isDistinct)
-                .append(statement, that.statement)
-                .isEquals();
+        return isDistinct == that.isDistinct && Objects.equals(statement, that.statement);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(isDistinct).append(statement).toHashCode();
+        return Objects.hash(isDistinct, statement);
+    }
+
+    @Override
+    public String toString() {
+        return "SelectClause{" + "isDistinct=" + isDistinct + ", statement=" + statement + '}';
     }
 }

@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -62,6 +63,7 @@ public class DoublePrimitive extends Primitive<Double, DoublePrimitive> {
         this.stringRepresentation = null;
     }
 
+    @JsonIgnore
     public String getStringRepresentation() {
         if (stringRepresentation == null && getValue() != null) {
             this.stringRepresentation = getValue().toString();

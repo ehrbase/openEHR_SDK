@@ -42,18 +42,9 @@ public class ExistsCondition implements WhereCondition {
     }
 
     @Override
-    public String toString() {
-        return "ExistsCondition{" + "value=" + value + '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ExistsCondition that = (ExistsCondition) o;
         return Objects.equals(value, that.value);
     }
@@ -61,5 +52,10 @@ public class ExistsCondition implements WhereCondition {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "ExistsCondition{" + "value=" + value + '}';
     }
 }

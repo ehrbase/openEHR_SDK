@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.select;
 
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ColumnExpression;
 
 public class SelectExpression {
@@ -38,5 +39,23 @@ public class SelectExpression {
 
     public void setColumnExpression(ColumnExpression columnExpression) {
         this.columnExpression = columnExpression;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SelectExpression that = (SelectExpression) o;
+        return Objects.equals(alias, that.alias) && Objects.equals(columnExpression, that.columnExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(alias, columnExpression);
+    }
+
+    @Override
+    public String toString() {
+        return "SelectExpression{" + "alias='" + alias + '\'' + ", columnExpression=" + columnExpression + '}';
     }
 }

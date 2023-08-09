@@ -15,18 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.dto.operand;
+package org.ehrbase.openehr.sdk.aql.serializer;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import java.io.IOException;
+import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
 /**
  * @author Stefan Spiska
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "_type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = QueryParameter.class, name = "QueryParameter"),
-    @JsonSubTypes.Type(value = StringPrimitive.class, name = "String"),
-    @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "Temporal")
-})
-public interface LikeOperand {}
+public class ObjectPathSerializer extends StdSerializer<AqlObjectPath> {
+    protected ObjectPathSerializer() {
+        super(AqlObjectPath.class);
+    }
+
+    @Override
+    public void serialize(AqlObjectPath value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+
+        gen.writeString(AqlRenderer.renderPath(value));
+    }
+}

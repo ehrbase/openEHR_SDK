@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.orderby;
 
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 
 public class OrderByExpression {
@@ -44,35 +45,21 @@ public class OrderByExpression {
         this.symbol = symbol;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof OrderByExpression)) return false;
-        final OrderByExpression other = (OrderByExpression) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$statement = this.getStatement();
-        final Object other$statement = other.getStatement();
-        if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
-        final Object this$symbol = this.getSymbol();
-        final Object other$symbol = other.getSymbol();
-        if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
-        return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderByExpression that = (OrderByExpression) o;
+        return Objects.equals(statement, that.statement) && symbol == that.symbol;
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof OrderByExpression;
-    }
-
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $statement = this.getStatement();
-        result = result * PRIME + ($statement == null ? 43 : $statement.hashCode());
-        final Object $symbol = this.getSymbol();
-        result = result * PRIME + ($symbol == null ? 43 : $symbol.hashCode());
-        return result;
+        return Objects.hash(statement, symbol);
     }
 
+    @Override
     public String toString() {
-        return "OrderByExpression(statement=" + this.getStatement() + ", symbol=" + this.getSymbol() + ")";
+        return "OrderByExpression{" + "statement=" + statement + ", symbol=" + symbol + '}';
     }
 }

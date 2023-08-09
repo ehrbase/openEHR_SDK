@@ -19,11 +19,18 @@ package org.ehrbase.openehr.sdk.aql.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.LogicalOperatorCondition;
 import org.ehrbase.openehr.sdk.aql.dto.condition.WhereCondition;
+import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
+import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentNotOperator;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
@@ -77,5 +84,28 @@ public class AqlUtil {
         }
 
         return condition;
+    }
+
+    public static Map<String, AbstractContainmentExpression> containmentExpressionsByIdentifier(
+            Containment containment) {
+        return streamContainmentExpressions(containment)
+                .collect(Collectors.toMap(AbstractContainmentExpression::getIdentifier, e -> e));
+    }
+
+    private static Stream<AbstractContainmentExpression> streamContainmentExpressions(Containment containment) {
+        if (containment == null) {
+            return Stream.empty();
+        } else if (containment instanceof AbstractContainmentExpression containmentExp) {
+            return Stream.concat(
+                    Stream.of(containmentExp).filter(e -> e.getIdentifier() != null),
+                    streamContainmentExpressions(containmentExp.getContains()));
+        } else if (containment instanceof ContainmentSetOperator containmentSetOp) {
+            return containmentSetOp.getValues().stream().flatMap(AqlUtil::streamContainmentExpressions);
+        } else if (containment instanceof ContainmentNotOperator containmentNotOp) {
+            return streamContainmentExpressions(containmentNotOp.getContainmentExpression());
+        } else {
+            throw new IllegalArgumentException(
+                    "Unsupported class %s".formatted(containment.getClass().getSimpleName()));
+        }
     }
 }

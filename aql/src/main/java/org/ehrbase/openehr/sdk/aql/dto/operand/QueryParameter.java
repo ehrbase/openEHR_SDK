@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.util.Freezable;
 
@@ -64,6 +65,7 @@ public class QueryParameter implements MatchesOperand, Operand, LikeOperand, Pat
         return Objects.hash(name);
     }
 
+    @JsonIgnore
     public boolean isFrozen() {
         return frozen;
     }
