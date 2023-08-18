@@ -31,9 +31,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
+import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.Language;
 import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.Setting;
 import org.ehrbase.openehr.sdk.serialisation.exception.UnmarshalException;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
+import org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
@@ -74,6 +76,10 @@ public class FlatJsonUnmarshaller {
             StdToCompositionWalker walker = new StdToCompositionWalker();
             DefaultValues defaultValues = new DefaultValues(currentValues);
             // put default for the defaults
+            if (!defaultValues.containsDefaultValue(DefaultValuePath.LANGUAGE)) {
+                defaultValues.addDefaultValue(DefaultValuePath.LANGUAGE,
+                        FlatHelper.findEnumValueOrThrow(introspect.getDefaultLanguage(), Language.class));
+            }
             if (!defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
                 defaultValues.addDefaultValue(DefaultValuePath.TIME, OffsetDateTime.now());
             }
