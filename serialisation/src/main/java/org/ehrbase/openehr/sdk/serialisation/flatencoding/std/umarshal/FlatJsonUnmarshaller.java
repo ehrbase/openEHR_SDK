@@ -77,7 +77,8 @@ public class FlatJsonUnmarshaller {
             DefaultValues defaultValues = new DefaultValues(currentValues);
             // put default for the defaults
             if (!defaultValues.containsDefaultValue(DefaultValuePath.LANGUAGE)) {
-                defaultValues.addDefaultValue(DefaultValuePath.LANGUAGE,
+                defaultValues.addDefaultValue(
+                        DefaultValuePath.LANGUAGE,
                         FlatHelper.findEnumValueOrThrow(introspect.getDefaultLanguage(), Language.class));
             }
             if (!defaultValues.containsDefaultValue(DefaultValuePath.TIME)) {
