@@ -13,4 +13,9 @@ updates:
        - dependency-name: "*"
          update-types: ["version-update:semver-major"]
        - dependency-name: "org.antlr:*"
-         update-types: ["version-update:semver-minor"] 
+         update-types: ["version-update:semver-minor"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      # Check for updates to GitHub Actions every week
+      interval: "weekly"
