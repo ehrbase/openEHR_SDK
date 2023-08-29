@@ -62,6 +62,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.ColumnExpression;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.CountDistinctAggregateFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.DoublePrimitive;
+import org.ehrbase.openehr.sdk.aql.dto.operand.FunctionCall;
 import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LikeOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LongPrimitive;
@@ -300,7 +301,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public SingleRowFunction visitFunctionCall(FunctionCallContext ctx) {
+    public FunctionCall visitFunctionCall(FunctionCallContext ctx) {
+
+        if (ctx.terminologyFunction() != null) {
+            return visitTerminologyFunction(ctx.terminologyFunction());
+        }
 
         SingleRowFunction dto = new SingleRowFunction();
 
@@ -331,6 +336,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.primitive() != null) {
             return visitPrimitive(ctx.primitive());
         }
+
         throw new UnsupportedOperationException("Cannot parse %s".formatted(ctx.getText()));
     }
 
@@ -670,8 +676,8 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (CollectionUtils.isNotEmpty(ctx.valueListItem())) {
             return ctx.valueListItem().stream().map(this::visitValueListItem).collect(Collectors.toList());
         } else if (ctx.terminologyFunction() != null) {
-            errors.add("Not implemented: Terminology is not yet supported");
-            return Stream.of(new TerminologyFunction()).collect(Collectors.toList());
+
+            return new ArrayList<>(Collections.singletonList(visitTerminologyFunction(ctx.terminologyFunction())));
         } else {
             errors.add("Not implemented: MATCHES URI not yet supported");
             return new ArrayList<>();
@@ -685,9 +691,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
             return visitPrimitive(ctx.primitive());
         } else if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());
+        } else if (ctx.terminologyFunction() != null) {
+            return visitTerminologyFunction(ctx.terminologyFunction());
         } else {
-            errors.add("Not implemented: Terminology not yet supported");
-            return new TerminologyFunction();
+            errors.add("Invalid ValueListItem");
+            return new MatchesOperand() {};
         }
     }
 
@@ -733,6 +741,21 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         orderByExpression.setStatement(visitIdentifiedPath(ctx.identifiedPath()));
         orderByExpression.setSymbol(extractSymbol(ctx));
         return orderByExpression;
+    }
+
+    @Override
+    public TerminologyFunction visitTerminologyFunction(AqlParser.TerminologyFunctionContext ctx) {
+
+        TerminologyFunction terminologyFunction = new TerminologyFunction();
+
+        terminologyFunction.setOperation(
+                StringUtils.unwrap(getFullText(ctx.STRING(0).getSymbol()), "'"));
+        terminologyFunction.setServiceApi(
+                StringUtils.unwrap(getFullText(ctx.STRING(1).getSymbol()), "'"));
+        terminologyFunction.setUriParameters(
+                StringUtils.unwrap(getFullText(ctx.STRING(2).getSymbol()), "'"));
+
+        return terminologyFunction;
     }
 
     private static String unescapeText(RuleContext ctx) {

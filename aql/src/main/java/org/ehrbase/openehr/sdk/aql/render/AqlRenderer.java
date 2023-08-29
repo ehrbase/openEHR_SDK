@@ -54,6 +54,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.Primitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
+import org.ehrbase.openehr.sdk.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
@@ -153,9 +154,21 @@ public final class AqlRenderer {
             renderParameterDto(sb, queryParameter);
         } else if (next instanceof Primitive primitive) {
             sb.append(renderPrimitive(primitive));
+        } else if (next instanceof TerminologyFunction terminologyFunction) {
+            renderTerminologyFunction(sb, terminologyFunction);
         } else {
             throw new SdkException("Cannot handle %s".formatted(next.getClass().getName()));
         }
+    }
+
+    private static void renderTerminologyFunction(StringBuilder sb, TerminologyFunction terminologyFunction) {
+        // @format:off
+        sb.append("TERMINOLOGY").append("(")
+                .append("'").append(terminologyFunction.getOperation()).append("'").append(",")
+                .append("'").append(terminologyFunction.getServiceApi()).append("'").append(",")
+                .append("'").append(terminologyFunction.getUriParameters()).append("'")
+                .append(")");
+        //@format:on
     }
 
     private static void renderLike(StringBuilder sb, LikeCondition likeCondition) {

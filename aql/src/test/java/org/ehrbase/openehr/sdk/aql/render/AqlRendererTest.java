@@ -340,6 +340,34 @@ class AqlRendererTest {
         test(aql, aql);
     }
 
+    @Test
+    void renderPredicateTerminology() {
+        String aql = "SELECT c/context/start_time, p/data/items[at0002]/value "
+                + "FROM EHR e[ehr_id/value='1234'] "
+                + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] "
+                + "CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
+                + "WHERE "
+                + "c/name/value='Current Problems' AND "
+                + "p/data/items[at0002]/value/defining_code/code_string MATCHES TERMINOLOGY('expand','hl7.org/fhir/4.0','http://snomed.info/sct?fhir_vs=isa/50697003')";
+
+        test(
+                aql,
+                "SELECT c/context/start_time, p/data/items[at0002]/value FROM EHR e[ehr_id/value='1234'] "
+                        + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
+                        + "WHERE (c/name/value = 'Current Problems' AND "
+                        + "p/data/items[at0002]/value/defining_code/code_string MATCHES {TERMINOLOGY('expand','hl7.org/fhir/4.0','http://snomed.info/sct?fhir_vs=isa/50697003')})");
+    }
+
+    @Test
+    void renderPredicateTerminologyII() {
+        String aql = "SELECT c/context/start_time, p/data/items[at0002]/value FROM EHR e[ehr_id/value='1234'] "
+                + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
+                + "WHERE (c/name/value = 'Current Problems' AND "
+                + "p/data/items[at0002]/value/defining_code/code_string MATCHES {TERMINOLOGY('expand','hl7.org/fhir/4.0','http://snomed.info/sct?fhir_vs=isa/50697003')})";
+
+        test(aql, aql);
+    }
+
     private static void test(String aql, String expected) {
         AqlQuery aqlQuery = AqlQueryParser.parse(aql);
 
