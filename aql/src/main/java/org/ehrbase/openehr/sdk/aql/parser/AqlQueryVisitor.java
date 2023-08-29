@@ -18,6 +18,7 @@
 package org.ehrbase.openehr.sdk.aql.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -85,6 +86,7 @@ import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
+import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.AggregateFunctionCallContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.ClassExprOperandContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.ClassExpressionContext;
@@ -561,8 +563,31 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     @Override
     public ContainmentVersionExpression visitVersionClassExpr(VersionClassExprContext ctx) {
 
-        errors.add("Not implemented: VERSION is not yet supported");
-        return new ContainmentVersionExpression() {};
+        ContainmentVersionExpression containmentVersionExpression = new ContainmentVersionExpression();
+
+        if (ctx.variable != null) {
+            containmentVersionExpression.setIdentifier(ctx.variable.getText());
+            containmentByAlias.put(containmentVersionExpression.getIdentifier(), containmentVersionExpression);
+        }
+
+        AqlParser.VersionPredicateContext versionPredicateContext = ctx.versionPredicate();
+
+        if (versionPredicateContext.ALL_VERSIONS() != null) {
+            containmentVersionExpression.setVersionPredicateType(
+                    ContainmentVersionExpression.VersionPredicateType.ALL_VERSIONS);
+        } else if (versionPredicateContext.LATEST_VERSION() != null) {
+            containmentVersionExpression.setVersionPredicateType(
+                    ContainmentVersionExpression.VersionPredicateType.LATEST_VERSION);
+
+        } else if (versionPredicateContext.standardPredicate() != null) {
+            ComparisonOperatorPredicate comparisonOperatorPredicate =
+                    visitStandardPredicate(versionPredicateContext.standardPredicate());
+            AndOperatorPredicate andOperatorPredicate =
+                    new AndOperatorPredicate(Collections.singletonList(comparisonOperatorPredicate));
+            containmentVersionExpression.setPredicates(Collections.singletonList(andOperatorPredicate));
+        }
+
+        return containmentVersionExpression;
     }
 
     @Override

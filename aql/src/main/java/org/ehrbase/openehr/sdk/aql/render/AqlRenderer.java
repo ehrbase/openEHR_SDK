@@ -38,6 +38,7 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentVersionExpression;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ColumnExpression;
@@ -566,7 +567,7 @@ public final class AqlRenderer {
 
     private static void renderContainmentExpresionDto(StringBuilder sb, Containment dto) {
 
-        if (dto instanceof ContainmentClassExpression classExpressionDto) {
+        if (dto instanceof AbstractContainmentExpression classExpressionDto) {
             renderContainmentDto(sb, classExpressionDto);
         } else if (dto instanceof ContainmentSetOperator containmentSetOperator) {
             renderContainmentLogicalOperator(sb, containmentSetOperator);
@@ -602,15 +603,32 @@ public final class AqlRenderer {
         return c instanceof AbstractContainmentExpression e && e.getContains() != null;
     }
 
-    private static void renderContainmentDto(StringBuilder sb, ContainmentClassExpression dto) {
+    private static void renderContainmentDto(StringBuilder sb, AbstractContainmentExpression dto) {
 
-        sb.append(dto.getType());
+        if (dto instanceof ContainmentClassExpression classExpression) {
+            sb.append(classExpression.getType());
+        } else {
+            sb.append("VERSION");
+        }
 
         if (dto.getIdentifier() != null) {
             sb.append(" ").append(dto.getIdentifier());
         }
 
-        Optional.of(dto).map(ContainmentClassExpression::getPredicates).ifPresent(p -> renderPredicate(sb, p));
+        if (dto instanceof ContainmentVersionExpression classExpression
+                && !classExpression
+                        .getVersionPredicateType()
+                        .equals(ContainmentVersionExpression.VersionPredicateType.STANDARD_PREDICATE)) {
+            if (classExpression
+                    .getVersionPredicateType()
+                    .equals(ContainmentVersionExpression.VersionPredicateType.ALL_VERSIONS)) {
+                sb.append("[ALL_VERSIONS]");
+            } else {
+                sb.append("[LATEST_VERSION]");
+            }
+        } else {
+            Optional.of(dto).map(AbstractContainmentExpression::getPredicates).ifPresent(p -> renderPredicate(sb, p));
+        }
 
         if (dto.getContains() != null) {
 
