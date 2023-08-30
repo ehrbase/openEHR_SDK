@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- AQL Dto model add terminology , and Versioning  ([#511](https://github.com/ehrbase/openEHR_SDK/pull/511))
  ### Fixed 
 
 ## [2.2.0]
