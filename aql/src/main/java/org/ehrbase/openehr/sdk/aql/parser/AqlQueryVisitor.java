@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -244,12 +243,12 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.BOOLEAN() != null) {
             selectPrimitiveDto = new BooleanPrimitive(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null || ctx.DATETIME() != null || ctx.TIME() != null) {
-            selectPrimitiveDto = new TemporalPrimitive(unescapeText(ctx));
+            selectPrimitiveDto = new TemporalPrimitive(unescapeText(ctx.getText()));
         } else if (ctx.numericPrimitive() != null) {
             NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
             selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
         } else if (ctx.STRING() != null) {
-            selectPrimitiveDto = new StringPrimitive(unescapeText(ctx));
+            selectPrimitiveDto = new StringPrimitive(unescapeText(ctx.getText()));
         } else if (ctx.NULL() != null) {
             selectPrimitiveDto = NullPrimitive.INSTANCE;
         } else {
@@ -510,7 +509,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
             return List.of(new ComparisonOperatorPredicate(
                     AqlObjectPathUtil.NAME_VALUE,
                     PredicateComparisonOperator.EQ,
-                    new StringPrimitive(unescapeText(ctx))));
+                    new StringPrimitive(unescapeText(ctx.getText()))));
         }
 
         String text = getFullText(ctx);
@@ -705,7 +704,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());
         } else {
-            return new StringPrimitive(unescapeText(ctx));
+            return new StringPrimitive(unescapeText(ctx.getText()));
         }
     }
 
@@ -748,17 +747,14 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         TerminologyFunction terminologyFunction = new TerminologyFunction();
 
-        terminologyFunction.setOperation(
-                StringUtils.unwrap(getFullText(ctx.STRING(0).getSymbol()), "'"));
-        terminologyFunction.setServiceApi(
-                StringUtils.unwrap(getFullText(ctx.STRING(1).getSymbol()), "'"));
-        terminologyFunction.setUriParameters(
-                StringUtils.unwrap(getFullText(ctx.STRING(2).getSymbol()), "'"));
+        terminologyFunction.setOperation(unescapeText(ctx.STRING(0).getText()));
+        terminologyFunction.setServiceApi(unescapeText(ctx.STRING(1).getText()));
+        terminologyFunction.setUriParameters(unescapeText(ctx.STRING(2).getText()));
 
         return terminologyFunction;
     }
 
-    private static String unescapeText(RuleContext ctx) {
+    private static String unescapeText(String ctxText) {
 
         /*
          *     STRING
@@ -773,7 +769,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
          *     fragment OCTAL_ESC: '\\' [0-3] OCTAL_DIGIT OCTAL_DIGIT | '\\' OCTAL_DIGIT OCTAL_DIGIT | '\\' OCTAL_DIGIT;
          *     fragment OCTAL_DIGIT: [0-7];
          */
-        String text = ctx.getText();
+        String text = ctxText;
         StringBuilder sb = new StringBuilder(text.length() - 2);
 
         // remove trailing quote

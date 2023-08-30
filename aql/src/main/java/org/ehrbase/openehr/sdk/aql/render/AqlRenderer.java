@@ -162,13 +162,15 @@ public final class AqlRenderer {
     }
 
     private static void renderTerminologyFunction(StringBuilder sb, TerminologyFunction terminologyFunction) {
-        // @format:off
-        sb.append("TERMINOLOGY").append("(")
-                .append("'").append(terminologyFunction.getOperation()).append("'").append(",")
-                .append("'").append(terminologyFunction.getServiceApi()).append("'").append(",")
-                .append("'").append(terminologyFunction.getUriParameters()).append("'")
+
+        sb.append("TERMINOLOGY")
+                .append("(")
+                .append(encodeString(terminologyFunction.getOperation()))
+                .append(",")
+                .append(encodeString(terminologyFunction.getServiceApi()))
+                .append(",")
+                .append(encodeString(terminologyFunction.getUriParameters()))
                 .append(")");
-        //@format:on
     }
 
     private static void renderLike(StringBuilder sb, LikeCondition likeCondition) {
@@ -226,6 +228,8 @@ public final class AqlRenderer {
             renderIdentifiedPath(sb, identifiedPath);
         } else if (statement instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
+        } else if (statement instanceof TerminologyFunction terminologyFunction) {
+            renderTerminologyFunction(sb, terminologyFunction);
         } else {
             throw new SdkException(
                     "Cannot handle %s".formatted(statement.getClass().getName()));
