@@ -633,9 +633,8 @@ public final class AqlRenderer {
         }
 
         if (dto instanceof ContainmentVersionExpression classExpression
-                && !classExpression
-                        .getVersionPredicateType()
-                        .equals(ContainmentVersionExpression.VersionPredicateType.STANDARD_PREDICATE)) {
+                && classExpression.getVersionPredicateType()
+                        != ContainmentVersionExpression.VersionPredicateType.STANDARD_PREDICATE) {
             if (classExpression
                     .getVersionPredicateType()
                     .equals(ContainmentVersionExpression.VersionPredicateType.ALL_VERSIONS)) {

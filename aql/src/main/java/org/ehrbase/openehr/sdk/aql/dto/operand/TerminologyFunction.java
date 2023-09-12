@@ -27,7 +27,7 @@ public class TerminologyFunction implements MatchesOperand, FunctionCall {
     private String operation;
     private String serviceApi;
 
-    private String UriParameters;
+    private String uriParameters;
 
     public String getOperation() {
         return operation;
@@ -46,11 +46,11 @@ public class TerminologyFunction implements MatchesOperand, FunctionCall {
     }
 
     public String getUriParameters() {
-        return UriParameters;
+        return uriParameters;
     }
 
     public void setUriParameters(String uriParameters) {
-        UriParameters = uriParameters;
+        this.uriParameters = uriParameters;
     }
 
     @Override
@@ -60,19 +60,19 @@ public class TerminologyFunction implements MatchesOperand, FunctionCall {
         TerminologyFunction that = (TerminologyFunction) o;
         return Objects.equals(operation, that.operation)
                 && Objects.equals(serviceApi, that.serviceApi)
-                && Objects.equals(UriParameters, that.UriParameters);
+                && Objects.equals(uriParameters, that.uriParameters);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(operation, serviceApi, UriParameters);
+        return Objects.hash(operation, serviceApi, uriParameters);
     }
 
     @Override
     public String toString() {
         return "TerminologyFunction{" + "operation='"
                 + operation + '\'' + ", serviceApi='"
-                + serviceApi + '\'' + ", UriParameters='"
-                + UriParameters + '\'' + '}';
+                + serviceApi + '\'' + ", uriParameters='"
+                + uriParameters + '\'' + '}';
     }
 }

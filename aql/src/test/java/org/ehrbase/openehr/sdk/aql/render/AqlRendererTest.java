@@ -341,7 +341,7 @@ class AqlRendererTest {
     }
 
     @Test
-    void renderPredicateTerminology() {
+    void renderTerminology() {
         String aql = "SELECT c/context/start_time, p/data/items[at0002]/value "
                 + "FROM EHR e[ehr_id/value='1234'] "
                 + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] "
@@ -359,7 +359,7 @@ class AqlRendererTest {
     }
 
     @Test
-    void renderPredicateTerminologyII() {
+    void renderTerminologyII() {
         String aql = "SELECT c/context/start_time, p/data/items[at0002]/value FROM EHR e[ehr_id/value='1234'] "
                 + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
                 + "WHERE (c/name/value = 'Current Problems' AND "
@@ -369,7 +369,7 @@ class AqlRendererTest {
     }
 
     @Test
-    void renderPredicateTerminologyIII() {
+    void renderTerminologyIII() {
         String aql = "SELECT c/context/start_time, p/data/items[at0002]/value FROM EHR e[ehr_id/value='1234'] "
                 + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
                 + "WHERE TERMINOLOGY('validate','hl7.org/fhir/r4','system=http://snomed.info/sct&code=122298005&url=http://snomed.info/sct?fhir_vs&display=Astrovirus RNA assay') = true";

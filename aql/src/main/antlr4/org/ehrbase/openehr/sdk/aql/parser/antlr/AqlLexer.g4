@@ -167,7 +167,7 @@ fragment HOUR: ( [01][0-9] | [2][0-3] ) ; // hour in 24 hour clock
 fragment MINUTE: [0-5][0-9] ; // minutes
 fragment SECOND: [0-5][0-9] ; // seconds
 
-//Boolean
+// ------------------- special word symbols --------------
 BOOLEAN: SYM_TRUE | SYM_FALSE ;
 
 fragment SYM_TRUE: T R U E ;
@@ -181,7 +181,7 @@ fragment VERSION_ID          : DIGIT+ ('.' DIGIT+)* ( ( '-rc' | '-alpha' ) ( '.'
 IDENTIFIER: IDENTIFIER_CHAR;
 fragment IDENTIFIER_CHAR : ALPHA_CHAR WORD_CHAR* ;
 fragment ARCHETYPE_CONCEPT_ID : ALPHA_CHAR NAME_CHAR* ;
-// ------------------- special word symbols --------------
+
 
 
 // --------------------- composed primitive types -------------------

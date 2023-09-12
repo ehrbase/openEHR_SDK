@@ -137,7 +137,7 @@ class AqlQueryParserTest {
     }
 
     @Test
-    void parsePathComperePath() {
+    void parsePathComparePath() {
         String aql = "SELECT c[at001 and archetype_node_id = name/value] FROM COMPOSITION c";
         testAql(aql, aql);
     }
