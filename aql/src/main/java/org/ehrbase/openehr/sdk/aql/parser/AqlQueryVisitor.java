@@ -18,6 +18,7 @@
 package org.ehrbase.openehr.sdk.aql.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -28,9 +29,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -61,6 +62,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.ColumnExpression;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.CountDistinctAggregateFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.DoublePrimitive;
+import org.ehrbase.openehr.sdk.aql.dto.operand.FunctionCall;
 import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LikeOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LongPrimitive;
@@ -85,6 +87,7 @@ import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.dto.select.SelectExpression;
+import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.AggregateFunctionCallContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.ClassExprOperandContext;
 import org.ehrbase.openehr.sdk.aql.parser.antlr.AqlParser.ClassExpressionContext;
@@ -298,7 +301,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     }
 
     @Override
-    public SingleRowFunction visitFunctionCall(FunctionCallContext ctx) {
+    public FunctionCall visitFunctionCall(FunctionCallContext ctx) {
+
+        if (ctx.terminologyFunction() != null) {
+            return visitTerminologyFunction(ctx.terminologyFunction());
+        }
 
         SingleRowFunction dto = new SingleRowFunction();
 
@@ -329,6 +336,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.primitive() != null) {
             return visitPrimitive(ctx.primitive());
         }
+
         throw new UnsupportedOperationException("Cannot parse %s".formatted(ctx.getText()));
     }
 
@@ -561,8 +569,31 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
     @Override
     public ContainmentVersionExpression visitVersionClassExpr(VersionClassExprContext ctx) {
 
-        errors.add("Not implemented: VERSION is not yet supported");
-        return new ContainmentVersionExpression() {};
+        ContainmentVersionExpression containmentVersionExpression = new ContainmentVersionExpression();
+
+        if (ctx.variable != null) {
+            containmentVersionExpression.setIdentifier(ctx.variable.getText());
+            containmentByAlias.put(containmentVersionExpression.getIdentifier(), containmentVersionExpression);
+        }
+
+        AqlParser.VersionPredicateContext versionPredicateContext = ctx.versionPredicate();
+
+        if (versionPredicateContext.ALL_VERSIONS() != null) {
+            containmentVersionExpression.setVersionPredicateType(
+                    ContainmentVersionExpression.VersionPredicateType.ALL_VERSIONS);
+        } else if (versionPredicateContext.LATEST_VERSION() != null) {
+            containmentVersionExpression.setVersionPredicateType(
+                    ContainmentVersionExpression.VersionPredicateType.LATEST_VERSION);
+
+        } else if (versionPredicateContext.standardPredicate() != null) {
+            ComparisonOperatorPredicate comparisonOperatorPredicate =
+                    visitStandardPredicate(versionPredicateContext.standardPredicate());
+            AndOperatorPredicate andOperatorPredicate =
+                    new AndOperatorPredicate(Collections.singletonList(comparisonOperatorPredicate));
+            containmentVersionExpression.setPredicates(Collections.singletonList(andOperatorPredicate));
+        }
+
+        return containmentVersionExpression;
     }
 
     @Override
@@ -645,8 +676,8 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (CollectionUtils.isNotEmpty(ctx.valueListItem())) {
             return ctx.valueListItem().stream().map(this::visitValueListItem).collect(Collectors.toList());
         } else if (ctx.terminologyFunction() != null) {
-            errors.add("Not implemented: Terminology is not yet supported");
-            return Stream.of(new TerminologyFunction()).collect(Collectors.toList());
+
+            return new ArrayList<>(Collections.singletonList(visitTerminologyFunction(ctx.terminologyFunction())));
         } else {
             errors.add("Not implemented: MATCHES URI not yet supported");
             return new ArrayList<>();
@@ -660,9 +691,11 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
             return visitPrimitive(ctx.primitive());
         } else if (ctx.PARAMETER() != null) {
             return createParameter(ctx.PARAMETER());
+        } else if (ctx.terminologyFunction() != null) {
+            return visitTerminologyFunction(ctx.terminologyFunction());
         } else {
-            errors.add("Not implemented: Terminology not yet supported");
-            return new TerminologyFunction();
+            errors.add("Invalid ValueListItem");
+            return new MatchesOperand() {};
         }
     }
 
@@ -710,7 +743,19 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         return orderByExpression;
     }
 
-    private static String unescapeText(RuleContext ctx) {
+    @Override
+    public TerminologyFunction visitTerminologyFunction(AqlParser.TerminologyFunctionContext ctx) {
+
+        TerminologyFunction terminologyFunction = new TerminologyFunction();
+
+        terminologyFunction.setOperation(unescapeText(ctx.STRING(0)));
+        terminologyFunction.setServiceApi(unescapeText(ctx.STRING(1)));
+        terminologyFunction.setUriParameters(unescapeText(ctx.STRING(2)));
+
+        return terminologyFunction;
+    }
+
+    private static String unescapeText(ParseTree ctxText) {
 
         /*
          *     STRING
@@ -725,7 +770,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
          *     fragment OCTAL_ESC: '\\' [0-3] OCTAL_DIGIT OCTAL_DIGIT | '\\' OCTAL_DIGIT OCTAL_DIGIT | '\\' OCTAL_DIGIT;
          *     fragment OCTAL_DIGIT: [0-7];
          */
-        String text = ctx.getText();
+        String text = ctxText.getText();
         StringBuilder sb = new StringBuilder(text.length() - 2);
 
         // remove trailing quote

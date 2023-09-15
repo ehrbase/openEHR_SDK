@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2023 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,14 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.aql.roundtriptest;
+package org.ehrbase.openehr.sdk.aql.dto.operand;
 
 /**
  * @author Stefan Spiska
  */
-public interface AqlTestCase {
-
-    String getTestAql();
-
-    String getExpectedAql();
-}
+public interface FunctionCall extends ColumnExpression, Operand, ComparisonLeftOperand {}

@@ -168,6 +168,7 @@ fragment MINUTE: [0-5][0-9] ; // minutes
 fragment SECOND: [0-5][0-9] ; // seconds
 
 // ------------------- special word symbols --------------
+BOOLEAN: SYM_TRUE | SYM_FALSE ;
 
 fragment SYM_TRUE: T R U E ;
 fragment SYM_FALSE: F A L S E ;
@@ -180,6 +181,8 @@ fragment VERSION_ID          : DIGIT+ ('.' DIGIT+)* ( ( '-rc' | '-alpha' ) ( '.'
 IDENTIFIER: IDENTIFIER_CHAR;
 fragment IDENTIFIER_CHAR : ALPHA_CHAR WORD_CHAR* ;
 fragment ARCHETYPE_CONCEPT_ID : ALPHA_CHAR NAME_CHAR* ;
+
+
 
 // --------------------- composed primitive types -------------------
 // coded term shortcut e.g. 'ICD10AM(1998)::F23', 'ISO_639-1::en' or 'snomed_ct(3.1)::3415004|cyanosis|'
@@ -240,8 +243,6 @@ fragment NAMESPACE: LABEL ('.' LABEL)* ;
 fragment LABEL: ALPHA_CHAR (NAME_CHAR|URI_PCT_ENCODED)* ;
 
 // --------------------- atomic primitive types -------------------
-
-BOOLEAN: SYM_TRUE | SYM_FALSE ;
 
 INTEGER: DIGIT+;
 REAL: DIGIT* '.' DIGIT+;

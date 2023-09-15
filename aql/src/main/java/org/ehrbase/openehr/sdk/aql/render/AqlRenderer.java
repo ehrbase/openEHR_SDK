@@ -38,6 +38,7 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentVersionExpression;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ColumnExpression;
@@ -53,6 +54,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.Primitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.dto.operand.SingleRowFunction;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
+import org.ehrbase.openehr.sdk.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
@@ -152,9 +154,23 @@ public final class AqlRenderer {
             renderParameterDto(sb, queryParameter);
         } else if (next instanceof Primitive primitive) {
             sb.append(renderPrimitive(primitive));
+        } else if (next instanceof TerminologyFunction terminologyFunction) {
+            renderTerminologyFunction(sb, terminologyFunction);
         } else {
             throw new SdkException("Cannot handle %s".formatted(next.getClass().getName()));
         }
+    }
+
+    private static void renderTerminologyFunction(StringBuilder sb, TerminologyFunction terminologyFunction) {
+
+        sb.append("TERMINOLOGY")
+                .append("(")
+                .append(encodeString(terminologyFunction.getOperation()))
+                .append(",")
+                .append(encodeString(terminologyFunction.getServiceApi()))
+                .append(",")
+                .append(encodeString(terminologyFunction.getUriParameters()))
+                .append(")");
     }
 
     private static void renderLike(StringBuilder sb, LikeCondition likeCondition) {
@@ -212,6 +228,8 @@ public final class AqlRenderer {
             renderIdentifiedPath(sb, identifiedPath);
         } else if (statement instanceof SingleRowFunction singleRowFunktion) {
             renderSingleRowFunctionDto(sb, singleRowFunktion);
+        } else if (statement instanceof TerminologyFunction terminologyFunction) {
+            renderTerminologyFunction(sb, terminologyFunction);
         } else {
             throw new SdkException(
                     "Cannot handle %s".formatted(statement.getClass().getName()));
@@ -566,7 +584,7 @@ public final class AqlRenderer {
 
     private static void renderContainmentExpresionDto(StringBuilder sb, Containment dto) {
 
-        if (dto instanceof ContainmentClassExpression classExpressionDto) {
+        if (dto instanceof AbstractContainmentExpression classExpressionDto) {
             renderContainmentDto(sb, classExpressionDto);
         } else if (dto instanceof ContainmentSetOperator containmentSetOperator) {
             renderContainmentLogicalOperator(sb, containmentSetOperator);
@@ -602,15 +620,31 @@ public final class AqlRenderer {
         return c instanceof AbstractContainmentExpression e && e.getContains() != null;
     }
 
-    private static void renderContainmentDto(StringBuilder sb, ContainmentClassExpression dto) {
+    private static void renderContainmentDto(StringBuilder sb, AbstractContainmentExpression dto) {
 
-        sb.append(dto.getType());
+        if (dto instanceof ContainmentClassExpression classExpression) {
+            sb.append(classExpression.getType());
+        } else {
+            sb.append("VERSION");
+        }
 
         if (dto.getIdentifier() != null) {
             sb.append(" ").append(dto.getIdentifier());
         }
 
-        Optional.of(dto).map(ContainmentClassExpression::getPredicates).ifPresent(p -> renderPredicate(sb, p));
+        if (dto instanceof ContainmentVersionExpression classExpression
+                && classExpression.getVersionPredicateType()
+                        != ContainmentVersionExpression.VersionPredicateType.STANDARD_PREDICATE) {
+            if (classExpression
+                    .getVersionPredicateType()
+                    .equals(ContainmentVersionExpression.VersionPredicateType.ALL_VERSIONS)) {
+                sb.append("[ALL_VERSIONS]");
+            } else {
+                sb.append("[LATEST_VERSION]");
+            }
+        } else {
+            Optional.of(dto).map(AbstractContainmentExpression::getPredicates).ifPresent(p -> renderPredicate(sb, p));
+        }
 
         if (dto.getContains() != null) {
 

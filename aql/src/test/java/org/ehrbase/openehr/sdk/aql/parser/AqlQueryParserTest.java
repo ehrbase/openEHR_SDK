@@ -137,6 +137,12 @@ class AqlQueryParserTest {
     }
 
     @Test
+    void parsePathComparePath() {
+        String aql = "SELECT c[at001 and archetype_node_id = name/value] FROM COMPOSITION c";
+        testAql(aql, aql);
+    }
+
+    @Test
     void parseFromComposition() {
         String aql = "SELECT c/name/value AS name FROM COMPOSITION c";
         String expected = aql; // .replace(" FROM ", " FROM EHR e CONTAINS ");
