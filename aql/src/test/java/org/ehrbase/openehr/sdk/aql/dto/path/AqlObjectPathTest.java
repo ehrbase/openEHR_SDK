@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.path;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -64,5 +65,21 @@ class AqlObjectPathTest {
 
         assertEquals(aop, AqlObjectPath.fromAqlPath(ap));
         assertEquals(ap, AqlObjectPath.toAqlPath(aop));
+    }
+
+    @Test
+    void endsWith() {
+
+        String path1 = "content[name/value='1234']/data/events[at0001,'1234']";
+        String path2 = "data/events[at0001,'1234']";
+
+        AqlObjectPath aop1 = AqlObjectPath.parse(path1);
+        AqlObjectPath aop2 = AqlObjectPath.parse(path2);
+
+        assertThat(aop1.endsWith(aop1)).isTrue();
+        assertThat(aop1.endsWith(aop2)).isTrue();
+        assertThat(aop2.endsWith(aop1)).isFalse();
+
+        assertThat(aop1.endsWith(null)).isTrue();
     }
 }
