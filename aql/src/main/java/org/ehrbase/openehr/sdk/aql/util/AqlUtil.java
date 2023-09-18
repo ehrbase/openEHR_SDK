@@ -36,7 +36,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
-public class AqlUtil {
+public final class AqlUtil {
 
     private AqlUtil() {}
 
