@@ -99,6 +99,18 @@ public final class AqlRenderer {
         return sb.toString();
     }
 
+    public static String render(IdentifiedPath ip) {
+        StringBuilder sb = new StringBuilder();
+        renderIdentifiedPath(sb, ip);
+        return sb.toString();
+    }
+
+    public static String render(AqlObjectPath p) {
+        StringBuilder sb = new StringBuilder();
+        renderPath(sb, p);
+        return sb.toString();
+    }
+
     private static void renderOrderByClause(StringBuilder sb, List<OrderByExpression> orderBy) {
         sb.append(" ORDER BY ");
 
@@ -484,12 +496,6 @@ public final class AqlRenderer {
         } else {
             throw new UnsupportedOperationException("Unsupported operand type %s".formatted(operand.getClass()));
         }
-    }
-
-    public static String renderPath(AqlObjectPath p) {
-        StringBuilder sb = new StringBuilder();
-        renderPath(sb, p);
-        return sb.toString();
     }
 
     private static void renderPath(StringBuilder sb, AqlObjectPath p) {

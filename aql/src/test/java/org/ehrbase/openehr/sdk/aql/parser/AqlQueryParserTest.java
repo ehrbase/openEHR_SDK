@@ -64,7 +64,7 @@ class AqlQueryParserTest {
 
     private void testPath(String toTest, String expected) {
         AqlObjectPath actual = AqlQueryParser.parsePath(toTest);
-        assertThat(AqlRenderer.renderPath(actual)).isEqualTo(expected);
+        assertThat(actual.render()).isEqualTo(expected);
     }
 
     @Test

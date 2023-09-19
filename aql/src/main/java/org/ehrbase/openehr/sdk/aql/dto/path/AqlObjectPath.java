@@ -137,7 +137,7 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
     }
 
     public String render() {
-        return AqlRenderer.renderPath(this);
+        return AqlRenderer.render(this);
     }
 
     @Override
