@@ -75,9 +75,6 @@
         "archetype_id": {
           "value": "openEHR-EHR-ACTION.minimal.v1"
         },
-        "template_id": {
-          "value": "minimal_action_3.en.v1"
-        },
         "rm_version": "1.0.4"
       },
       "language": {

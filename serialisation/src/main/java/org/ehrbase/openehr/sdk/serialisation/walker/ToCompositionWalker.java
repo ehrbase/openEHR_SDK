@@ -31,6 +31,7 @@ import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.composition.InstructionDetails;
 import com.nedap.archie.rm.composition.Observation;
+import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.Event;
@@ -78,11 +79,15 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
                 Archetyped archetyped = new Archetyped();
                 archetyped.setArchetypeId(new ArchetypeID(nodeId.getNodeId()));
                 archetyped.setRmVersion(RM_VERSION_1_0_4);
-                TemplateId templateId = new TemplateId();
-                templateId.setValue(context.getTemplateId());
-                archetyped.setTemplateId(templateId);
                 ((Locatable) currentRM).setArchetypeDetails(archetyped);
                 ((Locatable) currentRM).setArchetypeNodeId(nodeId.getNodeId());
+
+                if (currentRM instanceof Composition) {
+                    TemplateId templateId = new TemplateId();
+                    templateId.setValue(context.getTemplateId());
+                    Archetyped archetypeDetails = ((Composition) currentRM).getArchetypeDetails();
+                    archetypeDetails.setTemplateId(templateId);
+                }
             }
         }
 

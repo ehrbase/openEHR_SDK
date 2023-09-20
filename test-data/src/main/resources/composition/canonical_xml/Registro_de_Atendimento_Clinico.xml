@@ -66,9 +66,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.adhoc.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -80,9 +77,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-ADMIN_ENTRY.admission-ms_br.v02</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -207,9 +201,6 @@
                             <archetype_id>
                                 <value>openEHR-EHR-CLUSTER.individual_professional-ms_br.v1</value>
                             </archetype_id>
-                            <template_id>
-                                <value>Registro de Atendimento Clínico v1.0</value>
-                            </template_id>
                             <rm_version>1.0.2</rm_version>
                         </archetype_details>
                         <items archetype_node_id="at0.20" xsi:type="CLUSTER">
@@ -276,9 +267,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.problem_list.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -290,9 +278,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-EVALUATION.reason_for_encounter.v1</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -337,9 +322,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-EVALUATION.container.v0</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -368,9 +350,6 @@
                         <archetype_id>
                             <value>openEHR-EHR-CLUSTER.free_text.v0</value>
                         </archetype_id>
-                        <template_id>
-                            <value>Registro de Atendimento Clínico v1.0</value>
-                        </template_id>
                         <rm_version>1.0.2</rm_version>
                     </archetype_details>
                     <items archetype_node_id="at0001" xsi:type="ELEMENT">
@@ -393,9 +372,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.adhoc.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items archetype_node_id="openEHR-EHR-SECTION.vital_signs.v0" xsi:type="SECTION">
@@ -406,9 +382,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-SECTION.vital_signs.v0</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <items
@@ -420,9 +393,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.blood_pressure.v2</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -527,9 +497,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.pulse.v1</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -586,9 +553,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.respiration.v1</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -645,9 +609,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.body_temperature.v2</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -704,9 +665,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.pulse_oximetry.v1</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -763,9 +721,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-SECTION.adhoc.v1</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <items
@@ -777,9 +732,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.body_weight.v2</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -835,9 +787,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.height.v2</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -893,9 +842,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.body_mass_index.v2</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -952,9 +898,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.head_circumference.v1</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -1010,9 +953,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.waist_circumference.v1</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -1068,9 +1008,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-SECTION.adhoc.v1</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <items
@@ -1082,9 +1019,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.menstrual_cycle.v0</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -1128,9 +1062,6 @@
                                     <archetype_id>
                                         <value>openEHR-EHR-ELEMENT.last_normal_menstrual_period.v1</value>
                                     </archetype_id>
-                                    <template_id>
-                                        <value>Registro de Atendimento Clínico v1.0</value>
-                                    </template_id>
                                     <rm_version>1.0.2</rm_version>
                                 </archetype_details>
                                 <value xsi:type="DV_DATE_TIME">
@@ -1150,9 +1081,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-OBSERVATION.gestation.v1</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -1207,9 +1135,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-EVALUATION.obstetric_summary.v0</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -1264,9 +1189,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-EVALUATION.container.v0</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <language>
@@ -1295,9 +1217,6 @@
                             <archetype_id>
                                 <value>openEHR-EHR-CLUSTER.free_text.v0</value>
                             </archetype_id>
-                            <template_id>
-                                <value>Registro de Atendimento Clínico v1.0</value>
-                            </template_id>
                             <rm_version>1.0.2</rm_version>
                         </archetype_details>
                         <items archetype_node_id="at0001" xsi:type="ELEMENT">
@@ -1319,9 +1238,6 @@
                     <archetype_id>
                         <value>openEHR-EHR-SECTION.adhoc.v1</value>
                     </archetype_id>
-                    <template_id>
-                        <value>Registro de Atendimento Clínico v1.0</value>
-                    </template_id>
                     <rm_version>1.0.2</rm_version>
                 </archetype_details>
                 <items
@@ -1333,9 +1249,6 @@
                         <archetype_id>
                             <value>openEHR-EHR-OBSERVATION.alcohol_intake-haoc.v01</value>
                         </archetype_id>
-                        <template_id>
-                            <value>Registro de Atendimento Clínico v1.0</value>
-                        </template_id>
                         <rm_version>1.0.2</rm_version>
                     </archetype_details>
                     <language>
@@ -1398,9 +1311,6 @@
                         <archetype_id>
                             <value>openEHR-EHR-OBSERVATION.tobacco_use.v1</value>
                         </archetype_id>
-                        <template_id>
-                            <value>Registro de Atendimento Clínico v1.0</value>
-                        </template_id>
                         <rm_version>1.0.2</rm_version>
                     </archetype_details>
                     <language>
@@ -1463,9 +1373,6 @@
                         <archetype_id>
                             <value>openEHR-EHR-SECTION.adhoc.v1</value>
                         </archetype_id>
-                        <template_id>
-                            <value>Registro de Atendimento Clínico v1.0</value>
-                        </template_id>
                         <rm_version>1.0.2</rm_version>
                     </archetype_details>
                     <items
@@ -1477,9 +1384,6 @@
                             <archetype_id>
                                 <value>openEHR-EHR-OBSERVATION.substance_use-ms_br.v01</value>
                             </archetype_id>
-                            <template_id>
-                                <value>Registro de Atendimento Clínico v1.0</value>
-                            </template_id>
                             <rm_version>1.0.2</rm_version>
                         </archetype_details>
                         <language>
@@ -1571,9 +1475,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.problem_list.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -1585,9 +1486,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-EVALUATION.problem_diagnosis-ms_br.v1</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -1630,9 +1528,6 @@
                         <archetype_id>
                             <value>openEHR-EHR-CLUSTER.problem_qualifier-haoc.v1</value>
                         </archetype_id>
-                        <template_id>
-                            <value>Registro de Atendimento Clínico v1.0</value>
-                        </template_id>
                         <rm_version>1.0.2</rm_version>
                     </archetype_details>
                     <items archetype_node_id="at0083" xsi:type="ELEMENT">
@@ -1689,9 +1584,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.adverse_list.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -1703,9 +1595,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-EVALUATION.adverse_reaction_risk-ms_br.v1</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -1796,9 +1685,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.problem_list.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -1810,9 +1696,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-ACTION.procedure-HAOC.v1</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -1912,9 +1795,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.medication_order_list.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -1926,9 +1806,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-EVALUATION.container.v0</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -1957,9 +1834,6 @@
                         <archetype_id>
                             <value>openEHR-EHR-CLUSTER.free_text.v0</value>
                         </archetype_id>
-                        <template_id>
-                            <value>Registro de Atendimento Clínico v1.0</value>
-                        </template_id>
                         <rm_version>1.0.2</rm_version>
                     </archetype_details>
                     <items archetype_node_id="at0001" xsi:type="ELEMENT">
@@ -1985,9 +1859,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.adhoc.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -1999,9 +1870,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-INSTRUCTION.care_plan_request-haoc.v0</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
@@ -2055,9 +1923,6 @@
             <archetype_id>
                 <value>openEHR-EHR-SECTION.adhoc.v1</value>
             </archetype_id>
-            <template_id>
-                <value>Registro de Atendimento Clínico v1.0</value>
-            </template_id>
             <rm_version>1.0.2</rm_version>
         </archetype_details>
         <items
@@ -2069,9 +1934,6 @@
                 <archetype_id>
                     <value>openEHR-EHR-ADMIN_ENTRY.desfecho_alta-ms_br.v1</value>
                 </archetype_id>
-                <template_id>
-                    <value>Registro de Atendimento Clínico v1.0</value>
-                </template_id>
                 <rm_version>1.0.2</rm_version>
             </archetype_details>
             <language>
