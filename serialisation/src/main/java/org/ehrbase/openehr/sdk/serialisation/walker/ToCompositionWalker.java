@@ -100,13 +100,14 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
      * @param currentRM
      */
     private void normalise(RMObject currentRM) {
-        if (currentRM instanceof CareEntry careEntry && (Optional.of(careEntry)
-                    .map(CareEntry::getProtocol)
-                    .map(ItemStructure::getItems)
-                    .filter(this::isNotEmpty)
-                    .isEmpty())) {
+        if (currentRM instanceof CareEntry careEntry
+                && (Optional.of(careEntry)
+                        .map(CareEntry::getProtocol)
+                        .map(ItemStructure::getItems)
+                        .filter(this::isNotEmpty)
+                        .isEmpty())) {
 
-                careEntry.setProtocol(null);
+            careEntry.setProtocol(null);
         }
 
         if (currentRM instanceof Observation observation) {
@@ -130,58 +131,64 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
             }
         }
 
-        if (currentRM instanceof Action action && (Optional.of(action)
-                    .map(Action::getDescription)
-                    .map(ItemStructure::getItems)
-                    .filter(this::isNotEmpty)
-                    .isEmpty())) {
+        if (currentRM instanceof Action action
+                && (Optional.of(action)
+                        .map(Action::getDescription)
+                        .map(ItemStructure::getItems)
+                        .filter(this::isNotEmpty)
+                        .isEmpty())) {
 
-                action.setDescription(null);
+            action.setDescription(null);
         }
 
-        if (currentRM instanceof Evaluation evaluation && (Optional.of(evaluation)
-                    .map(Evaluation::getData)
-                    .map(ItemStructure::getItems)
-                    .filter(this::isNotEmpty)
-                    .isEmpty())) {
+        if (currentRM instanceof Evaluation evaluation
+                && (Optional.of(evaluation)
+                        .map(Evaluation::getData)
+                        .map(ItemStructure::getItems)
+                        .filter(this::isNotEmpty)
+                        .isEmpty())) {
 
-                evaluation.setData(null);
+            evaluation.setData(null);
         }
 
-        if (currentRM instanceof FeederAuditDetails feederAuditDetails && (Optional.of(feederAuditDetails)
-                    .map(FeederAuditDetails::getOtherDetails)
-                    .map(ItemStructure::getItems)
-                    .filter(this::isNotEmpty)
-                    .isEmpty())) {
+        if (currentRM instanceof FeederAuditDetails feederAuditDetails
+                && (Optional.of(feederAuditDetails)
+                        .map(FeederAuditDetails::getOtherDetails)
+                        .map(ItemStructure::getItems)
+                        .filter(this::isNotEmpty)
+                        .isEmpty())) {
 
             feederAuditDetails.setOtherDetails(null);
         }
 
-        if (currentRM instanceof AdminEntry adminEntry && (Optional.of(adminEntry)
-                    .map(AdminEntry::getData)
-                    .map(ItemStructure::getItems)
-                    .filter(this::isNotEmpty)
-                    .isEmpty())) {
+        if (currentRM instanceof AdminEntry adminEntry
+                && (Optional.of(adminEntry)
+                        .map(AdminEntry::getData)
+                        .map(ItemStructure::getItems)
+                        .filter(this::isNotEmpty)
+                        .isEmpty())) {
 
             adminEntry.setData(null);
         }
 
-        if (currentRM instanceof EventContext eventContext && (Optional.of(eventContext)
-                    .map(EventContext::getOtherContext)
-                    .map(ItemStructure::getItems)
-                    .filter(this::isNotEmpty)
-                    .isEmpty())) {
+        if (currentRM instanceof EventContext eventContext
+                && (Optional.of(eventContext)
+                        .map(EventContext::getOtherContext)
+                        .map(ItemStructure::getItems)
+                        .filter(this::isNotEmpty)
+                        .isEmpty())) {
 
-                eventContext.setOtherContext(null);
+            eventContext.setOtherContext(null);
         }
 
-        if (currentRM instanceof InstructionDetails instructionDetails && (Optional.of(instructionDetails)
-                    .map(InstructionDetails::getWfDetails)
-                    .map(ItemStructure::getItems)
-                    .filter(this::isNotEmpty)
-                    .isEmpty())) {
+        if (currentRM instanceof InstructionDetails instructionDetails
+                && (Optional.of(instructionDetails)
+                        .map(InstructionDetails::getWfDetails)
+                        .map(ItemStructure::getItems)
+                        .filter(this::isNotEmpty)
+                        .isEmpty())) {
 
-                instructionDetails.setWfDetails(null);
+            instructionDetails.setWfDetails(null);
         }
 
         if (currentRM instanceof Event event) {
@@ -211,26 +218,26 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
 
         if (currentRM instanceof ItemList itemList && itemList.getItems() != null) {
 
-            itemList.setItems(itemList
-                    .getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+            itemList.setItems(
+                    itemList.getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
         }
 
         if (currentRM instanceof ItemTable itemTable && itemTable.getRows() != null) {
 
-            itemTable.setRows(itemTable
-                    .getRows().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+            itemTable.setRows(
+                    itemTable.getRows().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
         }
 
         if (currentRM instanceof ItemTree itemTree && itemTree.getItems() != null) {
 
-            itemTree.setItems(itemTree
-                    .getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+            itemTree.setItems(
+                    itemTree.getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
         }
 
         if (currentRM instanceof Cluster cluster && cluster.getItems() != null) {
 
-            cluster.setItems(cluster
-                    .getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
+            cluster.setItems(
+                    cluster.getItems().stream().filter(this::isNotEmpty).collect(Collectors.toList()));
         }
     }
 
