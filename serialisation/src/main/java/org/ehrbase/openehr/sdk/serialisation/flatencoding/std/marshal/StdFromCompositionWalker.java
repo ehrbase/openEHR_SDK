@@ -18,6 +18,8 @@
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal;
 
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +42,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     private static final Map<Class<? extends RMObject>, MarshalPostprocessor> POSTPROCESSOR_MAP =
             ReflectionHelper.buildMap(MarshalPostprocessor.class);
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     @Override
     protected Map<String, Object> extract(
@@ -72,16 +75,33 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     @Override
     protected void postHandle(Context<Map<String, Object>> context) {
 
-        Class<? extends RMObject> aClass = context.getRmObjectDeque().peek().getClass();
+        RMObject rmObject = context.getRmObjectDeque().peek();
+        Class<? extends RMObject> aClass = rmObject.getClass();
 
         List<? extends MarshalPostprocessor<? extends RMObject>> postprocessor = findPostprocessors(aClass);
+        WebTemplateNode pop = context.getNodeDeque().pop();
+        WebTemplateNode parent = context.getNodeDeque().peek();
+        context.getNodeDeque().push(pop);
 
-        postprocessor.forEach(p -> ((MarshalPostprocessor) p)
-                .process(
-                        StdToCompositionWalker.buildNamePathWithElementHandling(context),
-                        context.getRmObjectDeque().peek(),
-                        context.getObjectDeque().peek(),
-                        context));
+        if (isRoot(parent) || shouldSkipNonLocatablePostProcessor(pop, parent)) {
+            postprocessor.forEach(p -> ((MarshalPostprocessor) p)
+                    .process(
+                            StdToCompositionWalker.buildNamePathWithElementHandling(context),
+                            rmObject,
+                            context.getObjectDeque().peek(),
+                            context));
+        }
+    }
+
+    private static boolean shouldSkipNonLocatablePostProcessor(WebTemplateNode pop, WebTemplateNode parent) {
+        return !pop.getId().equals("name")
+                && parent != null
+                && Locatable.class.isAssignableFrom(
+                        ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType()).getJavaClass());
+    }
+
+    private static boolean isRoot(WebTemplateNode parent) {
+        return parent == null;
     }
 
     public static <T extends RMObject> List<MarshalPostprocessor<T>> findPostprocessors(Class<T> aClass) {
