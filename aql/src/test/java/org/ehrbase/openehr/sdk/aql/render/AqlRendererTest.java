@@ -31,7 +31,15 @@ class AqlRendererTest {
     @Test
     void renderAS() {
         String aql =
-                "SELECT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
+                "SELECT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderLoweCase() {
+        String aql =
+                "SELECT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value, e/ehr_id/value FROM EHR e CONTAINS observation o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
         test(aql, aql);
     }
@@ -39,7 +47,7 @@ class AqlRendererTest {
     @Test
     void renderDISTINCT() {
         String aql =
-                "SELECT DISTINCT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
+                "SELECT DISTINCT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
         test(aql, aql);
     }
@@ -47,7 +55,7 @@ class AqlRendererTest {
     @Test
     void renderSimplePath() {
         String aql =
-                "SELECT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
+                "SELECT o/data[at0001]/events[at0002]/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
         test(aql, aql);
     }
@@ -57,18 +65,18 @@ class AqlRendererTest {
 
         String aql = "SELECT "
                 + "c[openEHR-EHR-COMPOSITION.report.v1 and name/value='something']/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0 and name/value='Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough "
-                + "FROM ehr e "
+                + "FROM EHR e "
                 + "CONTAINS Composition c [openEHR-EHR-COMPOSITION.report.v1]";
 
         test(
                 aql,
-                "SELECT c[openEHR-EHR-COMPOSITION.report.v1, 'something']/content[openEHR-EHR-SECTION.adhoc.v1, 'Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0, 'Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough FROM ehr e CONTAINS Composition c[openEHR-EHR-COMPOSITION.report.v1]");
+                "SELECT c[openEHR-EHR-COMPOSITION.report.v1, 'something']/content[openEHR-EHR-SECTION.adhoc.v1, 'Symptome']/items[openEHR-EHR-OBSERVATION.symptom_sign_screening.v0, 'Husten']/data[at0001]/events[at0002]/data[at0003]/items[at0022]/items[at0005]/value AS has_cough FROM EHR e CONTAINS Composition c[openEHR-EHR-COMPOSITION.report.v1]");
     }
 
     @Test
     void renderPathWithArbitraryPath() {
         String aql =
-                "SELECT o/data[at0001]/events[at0002 AND time/value>'2021-12-03T16:05:19.513542+01:00']/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
+                "SELECT o/data[at0001]/events[at0002 AND time/value>'2021-12-03T16:05:19.513542+01:00']/data[at0042]/items[at0057]/value AS Presence_of_exposure, e/ehr_id/value AS Ehr_id FROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
         test(aql, aql);
     }
@@ -76,7 +84,7 @@ class AqlRendererTest {
     @Test
     void renderPrimitive() {
         String aql =
-                "SELECT 1, e/ehr_id/value AS Ehr_id FROM ehr e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
+                "SELECT 1, e/ehr_id/value AS Ehr_id FROM EHR e CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.exposure_assessment.v0]";
 
         test(aql, aql);
     }
@@ -88,7 +96,7 @@ class AqlRendererTest {
                 + " MAX(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS max_Systolic,"
                 + " MIN(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS min_Systolic,"
                 + " AVG(o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude) AS mean_Systolic"
-                + " FROM ehr e"
+                + " FROM EHR e"
                 + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]";
 
         test(aql, aql);
@@ -98,7 +106,7 @@ class AqlRendererTest {
     void renderSingleRowFunction() {
         String aql = "SELECT"
                 + " CONCAT_WS(':', $Pos, o/data[at0001]/events[at0006]/state[at0007]/items[at0008]/value/value) AS position_"
-                + " FROM ehr e"
+                + " FROM EHR e"
                 + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]";
 
         test(aql, aql);
@@ -269,7 +277,7 @@ class AqlRendererTest {
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
-                + " FROM ehr e"
+                + " FROM EHR e"
                 + " CONTAINS COMPOSITION c"
                 + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
                 + " ORDER BY"
@@ -284,12 +292,87 @@ class AqlRendererTest {
         String aql = "SELECT"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude AS Systolic,"
                 + " o/data[at0001]/events[at0006]/data[at0003]/items[at0005]/value/magnitude AS Diastolic"
-                + " FROM ehr e"
+                + " FROM EHR e"
                 + " CONTAINS COMPOSITION c"
                 + " CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]"
                 + " ORDER BY"
                 + " c/context/start_time/value DESC"
                 + " LIMIT 10 OFFSET 5";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderVersionedObject() {
+        String aql = "SELECT v/time_created AS first_created " + "FROM EHR e "
+                + "CONTAINS VERSIONED_OBJECT v CONTAINS COMPOSITION";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderLatestVersion() {
+        String aql = "SELECT v/commit_audit/time_committed/value AS time_commited, o AS observation "
+                + "FROM EHR e "
+                + "CONTAINS VERSION v[LATEST_VERSION] "
+                + "CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderALLVersion() {
+        String aql = "SELECT v/commit_audit/time_committed/value AS time_commited, o AS observation "
+                + "FROM EHR e "
+                + "CONTAINS VERSION v[ALL_VERSIONS] "
+                + "CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderPredicateVersion() {
+        String aql = "SELECT v/commit_audit/time_committed/value AS time_commited, o AS observation "
+                + "FROM EHR e "
+                + "CONTAINS VERSION v[commit_audit/time_committed>'2021-12-03T16:05:19.514097+01:00'] "
+                + "CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v2]";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderTerminology() {
+        String aql = "SELECT c/context/start_time, p/data/items[at0002]/value "
+                + "FROM EHR e[ehr_id/value='1234'] "
+                + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] "
+                + "CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
+                + "WHERE "
+                + "c/name/value='Current Problems' AND "
+                + "p/data/items[at0002]/value/defining_code/code_string MATCHES TERMINOLOGY('expand','hl7.org/fhir/4.0','http://snomed.info/sct?fhir_vs=isa/50697003')";
+
+        test(
+                aql,
+                "SELECT c/context/start_time, p/data/items[at0002]/value FROM EHR e[ehr_id/value='1234'] "
+                        + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
+                        + "WHERE (c/name/value = 'Current Problems' AND "
+                        + "p/data/items[at0002]/value/defining_code/code_string MATCHES {TERMINOLOGY('expand','hl7.org/fhir/4.0','http://snomed.info/sct?fhir_vs=isa/50697003')})");
+    }
+
+    @Test
+    void renderTerminologyII() {
+        String aql = "SELECT c/context/start_time, p/data/items[at0002]/value FROM EHR e[ehr_id/value='1234'] "
+                + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
+                + "WHERE (c/name/value = 'Current Problems' AND "
+                + "p/data/items[at0002]/value/defining_code/code_string MATCHES {TERMINOLOGY('expand','hl7.org/fhir/4.0','http://snomed.info/sct?fhir_vs=isa/50697003')})";
+
+        test(aql, aql);
+    }
+
+    @Test
+    void renderTerminologyIII() {
+        String aql = "SELECT c/context/start_time, p/data/items[at0002]/value FROM EHR e[ehr_id/value='1234'] "
+                + "CONTAINS COMPOSITION c[openEHR-EHR-COMPOSITION.problem_list.v1] CONTAINS EVALUATION p[openEHR-EHR-EVALUATION.problem-diagnosis.v1] "
+                + "WHERE TERMINOLOGY('validate','hl7.org/fhir/r4','system=http://snomed.info/sct&code=122298005&url=http://snomed.info/sct?fhir_vs&display=Astrovirus RNA assay') = true";
 
         test(aql, aql);
     }

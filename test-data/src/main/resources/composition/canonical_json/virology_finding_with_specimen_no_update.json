@@ -108,9 +108,6 @@
             "archetype_id": {
               "value": "openEHR-EHR-CLUSTER.case_identification.v0"
             },
-            "template_id": {
-              "value": "Virologischer Befund"
-            },
             "rm_version": "1.0.4"
           },
           "items": [

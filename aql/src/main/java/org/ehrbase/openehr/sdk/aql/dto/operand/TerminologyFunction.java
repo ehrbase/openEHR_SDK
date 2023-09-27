@@ -17,7 +17,62 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import java.util.Objects;
+
 /**
  * @author Stefan Spiska
  */
-public class TerminologyFunction implements MatchesOperand, ColumnExpression, Operand, ComparisonLeftOperand {}
+public class TerminologyFunction implements MatchesOperand, FunctionCall {
+
+    private String operation;
+    private String serviceApi;
+
+    private String uriParameters;
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public String getServiceApi() {
+        return serviceApi;
+    }
+
+    public void setServiceApi(String serviceApi) {
+        this.serviceApi = serviceApi;
+    }
+
+    public String getUriParameters() {
+        return uriParameters;
+    }
+
+    public void setUriParameters(String uriParameters) {
+        this.uriParameters = uriParameters;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TerminologyFunction that = (TerminologyFunction) o;
+        return Objects.equals(operation, that.operation)
+                && Objects.equals(serviceApi, that.serviceApi)
+                && Objects.equals(uriParameters, that.uriParameters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(operation, serviceApi, uriParameters);
+    }
+
+    @Override
+    public String toString() {
+        return "TerminologyFunction{" + "operation='"
+                + operation + '\'' + ", serviceApi='"
+                + serviceApi + '\'' + ", uriParameters='"
+                + uriParameters + '\'' + '}';
+    }
+}

@@ -72,8 +72,8 @@ class AqlQueryObjectMapperProviderTest {
                       "contains" : {
                         "_type" : "Containment",
                         "identifier" : "o0",
-                        "type" : "OBSERVATION",
-                        "predicates" : "[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                        "predicates" : "[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]",
+                        "type" : "OBSERVATION"
                       },
                       "type" : "COMPOSITION"
                     },

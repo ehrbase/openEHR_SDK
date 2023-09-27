@@ -101,9 +101,6 @@
         "archetype_id": {
           "value": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1"
         },
-        "template_id": {
-          "value": "GECCO_Laborbefund"
-        },
         "rm_version": "1.0.2"
       },
       "archetype_node_id": "openEHR-EHR-OBSERVATION.laboratory_test_result.v1",
@@ -233,9 +230,6 @@
                   "archetype_details": {
                     "archetype_id": {
                       "value": "openEHR-EHR-CLUSTER.specimen.v1"
-                    },
-                    "template_id": {
-                      "value": "GECCO_Laborbefund"
                     },
                     "rm_version": "1.0.2"
                   },
@@ -420,9 +414,6 @@
                   "archetype_details": {
                     "archetype_id": {
                       "value": "openEHR-EHR-CLUSTER.laboratory_test_analyte.v1"
-                    },
-                    "template_id": {
-                      "value": "GECCO_Laborbefund"
                     },
                     "rm_version": "1.0.2"
                   },

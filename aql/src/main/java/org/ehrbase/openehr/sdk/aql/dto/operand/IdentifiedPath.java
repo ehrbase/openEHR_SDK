@@ -27,6 +27,7 @@ import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
+import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 
@@ -86,5 +87,9 @@ public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeft
     @Override
     public String toString() {
         return "IdentifiedPath{" + "root=" + root + ", rootPredicate=" + rootPredicate + ", path=" + path + '}';
+    }
+
+    public String render() {
+        return AqlRenderer.render(this);
     }
 }

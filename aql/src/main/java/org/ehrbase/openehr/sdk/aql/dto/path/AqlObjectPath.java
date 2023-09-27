@@ -137,7 +137,7 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
     }
 
     public String render() {
-        return AqlRenderer.renderPath(this);
+        return AqlRenderer.render(this);
     }
 
     @Override
@@ -231,5 +231,17 @@ public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
                 .map(AqlObjectPath::render)
                 .map(AqlPath::parse)
                 .orElse(AqlPath.EMPTY_PATH);
+    }
+
+    public boolean endsWith(AqlObjectPath path) {
+        List<PathNode> myNodes = this.getPathNodes();
+        List<PathNode> otherNodes =
+                Optional.ofNullable(path).map(AqlObjectPath::getPathNodes).orElse(List.of());
+        int mySize = myNodes.size();
+        int start = mySize - otherNodes.size();
+        if (start < 0) {
+            return false;
+        }
+        return otherNodes.equals(myNodes.subList(start, mySize));
     }
 }

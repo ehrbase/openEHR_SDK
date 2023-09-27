@@ -64,7 +64,7 @@ class AqlQueryParserTest {
 
     private void testPath(String toTest, String expected) {
         AqlObjectPath actual = AqlQueryParser.parsePath(toTest);
-        assertThat(AqlRenderer.renderPath(actual)).isEqualTo(expected);
+        assertThat(actual.render()).isEqualTo(expected);
     }
 
     @Test
@@ -133,6 +133,12 @@ class AqlQueryParserTest {
                 + "/value = protocol[at001]/name/value"
                 + "]/data/origin>'2013'"
                 + "] FROM COMPOSITION c";
+        testAql(aql, aql);
+    }
+
+    @Test
+    void parsePathComparePath() {
+        String aql = "SELECT c[at001 and archetype_node_id = name/value] FROM COMPOSITION c";
         testAql(aql, aql);
     }
 

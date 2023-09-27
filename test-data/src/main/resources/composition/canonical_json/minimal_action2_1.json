@@ -95,10 +95,6 @@
           "_type": "ARCHETYPE_ID",
           "value": "openEHR-EHR-COMPOSITION.minimal_2.v1"
         },
-        "template_id": {
-          "_type": "TEMPLATE_ID",
-          "value": "Minimal action 2"
-        },
         "rm_version": "1.0.2"
       },
       "language": {

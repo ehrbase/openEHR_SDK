@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
-import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
 /**
  * @author Stefan Spiska
@@ -35,6 +34,6 @@ public class ObjectPathSerializer extends StdSerializer<AqlObjectPath> {
     @Override
     public void serialize(AqlObjectPath value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 
-        gen.writeString(AqlRenderer.renderPath(value));
+        gen.writeString(value.render());
     }
 }
