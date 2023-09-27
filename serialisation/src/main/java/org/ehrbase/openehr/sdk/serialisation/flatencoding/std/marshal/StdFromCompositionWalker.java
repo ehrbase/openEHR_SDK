@@ -75,33 +75,27 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     @Override
     protected void postHandle(Context<Map<String, Object>> context) {
 
-        RMObject rmObject = context.getRmObjectDeque().peek();
-        Class<? extends RMObject> aClass = rmObject.getClass();
+        Class<? extends RMObject> aClass = context.getRmObjectDeque().peek().getClass();
 
         List<? extends MarshalPostprocessor<? extends RMObject>> postprocessor = findPostprocessors(aClass);
-        WebTemplateNode pop = context.getNodeDeque().pop();
-        WebTemplateNode parent = context.getNodeDeque().peek();
-        context.getNodeDeque().push(pop);
+        WebTemplateNode currentNode = context.getNodeDeque().poll();
+        WebTemplateNode parentNode = context.getNodeDeque().peek();
+        context.getNodeDeque().push(currentNode);
 
-        if (isRoot(parent) || shouldSkipNonLocatablePostProcessor(pop, parent)) {
+        if ((parentNode == null)
+                || (!(currentNode != null && currentNode.getId().equals("name")) && isLocatable(parentNode))) {
             postprocessor.forEach(p -> ((MarshalPostprocessor) p)
                     .process(
                             StdToCompositionWalker.buildNamePathWithElementHandling(context),
-                            rmObject,
+                            context.getRmObjectDeque().peek(),
                             context.getObjectDeque().peek(),
                             context));
         }
     }
 
-    private static boolean shouldSkipNonLocatablePostProcessor(WebTemplateNode pop, WebTemplateNode parent) {
-        return !pop.getId().equals("name")
-                && parent != null
-                && Locatable.class.isAssignableFrom(
-                        ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType()).getJavaClass());
-    }
-
-    private static boolean isRoot(WebTemplateNode parent) {
-        return parent == null;
+    private boolean isLocatable(WebTemplateNode parent) {
+        return Locatable.class.isAssignableFrom(
+                ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType()).getJavaClass());
     }
 
     public static <T extends RMObject> List<MarshalPostprocessor<T>> findPostprocessors(Class<T> aClass) {
