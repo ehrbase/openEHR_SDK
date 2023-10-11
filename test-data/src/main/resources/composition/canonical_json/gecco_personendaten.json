@@ -72,9 +72,6 @@
         "archetype_id": {
           "value": "openEHR-EHR-ADMIN_ENTRY.person_data.v0"
         },
-        "template_id": {
-          "value": "GECCO_Personendaten"
-        },
         "rm_version": "1.0.2"
       },
       "archetype_node_id": "openEHR-EHR-ADMIN_ENTRY.person_data.v0",
@@ -110,9 +107,6 @@
             "archetype_details": {
               "archetype_id": {
                 "value": "openEHR-EHR-CLUSTER.person_name.v0"
-              },
-              "template_id": {
-                "value": "GECCO_Personendaten"
               },
               "rm_version": "1.0.2"
             },
@@ -265,9 +259,6 @@
               "archetype_id": {
                 "value": "openEHR-EHR-CLUSTER.person_birth_data_iso.v0"
               },
-              "template_id": {
-                "value": "GECCO_Personendaten"
-              },
               "rm_version": "1.0.2"
             },
             "archetype_node_id": "openEHR-EHR-CLUSTER.person_birth_data_iso.v0",
@@ -334,9 +325,6 @@
                   "archetype_id": {
                     "value": "openEHR-EHR-CLUSTER.death_details.v1"
                   },
-                  "template_id": {
-                    "value": "GECCO_Personendaten"
-                  },
                   "rm_version": "1.0.2"
                 },
                 "archetype_node_id": "openEHR-EHR-CLUSTER.death_details.v1",
@@ -366,9 +354,6 @@
             "archetype_details": {
               "archetype_id": {
                 "value": "openEHR-EHR-CLUSTER.address_cc.v0"
-              },
-              "template_id": {
-                "value": "GECCO_Personendaten"
               },
               "rm_version": "1.0.2"
             },
@@ -517,9 +502,6 @@
             "archetype_details": {
               "archetype_id": {
                 "value": "openEHR-EHR-CLUSTER.telecom_details.v0"
-              },
-              "template_id": {
-                "value": "GECCO_Personendaten"
               },
               "rm_version": "1.0.2"
             },
@@ -687,9 +669,6 @@
               "archetype_id": {
                 "value": "openEHR-EHR-CLUSTER.ethnischer_hintergrund.v0"
               },
-              "template_id": {
-                "value": "GECCO_Personendaten"
-              },
               "rm_version": "1.0.2"
             },
             "archetype_node_id": "openEHR-EHR-CLUSTER.ethnischer_hintergrund.v0",
@@ -726,9 +705,6 @@
       "archetype_details": {
         "archetype_id": {
           "value": "openEHR-EHR-OBSERVATION.age.v0"
-        },
-        "template_id": {
-          "value": "GECCO_Personendaten"
         },
         "rm_version": "1.0.2"
       },
@@ -815,9 +791,6 @@
       "archetype_details": {
         "archetype_id": {
           "value": "openEHR-EHR-EVALUATION.gender.v1"
-        },
-        "template_id": {
-          "value": "GECCO_Personendaten"
         },
         "rm_version": "1.0.2"
       },
