@@ -82,8 +82,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
         WebTemplateNode parentNode = context.getNodeDeque().peek();
         context.getNodeDeque().push(currentNode);
 
-        if ((parentNode == null)
-                || (!(currentNode != null && currentNode.getId().equals("name")) && isLocatable(parentNode))) {
+        if (parentNode == null || isNameAttribute(currentNode, parentNode)) {
             postprocessor.forEach(p -> ((MarshalPostprocessor) p)
                     .process(
                             StdToCompositionWalker.buildNamePathWithElementHandling(context),
@@ -91,6 +90,10 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
                             context.getObjectDeque().peek(),
                             context));
         }
+    }
+
+    private boolean isNameAttribute(WebTemplateNode currentNode, WebTemplateNode parentNode) {
+        return !(currentNode != null && currentNode.getId().equals("name")) && isLocatable(parentNode);
     }
 
     private boolean isLocatable(WebTemplateNode parent) {
