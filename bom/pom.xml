@@ -48,7 +48,7 @@
         <commons-lang3.version>3.13.0</commons-lang3.version>
         <commons-io.version>2.15.0</commons-io.version>
         <commons-csv.version>1.10.0</commons-csv.version>
-        <commons-text.version>1.10.0</commons-text.version>
+        <commons-text.version>1.11.0</commons-text.version>
         <ehcache.version>3.10.8</ehcache.version>
         <everit-json-schema.version>1.14.3</everit-json-schema.version>
         <guava.version>32.1.2-jre</guava.version>
