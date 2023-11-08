@@ -206,12 +206,12 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
         private static final String DISP = "display";
 
         @SuppressWarnings("unchecked")
-        static List<DvCodedText> convert(DocumentContext ctx) throws Exception {
+        static List<DvCodedText> convert(DocumentContext ctx) {
             JSONArray read = ctx.read(CONTAINS);
             return read.stream()
                     .map(e -> (Map<String, String>) e)
                     .map(m -> new DvCodedText(m.get(DISP), new CodePhrase(new TerminologyId(m.get(SYS)), m.get(CODE))))
-                    .collect(Collectors.toList());
+                    .toList();
         }
     }
 
@@ -263,7 +263,7 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
             return Try.failure(new ConstraintViolationException(List.of(constraintViolation)));
         } else if (codings.size() == 1) {
             Map<String, String> coding = codings.get(0);
-            String system = coding.get("system");
+            String system = coding.get(ValueSetConverter.SYS);
             if (!StringUtils.equals(system, codePhrase.getTerminologyId().getValue())) {
                 var constraintViolation = new ConstraintViolation(
                         MessageFormat.format("The terminology {0} must be  {1}", codePhrase.getCodeString(), system));
