@@ -76,7 +76,7 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
         return StringUtils.substringAfter(referenceSetUri, "url=");
     }
 
-    private DocumentContext internalGet(String uri) throws IOException {
+    protected DocumentContext internalGet(String uri) throws IOException {
         Request request = Request.Get(uri).addHeader(HttpHeaders.ACCEPT, "application/fhir+json");
 
         HttpResponse response = executor.execute(request).returnResponse();
@@ -263,10 +263,10 @@ public class FhirTerminologyValidation implements ExternalTerminologyValidation 
             return Try.failure(new ConstraintViolationException(List.of(constraintViolation)));
         } else if (codings.size() == 1) {
             Map<String, String> coding = codings.get(0);
-            if (!StringUtils.equals(
-                    coding.get("system"), codePhrase.getTerminologyId().getValue())) {
+            String system = coding.get("system");
+            if (!StringUtils.equals(system, codePhrase.getTerminologyId().getValue())) {
                 var constraintViolation = new ConstraintViolation(
-                        MessageFormat.format("The terminology {0} must be  {1}", codePhrase.getCodeString(), url));
+                        MessageFormat.format("The terminology {0} must be  {1}", codePhrase.getCodeString(), system));
                 return Try.failure(new ConstraintViolationException(List.of(constraintViolation)));
             }
         }
