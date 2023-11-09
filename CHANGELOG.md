@@ -2,6 +2,12 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.5.0]
+ ### Added 
+ ### Fixed 
+- Flat: fix term mappings can not be saved in name via flat ([#519](https://github.com/ehrbase/openEHR_SDK/pull/519)
+- Validation: fix DV_CODED_TEXT error messages ([#537](https://github.com/ehrbase/openEHR_SDK/pull/537)
+
 ## [2.4.0]
  ### Added 
  ### Fixed 
@@ -345,3 +351,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.2.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.1.0...v2.2.0
 [2.3.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.2.0...v2.3.0
 [2.4.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.3.0...v2.4.0
+[2.5.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.4.0...v2.5.0

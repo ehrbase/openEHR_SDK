@@ -18,6 +18,8 @@
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal;
 
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +42,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     private static final Map<Class<? extends RMObject>, MarshalPostprocessor> POSTPROCESSOR_MAP =
             ReflectionHelper.buildMap(MarshalPostprocessor.class);
     public static final DefaultStdConfig DEFAULT_STD_CONFIG = new DefaultStdConfig();
+    public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     @Override
     protected Map<String, Object> extract(
@@ -75,13 +78,27 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
         Class<? extends RMObject> aClass = context.getRmObjectDeque().peek().getClass();
 
         List<? extends MarshalPostprocessor<? extends RMObject>> postprocessor = findPostprocessors(aClass);
+        WebTemplateNode currentNode = context.getNodeDeque().poll();
+        WebTemplateNode parentNode = context.getNodeDeque().peek();
+        context.getNodeDeque().push(currentNode);
 
-        postprocessor.forEach(p -> ((MarshalPostprocessor) p)
-                .process(
-                        StdToCompositionWalker.buildNamePathWithElementHandling(context),
-                        context.getRmObjectDeque().peek(),
-                        context.getObjectDeque().peek(),
-                        context));
+        if (parentNode == null || isNameAttribute(currentNode, parentNode)) {
+            postprocessor.forEach(p -> ((MarshalPostprocessor) p)
+                    .process(
+                            StdToCompositionWalker.buildNamePathWithElementHandling(context),
+                            context.getRmObjectDeque().peek(),
+                            context.getObjectDeque().peek(),
+                            context));
+        }
+    }
+
+    private boolean isNameAttribute(WebTemplateNode currentNode, WebTemplateNode parentNode) {
+        return !(currentNode != null && currentNode.getId().equals("name")) && isLocatable(parentNode);
+    }
+
+    private boolean isLocatable(WebTemplateNode parent) {
+        return Locatable.class.isAssignableFrom(
+                ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType()).getJavaClass());
     }
 
     public static <T extends RMObject> List<MarshalPostprocessor<T>> findPostprocessors(Class<T> aClass) {
