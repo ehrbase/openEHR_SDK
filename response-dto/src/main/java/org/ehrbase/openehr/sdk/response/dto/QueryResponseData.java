@@ -31,6 +31,8 @@ import org.ehrbase.openehr.sdk.response.dto.ehrscape.query.ResultHolder;
 @JacksonXmlRootElement
 public class QueryResponseData {
 
+    @JsonProperty(value = "meta")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private MetaData meta;
 
     // the initial query without substitution (!)
@@ -44,12 +46,13 @@ public class QueryResponseData {
     // the list of columns as defined in the SELECT clause (with a path...)
     @JsonProperty(value = "columns")
     private List<Map<String, String>> columns;
+
     // the actual resultset
     @JsonProperty(value = "rows")
     private List<List<Object>> rows;
 
     public QueryResponseData(QueryResultDto queryResultDto) {
-        this.query = queryResultDto.getExecutedAQL();
+        this.query = null;
         this.name = null;
 
         this.columns = new ArrayList<>();

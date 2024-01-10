@@ -17,9 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.response.dto.ehrscape;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.query.ResultHolder;
 
 public class QueryResultDto {
@@ -61,7 +59,7 @@ public class QueryResultDto {
     }
 
     public boolean variablesIsEmpty() {
-        return variables.size() == 0;
+        return Optional.ofNullable(variables).orElse(Collections.emptyMap()).isEmpty();
     }
 
     public boolean variablesContainsColumnId(String columnId) {
@@ -73,6 +71,6 @@ public class QueryResultDto {
     }
 
     public Iterator<Map.Entry<String, String>> variablesIterator() {
-        return variables.entrySet().iterator();
+        return getVariables().entrySet().iterator();
     }
 }
