@@ -62,11 +62,11 @@ public class MetaData {
         this.executedAql = queryResultDto.getExecutedAQL();
 
         // apply _fetch/_offset as needed - note in case only a limit was used we define the default offset 0L
-        Long limit = queryResultDto.getLimit();
-        Long offset = queryResultDto.getOffset();
-        if (limit != null) {
-            this.fetch = limit;
-            this.offset = offset != null ? offset : 0L;
+        Long resultLimit = queryResultDto.getLimit();
+        Long resultOffset = queryResultDto.getOffset();
+        if (resultLimit != null) {
+            this.fetch = resultLimit;
+            this.offset = resultOffset != null ? resultOffset : 0L;
         }
         // setHref() and setSchemaVersion() needs to be specified by the application
         this.href = null;
