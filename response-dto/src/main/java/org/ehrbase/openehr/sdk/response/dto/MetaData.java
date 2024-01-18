@@ -20,6 +20,8 @@ package org.ehrbase.openehr.sdk.response.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.QueryResultDto;
 
 public class MetaData {
@@ -44,13 +46,17 @@ public class MetaData {
     @JsonProperty(value = "_executed_aql")
     private String executedAql;
 
-    @JsonProperty(value = "_fetch")
+    @JsonProperty(value = "fetch")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long fetch;
 
-    @JsonProperty(value = "_offset")
+    @JsonProperty(value = "offset")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long offset;
+
+    @JsonProperty(value = "resultsize")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer resultSize;
 
     public MetaData() {}
 
@@ -60,6 +66,11 @@ public class MetaData {
         this.type = MetaData.RESULTSET;
         this.created = queryResultDto.getCreated();
         this.executedAql = queryResultDto.getExecutedAQL();
+
+        // we always add the response set size - also in case it is empty
+        this.resultSize = Optional.ofNullable(queryResultDto.getResultSet())
+                .map(List::size)
+                .orElse(0);
 
         // apply _fetch/_offset as needed - note in case only a limit was used we define the default offset 0L
         Long resultLimit = queryResultDto.getLimit();
@@ -154,5 +165,19 @@ public class MetaData {
      */
     public void setOffset(Long offset) {
         this.offset = offset;
+    }
+
+    /**
+     * Size of the returned rows.
+     */
+    public Integer getResultSize() {
+        return resultSize;
+    }
+
+    /**
+     * @see #getResultSize()
+     */
+    public void setResultSize(Integer resultSize) {
+        this.resultSize = resultSize;
     }
 }

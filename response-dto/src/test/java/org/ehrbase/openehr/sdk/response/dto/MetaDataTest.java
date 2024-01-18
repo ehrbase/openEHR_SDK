@@ -66,6 +66,7 @@ public class MetaDataTest {
         // debug info
         metaData.setOffset(100L);
         metaData.setFetch(50L);
+        metaData.setResultSize(42);
 
         String json = objectMapper.writeValueAsString(metaData);
 
@@ -78,8 +79,9 @@ public class MetaDataTest {
                           "_created" : "2017-08-19T12:30:00.568+02:00",
                           "_generator" : "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)",
                           "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e",
-                          "_fetch" : 50,
-                          "_offset" : 100
+                          "fetch" : 50,
+                          "offset" : 100,
+                          "resultsize" : 42
                         }""",
                 json);
     }
@@ -101,6 +103,7 @@ public class MetaDataTest {
         assertNull(metaData.getGenerator());
         assertNull(metaData.getFetch());
         assertNull(metaData.getOffset());
+        assertNull(metaData.getResultSize());
 
         assertEquals(MetaData.RESULTSET, metaData.getType());
         assertEquals("1.0.4", metaData.getSchemaVersion());
@@ -122,8 +125,9 @@ public class MetaDataTest {
                           "_created" : "2017-08-19T00:25:47.568+02:00",
                           "_generator" : "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)",
                           "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e",
-                          "_fetch" : 50,
-                          "_offset" : 100
+                          "fetch" : 50,
+                          "offset" : 100,
+                          "resultsize": 20
                         }""",
                 MetaData.class);
 
@@ -138,6 +142,7 @@ public class MetaDataTest {
         assertEquals("SELECT e/ehr_id/value FROM EHR e", metaData.getExecutedAql());
         assertEquals(50, metaData.getFetch());
         assertEquals(100, metaData.getOffset());
+        assertEquals(20, metaData.getResultSize());
     }
 
     @Test
@@ -175,6 +180,7 @@ public class MetaDataTest {
         assertEquals(
                 metaData.getCreated().atZoneSameInstant(ZoneOffset.UTC),
                 OffsetDateTime.parse("2017-02-16T13:50:11.308+01:00").atZoneSameInstant(ZoneOffset.UTC));
+        assertEquals(metaData.getResultSize(), 0);
 
         assertNull(metaData.getFetch());
         assertNull(metaData.getOffset());
@@ -193,6 +199,7 @@ public class MetaDataTest {
         assertNotNull(metaData, "Expected meta to be null");
         assertEquals(metaData.getFetch(), 100L);
         assertEquals(metaData.getOffset(), 0L);
+        assertEquals(metaData.getResultSize(), 0);
     }
 
     @Test
@@ -207,5 +214,6 @@ public class MetaDataTest {
         assertNotNull(metaData, "Expected meta to be null");
         assertEquals(metaData.getFetch(), 100L);
         assertEquals(metaData.getOffset(), 50L);
+        assertEquals(metaData.getResultSize(), 0);
     }
 }
