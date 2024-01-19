@@ -47,6 +47,7 @@ public class AggregateFunction implements ColumnExpression {
         COUNT,
         MIN,
         MAX,
+        SUM,
         AVG
     }
 

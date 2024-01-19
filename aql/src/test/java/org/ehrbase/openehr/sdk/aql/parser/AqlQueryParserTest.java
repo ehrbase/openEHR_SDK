@@ -29,6 +29,7 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentClassExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
+import org.ehrbase.openehr.sdk.aql.dto.operand.SingleRowFunction.KnownFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
@@ -435,6 +436,20 @@ class AqlQueryParserTest {
     @EnumSource(AggregateFunctionName.class)
     void testAggregateFunctions(AggregateFunctionName name) {
         String aql = "SELECT " + name.name() + "(d/ehr_id/value) FROM EHR d";
+        testAql(aql, aql);
+    }
+
+    @ParameterizedTest
+    @EnumSource(KnownFunctionName.class)
+    void testKnownSingleRowFunctions(KnownFunctionName name) {
+        // Argument count does not matter to the grammar
+        String aql = "SELECT " + name.name() + "() FROM EHR d";
+        testAql(aql, aql);
+    }
+
+    @Test
+    void testUnknownSingleRowFunctions() {
+        String aql = "SELECT CUSTOM_FUNCTION() FROM EHR d";
         testAql(aql, aql);
     }
 
