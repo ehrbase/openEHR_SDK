@@ -64,9 +64,9 @@ public class MetaDataTest {
         metaData.setGenerator("DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)");
         metaData.setExecutedAql("SELECT e/ehr_id/value FROM EHR e");
         // debug info
-        metaData.setOffset(100L);
-        metaData.setFetch(50L);
-        metaData.setResultSize(42);
+        metaData.setAdditionalProperty(MetaData.AdditionalProperty.fetch, 50L);
+        metaData.setAdditionalProperty(MetaData.AdditionalProperty.offset, 100L);
+        metaData.setAdditionalProperty(MetaData.AdditionalProperty.resultSize, 42);
 
         String json = objectMapper.writeValueAsString(metaData);
 
@@ -101,9 +101,9 @@ public class MetaDataTest {
 
         assertNull(metaData.getHref());
         assertNull(metaData.getGenerator());
-        assertNull(metaData.getFetch());
-        assertNull(metaData.getOffset());
-        assertNull(metaData.getResultSize());
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize));
 
         assertEquals(MetaData.RESULTSET, metaData.getType());
         assertEquals("1.0.4", metaData.getSchemaVersion());
@@ -140,9 +140,9 @@ public class MetaDataTest {
         assertEquals(
                 "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)", metaData.getGenerator());
         assertEquals("SELECT e/ehr_id/value FROM EHR e", metaData.getExecutedAql());
-        assertEquals(50, metaData.getFetch());
-        assertEquals(100, metaData.getOffset());
-        assertEquals(20, metaData.getResultSize());
+        assertEquals(50, metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
+        assertEquals(100, metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
+        assertEquals(20, metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize));
     }
 
     @Test
@@ -154,8 +154,9 @@ public class MetaDataTest {
 
         assertNotNull(metaData);
 
-        assertNull(metaData.getFetch());
-        assertNull(metaData.getOffset());
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize));
 
         assertEquals("... the URI for the executed AQL - used only for GET executions ...", metaData.getHref());
         assertEquals(
@@ -180,10 +181,10 @@ public class MetaDataTest {
         assertEquals(
                 metaData.getCreated().atZoneSameInstant(ZoneOffset.UTC),
                 OffsetDateTime.parse("2017-02-16T13:50:11.308+01:00").atZoneSameInstant(ZoneOffset.UTC));
-        assertEquals(metaData.getResultSize(), 0);
+        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize), 0);
 
-        assertNull(metaData.getFetch());
-        assertNull(metaData.getOffset());
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
+        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
         assertNull(metaData.getHref());
         assertNull(metaData.getGenerator());
     }
@@ -197,9 +198,9 @@ public class MetaDataTest {
         }));
 
         assertNotNull(metaData, "Expected meta to be null");
-        assertEquals(metaData.getFetch(), 100L);
-        assertEquals(metaData.getOffset(), 0L);
-        assertEquals(metaData.getResultSize(), 0);
+        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch), 100L);
+        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset), 0L);
+        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize), 0);
     }
 
     @Test
@@ -212,8 +213,8 @@ public class MetaDataTest {
         }));
 
         assertNotNull(metaData, "Expected meta to be null");
-        assertEquals(metaData.getFetch(), 100L);
-        assertEquals(metaData.getOffset(), 50L);
-        assertEquals(metaData.getResultSize(), 0);
+        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch), 100L);
+        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset), 50L);
+        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize), 0);
     }
 }
