@@ -17,16 +17,36 @@
  */
 package org.ehrbase.openehr.sdk.response.dto.ehrscape;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.time.OffsetDateTime;
+import java.util.*;
+import javax.annotation.Nullable;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.query.ResultHolder;
 
 public class QueryResultDto {
+
+    private OffsetDateTime created;
     private String executedAQL;
+    private Integer limit;
+    private Integer offset;
     private List<List<String>> explain;
     private Map<String, String> variables;
     private List<ResultHolder> resultSet;
+
+    public QueryResultDto() {
+        this(OffsetDateTime.now());
+    }
+
+    public QueryResultDto(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
 
     public List<ResultHolder> getResultSet() {
         return resultSet;
@@ -42,6 +62,22 @@ public class QueryResultDto {
 
     public void setExecutedAQL(String executedAQL) {
         this.executedAQL = executedAQL;
+    }
+
+    public @Nullable Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
+    public @Nullable Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
     }
 
     public List<List<String>> getExplain() {
@@ -61,7 +97,7 @@ public class QueryResultDto {
     }
 
     public boolean variablesIsEmpty() {
-        return variables.size() == 0;
+        return Optional.ofNullable(variables).orElse(Collections.emptyMap()).isEmpty();
     }
 
     public boolean variablesContainsColumnId(String columnId) {
@@ -73,6 +109,6 @@ public class QueryResultDto {
     }
 
     public Iterator<Map.Entry<String, String>> variablesIterator() {
-        return variables.entrySet().iterator();
+        return getVariables().entrySet().iterator();
     }
 }
