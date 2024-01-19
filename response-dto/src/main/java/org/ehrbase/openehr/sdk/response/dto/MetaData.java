@@ -52,15 +52,6 @@ public class MetaData {
         String getName();
 
         @FunctionalInterface
-        interface LongProperty extends AdditionalProperty<Long> {
-
-            @Override
-            default Long apply(Object o) {
-                return o instanceof Number ? ((Number) o).longValue() : null;
-            }
-        }
-
-        @FunctionalInterface
         interface IntegerProperty extends AdditionalProperty<Integer> {
 
             @Override
@@ -75,7 +66,7 @@ public class MetaData {
          * Not part of the standard spec, but returned by openEHR since version <code>1.0.0</code> for debugging purposes.
          * </pre>
          */
-        LongProperty fetch = () -> "fetch";
+        IntegerProperty fetch = () -> "fetch";
 
         /**
          * Extracted from the query <code>limit</code> parameter.
@@ -83,7 +74,7 @@ public class MetaData {
          * Not part of the standard spec, but returned by openEHR since version <code>1.0.0</code> for debugging purposes.
          * </pre>
          */
-        LongProperty offset = () -> "offset";
+        IntegerProperty offset = () -> "offset";
 
         /**
          * Size of the returned rows.
@@ -131,11 +122,11 @@ public class MetaData {
                         .orElse(0));
 
         // apply fetch/offset as needed - note in case only a limit was used we define the default offset as0L
-        Long resultLimit = queryResultDto.getLimit();
-        Long resultOffset = queryResultDto.getOffset();
+        Integer resultLimit = queryResultDto.getLimit();
+        Integer resultOffset = queryResultDto.getOffset();
         if (resultLimit != null) {
             setAdditionalProperty(AdditionalProperty.fetch, resultLimit);
-            setAdditionalProperty(AdditionalProperty.offset, resultOffset != null ? resultOffset : 0L);
+            setAdditionalProperty(AdditionalProperty.offset, resultOffset != null ? resultOffset : 0);
         }
         // the following properties needs to be specified by the application
         this.href = null;

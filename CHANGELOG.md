@@ -3,14 +3,14 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
+ ### Added
+- Added `QueryResponseData.meta` additional `fetch`, `offset` and `resultsize` properties ([#559](https://github.com/ehrbase/openEHR_SDK/pull/559))
  ### Fixed 
 
 ## [2.6.0]
  ### Changed
 - Bumped libraries
  ### Added 
-- Added `QueryResponseData.meta` additional `fetch`, `offset` and `resultsize` properties ([#559](https://github.com/ehrbase/openEHR_SDK/pull/559))
  ### Fixed 
 - Parsing of string function CONTAINS ([5ef1eca](https://github.com/ehrbase/openEHR_SDK/commit/5ef1eca72289856fa94a04146aa876a4c5130423))
 - Add missing aggregate function name to the parser ([8fd08bb](https://github.com/ehrbase/openEHR_SDK/commit/8fd08bbd1ce3b5a217cc8e2b701e32c2125bf0bf))
