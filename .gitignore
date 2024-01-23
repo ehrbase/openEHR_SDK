@@ -88,3 +88,4 @@ report.html
 # VSCode Editor
 .vscode
 /aql/gen/
+generator-maven-plugin/.factorypath
