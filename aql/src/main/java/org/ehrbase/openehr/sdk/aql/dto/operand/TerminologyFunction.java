@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class TerminologyFunction implements MatchesOperand, FunctionCall {
+public final class TerminologyFunction implements MatchesOperand, FunctionCall {
 
     private String operation;
     private String serviceApi;

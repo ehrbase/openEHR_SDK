@@ -25,7 +25,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.util.Freezable;
 
-public class ComparisonOperatorPredicate implements Freezable<ComparisonOperatorPredicate> {
+public final class ComparisonOperatorPredicate implements Freezable<ComparisonOperatorPredicate> {
 
     public enum PredicateComparisonOperator {
         EQ("="),

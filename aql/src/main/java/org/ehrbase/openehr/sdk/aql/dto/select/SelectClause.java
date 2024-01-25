@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectClause {
+public final class SelectClause {
 
     private boolean isDistinct = false;
 

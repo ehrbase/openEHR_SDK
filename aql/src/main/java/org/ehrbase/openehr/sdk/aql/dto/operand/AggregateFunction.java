@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class AggregateFunction implements ColumnExpression {
+public sealed class AggregateFunction implements ColumnExpression permits CountDistinctAggregateFunction {
 
     private AggregateFunctionName functionName;
     private IdentifiedPath identifiedPath;

@@ -17,7 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
-public class CountDistinctAggregateFunction extends AggregateFunction {
+public final class CountDistinctAggregateFunction extends AggregateFunction {
 
     public CountDistinctAggregateFunction() {
         super.setFunctionName(AggregateFunctionName.COUNT);

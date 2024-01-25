@@ -25,8 +25,9 @@ import org.ehrbase.openehr.sdk.util.Freezable;
 /**
  * @author Stefan Spiska
  */
-public abstract class Primitive<T extends Constable, O extends Primitive<T, O>>
-        implements Operand, ColumnExpression, MatchesOperand, PathPredicateOperand<O> {
+public abstract sealed class Primitive<T extends Constable, O extends Primitive<T, O>>
+        implements Operand, ColumnExpression, MatchesOperand, PathPredicateOperand<O>
+        permits BooleanPrimitive, DoublePrimitive, LongPrimitive, NullPrimitive, StringPrimitive {
 
     T value;
 

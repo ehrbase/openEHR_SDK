@@ -29,4 +29,4 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = StringPrimitive.class, name = "String"),
     @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "Temporal")
 })
-public interface LikeOperand {}
+public sealed interface LikeOperand permits QueryParameter, StringPrimitive {}

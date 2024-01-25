@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.LogicalOperator;
 import org.ehrbase.openehr.sdk.aql.dto.condition.LogicalOperatorCondition.ConditionLogicalOperatorSymbol;
 
-public class LogicalOperatorCondition
+public final class LogicalOperatorCondition
         implements WhereCondition, LogicalOperator<ConditionLogicalOperatorSymbol, WhereCondition> {
 
     private ConditionLogicalOperatorSymbol symbol;

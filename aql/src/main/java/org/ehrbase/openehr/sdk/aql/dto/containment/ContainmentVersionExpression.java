@@ -24,7 +24,7 @@ import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 /**
  * @author Stefan Spiska
  */
-public class ContainmentVersionExpression extends AbstractContainmentExpression {
+public final class ContainmentVersionExpression extends AbstractContainmentExpression {
 
     public enum VersionPredicateType {
         LATEST_VERSION,

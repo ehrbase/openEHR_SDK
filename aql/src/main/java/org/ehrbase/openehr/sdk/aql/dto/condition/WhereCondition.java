@@ -29,4 +29,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = MatchesCondition.class, name = "Matches"),
     @JsonSubTypes.Type(value = NotCondition.class, name = "Not")
 })
-public interface WhereCondition {}
+public sealed interface WhereCondition
+        permits ComparisonOperatorCondition,
+                ExistsCondition,
+                LikeCondition,
+                LogicalOperatorCondition,
+                MatchesCondition,
+                NotCondition {}

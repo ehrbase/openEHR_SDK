@@ -26,7 +26,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
 import org.ehrbase.openehr.sdk.util.Freezable;
 
-public class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
+public final class AndOperatorPredicate implements Freezable<AndOperatorPredicate> {
     private final List<ComparisonOperatorPredicate> operands;
     private boolean frozen;
 

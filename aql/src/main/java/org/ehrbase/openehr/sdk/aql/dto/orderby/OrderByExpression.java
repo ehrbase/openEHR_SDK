@@ -20,7 +20,7 @@ package org.ehrbase.openehr.sdk.aql.dto.orderby;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 
-public class OrderByExpression {
+public final class OrderByExpression {
     public enum OrderByDirection {
         DESC,
         ASC;

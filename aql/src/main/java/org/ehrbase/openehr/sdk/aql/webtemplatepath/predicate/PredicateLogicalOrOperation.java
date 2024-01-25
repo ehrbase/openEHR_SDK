@@ -26,7 +26,7 @@ import org.ehrbase.openehr.sdk.aql.dto.LogicalOperator;
 /**
  * @author Stefan Spiska
  */
-public class PredicateLogicalOrOperation
+public final class PredicateLogicalOrOperation
         implements Predicate, LogicalOperator<PredicateLogicalOperatorSymbol, DisjunctablePredicate>, Serializable {
 
     private final PredicateLogicalOperatorSymbol symbol = PredicateLogicalOperatorSymbol.OR;

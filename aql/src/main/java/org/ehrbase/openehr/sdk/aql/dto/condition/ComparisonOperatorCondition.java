@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
 
-public class ComparisonOperatorCondition implements WhereCondition {
+public final class ComparisonOperatorCondition implements WhereCondition {
 
     private ComparisonLeftOperand statement;
     private ComparisonOperatorSymbol symbol;

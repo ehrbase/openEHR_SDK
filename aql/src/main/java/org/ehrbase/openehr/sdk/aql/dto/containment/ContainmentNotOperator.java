@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class ContainmentNotOperator implements Containment {
+public final class ContainmentNotOperator implements Containment {
     private Containment containmentExpression;
 
     public Containment getContainmentExpression() {

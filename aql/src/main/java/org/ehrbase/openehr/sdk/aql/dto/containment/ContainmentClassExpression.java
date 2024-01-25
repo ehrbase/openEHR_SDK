@@ -19,7 +19,7 @@ package org.ehrbase.openehr.sdk.aql.dto.containment;
 
 import java.util.Objects;
 
-public class ContainmentClassExpression extends AbstractContainmentExpression {
+public final class ContainmentClassExpression extends AbstractContainmentExpression {
 
     private String type;
 

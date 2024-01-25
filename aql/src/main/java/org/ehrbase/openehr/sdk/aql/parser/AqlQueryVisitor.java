@@ -694,8 +694,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         } else if (ctx.terminologyFunction() != null) {
             return visitTerminologyFunction(ctx.terminologyFunction());
         } else {
-            errors.add("Invalid ValueListItem");
-            return new MatchesOperand() {};
+            throw new IllegalArgumentException("Invalid ValueListItem");
         }
     }
 

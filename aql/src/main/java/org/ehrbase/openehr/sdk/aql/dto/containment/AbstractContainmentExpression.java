@@ -19,22 +19,18 @@ package org.ehrbase.openehr.sdk.aql.dto.containment;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
-import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 
 /**
  * @author Stefan Spiska
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "identifier")
-public abstract class AbstractContainmentExpression implements Containment {
-
-    protected List<AndOperatorPredicate> predicates;
+public abstract sealed class AbstractContainmentExpression implements Containment
+        permits ContainmentClassExpression, ContainmentVersionExpression {
     private Containment contains;
 
     private String identifier;

@@ -27,4 +27,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = ContainmentSetOperator.class, name = "LogicalOperator"),
     @JsonSubTypes.Type(value = ContainmentNotOperator.class, name = "Not")
 })
-public interface Containment {}
+public sealed interface Containment
+        permits AbstractContainmentExpression, ContainmentNotOperator, ContainmentSetOperator {}
