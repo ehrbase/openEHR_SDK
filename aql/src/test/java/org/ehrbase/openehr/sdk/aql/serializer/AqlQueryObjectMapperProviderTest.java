@@ -36,7 +36,20 @@ class AqlQueryObjectMapperProviderTest {
         ObjectMapper cut = AqlQueryObjectMapperProvider.getObjectMapper();
 
         String aql =
-                "SELECT o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude, e/ehr_id/value AS ehr_id FROM EHR e CONTAINS COMPOSITION CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1] WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude AND o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1) ORDER BY o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC LIMIT 10 OFFSET 5";
+                """
+            SELECT
+              o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude,
+              e/ehr_id/value AS ehr_id
+              FROM EHR e
+              CONTAINS VERSION v0
+              CONTAINS VERSION v1[LATEST_VERSION]
+              CONTAINS VERSION v2[ALL_VERSIONS]
+              CONTAINS VERSION v3[commit_audit/time_committed>'1970-01-01']
+              CONTAINS COMPOSITION
+              CONTAINS OBSERVATION o0[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
+              WHERE (o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude >= $magnitude AND o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude < 1.1)
+              ORDER BY o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude ASC LIMIT 10 OFFSET 5
+            """;
 
         AqlQuery parse = AqlQueryParser.parse(aql);
 
@@ -45,81 +58,101 @@ class AqlQueryObjectMapperProviderTest {
         assertThat(value)
                 .isEqualToIgnoringNewLines(
                         """
-                {
-                  "select" : {
-                    "distinct" : false,
-                    "statement" : [ {
-                      "alias" : "Systolic__magnitude",
-                      "columnExpression" : {
-                        "_type" : "IdentifiedPath",
-                        "root" : "o0",
-                        "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
-                      }
-                    }, {
-                      "alias" : "ehr_id",
-                      "columnExpression" : {
-                        "_type" : "IdentifiedPath",
-                        "root" : "e",
-                        "path" : "ehr_id/value"
-                      }
-                    } ]
-                  },
-                  "from" : {
-                    "_type" : "Containment",
-                    "identifier" : "e",
-                    "contains" : {
-                      "_type" : "Containment",
-                      "contains" : {
-                        "_type" : "Containment",
-                        "identifier" : "o0",
-                        "predicates" : "[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]",
-                        "type" : "OBSERVATION"
-                      },
-                      "type" : "COMPOSITION"
-                    },
-                    "type" : "EHR"
-                  },
-                  "where" : {
-                    "_type" : "LogicalOperator",
-                    "symbol" : "AND",
-                    "values" : [ {
-                      "_type" : "ComparisonOperator",
-                      "statement" : {
-                        "_type" : "IdentifiedPath",
-                        "root" : "o0",
-                        "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
-                      },
-                      "symbol" : "GT_EQ",
-                      "value" : {
-                        "_type" : "QueryParameter",
-                        "name" : "magnitude"
-                      }
-                    }, {
-                      "_type" : "ComparisonOperator",
-                      "statement" : {
-                        "_type" : "IdentifiedPath",
-                        "root" : "o0",
-                        "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
-                      },
-                      "symbol" : "LT",
-                      "value" : {
-                        "_type" : "Double",
-                        "value" : 1.1
-                      }
-                    } ]
-                  },
-                  "orderBy" : [ {
-                    "statement" : {
-                      "_type" : "IdentifiedPath",
-                      "root" : "o0",
-                      "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
-                    },
-                    "symbol" : "ASC"
-                  } ],
-                  "limit" : 10,
-                  "offset" : 5
-                }
-                """);
+               {
+                 "select" : {
+                   "distinct" : false,
+                   "statement" : [ {
+                     "alias" : "Systolic__magnitude",
+                     "columnExpression" : {
+                       "_type" : "IdentifiedPath",
+                       "root" : "o0",
+                       "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
+                     }
+                   }, {
+                     "alias" : "ehr_id",
+                     "columnExpression" : {
+                       "_type" : "IdentifiedPath",
+                       "root" : "e",
+                       "path" : "ehr_id/value"
+                     }
+                   } ]
+                 },
+                 "from" : {
+                   "_type" : "Containment",
+                   "identifier" : "e",
+                   "type" : "EHR",
+                   "contains" : {
+                     "_type" : "Version",
+                     "identifier" : "v0",
+                     "versionPredicateType" : "NONE",
+                     "contains" : {
+                       "_type" : "Version",
+                       "identifier" : "v1",
+                       "versionPredicateType" : "LATEST_VERSION",
+                       "contains" : {
+                         "_type" : "Version",
+                         "identifier" : "v2",
+                         "versionPredicateType" : "ALL_VERSIONS",
+                         "contains" : {
+                           "_type" : "Version",
+                           "identifier" : "v3",
+                           "versionPredicateType" : "STANDARD_PREDICATE",
+                           "predicate" : "[commit_audit/time_committed>'1970-01-01']",
+                           "contains" : {
+                             "_type" : "Containment",
+                             "type" : "COMPOSITION",
+                             "contains" : {
+                               "_type" : "Containment",
+                               "identifier" : "o0",
+                               "type" : "OBSERVATION",
+                               "predicates" : "[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]"
+                             }
+                           }
+                         }
+                       }
+                     }
+                   }
+                 },
+                 "where" : {
+                   "_type" : "LogicalOperator",
+                   "symbol" : "AND",
+                   "values" : [ {
+                     "_type" : "ComparisonOperator",
+                     "statement" : {
+                       "_type" : "IdentifiedPath",
+                       "root" : "o0",
+                       "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
+                     },
+                     "symbol" : "GT_EQ",
+                     "value" : {
+                       "_type" : "QueryParameter",
+                       "name" : "magnitude"
+                     }
+                   }, {
+                     "_type" : "ComparisonOperator",
+                     "statement" : {
+                       "_type" : "IdentifiedPath",
+                       "root" : "o0",
+                       "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
+                     },
+                     "symbol" : "LT",
+                     "value" : {
+                       "_type" : "Double",
+                       "value" : 1.1
+                     }
+                   } ]
+                 },
+                 "orderBy" : [ {
+                   "statement" : {
+                     "_type" : "IdentifiedPath",
+                     "root" : "o0",
+                     "path" : "data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude"
+                   },
+                   "symbol" : "ASC"
+                 } ],
+                 "limit" : 10,
+                 "offset" : 5
+               }""");
 
         AqlQuery read = cut.readValue(value, AqlQuery.class);
 
@@ -127,6 +160,6 @@ class AqlQueryObjectMapperProviderTest {
 
         String actual = AqlRenderer.render(read);
 
-        assertThat(actual).isEqualTo(aql);
+        assertThat(actual).isEqualTo(aql.trim().replaceAll("\\s+", " "));
     }
 }

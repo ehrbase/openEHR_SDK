@@ -52,39 +52,23 @@ public abstract sealed class AbstractContainmentExpression implements Containmen
     }
 
     @JsonSerialize(using = PredicateSerializer.class)
-    public List<AndOperatorPredicate> getPredicates() {
-        return predicates;
-    }
-
-    @JsonDeserialize(using = PredicateDeserializer.class)
-    public void setPredicates(List<AndOperatorPredicate> predicates) {
-        if (predicates != null) {
-            this.predicates = new ArrayList<>(predicates);
-        } else {
-            this.predicates = null;
-        }
-    }
+    public abstract List<AndOperatorPredicate> getPredicates();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractContainmentExpression that = (AbstractContainmentExpression) o;
-        return Objects.equals(predicates, that.predicates)
-                && Objects.equals(contains, that.contains)
-                && Objects.equals(identifier, that.identifier);
+        return Objects.equals(contains, that.contains) && Objects.equals(identifier, that.identifier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(predicates, contains, identifier);
+        return Objects.hash(contains, identifier);
     }
 
     @Override
     public String toString() {
-        return "AbstractContainmentExpression{" + "predicates="
-                + predicates + ", contains="
-                + contains + ", identifier='"
-                + identifier + '\'' + '}';
+        return "AbstractContainmentExpression{contains=%s, identifier='%s'".formatted(contains, identifier);
     }
 }

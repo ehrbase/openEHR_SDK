@@ -27,7 +27,9 @@ import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentClassExpression;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
+import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentVersionExpression;
 import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.SingleRowFunction.KnownFunctionName;
 import org.ehrbase.openehr.sdk.aql.dto.operand.StringPrimitive;
@@ -373,6 +375,16 @@ class AqlQueryParserTest {
                 "openEHR-EHR-COMPOSITION.report.v1 --> ((openEHR-EHR-OBSERVATION.story.v1 --> CLUSTER OR openEHR-EHR-OBSERVATION.symptom_sign_screening.v0) AND openEHR-EHR-OBSERVATION.exposure_assessment.v0)");
     }
 
+    @Test
+    void parseContainsVersion() {
+        String aql =
+                "SELECT c from VERSION v1 CONTAINS VERSION v2[LATEST_VERSION] CONTAINS VERSION v3[ALL_VERSIONS] CONTAINS VERSION v4[commit_audit/time_committed>'1970-01-01'] CONTAINS COMPOSITION c";
+
+        testContains(
+                aql,
+                "VERSION[NONE] --> VERSION[LATEST_VERSION] --> VERSION[ALL_VERSIONS] --> VERSION[STANDARD_PREDICATE] --> COMPOSITION");
+    }
+
     private static Stream<ComparisonOperatorPredicate> streamPredicates(List<AndOperatorPredicate> condition) {
         if (condition == null) {
             return Stream.empty();
@@ -383,39 +395,55 @@ class AqlQueryParserTest {
     String render(Containment containmentExpresion) {
         StringBuilder sb = new StringBuilder();
 
-        if (containmentExpresion instanceof ContainmentClassExpression classExpressionDto) {
-
-            if (classExpressionDto.getType().equals("EHR")) {
-                sb.append(render(classExpressionDto.getContains()));
-            } else {
-                List<AndOperatorPredicate> otherPredicates =
-                        ((ContainmentClassExpression) containmentExpresion).getPredicates();
-                sb.append(streamPredicates(otherPredicates)
-                        .filter(p -> p.getPath().getPathNodes().size() == 1)
-                        .filter(p -> PredicateHelper.ARCHETYPE_NODE_ID.equals(
-                                p.getPath().getPathNodes().get(0).getAttribute()))
-                        .map(ComparisonOperatorPredicate::getValue)
-                        .map(StringPrimitive.class::cast)
-                        .map(StringPrimitive::getValue)
-                        .findFirst()
-                        .orElse(classExpressionDto.getType()));
-                Containment CONTAINS = ((AbstractContainmentExpression) containmentExpresion).getContains();
-                if (CONTAINS != null) {
-                    sb.append(" --> ").append(render(CONTAINS));
+        if (containmentExpresion instanceof AbstractContainmentExpression containmentExp) {
+            if (containmentExpresion instanceof ContainmentClassExpression classExp) {
+                if (classExp.getType().equals("EHR")) {
+                    sb.append(render(classExp.getContains()));
+                    return sb.toString();
+                } else {
+                    List<AndOperatorPredicate> otherPredicates =
+                            ((ContainmentClassExpression) containmentExpresion).getPredicates();
+                    sb.append(streamPredicates(otherPredicates)
+                            .filter(p -> p.getPath().getPathNodes().size() == 1)
+                            .filter(p -> PredicateHelper.ARCHETYPE_NODE_ID.equals(
+                                    p.getPath().getPathNodes().get(0).getAttribute()))
+                            .map(ComparisonOperatorPredicate::getValue)
+                            .map(StringPrimitive.class::cast)
+                            .map(StringPrimitive::getValue)
+                            .findFirst()
+                            .orElse(classExp.getType()));
                 }
+
+            } else if (containmentExpresion instanceof ContainmentVersionExpression versionExp) {
+                sb.append("VERSION[%s]".formatted(versionExp.getVersionPredicateType()));
+            } else {
+                throw new IllegalArgumentException(
+                        "Unsupported type: " + containmentExpresion.getClass().getName());
             }
-        } else if (containmentExpresion instanceof ContainmentSetOperator) {
+            Containment childContains = containmentExp.getContains();
+            if (childContains != null) {
+                sb.append(" --> ").append(render(childContains));
+            }
+
+        } else if (containmentExpresion instanceof ContainmentSetOperator setOp) {
             sb.append("(")
-                    .append(((ContainmentSetOperator) containmentExpresion)
-                            .getValues().stream()
-                                    .map(this::render)
-                                    .collect(Collectors.joining((StringUtils.wrap(
-                                            ((ContainmentSetOperator) containmentExpresion)
-                                                    .getSymbol()
-                                                    .toString(),
-                                            " ")))))
+                    .append(setOp.getValues().stream()
+                            .map(this::render)
+                            .collect(Collectors.joining((StringUtils.wrap(
+                                    ((ContainmentSetOperator) containmentExpresion)
+                                            .getSymbol()
+                                            .toString(),
+                                    " ")))))
                     .append(")");
             return sb.toString();
+
+        } else if (containmentExpresion instanceof ContainmentNotOperator notOp) {
+            sb.append("NOT --> ").append(render(notOp.getContainmentExpression()));
+            return sb.toString();
+
+        } else {
+            throw new IllegalArgumentException(
+                    "Unsupported type: " + containmentExpresion.getClass().getName());
         }
 
         return sb.toString();

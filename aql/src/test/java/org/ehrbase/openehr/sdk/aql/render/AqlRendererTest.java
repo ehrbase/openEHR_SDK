@@ -303,9 +303,9 @@ class AqlRendererTest {
     }
 
     @Test
-    void renderVersionedObject() {
-        String aql = "SELECT v/time_created AS first_created " + "FROM EHR e "
-                + "CONTAINS VERSIONED_OBJECT v CONTAINS COMPOSITION";
+    void renderVersion() {
+        String aql = "SELECT v/commit_audit/time_committed/value " + "FROM EHR e "
+                + "CONTAINS VERSION v CONTAINS COMPOSITION";
 
         test(aql, aql);
     }
