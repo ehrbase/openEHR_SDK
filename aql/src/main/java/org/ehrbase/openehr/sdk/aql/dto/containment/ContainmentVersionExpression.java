@@ -52,7 +52,7 @@ public final class ContainmentVersionExpression extends AbstractContainmentExpre
     public void setVersionPredicateType(VersionPredicateType versionPredicateType) {
         this.versionPredicateType = versionPredicateType;
         if (versionPredicateType != VersionPredicateType.STANDARD_PREDICATE) {
-            setPredicate(null);
+            this.predicate = null;
         }
     }
 
