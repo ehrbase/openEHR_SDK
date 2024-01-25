@@ -54,6 +54,8 @@ public abstract sealed class AbstractContainmentExpression implements Containmen
     @JsonSerialize(using = PredicateSerializer.class)
     public abstract List<AndOperatorPredicate> getPredicates();
 
+    public abstract boolean hasPredicates();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

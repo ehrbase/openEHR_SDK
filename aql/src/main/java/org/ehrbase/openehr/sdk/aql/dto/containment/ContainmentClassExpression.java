@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections4.CollectionUtils;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
@@ -55,6 +56,11 @@ public final class ContainmentClassExpression extends AbstractContainmentExpress
         } else {
             this.predicates = null;
         }
+    }
+
+    @Override
+    public boolean hasPredicates() {
+        return CollectionUtils.isNotEmpty(this.predicates);
     }
 
     @Override

@@ -75,11 +75,16 @@ public final class ContainmentVersionExpression extends AbstractContainmentExpre
     @JsonIgnore
     @Override
     public List<AndOperatorPredicate> getPredicates() {
-        if (versionPredicateType == VersionPredicateType.STANDARD_PREDICATE) {
-            return List.of(new AndOperatorPredicate(List.of(predicate)));
-        } else {
+        if (predicate == null) {
             throw new IllegalStateException("Wrong VersionPredicateType: " + versionPredicateType);
+        } else {
+            return List.of(new AndOperatorPredicate(List.of(predicate)));
         }
+    }
+
+    @Override
+    public boolean hasPredicates() {
+        return predicate != null;
     }
 
     @Override
