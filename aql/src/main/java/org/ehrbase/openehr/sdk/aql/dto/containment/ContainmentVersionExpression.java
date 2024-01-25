@@ -76,7 +76,7 @@ public final class ContainmentVersionExpression extends AbstractContainmentExpre
     @Override
     public List<AndOperatorPredicate> getPredicates() {
         if (predicate == null) {
-            throw new IllegalStateException("Wrong VersionPredicateType: " + versionPredicateType);
+            return null;
         } else {
             return List.of(new AndOperatorPredicate(List.of(predicate)));
         }
