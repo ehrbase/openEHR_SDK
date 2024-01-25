@@ -38,12 +38,12 @@ public final class ContainmentVersionExpression extends AbstractContainmentExpre
         NONE,
         LATEST_VERSION,
         ALL_VERSIONS,
-        STANDARD_PREDICATE;
+        STANDARD_PREDICATE
     }
 
     private VersionPredicateType versionPredicateType = VersionPredicateType.NONE;
 
-    protected ComparisonOperatorPredicate predicate;
+    private ComparisonOperatorPredicate predicate;
 
     public VersionPredicateType getVersionPredicateType() {
         return versionPredicateType;
