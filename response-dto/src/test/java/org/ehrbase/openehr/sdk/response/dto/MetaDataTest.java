@@ -18,8 +18,8 @@
 package org.ehrbase.openehr.sdk.response.dto;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.openehr.sdk.response.dto.util.JacksonTestUtil.objectMapper;
-import static org.ehrbase.openehr.sdk.response.dto.util.StringSupport.systemNeutralString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -45,16 +45,15 @@ public class MetaDataTest {
 
         String json = objectMapper.writeValueAsString(metaData);
 
-        assertEquals(
-                systemNeutralString(
+        assertThat(json)
+                .isEqualToIgnoringWhitespace(
                         """
                         {
                           "_type" : "RESULTSET",
                           "_schema_version" : "1.0.4",
                           "_created" : "2017-08-19T00:25:47.568+02:00",
                           "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e"
-                        }"""),
-                systemNeutralString(json));
+                        }""");
     }
 
     @Test
@@ -74,8 +73,8 @@ public class MetaDataTest {
 
         String json = objectMapper.writeValueAsString(metaData);
 
-        assertEquals(
-                systemNeutralString(
+        assertThat(json)
+                .isEqualToNormalizingWhitespace(
                         """
                         {
                           "_href" : "https://example.com/subpath/ehrbase/rest/openehr/v1/query/aql",
@@ -87,8 +86,7 @@ public class MetaDataTest {
                           "fetch" : 50,
                           "offset" : 100,
                           "resultsize" : 42
-                        }"""),
-                systemNeutralString(json));
+                        }""");
     }
 
     @Test
