@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -32,13 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.query.ResultHolder;
 import org.ehrbase.openehr.sdk.response.dto.util.DTOFixtures;
 import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 class QueryResponseDataTest {
 
@@ -53,8 +51,8 @@ class QueryResponseDataTest {
         String json = objectMapper.writeValueAsString(queryResponseData);
 
         assertEquals(
-        		systemNeutralString(
-                """
+                systemNeutralString(
+                        """
                         {
                           "q" : "SELECT e/ehr_id/value FROM EHR e",
                           "columns" : [ ],
@@ -84,8 +82,8 @@ class QueryResponseDataTest {
         String json = objectMapper.writeValueAsString(queryResponseData);
 
         assertEquals(
-        		systemNeutralString(
-                """
+                systemNeutralString(
+                        """
                         {
                           "meta" : {
                             "_type" : "RESULTSET",
