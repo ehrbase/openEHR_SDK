@@ -35,4 +35,4 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "Temporal"),
     @JsonSubTypes.Type(value = TerminologyFunction.class, name = "TerminologyFunction")
 })
-public interface MatchesOperand {}
+public sealed interface MatchesOperand permits Primitive, QueryParameter, TerminologyFunction {}

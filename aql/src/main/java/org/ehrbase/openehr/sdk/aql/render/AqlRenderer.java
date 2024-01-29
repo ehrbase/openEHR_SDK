@@ -638,18 +638,21 @@ public final class AqlRenderer {
             sb.append(" ").append(dto.getIdentifier());
         }
 
-        if (dto instanceof ContainmentVersionExpression classExpression
-                && classExpression.getVersionPredicateType()
-                        != ContainmentVersionExpression.VersionPredicateType.STANDARD_PREDICATE) {
-            if (classExpression
-                    .getVersionPredicateType()
-                    .equals(ContainmentVersionExpression.VersionPredicateType.ALL_VERSIONS)) {
-                sb.append("[ALL_VERSIONS]");
-            } else {
-                sb.append("[LATEST_VERSION]");
+        if (dto instanceof ContainmentClassExpression classExpression) {
+            Optional.of(classExpression)
+                    .map(ContainmentClassExpression::getPredicates)
+                    .ifPresent(p -> renderPredicate(sb, p));
+        } else if (dto instanceof ContainmentVersionExpression versionExpression) {
+
+            switch (versionExpression.getVersionPredicateType()) {
+                case NONE -> {}
+                case LATEST_VERSION -> sb.append("[LATEST_VERSION]");
+                case ALL_VERSIONS -> sb.append("[ALL_VERSIONS]");
+                case STANDARD_PREDICATE -> renderPredicate(sb, versionExpression.getPredicates());
             }
         } else {
-            Optional.of(dto).map(AbstractContainmentExpression::getPredicates).ifPresent(p -> renderPredicate(sb, p));
+            throw new IllegalArgumentException(
+                    "Unsupported type: " + dto.getClass().getName());
         }
 
         if (dto.getContains() != null) {

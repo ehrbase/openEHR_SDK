@@ -22,4 +22,4 @@ import org.ehrbase.openehr.sdk.util.Freezable;
 /**
  * @author Stefan Spiska
  */
-public interface PathPredicateOperand<O extends PathPredicateOperand<O>> extends Freezable<O> {}
+public /* sealed */ interface PathPredicateOperand<O extends PathPredicateOperand<O>> extends Freezable<O> {}

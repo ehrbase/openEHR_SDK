@@ -29,4 +29,4 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = SingleRowFunction.class, name = "SingleRowFunction"),
     @JsonSubTypes.Type(value = TerminologyFunction.class, name = "TerminologyFunction")
 })
-public interface ComparisonLeftOperand {}
+public sealed interface ComparisonLeftOperand permits FunctionCall, IdentifiedPath {}

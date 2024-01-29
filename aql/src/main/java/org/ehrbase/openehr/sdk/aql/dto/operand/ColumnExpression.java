@@ -37,4 +37,4 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = TemporalPrimitive.class, name = "Temporal"),
     @JsonSubTypes.Type(value = TerminologyFunction.class, name = "TerminologyFunction")
 })
-public interface ColumnExpression {}
+public sealed interface ColumnExpression permits AggregateFunction, FunctionCall, IdentifiedPath, Primitive {}

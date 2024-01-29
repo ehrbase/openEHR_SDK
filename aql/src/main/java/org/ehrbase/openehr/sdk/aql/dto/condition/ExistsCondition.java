@@ -23,7 +23,7 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 /**
  * @author Stefan Spiska
  */
-public class ExistsCondition implements WhereCondition {
+public final class ExistsCondition implements WhereCondition {
 
     private IdentifiedPath value;
 

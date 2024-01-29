@@ -578,7 +578,10 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
 
         AqlParser.VersionPredicateContext versionPredicateContext = ctx.versionPredicate();
 
-        if (versionPredicateContext.ALL_VERSIONS() != null) {
+        if (versionPredicateContext == null) {
+            containmentVersionExpression.setVersionPredicateType(
+                    ContainmentVersionExpression.VersionPredicateType.NONE);
+        } else if (versionPredicateContext.ALL_VERSIONS() != null) {
             containmentVersionExpression.setVersionPredicateType(
                     ContainmentVersionExpression.VersionPredicateType.ALL_VERSIONS);
         } else if (versionPredicateContext.LATEST_VERSION() != null) {
@@ -588,9 +591,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         } else if (versionPredicateContext.standardPredicate() != null) {
             ComparisonOperatorPredicate comparisonOperatorPredicate =
                     visitStandardPredicate(versionPredicateContext.standardPredicate());
-            AndOperatorPredicate andOperatorPredicate =
-                    new AndOperatorPredicate(Collections.singletonList(comparisonOperatorPredicate));
-            containmentVersionExpression.setPredicates(Collections.singletonList(andOperatorPredicate));
+            containmentVersionExpression.setPredicate(comparisonOperatorPredicate);
         }
 
         return containmentVersionExpression;
@@ -694,8 +695,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         } else if (ctx.terminologyFunction() != null) {
             return visitTerminologyFunction(ctx.terminologyFunction());
         } else {
-            errors.add("Invalid ValueListItem");
-            return new MatchesOperand() {};
+            throw new IllegalArgumentException("Invalid ValueListItem");
         }
     }
 

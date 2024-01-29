@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class NotCondition implements WhereCondition {
+public final class NotCondition implements WhereCondition {
 
     private WhereCondition condition;
 

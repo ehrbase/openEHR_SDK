@@ -26,7 +26,7 @@ import org.ehrbase.openehr.sdk.aql.dto.select.SelectClause;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
-public class AqlQuery {
+public final class AqlQuery {
 
     private SelectClause select;
 

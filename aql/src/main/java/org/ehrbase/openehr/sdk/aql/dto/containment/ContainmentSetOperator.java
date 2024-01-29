@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.LogicalOperator;
 
-public class ContainmentSetOperator implements Containment, LogicalOperator<ContainmentSetOperatorSymbol, Containment> {
+public final class ContainmentSetOperator
+        implements Containment, LogicalOperator<ContainmentSetOperatorSymbol, Containment> {
     ContainmentSetOperatorSymbol symbol;
     List<Containment> values;
 

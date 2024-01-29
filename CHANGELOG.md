@@ -3,9 +3,18 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added
-- Added `QueryResponseData.meta` additional `fetch`, `offset` and `resultsize` properties ([#559](https://github.com/ehrbase/openEHR_SDK/pull/559))
- ### Fixed 
+
+### Added
+
+- Added `QueryResponseData.meta` additional `fetch`, `offset` and `resultsize`
+  properties ([#559](https://github.com/ehrbase/openEHR_SDK/pull/559))
+
+### Changed
+
+- Sealed AqlQuery
+- AqlQuery: Support for VERSION without predicate
+
+### Fixed
 
 ## [2.6.0]
  ### Changed

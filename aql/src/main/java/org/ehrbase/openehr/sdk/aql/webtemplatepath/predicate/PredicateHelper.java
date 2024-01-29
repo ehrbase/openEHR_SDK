@@ -218,14 +218,15 @@ public class PredicateHelper {
     public static void format(
             StringBuilder sb, Predicate predicate, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
-        if (predicate instanceof QueryParameter) {
-            sb.append('$').append(((QueryParameter) predicate).getName());
-        } else if (predicate instanceof PredicateComparisonOperator) {
+        if (predicate instanceof PredicateComparisonOperator) {
             formatPredicateComparisonOperatorDto(sb, (PredicateComparisonOperator) predicate, otherPredicatesFormat);
         } else if (predicate instanceof PredicateLogicalAndOperation) {
             formatPredicateLogicalAndOperation(sb, (PredicateLogicalAndOperation) predicate, otherPredicatesFormat);
         } else if (predicate instanceof PredicateLogicalOrOperation) {
             formatPredicateLogicalOrOperation(sb, (PredicateLogicalOrOperation) predicate, otherPredicatesFormat);
+        } else {
+            throw new IllegalArgumentException(
+                    "Unexpected predicate type: " + predicate.getClass().getName());
         }
     }
 
@@ -292,30 +293,25 @@ public class PredicateHelper {
     private static boolean isShorten(
             DisjunctablePredicate predicateDto, AqlPath.OtherPredicatesFormat otherPredicatesFormat) {
 
-        boolean isCompOp = predicateDto instanceof PredicateComparisonOperator;
-
-        if (isCompOp
-                && ((PredicateComparisonOperator) predicateDto).getStatement().equals(ARCHETYPE_NODE_ID)) {
+        if (predicateDto instanceof PredicateComparisonOperator cmpOpDto
+                && cmpOpDto.getStatement().equals(ARCHETYPE_NODE_ID)) {
             return true;
         }
         if (otherPredicatesFormat == AqlPath.OtherPredicatesFormat.FULL) {
             return false;
         }
 
-        if (isCompOp) {
-            PredicateComparisonOperator cmpOpDto = (PredicateComparisonOperator) predicateDto;
+        if (predicateDto instanceof PredicateComparisonOperator cmpOpDto) {
             return ComparisonOperatorSymbol.EQ == cmpOpDto.getSymbol()
                     && List.of(NAME_VALUE, ARCHETYPE_NODE_ID).contains(cmpOpDto.getStatement());
-
-        } else if (predicateDto instanceof PredicateLogicalOrOperation) {
-            return false;
 
         } else if (predicateDto instanceof PredicateLogicalAndOperation) {
             List<PredicateComparisonOperator> andOpVals = ((PredicateLogicalAndOperation) predicateDto).getValues();
             return CollectionUtils.isNotEmpty(andOpVals)
                     && isShorten(andOpVals.get(andOpVals.size() - 1), otherPredicatesFormat);
         } else {
-            return false;
+            throw new IllegalArgumentException(
+                    "Unexpected predicate type: " + predicateDto.getClass().getName());
         }
     }
 

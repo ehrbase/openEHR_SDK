@@ -31,7 +31,7 @@ import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.util.Freezable;
 
-public class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
+public final class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
 
     public static class PathNode implements Freezable<PathNode> {
         private final String attribute;

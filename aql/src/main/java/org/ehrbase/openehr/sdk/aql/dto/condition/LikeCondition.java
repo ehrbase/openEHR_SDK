@@ -21,7 +21,7 @@ import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LikeOperand;
 
-public class LikeCondition implements WhereCondition {
+public final class LikeCondition implements WhereCondition {
 
     private IdentifiedPath statement;
 

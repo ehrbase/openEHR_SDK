@@ -34,7 +34,7 @@ import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 /**
  * @author Stefan Spiska
  */
-public class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeftOperand {
+public final class IdentifiedPath implements ColumnExpression, Operand, ComparisonLeftOperand {
     @JsonIdentityReference(alwaysAsId = true)
     private AbstractContainmentExpression root;
 
