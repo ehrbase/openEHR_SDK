@@ -19,13 +19,20 @@ package org.ehrbase.openehr.sdk.response.dto;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.ehrbase.openehr.sdk.response.dto.util.JacksonTestUtil.objectMapper;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.ehrbase.openehr.sdk.response.dto.util.StringSupport.systemNeutralString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.query.ResultHolder;
 import org.ehrbase.openehr.sdk.response.dto.util.DTOFixtures;
@@ -44,13 +51,14 @@ class QueryResponseDataTest {
         String json = objectMapper.writeValueAsString(queryResponseData);
 
         assertEquals(
-                """
+                systemNeutralString(
+                        """
                         {
                           "q" : "SELECT e/ehr_id/value FROM EHR e",
                           "columns" : [ ],
                           "rows" : [ ]
-                        }""",
-                json);
+                        }"""),
+                systemNeutralString(json));
     }
 
     @Test
@@ -74,7 +82,8 @@ class QueryResponseDataTest {
         String json = objectMapper.writeValueAsString(queryResponseData);
 
         assertEquals(
-                """
+                systemNeutralString(
+                        """
                         {
                           "meta" : {
                             "_type" : "RESULTSET",
@@ -89,8 +98,8 @@ class QueryResponseDataTest {
                             "path" : "e/ehr_id/value"
                           } ],
                           "rows" : [ [ "c631b8d4-c2b7-4908-812f-83403b4c866d" ] ]
-                        }""",
-                json);
+                        }"""),
+                systemNeutralString(json));
     }
 
     @Test
