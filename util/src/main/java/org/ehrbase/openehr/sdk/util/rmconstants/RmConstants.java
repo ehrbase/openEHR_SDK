@@ -18,7 +18,7 @@
 package org.ehrbase.openehr.sdk.util.rmconstants;
 
 public class RmConstants {
-    
+
     private RmConstants() {}
 
     /**
