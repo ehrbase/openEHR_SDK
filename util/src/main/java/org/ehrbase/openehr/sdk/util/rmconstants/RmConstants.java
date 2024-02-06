@@ -18,7 +18,7 @@
 package org.ehrbase.openehr.sdk.util.rmconstants;
 
 public class RmConstants {
-
+    
     private RmConstants() {}
 
     /**
@@ -40,6 +40,7 @@ public class RmConstants {
     public static final String AUDIT_DETAILS = "AUDIT_DETAILS";
 
     public static final String EHR = "EHR";
+    public static final String EHR_STATUS = "EHR_STATUS";
     public static final String COMPOSITION = "COMPOSITION";
     public static final String SECTION = "SECTION";
     public static final String OBSERVATION = "OBSERVATION";
