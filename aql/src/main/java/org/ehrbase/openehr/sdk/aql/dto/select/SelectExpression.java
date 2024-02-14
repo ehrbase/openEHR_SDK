@@ -20,7 +20,7 @@ package org.ehrbase.openehr.sdk.aql.dto.select;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ColumnExpression;
 
-public class SelectExpression {
+public final class SelectExpression {
 
     private String alias;
     private ColumnExpression columnExpression;

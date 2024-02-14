@@ -20,7 +20,7 @@ package org.ehrbase.openehr.sdk.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class LongPrimitive extends Primitive<Long, LongPrimitive> {
+public final class LongPrimitive extends Primitive<Long, LongPrimitive> {
 
     public LongPrimitive() {}
 

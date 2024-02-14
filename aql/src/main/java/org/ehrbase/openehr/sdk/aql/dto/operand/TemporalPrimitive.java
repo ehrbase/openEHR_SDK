@@ -28,7 +28,7 @@ import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeSerializationUtils;
 /**
  * @author Stefan Spiska
  */
-public class TemporalPrimitive extends StringPrimitive {
+public final class TemporalPrimitive extends StringPrimitive {
 
     private TemporalAccessor temporal;
 

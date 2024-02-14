@@ -24,7 +24,8 @@ import org.ehrbase.openehr.sdk.util.Freezable;
 /**
  * @author Stefan Spiska
  */
-public class QueryParameter implements MatchesOperand, Operand, LikeOperand, PathPredicateOperand<QueryParameter> {
+public final class QueryParameter
+        implements MatchesOperand, Operand, LikeOperand, PathPredicateOperand<QueryParameter> {
 
     private String name;
 

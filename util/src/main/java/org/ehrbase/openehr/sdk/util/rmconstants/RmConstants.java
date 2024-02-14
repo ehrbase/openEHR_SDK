@@ -36,7 +36,11 @@ public class RmConstants {
 
     public static final String RM_OBJECT = "RM_OBJECT";
 
+    public static final String ORIGINAL_VERSION = "ORIGINAL_VERSION";
+    public static final String AUDIT_DETAILS = "AUDIT_DETAILS";
+
     public static final String EHR = "EHR";
+    public static final String EHR_STATUS = "EHR_STATUS";
     public static final String COMPOSITION = "COMPOSITION";
     public static final String SECTION = "SECTION";
     public static final String OBSERVATION = "OBSERVATION";

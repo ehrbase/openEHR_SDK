@@ -17,10 +17,70 @@
  */
 package org.ehrbase.openehr.sdk.response.dto;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
+import java.util.*;
+import java.util.function.Function;
+import javax.annotation.Nullable;
+import org.ehrbase.openehr.sdk.response.dto.ehrscape.QueryResultDto;
 
+/**
+ * Represents a query result <code>meta</code> object.
+ *
+ * @see <a href="https://specifications.openehr.org/releases/ITS-REST/latest/query.html#tag/RESULT_SET_schema">Query API - RESULT_SET_schema</a>
+ */
 public class MetaData {
+
+    /**
+     * {@link MetaData} type for an AQL result.
+     */
+    public static final String RESULTSET = "RESULTSET";
+
+    /**
+     * Allows to store and retrieve {@link MetaData} <code>additional property</code> in a type safe manner.
+     *
+     * @see MetaData#setAdditionalProperty(String, Object)
+     * @param <T> of the additional property.
+     */
+    public interface AdditionalProperty<T> extends Function<Object, T> {
+
+        /**
+         * name of the JSON property field.
+         */
+        String getName();
+
+        @FunctionalInterface
+        interface IntegerProperty extends AdditionalProperty<Integer> {
+
+            @Override
+            default Integer apply(Object o) {
+                return o instanceof Number ? ((Number) o).intValue() : null;
+            }
+        }
+
+        /**
+         * Extracted from the query <code>fetch</code> parameter or from the server default.
+         * <pre>
+         * Not part of the standard spec, but returned by openEHR since version <code>1.0.0</code> for debugging purposes.
+         * </pre>
+         */
+        IntegerProperty fetch = () -> "fetch";
+
+        /**
+         * Extracted from the query <code>limit</code> parameter.
+         * <pre>
+         * Not part of the standard spec, but returned by openEHR since version <code>1.0.0</code> for debugging purposes.
+         * </pre>
+         */
+        IntegerProperty offset = () -> "offset";
+
+        /**
+         * Size of the returned rows.
+         */
+        IntegerProperty resultSize = () -> "resultsize";
+    }
 
     @JsonProperty(value = "_href")
     private String href;
@@ -39,6 +99,40 @@ public class MetaData {
 
     @JsonProperty(value = "_executed_aql")
     private String executedAql;
+
+    /**
+     * Meta additional property of type <code>any</code>.
+     */
+    private final Map<String, Object> additionalProperties = new TreeMap<>();
+
+    public MetaData() {}
+
+    public MetaData(QueryResultDto queryResultDto) {
+
+        // initialize basic response meta data
+        this.type = MetaData.RESULTSET;
+        this.created = queryResultDto.getCreated();
+        this.executedAql = queryResultDto.getExecutedAQL();
+
+        // we always add the response set size - also in case it is empty
+        setAdditionalProperty(
+                AdditionalProperty.resultSize,
+                Optional.ofNullable(queryResultDto.getResultSet())
+                        .map(List::size)
+                        .orElse(0));
+
+        // apply fetch/offset as needed - note in case only a limit was used we define the default offset as0L
+        Integer resultLimit = queryResultDto.getLimit();
+        Integer resultOffset = queryResultDto.getOffset();
+        if (resultLimit != null) {
+            setAdditionalProperty(AdditionalProperty.fetch, resultLimit);
+            setAdditionalProperty(AdditionalProperty.offset, resultOffset != null ? resultOffset : 0);
+        }
+        // the following properties needs to be specified by the application
+        this.href = null;
+        this.schemaVersion = null;
+        this.generator = null;
+    }
 
     public String getHref() {
         return href;
@@ -86,5 +180,46 @@ public class MetaData {
 
     public void setExecutedAql(String executedAql) {
         this.executedAql = executedAql;
+    }
+
+    /**
+     * Set an {@link AdditionalProperty} with the given value.
+     *
+     * <pre>{@code
+     *  var meta = new MetaData();
+     *  meta.setAdditionalProperty(MetaData.AdditionalProperty.fetch, 10L)
+     *
+     *  Long fetch = meta.getAdditionalProperty(MetaData.AdditionalProperty.fetch); // 10L
+     *  // assign to box class to prevent accidental 0 cast.
+     *  Long offset = meta.getAdditionalProperty(MetaData.AdditionalProperty.offset); // -> null
+     *  }</pre>
+     * @param property to set
+     * @param value to use
+     * @param <T> of the {@link AdditionalProperty}
+     */
+    public <T> void setAdditionalProperty(AdditionalProperty<T> property, @Nullable T value) {
+        setAdditionalProperty(property.getName(), value);
+    }
+
+    /**
+     * Get an {@link AdditionalProperty} value or <code>null</code> if it does not exist
+     *
+     * @see #setAdditionalProperty(AdditionalProperty, Object)
+     */
+    public <T> @Nullable T getAdditionalProperty(AdditionalProperty<T> property) {
+        Object prop = additionalProperties().get(property.getName());
+        return prop != null ? (T) property.apply(prop) : null;
+    }
+
+    // Internal access to additional properties
+
+    @JsonAnySetter
+    private void setAdditionalProperty(String name, Object value) {
+        additionalProperties.put(name, value);
+    }
+
+    @JsonAnyGetter
+    private Map<String, Object> additionalProperties() {
+        return additionalProperties;
     }
 }

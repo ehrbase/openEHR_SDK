@@ -18,22 +18,14 @@
 package org.ehrbase.openehr.sdk.response.dto;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.ehrbase.openehr.sdk.response.dto.util.JacksonTestUtil.objectMapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class JacksonTest {
-
-    private final ObjectMapper objectMapper;
-
-    public JacksonTest() {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-    }
 
     @Test
     void testReadJson() throws IOException {

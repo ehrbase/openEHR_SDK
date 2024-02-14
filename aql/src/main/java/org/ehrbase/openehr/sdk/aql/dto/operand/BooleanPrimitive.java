@@ -20,7 +20,7 @@ package org.ehrbase.openehr.sdk.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public class BooleanPrimitive extends Primitive<Boolean, BooleanPrimitive> {
+public final class BooleanPrimitive extends Primitive<Boolean, BooleanPrimitive> {
 
     public BooleanPrimitive() {}
 

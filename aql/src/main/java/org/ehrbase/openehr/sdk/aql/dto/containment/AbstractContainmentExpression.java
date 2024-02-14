@@ -19,22 +19,18 @@ package org.ehrbase.openehr.sdk.aql.dto.containment;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
-import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 
 /**
  * @author Stefan Spiska
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "identifier")
-public abstract class AbstractContainmentExpression implements Containment {
-
-    protected List<AndOperatorPredicate> predicates;
+public abstract sealed class AbstractContainmentExpression implements Containment
+        permits ContainmentClassExpression, ContainmentVersionExpression {
     private Containment contains;
 
     private String identifier;
@@ -56,39 +52,25 @@ public abstract class AbstractContainmentExpression implements Containment {
     }
 
     @JsonSerialize(using = PredicateSerializer.class)
-    public List<AndOperatorPredicate> getPredicates() {
-        return predicates;
-    }
+    public abstract List<AndOperatorPredicate> getPredicates();
 
-    @JsonDeserialize(using = PredicateDeserializer.class)
-    public void setPredicates(List<AndOperatorPredicate> predicates) {
-        if (predicates != null) {
-            this.predicates = new ArrayList<>(predicates);
-        } else {
-            this.predicates = null;
-        }
-    }
+    public abstract boolean hasPredicates();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractContainmentExpression that = (AbstractContainmentExpression) o;
-        return Objects.equals(predicates, that.predicates)
-                && Objects.equals(contains, that.contains)
-                && Objects.equals(identifier, that.identifier);
+        return Objects.equals(contains, that.contains) && Objects.equals(identifier, that.identifier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(predicates, contains, identifier);
+        return Objects.hash(contains, identifier);
     }
 
     @Override
     public String toString() {
-        return "AbstractContainmentExpression{" + "predicates="
-                + predicates + ", contains="
-                + contains + ", identifier='"
-                + identifier + '\'' + '}';
+        return "AbstractContainmentExpression{contains=%s, identifier='%s'".formatted(contains, identifier);
     }
 }

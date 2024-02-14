@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * @author Stefan Spiska
  */
-public class SingleRowFunction implements FunctionCall {
+public final class SingleRowFunction implements FunctionCall {
 
     private SingleRowFunctionName functionName;
     private List<Operand> operandList;

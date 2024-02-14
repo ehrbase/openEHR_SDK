@@ -20,4 +20,5 @@ package org.ehrbase.openehr.sdk.aql.dto.operand;
 /**
  * @author Stefan Spiska
  */
-public interface FunctionCall extends ColumnExpression, Operand, ComparisonLeftOperand {}
+public sealed interface FunctionCall extends ColumnExpression, Operand, ComparisonLeftOperand
+        permits SingleRowFunction, TerminologyFunction {}

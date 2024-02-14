@@ -17,22 +17,33 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.containment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.serializer.VersionPredicateDeserializer;
+import org.ehrbase.openehr.sdk.aql.serializer.VersionPredicateSerializer;
 
 /**
  * @author Stefan Spiska
  */
-public class ContainmentVersionExpression extends AbstractContainmentExpression {
+@JsonPropertyOrder({"versionPredicateType", "predicate", "contains"})
+public final class ContainmentVersionExpression extends AbstractContainmentExpression {
 
     public enum VersionPredicateType {
+        NONE,
         LATEST_VERSION,
         ALL_VERSIONS,
-        STANDARD_PREDICATE;
+        STANDARD_PREDICATE
     }
 
-    private VersionPredicateType versionPredicateType;
+    private VersionPredicateType versionPredicateType = VersionPredicateType.NONE;
+
+    private ComparisonOperatorPredicate predicate;
 
     public VersionPredicateType getVersionPredicateType() {
         return versionPredicateType;
@@ -40,20 +51,40 @@ public class ContainmentVersionExpression extends AbstractContainmentExpression 
 
     public void setVersionPredicateType(VersionPredicateType versionPredicateType) {
         this.versionPredicateType = versionPredicateType;
+        if (versionPredicateType != VersionPredicateType.STANDARD_PREDICATE) {
+            this.predicate = null;
+        }
+    }
 
-        if (versionPredicateType.equals(VersionPredicateType.ALL_VERSIONS)
-                || versionPredicateType.equals(VersionPredicateType.LATEST_VERSION)) {
-            setPredicates(null);
+    @JsonSerialize(using = VersionPredicateSerializer.class)
+    public ComparisonOperatorPredicate getPredicate() {
+        return predicate;
+    }
+
+    @JsonDeserialize(using = VersionPredicateDeserializer.class)
+    public void setPredicate(ComparisonOperatorPredicate predicate) {
+        this.predicate = predicate;
+
+        if (predicate != null) {
+            versionPredicateType = VersionPredicateType.STANDARD_PREDICATE;
+        } else if (versionPredicateType == VersionPredicateType.STANDARD_PREDICATE) {
+            versionPredicateType = VersionPredicateType.NONE;
+        }
+    }
+
+    @JsonIgnore
+    @Override
+    public List<AndOperatorPredicate> getPredicates() {
+        if (predicate == null) {
+            return null;
+        } else {
+            return List.of(new AndOperatorPredicate(List.of(predicate)));
         }
     }
 
     @Override
-    public void setPredicates(List<AndOperatorPredicate> predicates) {
-        super.setPredicates(predicates);
-
-        if (predicates != null) {
-            versionPredicateType = VersionPredicateType.STANDARD_PREDICATE;
-        }
+    public boolean hasPredicates() {
+        return predicate != null;
     }
 
     @Override
@@ -62,18 +93,17 @@ public class ContainmentVersionExpression extends AbstractContainmentExpression 
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ContainmentVersionExpression that = (ContainmentVersionExpression) o;
-        return versionPredicateType == that.versionPredicateType;
+        return versionPredicateType == that.versionPredicateType && Objects.equals(predicate, that.predicate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), versionPredicateType);
+        return Objects.hash(super.hashCode(), versionPredicateType, predicate);
     }
 
     @Override
     public String toString() {
-        return "ContainmentVersionExpression{" + "versionPredicateType="
-                + versionPredicateType + "} "
-                + super.toString();
+        return "ContainmentVersionExpression{versionPredicateType=%s, predicate=%s, %s}"
+                .formatted(versionPredicateType, predicate, super.toString());
     }
 }

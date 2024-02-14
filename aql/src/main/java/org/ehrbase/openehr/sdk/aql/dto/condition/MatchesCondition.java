@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.openehr.sdk.aql.dto.operand.MatchesOperand;
 
-public class MatchesCondition implements WhereCondition {
+public final class MatchesCondition implements WhereCondition {
 
     private IdentifiedPath statement;
     private List<MatchesOperand> values;
