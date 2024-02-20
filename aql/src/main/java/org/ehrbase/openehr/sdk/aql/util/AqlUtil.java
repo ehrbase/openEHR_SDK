@@ -33,6 +33,8 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
+import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
+import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
 
@@ -88,24 +90,32 @@ public final class AqlUtil {
 
     public static Map<String, AbstractContainmentExpression> containmentExpressionsByIdentifier(
             Containment containment) {
-        return streamContainmentExpressions(containment)
+        return streamContainments(containment)
+                .filter(e1 -> e1.getIdentifier() != null)
                 .collect(Collectors.toMap(AbstractContainmentExpression::getIdentifier, e -> e));
     }
 
-    private static Stream<AbstractContainmentExpression> streamContainmentExpressions(Containment containment) {
+    public static Stream<AbstractContainmentExpression> streamContainments(Containment containment) {
         if (containment == null) {
             return Stream.empty();
         } else if (containment instanceof AbstractContainmentExpression containmentExp) {
-            return Stream.concat(
-                    Stream.of(containmentExp).filter(e -> e.getIdentifier() != null),
-                    streamContainmentExpressions(containmentExp.getContains()));
+            return containmentExp.getContains() == null
+                    ? Stream.of(containmentExp)
+                    : Stream.concat(Stream.of(containmentExp), streamContainments(containmentExp.getContains()));
         } else if (containment instanceof ContainmentSetOperator containmentSetOp) {
-            return containmentSetOp.getValues().stream().flatMap(AqlUtil::streamContainmentExpressions);
+            return containmentSetOp.getValues().stream().flatMap(AqlUtil::streamContainments);
         } else if (containment instanceof ContainmentNotOperator containmentNotOp) {
-            return streamContainmentExpressions(containmentNotOp.getContainmentExpression());
+            return streamContainments(containmentNotOp.getContainmentExpression());
         } else {
             throw new IllegalArgumentException(
                     "Unsupported class %s".formatted(containment.getClass().getSimpleName()));
         }
+    }
+
+    public static Stream<ComparisonOperatorPredicate> streamPredicates(List<AndOperatorPredicate> condition) {
+        if (condition == null) {
+            return Stream.empty();
+        }
+        return condition.stream().map(AndOperatorPredicate::getOperands).flatMap(List::stream);
     }
 }
