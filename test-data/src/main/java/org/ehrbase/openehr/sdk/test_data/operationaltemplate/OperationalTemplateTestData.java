@@ -100,8 +100,10 @@ public enum OperationalTemplateTestData {
             "Template with an used archetypeslot of type ITEM",
             "used-item-archetypeslot.opt",
             "used-item-archetypeslot"),
-    AQL_EXAMPLE("AQL_EXAMPLE", "aql_example.opt", "aql_example");
-    //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
+    AQL_EXAMPLE("AQL_EXAMPLE", "aql_example.opt", "aql_example"),
+    //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
+    TEST_EVENT("TEST_EVENT", "test_event.opt", "test_event"),
+    ;
 
     public static final String OPERATIONALTEMPLATE_PATH_SEGMENT = "operationaltemplate";
     private final String filename;

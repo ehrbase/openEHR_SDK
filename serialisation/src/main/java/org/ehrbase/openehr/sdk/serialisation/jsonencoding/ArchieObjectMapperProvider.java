@@ -22,7 +22,13 @@ import com.nedap.archie.json.JacksonUtil;
 
 public final class ArchieObjectMapperProvider {
 
-    private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER;
+
+    static {
+        //        ArchieJacksonConfiguration config = ArchieJacksonConfiguration.createStandardsCompliant();
+        //        config.setFailOnUnknownProperties(true);
+        OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+    }
 
     private ArchieObjectMapperProvider() {
         // NOOP
