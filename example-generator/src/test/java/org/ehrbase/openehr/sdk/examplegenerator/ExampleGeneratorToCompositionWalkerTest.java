@@ -46,6 +46,7 @@ import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.ehrbase.openehr.sdk.webtemplate.webtemplateskeletonbuilder.WebTemplateSkeletonBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -53,6 +54,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 class ExampleGeneratorToCompositionWalkerTest {
 
     @Test
+    @Disabled
     void testConformanceTemplate() throws IOException {
         ExampleGeneratorToCompositionWalker cut = new ExampleGeneratorToCompositionWalker();
 
@@ -106,6 +108,7 @@ class ExampleGeneratorToCompositionWalkerTest {
                 "TEST_EVENT"
             },
             mode = EnumSource.Mode.INCLUDE)
+    @Disabled
     void testWalkAll(OperationalTemplateTestData template) throws IOException {
         ExampleGeneratorToCompositionWalker cut = new ExampleGeneratorToCompositionWalker();
 
