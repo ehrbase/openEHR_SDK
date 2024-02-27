@@ -34,8 +34,8 @@ jobs:
           java-version: '17'
           cache: 'maven'
           server-id: ossrh
-          server-username: S01_OSSRH_USERNAME
-          server-password: S01_OSSRH_TOKEN
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
