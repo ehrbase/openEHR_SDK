@@ -436,7 +436,7 @@ public class OPTParser {
                 if (cobject instanceof CPRIMITIVEOBJECT) {
                     inputMap.put(
                             cattribute.getRmAttributeName(), inputHandler.extractInput((CPRIMITIVEOBJECT) cobject));
-                } else {//XXX category[at0001]
+                } else { // XXX category[at0001]
                     List<WebTemplateNode> childNode =
                             parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
                     if (childNode != null) {
