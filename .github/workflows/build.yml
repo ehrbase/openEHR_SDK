@@ -34,16 +34,16 @@ jobs:
           java-version: '17'
           cache: 'maven'
           server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_TOKEN
+          server-username: S01_OSSRH_USERNAME
+          server-password: S01_OSSRH_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
       - name: Publish to Maven Central
         run: mvn -B deploy -P release -DskipTests
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_USERNAME: ${{ secrets.S01_OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.S01_OSSRH_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: 'Trigger ehrbase:next build'
