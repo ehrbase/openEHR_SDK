@@ -81,31 +81,30 @@ class ExampleGeneratorToCompositionWalkerTest {
     @EnumSource(
             value = OperationalTemplateTestData.class,
             names = {
-                //                // unknown constraint name DV_DATE_TIME
-                //                "RIPPLE_CONFORMANCE_TEST",
-                //                // NPE NodeId.<init>
-                //                "BLOOD_PRESSURE_SIMPLE",
-                //                // DV_CODED_TEXT|name missing
-                //                "WORD_WITH_AND",
-                //                // deserialization: could no consume Parts
-                //                "IDCR_PROBLEM_LIST",
-                //                // deserialization: could no consume Parts
-                //                "EPISODE_OF_CARE",
-                //                // deserialization: could no consume Parts
-                //                "MINIMAL_EVALUATION",
-                //                // deserialization: could no consume Parts
-                //                "MINIMAL_INSTRUCTION",
-                //                // deserialization: could no consume Parts
-                //                "MINIMAL_ACTION_2",
-                //                // deserialization: could no consume Parts
-                //                "MINIMAL_ACTION",
-                //                // serialization: Unknown Ordinal with code kg
-                //                "NESTED",
-                //                // deserialization: could no consume Parts
-                //                "SECTION_CARDINALITY",
-                "TEST_EVENT"
+                // unknown constraint name DV_DATE_TIME
+                "RIPPLE_CONFORMANCE_TEST",
+                // NPE NodeId.<init>
+                "BLOOD_PRESSURE_SIMPLE",
+                // DV_CODED_TEXT|name missing
+                "WORD_WITH_AND",
+                // deserialization: could no consume Parts
+                "IDCR_PROBLEM_LIST",
+                // deserialization: could no consume Parts
+                "EPISODE_OF_CARE",
+                // deserialization: could no consume Parts
+                "MINIMAL_EVALUATION",
+                // deserialization: could no consume Parts
+                "MINIMAL_INSTRUCTION",
+                // deserialization: could no consume Parts
+                "MINIMAL_ACTION_2",
+                // deserialization: could no consume Parts
+                "MINIMAL_ACTION",
+                // serialization: Unknown Ordinal with code kg
+                "NESTED",
+                // deserialization: could no consume Parts
+                "SECTION_CARDINALITY"
             },
-            mode = EnumSource.Mode.INCLUDE)
+            mode = EnumSource.Mode.EXCLUDE)
     void testWalkAll(OperationalTemplateTestData template) throws IOException {
         ExampleGeneratorToCompositionWalker cut = new ExampleGeneratorToCompositionWalker();
 

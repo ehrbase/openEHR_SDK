@@ -94,8 +94,6 @@ public class CanonicalJson implements RMDataFormat {
                 .typeIdVisibility(true)
                 .inclusion(JsonTypeInfo.As.PROPERTY);
         MARSHAL_OM.setDefaultTyping(typeResolverBuilder);
-
-        // MARSHAL_OM.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     private static class ExcludeEmptyCollectionsFilter {
