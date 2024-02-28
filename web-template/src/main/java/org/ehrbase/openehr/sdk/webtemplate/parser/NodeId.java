@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
-public final class NodeId implements Serializable {
+public class NodeId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
