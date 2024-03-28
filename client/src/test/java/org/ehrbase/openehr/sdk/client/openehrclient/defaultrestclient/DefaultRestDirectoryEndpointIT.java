@@ -22,39 +22,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.nedap.archie.rm.composition.Composition;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.UUID;
-import org.ehrbase.openehr.sdk.client.Integration;
 import org.ehrbase.openehr.sdk.client.openehrclient.FolderDAO;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.TestData;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.openehr.sdk.serialisation.dto.GeneratedDtoToRmConverter;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-@Category(Integration.class)
-public class DefaultRestDirectoryEndpointIT {
-    private static OpenEhrClient openEhrClient;
+public class DefaultRestDirectoryEndpointIT extends SdkClientTestIT {
+
     private static DefaultRestClient defaultRestClient;
-    private UUID ehr;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-        defaultRestClient = DefaultRestClientTestHelper.setupRestClientWithDefaultTemplateProvider();
-    }
 
-    @After
-    public void tearDown() {
-        // delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehr);
+        SdkClientTestIT.setup();
+        defaultRestClient = SdkClientTestIT.setupRestClientWithDefaultTemplateProvider();
     }
 
     @Test
-    public void testSetName() {
+    void testSetName() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
         FolderDAO root = openEhrClient.folder(ehr, "");
         assertThat(root.getName()).isEqualTo("root");
@@ -63,7 +51,7 @@ public class DefaultRestDirectoryEndpointIT {
     }
 
     @Test
-    public void testGetSubFolder() {
+    void testGetSubFolder() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
         FolderDAO root = openEhrClient.folder(ehr, "");
         FolderDAO visit = root.getSubFolder("case1/visit1");
@@ -71,7 +59,7 @@ public class DefaultRestDirectoryEndpointIT {
     }
 
     @Test
-    public void testSaveEntity() {
+    void testSaveEntity() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
         FolderDAO root = openEhrClient.folder(ehr, "");
@@ -98,7 +86,7 @@ public class DefaultRestDirectoryEndpointIT {
     }
 
     @Test
-    public void testSaveRaw() {
+    void testSaveRaw() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
         FolderDAO root = openEhrClient.folder(ehr, "");
@@ -116,7 +104,7 @@ public class DefaultRestDirectoryEndpointIT {
     }
 
     @Test
-    public void testListSubFolderNames() {
+    void testListSubFolderNames() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
         FolderDAO root = openEhrClient.folder(ehr, "");

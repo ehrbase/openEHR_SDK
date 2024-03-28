@@ -1,0 +1,56 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build with Maven
+        run: mvn -B verify
+
+      - name: Setup Maven Central
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_TOKEN
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Publish to Maven Central
+        run: mvn -B deploy -P release -DskipTests
+        env:
+          OSSRH_USERNAME: ${{ secrets.S01_OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.S01_OSSRH_TOKEN }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: 'Trigger ehrbase:next build'
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          curl \
+            -X POST \
+            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/ehrbase/ehrbase/dispatches \
+            -d '{"event_type":"build-ehrbase-next"}'

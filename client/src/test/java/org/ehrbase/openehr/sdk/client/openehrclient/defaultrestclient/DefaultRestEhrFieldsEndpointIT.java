@@ -28,44 +28,24 @@ import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
-import org.ehrbase.openehr.sdk.client.Integration;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-@Category(Integration.class)
-public class DefaultRestEhrFieldsEndpointIT {
-    private static OpenEhrClient openEhrClient;
-    private UUID ehr;
-
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
-
-    @After
-    public void tearDown() {
-        // delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehr);
-    }
+class DefaultRestEhrFieldsEndpointIT extends SdkClientTestIT {
 
     @Test
-    public void testCreateEhr() {
+    void testCreateEhr() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         assertThat(ehr).isNotNull();
     }
 
     @Test
-    public void testGetEhrStatus() {
+    void testGetEhrStatus() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         Optional<EhrStatus> ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehr);
@@ -73,7 +53,7 @@ public class DefaultRestEhrFieldsEndpointIT {
     }
 
     @Test
-    public void testCreateEhrWithStatus() {
+    void testCreateEhrWithStatus() {
         EhrStatus ehrStatus = new EhrStatus();
         ehrStatus.setQueryable(false);
         ehrStatus.setModifiable(false);
@@ -91,7 +71,7 @@ public class DefaultRestEhrFieldsEndpointIT {
     }
 
     @Test
-    public void testUpdateEhrStatus() throws IOException {
+    void testUpdateEhrStatus() throws IOException {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 

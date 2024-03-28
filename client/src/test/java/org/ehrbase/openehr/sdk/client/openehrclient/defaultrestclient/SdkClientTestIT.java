@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2024 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -19,35 +19,80 @@ package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.UUID;
+import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.openehr.sdk.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.serialisation.dto.DefaultValuesProvider;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
 
-public class DefaultRestClientTestHelper {
+/**
+ * @author Stefan Spiska
+ */
+public class SdkClientTestIT {
 
-    private static final String OPEN_EHR_URL = "http://localhost:8080/ehrbase/";
+    protected static OpenEhrClient openEhrClient;
+    protected UUID ehr;
+
+    protected static GenericContainer postgres;
+
+    protected static GenericContainer ehrbase;
+
+    static {
+        try (Network network = Network.newNetwork()) {
+
+            postgres = new EHRbasePostgresContainer(network);
+            postgres.start();
+
+            ehrbase = new EHRbaseContainer(network, List.of(postgres));
+            ehrbase.start();
+        }
+    }
+
+    protected static URI ehrBaseAPIEndpoint() {
+        return URI.create(
+                "http://%s:%d/ehrbase/".formatted(ehrbase.getHost(), ehrbase.getMappedPort(EHRbaseContainer.PORT)));
+    }
+
+    @BeforeAll
+    public static void setup() throws URISyntaxException {
+        openEhrClient = setupDefaultRestClient();
+    }
 
     public static DefaultRestClient setupDefaultRestClient() throws URISyntaxException {
         TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
         DefaultRestClient client =
-                new DefaultRestClient(new OpenEhrClientConfig(new URI(OPEN_EHR_URL)), templateProvider);
+                new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()), templateProvider);
         templateProvider.listTemplateIds().stream()
                 .forEach(t -> client.templateEndpoint().ensureExistence(t));
         return client;
     }
 
     public static DefaultRestClient setupRestClientWithDefaultTemplateProvider() throws URISyntaxException {
-        return new DefaultRestClient(new OpenEhrClientConfig(new URI(OPEN_EHR_URL)));
+        return new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()));
     }
 
     public static DefaultRestClient setupDefaultRestClientWithDefaultProvider(
-            DefaultValuesProvider defaultValuesProvider) throws URISyntaxException {
+            DefaultValuesProvider defaultValuesProvider) {
         TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
-        OpenEhrClientConfig config = new OpenEhrClientConfig(new URI(OPEN_EHR_URL));
+        OpenEhrClientConfig config = new OpenEhrClientConfig(ehrBaseAPIEndpoint());
         config.setDefaultValuesProvider(defaultValuesProvider);
         DefaultRestClient client = new DefaultRestClient(config, templateProvider);
         templateProvider.listTemplateIds().stream()
                 .forEach(t -> client.templateEndpoint().ensureExistence(t));
         return client;
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // delete the created EHR using the admin endpoint
+        if (ehr != null) {
+            openEhrClient.adminEhrEndpoint().delete(ehr);
+            ehr = null;
+        }
     }
 }

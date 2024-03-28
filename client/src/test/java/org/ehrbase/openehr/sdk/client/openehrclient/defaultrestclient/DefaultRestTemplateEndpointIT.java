@@ -18,8 +18,8 @@
 package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -31,13 +31,13 @@ import org.apache.xmlbeans.XmlException;
 import org.ehrbase.openehr.sdk.response.dto.TemplatesResponseData;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.TemplateMetaDataDto;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-public class DefaultRestTemplateEndpointIT {
+public class DefaultRestTemplateEndpointIT extends SdkClientTestIT {
 
     private static DefaultRestClient restClient;
     private static DefaultRestClient restClientWithDefaultTemplateProvider;
@@ -46,21 +46,20 @@ public class DefaultRestTemplateEndpointIT {
 
     private String templateId = null; // global used for teardown
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws URISyntaxException {
-        restClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-        restClientWithDefaultTemplateProvider =
-                DefaultRestClientTestHelper.setupRestClientWithDefaultTemplateProvider();
+        restClient = SdkClientTestIT.setupDefaultRestClient();
+        restClientWithDefaultTemplateProvider = SdkClientTestIT.setupRestClientWithDefaultTemplateProvider();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         // delete template with random version id (mostly)
         restClient.adminTemplateEndpoint().delete(templateId);
     }
 
     @Test
-    public void testFindTemplate() {
+    void testFindTemplate() {
         Optional<OPERATIONALTEMPLATE> operationalTemplate =
                 restClient.templateEndpoint().findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "99999"));
 
@@ -73,7 +72,7 @@ public class DefaultRestTemplateEndpointIT {
     }
 
     @Test
-    public void testFindTemplateWithDefaultTemplateProvider() {
+    void testFindTemplateWithDefaultTemplateProvider() {
         Optional<OPERATIONALTEMPLATE> operationalTemplate = restClientWithDefaultTemplateProvider
                 .templateEndpoint()
                 .findTemplate(String.format("%s%s", TEMPLATE_NAME_PREFIX, "3456245"));
@@ -87,7 +86,7 @@ public class DefaultRestTemplateEndpointIT {
     }
 
     @Test
-    public void testCreateTemplate() throws IOException, XmlException {
+    void testCreateTemplate() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
@@ -102,7 +101,7 @@ public class DefaultRestTemplateEndpointIT {
     }
 
     @Test
-    public void testCreateTemplateWithDefaultTemplateProvider() throws IOException, XmlException {
+    void testCreateTemplateWithDefaultTemplateProvider() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
@@ -117,7 +116,7 @@ public class DefaultRestTemplateEndpointIT {
     }
 
     @Test
-    public void testFindAllTemplates() throws IOException, XmlException {
+    void testFindAllTemplates() throws IOException, XmlException {
 
         templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
         String savedTemplateId =
@@ -136,7 +135,7 @@ public class DefaultRestTemplateEndpointIT {
     }
 
     @Test
-    public void testFindAllTemplatesWithDefaultTemplateProvider() throws IOException, XmlException {
+    void testFindAllTemplatesWithDefaultTemplateProvider() throws IOException, XmlException {
         templateId = String.format("%s%s", TEMPLATE_NAME_PREFIX, RandomStringUtils.randomNumeric(10));
         String savedTemplateId = uploadTemplate(
                 restClientWithDefaultTemplateProvider, OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE, templateId);

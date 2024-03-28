@@ -19,7 +19,7 @@ package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
@@ -39,9 +39,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.groups.Tuple;
-import org.ehrbase.openehr.sdk.client.Integration;
 import org.ehrbase.openehr.sdk.client.openehrclient.CompositionEndpoint;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.Language;
 import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.ParticipationMode;
@@ -78,32 +76,14 @@ import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonica
 import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.ehrbase.openehr.sdk.util.exception.OptimisticLockException;
 import org.ehrbase.openehr.sdk.util.exception.WrongStatusCodeException;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 
-@Category(Integration.class)
-public class DefaultRestCompositionEndpointIT {
-
-    private static OpenEhrClient openEhrClient;
-    private UUID ehr;
-
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
-
-    @After
-    public void tearDown() {
-        // delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehr);
-    }
+class DefaultRestCompositionEndpointIT extends SdkClientTestIT {
 
     @Test
-    public void testSaveCompositionEntity() {
+    void testSaveCompositionEntity() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
@@ -134,7 +114,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testSaveCompositionEntityNative() {
+    void testSaveCompositionEntityNative() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
@@ -164,7 +144,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testSaveCompositionEntityProxy() {
+    void testSaveCompositionEntityProxy() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
@@ -213,7 +193,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testSaveCompositionEntitySpringCglibProxy() {
+    void testSaveCompositionEntitySpringCglibProxy() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
@@ -261,7 +241,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testSaveCompositionEntityWithAny() {
+    void testSaveCompositionEntityWithAny() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         GECCOSerologischerBefundComposition composition = TestData.buildGeccoSerologischerBefundComposition();
@@ -300,7 +280,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testSaveCompositionEntityWithAnyProxy() {
+    void testSaveCompositionEntityWithAnyProxy() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         GECCOSerologischerBefundComposition composition1 = new GECCOSerologischerBefundComposition();
@@ -389,9 +369,9 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testSaveCompositionWithDefaultEntity() throws URISyntaxException {
+    void testSaveCompositionWithDefaultEntity() throws URISyntaxException {
 
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClientWithDefaultProvider(o -> {
+        openEhrClient = SdkClientTestIT.setupDefaultRestClientWithDefaultProvider(o -> {
             DefaultValues defaultValues = new DefaultValues();
             defaultValues.addDefaultValue(
                     DefaultValuePath.END_TIME, OffsetDateTime.of(2019, 05, 03, 22, 00, 00, 00, ZoneOffset.UTC));
@@ -427,7 +407,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testFind() {
+    void testFind() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition bloodPressureSimpleDeV0 =
@@ -464,7 +444,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testEhrbaseMultiOccurrenceDeV1() {
+    void testEhrbaseMultiOccurrenceDeV1() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseMultiOccurrenceDeV1Composition bloodPressureSimpleDeV0 = TestData.buildEhrbaseMultiOccurrenceDeV1();
@@ -499,7 +479,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testEpisodeOfCare() {
+    void testEpisodeOfCare() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition bloodPressureSimpleDeV0 = TestData.buildEpisodeOfCareComposition();
@@ -536,7 +516,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testVirologischerBefund() throws IOException {
+    void testVirologischerBefund() throws IOException {
         Composition composition = new CanonicalJson()
                 .unmarshal(
                         IOUtils.toString(
@@ -577,7 +557,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testDeleteCompositionValid() {
+    void testDeleteCompositionValid() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
 
@@ -599,7 +579,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testDeleteCompositionNullPrecedingVersionUid() {
+    void testDeleteCompositionNullPrecedingVersionUid() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
 
@@ -607,7 +587,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testDeleteCompositionUnknownPrecedingVersionUid() {
+    void testDeleteCompositionUnknownPrecedingVersionUid() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
 
@@ -617,7 +597,7 @@ public class DefaultRestCompositionEndpointIT {
     }
 
     @Test
-    public void testDeleteCompositionInvalidPrecedingVersionUid() {
+    void testDeleteCompositionInvalidPrecedingVersionUid() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
         CompositionEndpoint compositionEndpoint = openEhrClient.compositionEndpoint(ehr);
 

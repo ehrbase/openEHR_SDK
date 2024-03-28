@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.UID;
-import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
@@ -30,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.assertj.core.groups.Tuple;
-import org.ehrbase.openehr.sdk.client.Integration;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.generator.commons.aql.condition.Condition;
 import org.ehrbase.openehr.sdk.generator.commons.aql.field.EhrFields;
 import org.ehrbase.openehr.sdk.generator.commons.aql.orderby.OrderByExpression;
@@ -51,30 +48,12 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpress
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservationContainment;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-@Category(Integration.class)
-public class DefaultRestAqlEndpointTestIT {
-    private static OpenEhrClient openEhrClient;
-
-    private UUID ehr;
-
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
-
-    @After
-    public void tearDown() {
-        // delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehr);
-    }
+class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
 
     @Test
-    public void testExecute() {
+    void testExecute() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -92,7 +71,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteProxy() {
+    void testExecuteProxy() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -112,7 +91,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteValue() {
+    void testExecuteValue() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -141,7 +120,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteCustomConverters() {
+    void testExecuteCustomConverters() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -175,7 +154,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteEntityQuery() {
+    void testExecuteEntityQuery() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -215,7 +194,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteEntityQueryWhere() {
+    void testExecuteEntityQueryWhere() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -293,7 +272,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteEntityQueryOrderBY() {
+    void testExecuteEntityQueryOrderBY() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -391,7 +370,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteEntityTOP() {
+    void testExecuteEntityTOP() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -480,7 +459,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testExecuteEntityQueryWithList() {
+    void testExecuteEntityQueryWithList() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
@@ -508,7 +487,7 @@ public class DefaultRestAqlEndpointTestIT {
     }
 
     @Test
-    public void testQueryCount() {
+    void testQueryCount() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
 

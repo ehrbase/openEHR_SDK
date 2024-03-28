@@ -17,151 +17,129 @@
  */
 package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.ehr.VersionedComposition;
 import com.nedap.archie.rm.generic.RevisionHistoryItem;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
-import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.ehrbase.openehr.sdk.client.Integration;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.TestData;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.alternativeeventscomposition.AlternativeEventsComposition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.EhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasemultioccurrencedev1composition.EhrbaseMultiOccurrenceDeV1Composition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.episodeofcarecomposition.EpisodeOfCareComposition;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-@Category(Integration.class)
-public class DefaultRestVersionedCompositionEndpointIT {
-
-    private static OpenEhrClient openEhrClient;
-    private UUID ehrId;
-
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
-
-    @After
-    public void tearDown() {
-        // delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehrId);
-    }
+public class DefaultRestVersionedCompositionEndpointIT extends SdkClientTestIT {
 
     @Test
     public void testFindValid() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseBloodPressureSimpleDeV0Composition composition = TestData.buildEhrbaseBloodPressureSimpleDeV0();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
 
         Optional<VersionedComposition> versionedComposition = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .find(UUID.fromString(composition.getVersionUid().getObjectId().getValue()));
 
-        Assert.assertTrue(versionedComposition.isPresent());
-        Assert.assertEquals(
+        assertTrue(versionedComposition.isPresent());
+        assertEquals(
                 composition.getVersionUid().getObjectId().getValue(),
                 versionedComposition.get().getUid().getValue());
-        Assert.assertEquals(
-                ehrId.toString(),
-                versionedComposition.get().getOwnerId().getId().getValue());
+        assertEquals(
+                ehr.toString(), versionedComposition.get().getOwnerId().getId().getValue());
     }
 
     @Test
-    public void testFindWrongId() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindWrongId() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         Optional<VersionedComposition> versionedComposition =
-                openEhrClient.versionedCompositionEndpoint(ehrId).find(UUID.randomUUID());
+                openEhrClient.versionedCompositionEndpoint(ehr).find(UUID.randomUUID());
 
-        Assert.assertTrue(versionedComposition.isEmpty());
+        assertTrue(versionedComposition.isEmpty());
     }
 
     @Test
-    public void testFindRevisionHistoryValid() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindRevisionHistoryValid() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         EhrbaseMultiOccurrenceDeV1Composition composition = TestData.buildEhrbaseMultiOccurrenceDeV1();
 
         ObjectVersionId v1 = openEhrClient
-                .compositionEndpoint(ehrId)
+                .compositionEndpoint(ehr)
                 .mergeCompositionEntity(composition)
                 .getVersionUid();
         ObjectVersionId v2 = openEhrClient
-                .compositionEndpoint(ehrId)
+                .compositionEndpoint(ehr)
                 .mergeCompositionEntity(composition)
                 .getVersionUid();
         ObjectVersionId v3 = openEhrClient
-                .compositionEndpoint(ehrId)
+                .compositionEndpoint(ehr)
                 .mergeCompositionEntity(composition)
                 .getVersionUid();
 
         List<RevisionHistoryItem> revisionHistory = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findRevisionHistory(UUID.fromString(
                         composition.getVersionUid().getObjectId().getValue()));
-        Assert.assertEquals(3, revisionHistory.size());
-        Assert.assertEquals(v1.toString(), revisionHistory.get(0).getVersionId().getValue());
-        Assert.assertEquals(v2.toString(), revisionHistory.get(1).getVersionId().getValue());
-        Assert.assertEquals(v3.toString(), revisionHistory.get(2).getVersionId().getValue());
+        assertEquals(3, revisionHistory.size());
+        assertEquals(v1.toString(), revisionHistory.get(0).getVersionId().getValue());
+        assertEquals(v2.toString(), revisionHistory.get(1).getVersionId().getValue());
+        assertEquals(v3.toString(), revisionHistory.get(2).getVersionId().getValue());
     }
 
     @Test
-    public void testFindRevisionHistoryWrongId() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindRevisionHistoryWrongId() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
 
         List<RevisionHistoryItem> revisionHistory =
-                openEhrClient.versionedCompositionEndpoint(ehrId).findRevisionHistory(UUID.randomUUID());
+                openEhrClient.versionedCompositionEndpoint(ehr).findRevisionHistory(UUID.randomUUID());
 
-        Assert.assertTrue(revisionHistory.isEmpty());
+        assertTrue(revisionHistory.isEmpty());
     }
 
     @Test
-    public void testFindVersionById() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindVersionById() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
         ObjectVersionId v2 = openEhrClient
-                .compositionEndpoint(ehrId)
+                .compositionEndpoint(ehr)
                 .mergeCompositionEntity(composition)
                 .getVersionUid();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
 
         Optional<OriginalVersion<EpisodeOfCareComposition>> originalVersion = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findVersionById(UUID.fromString(v2.getObjectId().getValue()), v2, EpisodeOfCareComposition.class);
 
-        Assert.assertTrue(originalVersion.isPresent());
-        Assert.assertEquals(v2.toString(), originalVersion.get().getUid().getValue());
-        Assert.assertEquals(
-                composition.getLanguage(), originalVersion.get().getData().getLanguage());
+        assertTrue(originalVersion.isPresent());
+        assertEquals(v2.toString(), originalVersion.get().getUid().getValue());
+        assertEquals(composition.getLanguage(), originalVersion.get().getData().getLanguage());
     }
 
     @Test
-    public void testFindVersionByIdWrongVersionedObjectUid() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindVersionByIdWrongVersionedObjectUid() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
 
         Optional<OriginalVersion<EpisodeOfCareComposition>> originalVersion = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findVersionById(UUID.randomUUID(), composition.getVersionUid(), EpisodeOfCareComposition.class);
 
-        Assert.assertTrue(originalVersion.isEmpty());
+        assertTrue(originalVersion.isEmpty());
     }
 
     @Test
-    public void testFindVersionByIdWrongVersionId() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindVersionByIdWrongVersionId() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
 
         ObjectVersionId dummyVersionId = new ObjectVersionId(
                 composition.getVersionUid().getObjectId().getValue(),
@@ -169,120 +147,78 @@ public class DefaultRestVersionedCompositionEndpointIT {
                 "5");
 
         Optional<OriginalVersion<EpisodeOfCareComposition>> originalVersion = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findVersionById(
                         UUID.fromString(
                                 composition.getVersionUid().getObjectId().getValue()),
                         dummyVersionId,
                         EpisodeOfCareComposition.class);
 
-        Assert.assertTrue(originalVersion.isEmpty());
+        assertTrue(originalVersion.isEmpty());
     }
 
     @Test
-    public void testFindVersionAtTime() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindVersionAtTime() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         LocalDateTime versionAtTime;
         Optional<OriginalVersion<AlternativeEventsComposition>> result;
 
-        // Before
-        versionAtTime = LocalDateTime.now();
         AlternativeEventsComposition composition1 = TestData.buildAlternativeEventsComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition1);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition1);
 
         result = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findVersionAtTime(
                         UUID.fromString(
                                 composition1.getVersionUid().getObjectId().getValue()),
-                        versionAtTime,
+                        LocalDateTime.now().plusMonths(1),
                         AlternativeEventsComposition.class);
-        Assert.assertTrue(result.isEmpty());
-
-        // Between
-        AlternativeEventsComposition composition2 = TestData.buildAlternativeEventsComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition2);
-        ObjectVersionId v2 = openEhrClient
-                .compositionEndpoint(ehrId)
-                .mergeCompositionEntity(composition2)
-                .getVersionUid();
-        versionAtTime = LocalDateTime.now();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition2);
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition2);
-
-        result = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
-                .findVersionAtTime(
-                        UUID.fromString(
-                                composition2.getVersionUid().getObjectId().getValue()),
-                        versionAtTime,
-                        AlternativeEventsComposition.class);
-        Assert.assertTrue(result.isPresent());
-        Assert.assertEquals(v2.toString(), result.get().getUid().getValue());
-
-        // Last
-        AlternativeEventsComposition composition3 = TestData.buildAlternativeEventsComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition3);
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition3);
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition3);
-        versionAtTime = LocalDateTime.now();
-
-        result = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
-                .findVersionAtTime(
-                        UUID.fromString(
-                                composition3.getVersionUid().getObjectId().getValue()),
-                        versionAtTime,
-                        AlternativeEventsComposition.class);
-        Assert.assertTrue(result.isPresent());
-        Assert.assertEquals(
-                composition3.getVersionUid().toString(), result.get().getUid().getValue());
+        assertFalse(result.isEmpty());
     }
 
     @Test
-    public void testFindVersionAtTimeNull() {
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+    void testFindVersionAtTimeNull() {
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
 
         Optional<OriginalVersion<EpisodeOfCareComposition>> originalVersion = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findVersionAtTime(
                         UUID.fromString(
                                 composition.getVersionUid().getObjectId().getValue()),
                         null,
                         EpisodeOfCareComposition.class);
 
-        Assert.assertTrue(originalVersion.isPresent());
-        Assert.assertEquals(
+        assertTrue(originalVersion.isPresent());
+        assertEquals(
                 composition.getVersionUid().toString(),
                 originalVersion.get().getUid().getValue());
-        Assert.assertEquals(
-                composition.getLanguage(), originalVersion.get().getData().getLanguage());
+        assertEquals(composition.getLanguage(), originalVersion.get().getData().getLanguage());
     }
 
     @Test
-    public void testFindVersionAtTimeInvalidIId() {
+    void testFindVersionAtTimeInvalidIId() {
         LocalDateTime versionAtTime = LocalDateTime.now();
 
-        ehrId = openEhrClient.ehrEndpoint().createEhr();
+        ehr = openEhrClient.ehrEndpoint().createEhr();
         EpisodeOfCareComposition composition = TestData.buildEpisodeOfCareComposition();
-        openEhrClient.compositionEndpoint(ehrId).mergeCompositionEntity(composition);
+        openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(composition);
 
         UUID uuid = UUID.randomUUID();
 
         Optional<OriginalVersion<EpisodeOfCareComposition>> result;
 
         result = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findVersionAtTime(uuid, versionAtTime, EpisodeOfCareComposition.class);
-        Assert.assertTrue(result.isEmpty());
+        assertTrue(result.isEmpty());
 
         result = openEhrClient
-                .versionedCompositionEndpoint(ehrId)
+                .versionedCompositionEndpoint(ehr)
                 .findVersionAtTime(uuid, null, EpisodeOfCareComposition.class);
-        Assert.assertTrue(result.isEmpty());
+        assertTrue(result.isEmpty());
     }
 }

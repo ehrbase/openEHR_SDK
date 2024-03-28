@@ -64,37 +64,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
-        <skipIntegrationTests>true</skipIntegrationTests>
-        <include.tests>**/*Test.java</include.tests>
-        <test.profile>unit</test.profile>
         <license-header.dir>./</license-header.dir>
     </properties>
 
     <profiles>
-        <!-- RUN UNIT TESTS ONLY -->
-        <profile>
-            <id>fast</id>
-            <properties>
-                <include.tests>**/*Test.java</include.tests>
-                <test.profile>unit</test.profile>
-            </properties>
-        </profile>
-        <!-- RUN INTEGRATION TESTS ONLY -->
-        <profile>
-            <id>slow</id>
-            <properties>
-                <include.tests>**/*IT.java</include.tests>
-                <test.profile>integration</test.profile>
-            </properties>
-        </profile>
-        <!-- RUN ALL JAVA TESTS (UNIT & INTEGRATION) -->
-        <profile>
-            <id>full</id>
-            <properties>
-                <include.tests>**/*</include.tests>
-                <test.profile>all</test.profile>
-            </properties>
-        </profile>
         <profile>
             <id>release</id>
             <build>
@@ -209,37 +182,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests>
                     <!-- SETS THE VM ARGUMENT LINE USED WHEN UNIT TESTS ARE RUN. -->
                     <argLine>${surefireArgLine}</argLine>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>${test.profile} tests</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <skipTests>false</skipTests>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <skipITs>${skipIntegrationTests}</skipITs>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>integration-test</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
                         <configuration>
                             <!-- SETS THE VM ARGUMENT LINE USED WHEN INTEGRATION TESTS ARE RUN. -->
                             <argLine>${failsafeArgLine}</argLine>
