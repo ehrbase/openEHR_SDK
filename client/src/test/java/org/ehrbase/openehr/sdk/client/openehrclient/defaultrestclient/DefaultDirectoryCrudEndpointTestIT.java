@@ -22,40 +22,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
-import java.net.URISyntaxException;
 import java.util.Optional;
-import java.util.UUID;
-import org.ehrbase.openehr.sdk.client.Integration;
 import org.ehrbase.openehr.sdk.client.openehrclient.DirectoryCrudEndpoint;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Stefan Spiska
  */
-@Category(Integration.class)
-public class DefaultDirectoryCrudEndpointTestIT {
-
-    private static OpenEhrClient openEhrClient;
-
-    private UUID ehr;
-
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
-
-    @After
-    public void tearDown() {
-        // delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehr);
-    }
+class DefaultDirectoryCrudEndpointTestIT extends SdkClientTestIT {
 
     @Test
-    public void testCreate() {
+    void testCreate() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         Folder folder = new Folder();
@@ -70,7 +47,7 @@ public class DefaultDirectoryCrudEndpointTestIT {
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         Folder folder = new Folder();
@@ -94,7 +71,7 @@ public class DefaultDirectoryCrudEndpointTestIT {
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
 
         ehr = openEhrClient.ehrEndpoint().createEhr();
         Folder folder = new Folder();

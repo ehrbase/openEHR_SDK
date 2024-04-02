@@ -21,7 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.ehrbase.openehr.sdk.generator.commons.test_data.dto.TestData.buildProxyEhrbaseBloodPressureSimpleDeV0Composition;
 import static org.ehrbase.openehr.sdk.test_data.contribution.ContributionTestDataCanonicalJson.ONE_ENTRY_COMPOSITION_LATEST;
 import static org.ehrbase.openehr.sdk.test_data.contribution.ContributionTestDataCanonicalJson.ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.nedap.archie.rm.changecontrol.Contribution;
 import com.nedap.archie.rm.composition.Composition;
@@ -30,17 +30,13 @@ import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
-import org.ehrbase.openehr.sdk.client.Integration;
 import org.ehrbase.openehr.sdk.client.openehrclient.ContributionEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.FolderDAO;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.builder.ContributionBuilder;
-import org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.systematic.compositionquery.CanonicalCompoAllTypeQueryIT;
 import org.ehrbase.openehr.sdk.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ProxyEhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.minimalevaluationenv1composition.MinimalEvaluationEnV1Composition;
@@ -50,27 +46,9 @@ import org.ehrbase.openehr.sdk.serialisation.dto.RmToGeneratedDtoConverter;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.folder.FolderTestDataCanonicalJson;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-@Category(Integration.class)
-public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQueryIT {
-
-    private static OpenEhrClient openEhrClient;
-    private UUID ehr;
-
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
-
-    @After
-    public void tearDown() {
-        // delete the created EHR using the admin endpoint
-        openEhrClient.adminEhrEndpoint().delete(ehr);
-    }
+public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
 
     @Test
     public void testSaveAndGetContribution() throws IOException {
@@ -546,7 +524,7 @@ public class DefaultRestContributionEndpointIT extends CanonicalCompoAllTypeQuer
     }
 
     private MinimalEvaluationEnV1Composition mergeMinimalEvaluationEnV1Composition() throws IOException {
-        aComposition = new CanonicalJson()
+        var aComposition = new CanonicalJson()
                 .unmarshal(
                         IOUtils.toString(
                                 CompositionTestDataCanonicalJson.MINIMAL_EVAL.getStream(), StandardCharsets.UTF_8),
