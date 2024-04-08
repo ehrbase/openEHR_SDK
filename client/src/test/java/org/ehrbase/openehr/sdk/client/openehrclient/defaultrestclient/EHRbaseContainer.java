@@ -45,7 +45,7 @@ public class EHRbaseContainer extends GenericContainer {
 
     protected static final String EHRBASE_PASSWORD = "ehrbase_restricted";
 
-    private static final String IMAGE = "ehrbase/ehrbase:next-amd64";
+    private static final String IMAGE = "ehrbase/ehrbase:0.32.0";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
