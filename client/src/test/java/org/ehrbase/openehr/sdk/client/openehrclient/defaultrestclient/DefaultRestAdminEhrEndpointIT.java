@@ -21,28 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 
 import com.nedap.archie.rm.ehr.EhrStatus;
-import java.net.URISyntaxException;
 import java.util.Optional;
-import java.util.UUID;
-import org.ehrbase.openehr.sdk.client.Integration;
-import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-@Category(Integration.class)
-public class DefaultRestAdminEhrEndpointIT {
-
-    private static OpenEhrClient openEhrClient;
-    private UUID ehr;
-
-    @BeforeClass
-    public static void setup() throws URISyntaxException {
-        openEhrClient = DefaultRestClientTestHelper.setupDefaultRestClient();
-    }
+class DefaultRestAdminEhrEndpointIT extends SdkClientTestIT {
 
     @Test
-    public void testDeleteEhr() {
+    void testDeleteEhr() {
         ehr = openEhrClient.ehrEndpoint().createEhr();
         assertThat(ehr).isNotNull();
         // delete the EHR
@@ -50,5 +36,11 @@ public class DefaultRestAdminEhrEndpointIT {
         // check it's gone
         Optional<EhrStatus> ehrStatus = openEhrClient.ehrEndpoint().getEhrStatus(ehr);
         assertFalse(ehrStatus.isPresent());
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() {
+        // NOP
     }
 }
