@@ -25,6 +25,10 @@ jobs:
       - name: Spotless
         run: mvn -B spotless:apply
 
+      - name: Coverage report
+        run: |
+          mvn clean verify test jacoco:report-aggregat
+
       - name: Run Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -35,5 +39,5 @@ jobs:
             -Dsonar.projectKey=ehrbase_openEHR_SDK \
             -Dsonar.exclusions=test/** \
             -Dsonar.coverage.exclusions=test/**,test-data/**/*,opt-14/**/*,response-dto/**/* \
-            -Dsonar.coverage.jacoco.xmlReportPaths=test-coverage/overall-coverage-report/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=test-coverage/target/site/jacoco-overall-coverage/jacoco.xml
 
