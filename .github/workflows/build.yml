@@ -34,6 +34,6 @@ jobs:
             -Dsonar.organization=ehrbase \
             -Dsonar.projectKey=ehrbase_openEHR_SDK \
             -Dsonar.exclusions=test/** \
-            -Dsonar.coverage.exclusions=test/**,test-data/**/*, opt-14/**/*,response-dto/**/* \
+            -Dsonar.coverage.exclusions=test/**,test-data/**/*,opt-14/**/*,response-dto/**/* \
             -Dsonar.coverage.jacoco.xmlReportPaths=test-coverage/overall-coverage-report/jacoco.xml
 
