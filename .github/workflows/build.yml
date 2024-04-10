@@ -2,7 +2,9 @@ name: build
 
 on:
   push:
+    branches: [ develop, release/* ]
   pull_request:
+    branches: [ develop ]
   workflow_dispatch:
 
 jobs:
@@ -27,7 +29,7 @@ jobs:
 
       - name: Coverage report
         run: |
-          mvn clean verify test jacoco:report-aggregate
+          mvn clean verify test jacoco:report-aggregate package
 
       - name: Run Sonar
         env:
