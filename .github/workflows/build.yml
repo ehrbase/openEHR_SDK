@@ -27,7 +27,7 @@ jobs:
 
       - name: Coverage report
         run: |
-          mvn clean verify test jacoco:report-aggregat
+          mvn clean verify test jacoco:report-aggregate
 
       - name: Run Sonar
         env:
