@@ -27,15 +27,11 @@ jobs:
       - name: Spotless
         run: mvn -B spotless:apply
 
-      - name: Coverage report
-        run: |
-          mvn clean verify test jacoco:report-aggregate package
-
-      - name: Run Sonar
+      - name: Run Checks
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn verify sonar:sonar \
+          mvn clean verify test jacoco:report-aggregate package sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=ehrbase \
             -Dsonar.projectKey=ehrbase_openEHR_SDK \
