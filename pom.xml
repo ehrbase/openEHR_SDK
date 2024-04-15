@@ -158,16 +158,23 @@
                 <executions>
                     <!-- SET ARG LINE PROPERTY FOR SUREFIRE -->
                     <execution>
+                        <id>agent for unit tests</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
                     </execution>
+                    <!-- SET ARG LINE PROPERTY FOR FAILSAFE -->
                     <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
+                        <id>agent for integration tests</id>
                         <goals>
-                            <goal>report</goal>
+                            <goal>prepare-agent-integration</goal>
                         </goals>
+                        <configuration>
+                            <propertyName>failsafeArgLine</propertyName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
