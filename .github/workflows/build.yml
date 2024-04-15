@@ -2,7 +2,9 @@ name: build
 
 on:
   push:
+    branches: [ develop, release/* ]
   pull_request:
+    branches: [ develop ]
   workflow_dispatch:
 
 jobs:
@@ -25,6 +27,15 @@ jobs:
       - name: Spotless
         run: mvn -B spotless:apply
 
-      - name: Build with Maven
-        run: mvn -B verify
+      - name: Run Checks
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn clean verify test jacoco:report-aggregate package sonar:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=ehrbase \
+            -Dsonar.projectKey=ehrbase_openEHR_SDK \
+            -Dsonar.exclusions=test/** \
+            -Dsonar.coverage.exclusions=test/**,test-data/**/*,opt-14/**/*,response-dto/**/* \
+            -Dsonar.coverage.jacoco.xmlReportPaths=${{ github.workspace }}/test-coverage/target/site/jacoco-overall-coverage/jacoco.xml
 
