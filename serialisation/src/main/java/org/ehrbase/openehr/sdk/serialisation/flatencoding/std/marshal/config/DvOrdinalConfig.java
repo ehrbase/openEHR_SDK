@@ -17,44 +17,36 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.config;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
-import org.ehrbase.openehr.sdk.util.exception.SdkException;
-import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
 
 public class DvOrdinalConfig extends AbstractsStdConfig<DvOrdinal> {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<DvOrdinal> getAssociatedClass() {
         return DvOrdinal.class;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, Object> buildChildValues(
-            String currentTerm, DvOrdinal rmObject, Context<Map<String, Object>> context) {
+            String currentTerm, DvOrdinal ordinal, Context<Map<String, Object>> context) {
+
         Map<String, Object> result = new HashMap<>();
-        String codeString = Optional.of(rmObject)
-                .map(DvOrdinal::getSymbol)
-                .map(DvCodedText::getDefiningCode)
-                .map(CodePhrase::getCodeString)
-                .orElse(null);
-        addValue(result, currentTerm, "code", codeString);
 
-        WebTemplateInputValue value = context.getNodeDeque().peek().getInputs().get(0).getList().stream()
-                .filter(o -> o.getValue().equals(codeString))
-                .findAny()
-                .orElseThrow(() -> new SdkException(String.format("Unknown Ordinal with code %s", codeString)));
-
-        addValue(result, currentTerm, "ordinal", value.getOrdinal());
-        addValue(result, currentTerm, "value", value.getLabel());
-
+        Optional.ofNullable(ordinal.getSymbol()).ifPresent(symbol -> {
+            addValue(result, currentTerm, "code", symbol.getDefiningCode().getCodeString());
+            addValue(result, currentTerm, "value", symbol.getValue());
+        });
+        addValue(result, currentTerm, "ordinal", ordinal.getValue());
         return result;
     }
 }
