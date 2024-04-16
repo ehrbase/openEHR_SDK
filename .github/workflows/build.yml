@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java
+      - name: Setup - Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -24,14 +24,19 @@ jobs:
           cache: 'maven'
 
 
-      - name: Spotless
-        run: mvn -B spotless:apply
+      - name: Spotless - Check
+        run: mvn -B spotless:check
+
+      - name: Maven - Verify, Jacoco and Package
+        run: mvn --batch-mode -U verify test jacoco:report-aggregate package
 
       - name: Run Checks
+        # Dependabot has no access to the SONAR_TOKEN secret, so we need to skip sonar.
+        if: ${{ github.actor != 'dependabot[bot]' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn clean verify test jacoco:report-aggregate package sonar:sonar \
+          mvn --batch-mode sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=ehrbase \
             -Dsonar.projectKey=ehrbase_openEHR_SDK \
