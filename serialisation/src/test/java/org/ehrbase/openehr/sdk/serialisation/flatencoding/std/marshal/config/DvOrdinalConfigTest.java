@@ -43,7 +43,8 @@ class DvOrdinalConfigTest {
     void buildChildValuesWithSymbol() {
 
         Map<String, Object> childValues = buildChildValues(
-                "some_other/current_activity/ordinal", new DvOrdinal(42L, new DvCodedText("lorem ipsum", "PWVGUTHASM")));
+                "some_other/current_activity/ordinal",
+                new DvOrdinal(42L, new DvCodedText("lorem ipsum", "PWVGUTHASM")));
         assertThat(childValues)
                 .hasSize(3)
                 .containsEntry("some_other/current_activity/ordinal|ordinal", 42L)
