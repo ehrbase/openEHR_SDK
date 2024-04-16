@@ -167,16 +167,16 @@ In case there is a section of code that you carefully formatted in a special way
 ```
 everything here will be reformatted..
 
-// @formatter:off
+// @format:off
 
     This is not affected by spotless-plugin reformatting...
             And will stay as is it is!
 
-// @formatter:on
+// @format:on
 
 everything here will be reformatted..
 ```
-Please be aware that `@formatter:off/on` should only be used on rare occasions to increase readability of complex code and shall be looked at critically when reviewing merge requests.
+Please be aware that `@format:off/on` should only be used on rare occasions to increase readability of complex code and shall be looked at critically when reviewing merge requests.
 
 ----
 
