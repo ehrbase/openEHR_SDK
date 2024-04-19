@@ -30,7 +30,7 @@ jobs:
         run: mvn --batch-mode clean jacoco:prepare-agent package jacoco:report
 
       - name: Jacoco - Integration Tests
-        run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify jacoco:report-integration
+        run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify verify jacoco:report-integration
 
       - name: Jacoco - Report Aggregate
         run: mvn --batch-mode jacoco:report-aggregate
@@ -47,5 +47,5 @@ jobs:
             -Dsonar.projectKey=ehrbase_openEHR_SDK \
             -Dsonar.exclusions=test/** \
             -Dsonar.coverage.exclusions=test/**,test-data/**/*,opt-14/**/*,response-dto/**/* \
-            -Dsonar.coverage.jacoco.xmlReportPaths=${{ github.workspace }}/test-coverage/target/site/jacoco-aggregate/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=${{ github.workspace }}/test-coverage/target/site/jacoco-overall-coverage/jacoco.xml
 
