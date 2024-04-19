@@ -35,7 +35,7 @@ public class EHRbasePostgresContainer extends GenericContainer {
 
     protected static final Integer PORT = 5432;
     protected static final String CONTAINER_NAME = "postgres";
-    private static final String IMAGE = "ehrbase/ehrbase-postgres:13.4.v2";
+    private static final String IMAGE = "ehrbase/ehrbase-v2-postgres:16.2";
     private static final String POSTGRES_MAPPING_USER = "postgres";
     private static final String POSTGRES_MAPPING_PW = "postgres";
 

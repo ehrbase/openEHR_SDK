@@ -11,11 +11,11 @@
         "_type": "ARCHETYPED",
         "archetype_id": {
           "_type": "ARCHETYPE_ID",
-          "value": "openEHR-DEMOGRAPHIC-CLUSTER.person_death_data_iso.v0"
+          "value": "openEHR-EHR-CLUSTER.person_death_data_iso.v0"
         },
         "rm_version": "1.0.2"
       },
-      "archetype_node_id": "openEHR-DEMOGRAPHIC-CLUSTER.person_death_data_iso.v0",
+      "archetype_node_id": "openEHR-EHR-CLUSTER.person_death_data_iso.v0",
       "items": [
         {
           "_type": "ELEMENT",
@@ -41,11 +41,11 @@
         "_type": "ARCHETYPED",
         "archetype_id": {
           "_type": "ARCHETYPE_ID",
-          "value": "openEHR-DEMOGRAPHIC-CLUSTER.person_birth_data_iso.v0"
+          "value": "openEHR-EHR-CLUSTER.person_birth_data_iso.v0"
         },
         "rm_version": "1.0.2"
       },
-      "archetype_node_id": "openEHR-DEMOGRAPHIC-CLUSTER.person_birth_data_iso.v0",
+      "archetype_node_id": "openEHR-EHR-CLUSTER.person_birth_data_iso.v0",
       "items": [
         {
           "_type": "ELEMENT",
