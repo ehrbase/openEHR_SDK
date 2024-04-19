@@ -1,5 +1,8 @@
 name: build
 
+# we have multiple workflows - this helps to distinguish for them
+run-name: "${{ github.event.pull_request.title || github.head_ref }} - Codestyle"
+
 on:
   push:
     branches: [ develop, release/* ]
@@ -23,11 +26,12 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
+      - name: Maven - Verify, Jacoco and Package
+        run: mvn --batch-mode -U verify test jacoco:report-aggregate package
 
-      - name: Spotless
-        run: mvn -B spotless:apply
-
-      - name: Run Checks
+      - name: Sonar - Analyze
+        # Dependabot has no access to the SONAR_TOKEN secret, so we need to skip sonar.
+        if: ${{ github.actor != 'dependabot[bot]' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
