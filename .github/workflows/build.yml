@@ -30,10 +30,7 @@ jobs:
         run: mvn --batch-mode clean jacoco:prepare-agent package jacoco:report
 
       - name: Jacoco - Integration Tests
-        run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify verify jacoco:report-integration
-
-      - name: Jacoco - Report Aggregate
-        run: mvn --batch-mode jacoco:report-aggregate
+        run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify verify jacoco:report
 
       - name: Sonar - Analyze
         # Dependabot has no access to the SONAR_TOKEN secret, so we need to skip sonar.
