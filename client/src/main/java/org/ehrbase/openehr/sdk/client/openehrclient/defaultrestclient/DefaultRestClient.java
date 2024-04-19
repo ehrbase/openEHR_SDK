@@ -59,7 +59,6 @@ import org.ehrbase.openehr.sdk.client.openehrclient.AqlEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.CompositionEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.ContributionEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.DirectoryCrudEndpoint;
-import org.ehrbase.openehr.sdk.client.openehrclient.FolderDAO;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.openehr.sdk.client.openehrclient.TemplateEndpoint;
@@ -328,11 +327,6 @@ public class DefaultRestClient implements OpenEhrClient {
     @Override
     public DirectoryCrudEndpoint directoryCrudEndpoint(UUID ehrId) {
         return new DefaultCrudEndpoint(this, ehrId);
-    }
-
-    @Override
-    public FolderDAO folder(UUID ehrId, String path) {
-        return new DefaultRestDirectoryEndpoint(this, ehrId).getFolder(path);
     }
 
     @Override
