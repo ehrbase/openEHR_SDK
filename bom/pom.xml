@@ -74,7 +74,7 @@
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
-        <jacoco.version>0.8.11</jacoco.version>
+        <jacoco.version>0.8.12</jacoco.version>
         <threeten-extra.version>1.7.2</threeten-extra.version>
         <jaxb-runtime.version>2.3.9</jaxb-runtime.version>
         <sonar.scanner.version>3.11.0.3922</sonar.scanner.version>
