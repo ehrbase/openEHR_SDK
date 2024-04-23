@@ -4,10 +4,11 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+ ### Changed
+- Removed OpenEhrClient::getFolder (use directoryCrudEndpoint()::getFolder instead) ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
  ### Fixed 
-- migrated test to run against ehrbase v2  ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
-- contribution lifecycle creation  ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
-- removed client folder endpoint (use DirectoryCrudEndpoint instead)  ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
+- Migrated test to run against EHRbase v2 ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
+- ContributionBuilder: set VERSION.lifecycle_state to 'complete'" ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
 
 ## [2.9.1]
  ### Added 
