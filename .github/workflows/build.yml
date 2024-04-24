@@ -26,8 +26,11 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: Maven - Verify, Jacoco and Package
-        run: mvn --batch-mode -U verify test jacoco:report-aggregate package
+      - name: Jacoco - Unit Tests
+        run: mvn --batch-mode clean jacoco:prepare-agent package jacoco:report
+
+      - name: Jacoco - Integration Tests
+        run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify verify jacoco:report
 
       - name: Sonar - Analyze
         # Dependabot has no access to the SONAR_TOKEN secret, so we need to skip sonar.

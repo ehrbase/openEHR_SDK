@@ -60,7 +60,7 @@ class DefaultRestEhrFieldsEndpointIT extends SdkClientTestIT {
         HierObjectId subjectId = new HierObjectId(UUID.randomUUID().toString());
         ehrStatus.setSubject(new PartySelf(new PartyRef(subjectId, "default", "PERSON")));
 
-        ehrStatus.setArchetypeNodeId("just-a-status");
+        ehrStatus.setArchetypeNodeId("openEHR-EHR-EHR_STATUS.generic.v1");
         ehrStatus.setName(new DvText("Status"));
 
         ehr = openEhrClient.ehrEndpoint().createEhr(ehrStatus);
@@ -83,7 +83,7 @@ class DefaultRestEhrFieldsEndpointIT extends SdkClientTestIT {
 
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
         ehrStatus.setOtherDetails(new CanonicalJson().unmarshal(value, ItemTree.class));
-        ehrStatus.getOtherDetails().setArchetypeNodeId("other-details-test");
+        ehrStatus.getOtherDetails().setArchetypeNodeId("openEHR-EHR-EHR_STATUS.generic.v1");
         ehrStatus.getOtherDetails().setName(new DvText("test"));
 
         openEhrClient.ehrEndpoint().updateEhrStatus(ehr, ehrStatus);

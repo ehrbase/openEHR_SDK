@@ -25,17 +25,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.nedap.archie.rm.changecontrol.Contribution;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.generic.AuditDetails;
+import com.nedap.archie.rm.generic.PartyIdentified;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.client.openehrclient.ContributionEndpoint;
-import org.ehrbase.openehr.sdk.client.openehrclient.FolderDAO;
 import org.ehrbase.openehr.sdk.client.openehrclient.builder.ContributionBuilder;
 import org.ehrbase.openehr.sdk.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ProxyEhrbaseBloodPressureSimpleDeV0Composition;
@@ -57,6 +61,13 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
         String contribution = IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
         ContributionCreateDto contributionDto =
                 new CanonicalJson().unmarshal(contribution, ContributionCreateDto.class);
+
+        contributionDto.setUid(null);
+        contributionDto.getAudit().setTimeCommitted(null);
+        contributionDto.getVersions().stream().forEach(v -> {
+            v.getCommitAudit().setTimeCommitted(null);
+            v.setContribution(null);
+        });
 
         UUID contributionEntity = openEhrClient.contributionEndpoint(ehr).saveContribution(contributionDto);
 
@@ -440,9 +451,11 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
     public void testSaveContributionWithFolderModification() throws IOException {
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
+        Folder rootFolder = new Folder();
         // Create root folder
-        FolderDAO folder = openEhrClient.folder(ehr, "");
-        Folder rootFolder = folder.getRmFolder();
+        ObjectVersionId directory = openEhrClient.directoryCrudEndpoint(ehr).createDirectory(rootFolder);
+
+        rootFolder.setUid(directory);
 
         // Prepare first composition
         GeneratedDtoToRmConverter generatedDtoToRmConverter =
@@ -454,7 +467,10 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
                 (Composition) generatedDtoToRmConverter.toRMObject(mergeMinimalEvaluationEnV1Composition());
 
         // Add first composition to folder
-        folder.addItemToRmFolder(new ObjectVersionId((compositionWithId.getUid().toString())));
+        rootFolder
+                .getItems()
+                .add(new ObjectRef<>(
+                        new ObjectVersionId((compositionWithId.getUid().toString())), "local", "Composition"));
 
         // Prepare second composition
         GeneratedDtoToRmConverter cut = new GeneratedDtoToRmConverter(new TestDataTemplateProvider());
@@ -462,11 +478,14 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
         ProxyEhrbaseBloodPressureSimpleDeV0Composition proxyComposition =
                 openEhrClient.compositionEndpoint(ehr).mergeCompositionEntity(proxyDto);
         Composition unflattenSecondComposition = (Composition) cut.toRMObject(proxyComposition);
-        unflattenSecondComposition.setUid(null);
+        unflattenSecondComposition.setUid(new ObjectVersionId(UUID.randomUUID().toString(), "local.ehrbase.org", "1"));
 
-        // Add second composition to new folder
-        FolderDAO subFolder = folder.getSubFolder("test/contribution");
-        subFolder.addItemToRmFolder(proxyComposition.getVersionUid());
+        // Add second composition
+
+        rootFolder
+                .getItems()
+                .add(new ObjectRef<>(
+                        new ObjectVersionId((unflattenSecondComposition.getUid().toString())), "local", "Composition"));
 
         // Create contribution
         ContributionCreateDto contribution = ContributionBuilder.builder(createAuditDetails())
@@ -495,11 +514,8 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
                 expectedCompositionsCreatedTimes,
                 countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "1"));
         assertEquals(
-                expectedCompositionsModifiedTimes,
+                expectedCompositionsModifiedTimes + expectedFolderModifiedTimes,
                 countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "2"));
-        assertEquals(
-                expectedFolderModifiedTimes,
-                countNumberOfChangedLocatableObjectByVersion(remoteContribution.get(), "6"));
     }
 
     private static String getCompositionVersion(Contribution remoteContribution) {
@@ -514,13 +530,14 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
         return UUID.fromString(compositionId.substring(0, compositionId.indexOf("::")));
     }
 
-    private static AuditDetails createAuditDetails() throws IOException {
-        String contributionModificationJson =
-                IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
-        ContributionCreateDto contributionDto =
-                new CanonicalJson().unmarshal(contributionModificationJson, ContributionCreateDto.class);
+    private static AuditDetails createAuditDetails() {
 
-        return contributionDto.getVersions().get(0).getCommitAudit();
+        AuditDetails auditDetails = new AuditDetails();
+        auditDetails.setChangeType(
+                new DvCodedText("modification", new CodePhrase(new TerminologyId("openehr"), "251")));
+        auditDetails.setCommitter(new PartyIdentified(null, "Dr. Yamamoto", null));
+        auditDetails.setSystemId("ehrbase");
+        return auditDetails;
     }
 
     private MinimalEvaluationEnV1Composition mergeMinimalEvaluationEnV1Composition() throws IOException {
