@@ -109,6 +109,11 @@ public class OPTParser {
     public static final String OPENEHR = "openehr";
     public static final String CURRENT_STATE = "current_state";
 
+    private static final Set<String> LOCATABLE_TYPES =
+            ArchieRMInfoLookup.getInstance().getTypeInfo(Locatable.class).getAllDescendantClasses().stream()
+                    .map(RMTypeInfo::getRmName)
+                    .collect(Collectors.toSet());
+
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
     private final Map<String, String> defaultValues = new HashMap<>();
@@ -851,7 +856,7 @@ public class OPTParser {
             return parseCARCHETYPEROO((CARCHETYPEROOT) cobject, pathLoop);
 
         } else if (cobject instanceof CCOMPLEXOBJECT) {
-            String nodeId = cobject.getNodeId();
+            String nodeId = LOCATABLE_TYPES.contains(cobject.getRmTypeName()) ? cobject.getNodeId() : null;
             final AqlPath pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
                 pathLoop = aqlPath.replaceLastNode(n -> n.withAtCode(nodeId));
@@ -1114,7 +1119,10 @@ public class OPTParser {
         IntervalOfInteger occurrences = cobject.getOccurrences();
         node.setMin(occurrences.getLowerUnbounded() ? -1 : occurrences.getLower());
         node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
-        String nodeId = cobject.getNodeId();
+
+        /*This check is a workaround for a bug in the archetype designer, due to which non-LOCATABLEs may have a node_id.
+        The generated opt is invalid, but we still accept it and ignore the node_id in this case.*/
+        String nodeId = LOCATABLE_TYPES.contains(cobject.getRmTypeName()) ? cobject.getNodeId() : null;
         if (StringUtils.isNotBlank(nodeId)) {
 
             Optional<String> expliziteName =
