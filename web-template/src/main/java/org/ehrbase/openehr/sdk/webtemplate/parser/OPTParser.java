@@ -856,7 +856,7 @@ public class OPTParser {
             return parseCARCHETYPEROO((CARCHETYPEROOT) cobject, pathLoop);
 
         } else if (cobject instanceof CCOMPLEXOBJECT) {
-            String nodeId = LOCATABLE_TYPES.contains(cobject.getRmTypeName()) ? cobject.getNodeId() : null;
+            String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;
             final AqlPath pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
                 pathLoop = aqlPath.replaceLastNode(n -> n.withAtCode(nodeId));
@@ -866,7 +866,7 @@ public class OPTParser {
             return parseCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, pathLoop, termDefinitionMap, rmAttributeName);
 
         } else if (cobject instanceof CDOMAINTYPE) {
-            String nodeId = cobject.getNodeId();
+            String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;
             final AqlPath pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
                 pathLoop = aqlPath.replaceLastNode(n -> n.withAtCode(nodeId));
@@ -894,6 +894,15 @@ public class OPTParser {
         }
 
         return null;
+    }
+
+    /**
+     * This check is a workaround for a bug in the archetype designer, due to which non-LOCATABLEs may have a node_id.
+     * The generated opt is invalid, but we still accept it and ignore the node_id in this case.
+     * @return true if the given nodes rm_type_name is a LOCATABLE type name
+     */
+    private static boolean isLocatableNode(final COBJECT cobject) {
+        return LOCATABLE_TYPES.contains(cobject.getRmTypeName());
     }
 
     private WebTemplateNode parseARCHETYPESLOT(
@@ -1120,9 +1129,7 @@ public class OPTParser {
         node.setMin(occurrences.getLowerUnbounded() ? -1 : occurrences.getLower());
         node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
 
-        /*This check is a workaround for a bug in the archetype designer, due to which non-LOCATABLEs may have a node_id.
-        The generated opt is invalid, but we still accept it and ignore the node_id in this case.*/
-        String nodeId = LOCATABLE_TYPES.contains(cobject.getRmTypeName()) ? cobject.getNodeId() : null;
+        String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;
         if (StringUtils.isNotBlank(nodeId)) {
 
             Optional<String> expliziteName =
