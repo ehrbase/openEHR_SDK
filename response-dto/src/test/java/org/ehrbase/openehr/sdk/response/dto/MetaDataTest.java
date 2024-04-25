@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.response.dto.util.DTOFixtures;
 import org.junit.jupiter.api.Test;
@@ -90,6 +91,41 @@ public class MetaDataTest {
     }
 
     @Test
+    void serializedJSONWithExecutionData() throws JsonProcessingException {
+
+        MetaData metaData = new MetaData();
+        metaData.setHref("https://example.com/subpath/ehrbase/rest/openehr/v1/query/aql");
+        metaData.setType(MetaData.RESULTSET);
+        metaData.setSchemaVersion("1.0.4");
+        metaData.setCreated(OffsetDateTime.parse("2017-08-19T12:30:00.568+02:00"));
+        metaData.setGenerator("DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)");
+        metaData.setExecutedAql("SELECT e/ehr_id/value FROM EHR e");
+        // debug info
+        metaData.setAdditionalProperty(MetaData.AdditionalProperty.dryRun, true);
+        metaData.setAdditionalProperty(MetaData.AdditionalProperty.executedSQL, "SELECT TRUE");
+        metaData.setAdditionalProperty(MetaData.AdditionalProperty.queryPlan, Map.of("key", "value"));
+
+        String json = objectMapper.writeValueAsString(metaData);
+
+        assertThat(json)
+                .isEqualToNormalizingWhitespace(
+                        """
+                        {
+                          "_href" : "https://example.com/subpath/ehrbase/rest/openehr/v1/query/aql",
+                          "_type" : "RESULTSET",
+                          "_schema_version" : "1.0.4",
+                          "_created" : "2017-08-19T12:30:00.568+02:00",
+                          "_generator" : "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)",
+                          "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e",
+                          "_dry_run" : true,
+                          "_executed_sql" : "SELECT TRUE",
+                          "_query_plan" : {
+                            "key" : "value"
+                          }
+                        }""");
+    }
+
+    @Test
     void deserializedJSONMinimal() throws JsonProcessingException {
 
         MetaData metaData = objectMapper.readValue(
@@ -146,6 +182,40 @@ public class MetaDataTest {
         assertEquals(50, metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
         assertEquals(100, metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
         assertEquals(20, metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize));
+    }
+
+    @Test
+    void deserializeJSONWithExecutionData() throws JsonProcessingException {
+
+        MetaData metaData = objectMapper.readValue(
+                """
+                        {
+                          "_href" : "https://example.com/ehrbase/rest/openehr/v1/query/aql",
+                          "_type" : "RESULTSET",
+                          "_schema_version" : "1.0.4",
+                          "_created" : "2017-08-19T00:25:47.568+02:00",
+                          "_generator" : "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)",
+                          "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e",
+                          "_dry_run" : true,
+                          "_executed_sql" : "SELECT TRUE",
+                          "_query_plan" : {
+                            "key" : "value"
+                          }
+                        }""",
+                MetaData.class);
+
+        assertEquals("https://example.com/ehrbase/rest/openehr/v1/query/aql", metaData.getHref());
+        assertEquals(MetaData.RESULTSET, metaData.getType());
+        assertEquals("1.0.4", metaData.getSchemaVersion());
+        assertEquals(
+                OffsetDateTime.parse("2017-08-19T00:25:47.568+02:00").atZoneSameInstant(ZoneOffset.UTC),
+                metaData.getCreated().atZoneSameInstant(ZoneOffset.UTC));
+        assertEquals(
+                "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)", metaData.getGenerator());
+        assertEquals("SELECT e/ehr_id/value FROM EHR e", metaData.getExecutedAql());
+        assertEquals(true, metaData.getAdditionalProperty(MetaData.AdditionalProperty.dryRun));
+        assertEquals("SELECT TRUE", metaData.getAdditionalProperty(MetaData.AdditionalProperty.executedSQL));
+        assertEquals(Map.of("key", "value"), metaData.getAdditionalProperty(MetaData.AdditionalProperty.queryPlan));
     }
 
     @Test
