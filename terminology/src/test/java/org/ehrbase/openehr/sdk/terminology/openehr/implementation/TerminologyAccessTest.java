@@ -44,7 +44,7 @@ public class TerminologyAccessTest {
         assertEquals("openehr", terminologyAccess.id());
 
         Set<CodePhrase> codePhrases = terminologyAccess.allCodes();
-        assertEquals(216, codePhrases.size());
+        assertEquals(217, codePhrases.size());
 
         codePhrases = terminologyAccess.codesForGroupId("setting");
         assertEquals(13, codePhrases.size());
