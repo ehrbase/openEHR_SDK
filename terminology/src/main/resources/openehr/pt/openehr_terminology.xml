@@ -293,6 +293,7 @@
         <concept id="669" rubric="saúde pública"/>
         <concept id="670" rubric="reembolso"/>
         <concept id="671" rubric="pesquisa"/>
+        <concept id="672" rubric="interoperabilidade"/>
     </group>
     <group name="função matemática de evento">
         <concept id="145" rubric="mínimo"/>
