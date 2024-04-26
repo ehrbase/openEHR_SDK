@@ -52,11 +52,39 @@ public class MetaData {
         String getName();
 
         @FunctionalInterface
+        interface BooleanProperty extends MetaData.AdditionalProperty<Boolean> {
+
+            @Override
+            default Boolean apply(Object o) {
+                return o instanceof Boolean ? (Boolean) o : null;
+            }
+        }
+
+        @FunctionalInterface
         interface IntegerProperty extends AdditionalProperty<Integer> {
 
             @Override
             default Integer apply(Object o) {
                 return o instanceof Number ? ((Number) o).intValue() : null;
+            }
+        }
+
+        @FunctionalInterface
+        interface StringProperty extends MetaData.AdditionalProperty<String> {
+
+            @Override
+            default String apply(Object o) {
+                return o instanceof String ? (String) o : null;
+            }
+        }
+
+        @FunctionalInterface
+        interface JSONProperty extends MetaData.AdditionalProperty<Map<String, Object>> {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            default Map<String, Object> apply(Object o) {
+                return o instanceof Map ? (Map<String, Object>) o : null;
             }
         }
 
@@ -80,6 +108,21 @@ public class MetaData {
          * Size of the returned rows.
          */
         IntegerProperty resultSize = () -> "resultsize";
+
+        /**
+         * ehrbase execution-option result - dry_run status
+         */
+        BooleanProperty dryRun = () -> "_dry_run";
+
+        /**
+         * ehrbase execution-option result - executed SQL
+         */
+        StringProperty executedSQL = () -> "_executed_sql";
+
+        /**
+         * ehrbase execution-option result - query plan json
+         */
+        JSONProperty queryPlan = () -> "_query_plan";
     }
 
     @JsonProperty(value = "_href")
