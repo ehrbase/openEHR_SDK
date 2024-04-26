@@ -4,8 +4,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added
-- Added EHRbase AQL `MeataData` debug execution data ([594](https://github.com/ehrbase/openEHR_SDK/pull/594))
-- New interoperability term mapping
+- Added EHRbase AQL `MeataData` debug execution data ([#594](https://github.com/ehrbase/openEHR_SDK/pull/594))
+- New interoperability term mapping ([#595](https://github.com/ehrbase/openEHR_SDK/pull/595))
  ### Changed
 - Removed OpenEhrClient::getFolder (use directoryCrudEndpoint()::getFolder instead) ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
  ### Fixed 
