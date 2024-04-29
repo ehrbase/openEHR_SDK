@@ -57,7 +57,6 @@ import org.openehr.schemas.v1.TemplateDocument;
  */
 public class OPTParserTest {
 
-
     @Test
     void parsingSkipsInvalidNodeIds() throws XmlException, IOException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
@@ -71,7 +70,8 @@ public class OPTParserTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         WebTemplate expected = objectMapper.readValue(
-                IOUtils.toString(WebTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
+                IOUtils.toString(WebTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream(), StandardCharsets.UTF_8),
+                WebTemplate.class);
 
         List<String> errors = compareWebTemplate(actual, expected);
 
