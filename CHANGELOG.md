@@ -6,6 +6,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  ### Added
 - Added EHRbase AQL `MeataData` debug execution data ([594](https://github.com/ehrbase/openEHR_SDK/pull/594))
  ### Changed
+- OptParser now ignores node_id tags for all RM types that are not subtypes of LOCATABLE ([#596](https://github.com/ehrbase/openEHR_SDK/pull/596))
 - Removed OpenEhrClient::getFolder (use directoryCrudEndpoint()::getFolder instead) ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
  ### Fixed 
 - Migrated test to run against EHRbase v2 ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))

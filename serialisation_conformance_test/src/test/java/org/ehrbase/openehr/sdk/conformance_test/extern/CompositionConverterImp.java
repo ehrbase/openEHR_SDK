@@ -296,6 +296,12 @@ public class CompositionConverterImp implements CompositionConverter {
         replaceKey(currentValues, "cda_document/cda_component:0/name", "cda_document/cda_component:0/_name");
         replaceKey(currentValues, "cda_document/cda_component:1/name", "cda_document/cda_component:1/_name");
 
+        // fix context having id event_context due to node_id being present in OPT
+        replaceKey(
+                currentValues,
+                "multidisciplinary_individualised_falls_care_plan/event_context/xds_metadata:0/author_specialty",
+                "multidisciplinary_individualised_falls_care_plan/context/xds_metadata:0/author_specialty");
+
         Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
         String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
 

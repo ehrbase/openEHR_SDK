@@ -109,6 +109,11 @@ public class OPTParser {
     public static final String OPENEHR = "openehr";
     public static final String CURRENT_STATE = "current_state";
 
+    private static final Set<String> LOCATABLE_TYPES =
+            ArchieRMInfoLookup.getInstance().getTypeInfo(Locatable.class).getAllDescendantClasses().stream()
+                    .map(RMTypeInfo::getRmName)
+                    .collect(Collectors.toSet());
+
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
     private final Map<String, String> defaultValues = new HashMap<>();
@@ -162,7 +167,7 @@ public class OPTParser {
             annotationMap.put(annotation.getPath().replaceAll("^[^/]+", ""), items);
         }
 
-        webTemplate.setTree(parseCARCHETYPEROO(operationaltemplate.getDefinition(), AqlPath.EMPTY_PATH)
+        webTemplate.setTree(parseCARCHETYPEROOT(operationaltemplate.getDefinition(), AqlPath.EMPTY_PATH)
                 .get(0));
         return webTemplate;
     }
@@ -232,7 +237,7 @@ public class OPTParser {
         return nodes;
     }
 
-    private List<WebTemplateNode> parseCARCHETYPEROO(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
+    private List<WebTemplateNode> parseCARCHETYPEROOT(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
 
         // extract local Terminologies
         Map<String, Map<String, TermDefinition>> termDefinitionMap = new HashMap<>();
@@ -848,10 +853,10 @@ public class OPTParser {
             } else {
                 pathLoop = aqlPath;
             }
-            return parseCARCHETYPEROO((CARCHETYPEROOT) cobject, pathLoop);
+            return parseCARCHETYPEROOT((CARCHETYPEROOT) cobject, pathLoop);
 
         } else if (cobject instanceof CCOMPLEXOBJECT) {
-            String nodeId = cobject.getNodeId();
+            String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;
             final AqlPath pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
                 pathLoop = aqlPath.replaceLastNode(n -> n.withAtCode(nodeId));
@@ -861,7 +866,7 @@ public class OPTParser {
             return parseCCOMPLEXOBJECT((CCOMPLEXOBJECT) cobject, pathLoop, termDefinitionMap, rmAttributeName);
 
         } else if (cobject instanceof CDOMAINTYPE) {
-            String nodeId = cobject.getNodeId();
+            String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;
             final AqlPath pathLoop;
             if (StringUtils.isNotBlank(nodeId)) {
                 pathLoop = aqlPath.replaceLastNode(n -> n.withAtCode(nodeId));
@@ -889,6 +894,15 @@ public class OPTParser {
         }
 
         return null;
+    }
+
+    /**
+     * This check is a workaround for a bug in the archetype designer, due to which non-LOCATABLEs may have a node_id.
+     * The generated opt is invalid, but we still accept it and ignore the node_id in this case.
+     * @return true if the given nodes rm_type_name is a LOCATABLE type name
+     */
+    private static boolean isLocatableNode(final COBJECT cobject) {
+        return LOCATABLE_TYPES.contains(cobject.getRmTypeName());
     }
 
     private WebTemplateNode parseARCHETYPESLOT(
@@ -1114,7 +1128,8 @@ public class OPTParser {
         IntervalOfInteger occurrences = cobject.getOccurrences();
         node.setMin(occurrences.getLowerUnbounded() ? -1 : occurrences.getLower());
         node.setMax(occurrences.getUpperUnbounded() ? -1 : occurrences.getUpper());
-        String nodeId = cobject.getNodeId();
+
+        String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;
         if (StringUtils.isNotBlank(nodeId)) {
 
             Optional<String> expliziteName =
