@@ -23,7 +23,12 @@ import static org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalT
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,9 +41,13 @@ import org.assertj.core.groups.Tuple;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.filter.Filter;
-import org.ehrbase.openehr.sdk.webtemplate.model.*;
-import org.junit.Test;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
@@ -47,6 +56,27 @@ import org.openehr.schemas.v1.TemplateDocument;
  * @since 1.0
  */
 public class OPTParserTest {
+
+
+    @Test
+    void parsingSkipsInvalidNodeIds() throws XmlException, IOException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
+                        OperationalTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream())
+                .getTemplate();
+
+        OPTParser cut = new OPTParser(template);
+        WebTemplate actual = cut.parse();
+        actual = new Filter().filter(actual);
+        assertThat(actual).isNotNull();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        WebTemplate expected = objectMapper.readValue(
+                IOUtils.toString(WebTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
+
+        List<String> errors = compareWebTemplate(actual, expected);
+
+        checkErrors(errors);
+    }
 
     @Test
     public void parseCoronaAnamnese() throws IOException, XmlException {
@@ -408,7 +438,7 @@ public class OPTParserTest {
         assertThat(nodes).hasSize(2);
     }
 
-    public void checkErrors(List<String> errors, String[] expectedErrors) {
+    public void checkErrors(List<String> errors, String... expectedErrors) {
 
         SoftAssertions softAssertions = new SoftAssertions();
 

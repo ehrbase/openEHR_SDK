@@ -167,7 +167,7 @@ public class OPTParser {
             annotationMap.put(annotation.getPath().replaceAll("^[^/]+", ""), items);
         }
 
-        webTemplate.setTree(parseCARCHETYPEROO(operationaltemplate.getDefinition(), AqlPath.EMPTY_PATH)
+        webTemplate.setTree(parseCARCHETYPEROOT(operationaltemplate.getDefinition(), AqlPath.EMPTY_PATH)
                 .get(0));
         return webTemplate;
     }
@@ -237,7 +237,7 @@ public class OPTParser {
         return nodes;
     }
 
-    private List<WebTemplateNode> parseCARCHETYPEROO(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
+    private List<WebTemplateNode> parseCARCHETYPEROOT(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
 
         // extract local Terminologies
         Map<String, Map<String, TermDefinition>> termDefinitionMap = new HashMap<>();
@@ -853,7 +853,7 @@ public class OPTParser {
             } else {
                 pathLoop = aqlPath;
             }
-            return parseCARCHETYPEROO((CARCHETYPEROOT) cobject, pathLoop);
+            return parseCARCHETYPEROOT((CARCHETYPEROOT) cobject, pathLoop);
 
         } else if (cobject instanceof CCOMPLEXOBJECT) {
             String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;

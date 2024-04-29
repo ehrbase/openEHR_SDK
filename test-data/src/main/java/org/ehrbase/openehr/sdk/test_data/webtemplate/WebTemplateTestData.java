@@ -31,7 +31,8 @@ public enum WebTemplateTestData {
     ADDICTION("example with multiple languages", "addiction.json"),
     GECCO_DIAGNOSE("example with snomed terminologies", "GECCO_Diagnose.json"),
     TESTING_TEMPLATE_N("Template with fixed values", "Testing_Template_N.json"),
-    IPS_TEMPLATE("IPS Template", "ips_template.json");
+    IPS_TEMPLATE("IPS Template", "ips_template.json"),
+    SKIPPED_INVALID_NODE_IDS("webtemplate for a template containing invalid node_id's (/category and /context)", "skipped_invalid_node_ids.json");
 
     private final String filename;
     private final String description;
