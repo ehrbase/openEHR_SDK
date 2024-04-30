@@ -14,7 +14,7 @@ on:
 # Style-check it's a dedicated workflow. This allows us to open a PR, run all tests and fix styling issue later ;).
 #
 jobs:
-  build:
+  check-codestyle:
     runs-on: ubuntu-latest
 
     steps:
