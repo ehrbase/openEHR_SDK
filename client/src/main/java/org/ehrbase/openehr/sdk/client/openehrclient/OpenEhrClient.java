@@ -46,8 +46,6 @@ public interface OpenEhrClient {
 
     DirectoryCrudEndpoint directoryCrudEndpoint(UUID ehrId);
 
-    FolderDAO folder(UUID ehrId, String path);
-
     /**
      * Get the {@link TemplateEndpoint}
      *

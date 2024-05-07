@@ -23,7 +23,12 @@ import static org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalT
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,9 +41,13 @@ import org.assertj.core.groups.Tuple;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.filter.Filter;
-import org.ehrbase.openehr.sdk.webtemplate.model.*;
-import org.junit.Test;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateAnnotation;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
@@ -46,10 +55,31 @@ import org.openehr.schemas.v1.TemplateDocument;
  * @author Stefan Spiska
  * @since 1.0
  */
-public class OPTParserTest {
+class OPTParserTest {
 
     @Test
-    public void parseCoronaAnamnese() throws IOException, XmlException {
+    void parsingSkipsInvalidNodeIds() throws XmlException, IOException {
+        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
+                        OperationalTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream())
+                .getTemplate();
+
+        OPTParser cut = new OPTParser(template);
+        WebTemplate actual = cut.parse();
+        actual = new Filter().filter(actual);
+        assertThat(actual).isNotNull();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        WebTemplate expected = objectMapper.readValue(
+                IOUtils.toString(WebTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream(), StandardCharsets.UTF_8),
+                WebTemplate.class);
+
+        List<String> errors = compareWebTemplate(actual, expected);
+
+        checkErrors(errors);
+    }
+
+    @Test
+    void parseCoronaAnamnese() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
                 .getTemplate();
@@ -73,7 +103,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseAQLExample() throws IOException, XmlException {
+    void parseAQLExample() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.AQL_EXAMPLE.getStream())
                 .getTemplate();
@@ -85,7 +115,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseTestingTemplateN() throws IOException, XmlException {
+    void parseTestingTemplateN() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.TESTING_TEMPLATE_N.getStream())
@@ -115,7 +145,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseGECCODiagnose() throws IOException, XmlException {
+    void parseGECCODiagnose() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.GECCO_DIAGNOSE.getStream())
                 .getTemplate();
@@ -143,7 +173,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseAltEvents() throws IOException, XmlException {
+    void parseAltEvents() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.ALT_EVENTS.getStream())
                 .getTemplate();
@@ -173,7 +203,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseMultiOccurrence() throws IOException, XmlException {
+    void parseMultiOccurrence() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
                 .getTemplate();
@@ -196,7 +226,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseAny() throws IOException, XmlException {
+    void parseAny() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.GECCO_SEROLOGISCHER_BEFUND.getStream())
                 .getTemplate();
@@ -225,7 +255,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void testUnsupportedDataTypes() throws IOException, XmlException {
+    void testUnsupportedDataTypes() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(getClass()
                         .getResourceAsStream(
                                 "/" + OPERATIONALTEMPLATE_PATH_SEGMENT + "/unsupported_data_type_dv_scale.opt"))
@@ -239,7 +269,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseInitialAssessment() throws IOException, XmlException {
+    void parseInitialAssessment() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.INITIAL_ASSESSMENT.getStream())
                 .getTemplate();
@@ -259,7 +289,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseAddiction() throws IOException, XmlException {
+    void parseAddiction() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ADDICTION.getStream())
                 .getTemplate();
 
@@ -279,7 +309,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseConstrainTest() throws IOException, XmlException {
+    void parseConstrainTest() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.CONSTRAIN_TEST.getStream())
                 .getTemplate();
@@ -301,7 +331,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseLanguageTest() throws IOException, XmlException {
+    void parseLanguageTest() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.LANGUAGE_TEST.getStream())
                 .getTemplate();
@@ -325,7 +355,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseAllTypes() throws IOException, XmlException {
+    void parseAllTypes() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
                 .getTemplate();
 
@@ -396,7 +426,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void parseMultimediaTest() throws Exception {
+    void parseMultimediaTest() throws Exception {
         var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTIMEDIA_TEST.getStream())
                 .getTemplate();
         var parser = new OPTParser(optTemplate);
@@ -408,7 +438,7 @@ public class OPTParserTest {
         assertThat(nodes).hasSize(2);
     }
 
-    public void checkErrors(List<String> errors, String[] expectedErrors) {
+    void checkErrors(List<String> errors, String... expectedErrors) {
 
         SoftAssertions softAssertions = new SoftAssertions();
 
@@ -733,7 +763,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void testReadWrite() throws IOException, XmlException {
+    void testReadWrite() throws IOException, XmlException {
         var template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
                 .getTemplate();
 
@@ -746,7 +776,7 @@ public class OPTParserTest {
     }
 
     @Test
-    public void missingNodeIdAndAnnotationsTest() throws IOException, XmlException {
+    void missingNodeIdAndAnnotationsTest() throws IOException, XmlException {
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.NULLID.getStream())
                 .getTemplate();
 

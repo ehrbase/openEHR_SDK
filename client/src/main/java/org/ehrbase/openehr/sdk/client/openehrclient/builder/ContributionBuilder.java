@@ -23,9 +23,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datatypes.CodePhrase;
+import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 import javax.annotation.Nullable;
 import org.ehrbase.openehr.sdk.client.openehrclient.ContributionChangeType;
@@ -192,6 +195,8 @@ public class ContributionBuilder {
         updateMetadataById(precedingVersionUid, originalVersion, compositionAudit);
 
         originalVersion.setCommitAudit(compositionAudit);
+        originalVersion.setLifecycleState(
+                new DvCodedText("complete", new CodePhrase(new TerminologyId("openehr"), "532")));
 
         this.contributionCreateDto.getVersions().add(originalVersion);
     }

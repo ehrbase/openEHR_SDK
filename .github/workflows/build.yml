@@ -1,8 +1,13 @@
 name: build
 
+# we have multiple workflows - this helps to distinguish for them
+run-name: "${{ github.event.pull_request.title && github.event.pull_request.title || github.ref_name }} - Build & Test"
+
 on:
   push:
+    branches: [ develop, release/* ]
   pull_request:
+    branches: [ develop ]
   workflow_dispatch:
 
 jobs:
@@ -14,17 +19,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java
+      - name: Setup - Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
 
+      - name: Jacoco - Unit Tests
+        run: mvn --batch-mode clean jacoco:prepare-agent package jacoco:report
 
-      - name: Spotless
-        run: mvn -B spotless:apply
+      - name: Jacoco - Integration Tests
+        run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify verify jacoco:report
 
-      - name: Build with Maven
-        run: mvn -B verify
+      - name: Sonar - Analyze
+        # Dependabot has no access to the SONAR_TOKEN secret, so we need to skip sonar.
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn --batch-mode sonar:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=ehrbase \
+            -Dsonar.projectKey=ehrbase_openEHR_SDK \
+            -Dsonar.exclusions=test/** \
+            -Dsonar.coverage.exclusions=test/**,test-data/**/*,opt-14/**/*,response-dto/**/* \
+            -Dsonar.coverage.jacoco.xmlReportPaths=${{ github.workspace }}/test-coverage/target/site/jacoco-overall-coverage/jacoco.xml
 

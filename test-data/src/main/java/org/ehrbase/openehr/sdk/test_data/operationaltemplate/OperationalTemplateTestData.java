@@ -100,7 +100,11 @@ public enum OperationalTemplateTestData {
             "Template with an used archetypeslot of type ITEM",
             "used-item-archetypeslot.opt",
             "used-item-archetypeslot"),
-    AQL_EXAMPLE("AQL_EXAMPLE", "aql_example.opt", "aql_example");
+    AQL_EXAMPLE("AQL_EXAMPLE", "aql_example.opt", "aql_example"),
+    SKIPPED_INVALID_NODE_IDS(
+            "Small template (Schwangerschaftsstatus.opt) with node_id set for non-locatables (/category and /context)",
+            "skipped_invalid_node_ids.opt",
+            "skipped_invalid_node_ids");
     //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
 
     public static final String OPERATIONALTEMPLATE_PATH_SEGMENT = "operationaltemplate";

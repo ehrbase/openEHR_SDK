@@ -2,6 +2,16 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.10.0]
+ ### Added
+- Added EHRbase AQL `MeataData` debug execution data ([594](https://github.com/ehrbase/openEHR_SDK/pull/594))
+ ### Changed
+- OptParser now ignores node_id tags for all RM types that are not subtypes of LOCATABLE ([#596](https://github.com/ehrbase/openEHR_SDK/pull/596))
+- Removed OpenEhrClient::getFolder (use directoryCrudEndpoint()::getFolder instead) ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
+ ### Fixed 
+- Migrated test to run against EHRbase v2 ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
+- ContributionBuilder: set VERSION.lifecycle_state to 'complete'" ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
+
 ## [2.9.1]
  ### Added 
  ### Fixed 
@@ -391,3 +401,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.8.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.7.0...v2.8.0
 [2.9.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.8.0...v2.9.0
 [2.9.1]: https://github.com/ehrbase/openEHR_SDK/compare/v2.9.0...v2.9.1
+[2.10.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.9.1...v2.10.0
