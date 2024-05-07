@@ -2,6 +2,10 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [unreleased]
+ ### Added 
+ ### Fixed 
+
 ## [2.10.0]
  ### Added
 - Added EHRbase AQL `MeataData` debug execution data ([594](https://github.com/ehrbase/openEHR_SDK/pull/594))
@@ -402,3 +406,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.9.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.8.0...v2.9.0
 [2.9.1]: https://github.com/ehrbase/openEHR_SDK/compare/v2.9.0...v2.9.1
 [2.10.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.9.1...v2.10.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v2.10.0...HEAD
