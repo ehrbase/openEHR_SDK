@@ -68,9 +68,9 @@ public class MetaDataTest {
         metaData.setGenerator("DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)");
         metaData.setExecutedAql("SELECT e/ehr_id/value FROM EHR e");
         // debug info
-        metaData.setAdditionalProperty(MetaData.AdditionalProperty.fetch, 50);
-        metaData.setAdditionalProperty(MetaData.AdditionalProperty.offset, 100);
-        metaData.setAdditionalProperty(MetaData.AdditionalProperty.resultSize, 42);
+        metaData.setAdditionalProperty("fetch", 50);
+        metaData.setAdditionalProperty("offset", 100);
+        metaData.setAdditionalProperty("resultsize", 42);
 
         String json = objectMapper.writeValueAsString(metaData);
 
@@ -101,9 +101,9 @@ public class MetaDataTest {
         metaData.setGenerator("DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)");
         metaData.setExecutedAql("SELECT e/ehr_id/value FROM EHR e");
         // debug info
-        metaData.setAdditionalProperty(MetaData.AdditionalProperty.dryRun, true);
-        metaData.setAdditionalProperty(MetaData.AdditionalProperty.executedSQL, "SELECT TRUE");
-        metaData.setAdditionalProperty(MetaData.AdditionalProperty.queryPlan, Map.of("key", "value"));
+        metaData.setAdditionalProperty("dry_run", true);
+        metaData.setAdditionalProperty("executed_sql", "SELECT TRUE");
+        metaData.setAdditionalProperty("query_plan", Map.of("key", "value"));
 
         String json = objectMapper.writeValueAsString(metaData);
 
@@ -117,9 +117,9 @@ public class MetaDataTest {
                           "_created" : "2017-08-19T12:30:00.568+02:00",
                           "_generator" : "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)",
                           "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e",
-                          "_dry_run" : true,
-                          "_executed_sql" : "SELECT TRUE",
-                          "_query_plan" : {
+                          "dry_run" : true,
+                          "executed_sql" : "SELECT TRUE",
+                          "query_plan" : {
                             "key" : "value"
                           }
                         }""");
@@ -140,9 +140,9 @@ public class MetaDataTest {
 
         assertNull(metaData.getHref());
         assertNull(metaData.getGenerator());
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize));
+        assertNull(metaData.getAdditionalProperty("fetch"));
+        assertNull(metaData.getAdditionalProperty("offset"));
+        assertNull(metaData.getAdditionalProperty("resultsize"));
 
         assertEquals(MetaData.RESULTSET, metaData.getType());
         assertEquals("1.0.4", metaData.getSchemaVersion());
@@ -179,9 +179,9 @@ public class MetaDataTest {
         assertEquals(
                 "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)", metaData.getGenerator());
         assertEquals("SELECT e/ehr_id/value FROM EHR e", metaData.getExecutedAql());
-        assertEquals(50, metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
-        assertEquals(100, metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
-        assertEquals(20, metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize));
+        assertEquals(50, metaData.getAdditionalProperty("fetch"));
+        assertEquals(100, metaData.getAdditionalProperty("offset"));
+        assertEquals(20, metaData.getAdditionalProperty("resultsize"));
     }
 
     @Test
@@ -196,9 +196,9 @@ public class MetaDataTest {
                           "_created" : "2017-08-19T00:25:47.568+02:00",
                           "_generator" : "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)",
                           "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e",
-                          "_dry_run" : true,
-                          "_executed_sql" : "SELECT TRUE",
-                          "_query_plan" : {
+                          "dry_run" : true,
+                          "executed_sql" : "SELECT TRUE",
+                          "query_plan" : {
                             "key" : "value"
                           }
                         }""",
@@ -213,9 +213,9 @@ public class MetaDataTest {
         assertEquals(
                 "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)", metaData.getGenerator());
         assertEquals("SELECT e/ehr_id/value FROM EHR e", metaData.getExecutedAql());
-        assertEquals(true, metaData.getAdditionalProperty(MetaData.AdditionalProperty.dryRun));
-        assertEquals("SELECT TRUE", metaData.getAdditionalProperty(MetaData.AdditionalProperty.executedSQL));
-        assertEquals(Map.of("key", "value"), metaData.getAdditionalProperty(MetaData.AdditionalProperty.queryPlan));
+        assertEquals(true, metaData.getAdditionalProperty("dry_run"));
+        assertEquals("SELECT TRUE", metaData.getAdditionalProperty("executed_sql"));
+        assertEquals(Map.of("key", "value"), metaData.getAdditionalProperty("query_plan"));
     }
 
     @Test
@@ -227,9 +227,9 @@ public class MetaDataTest {
 
         assertNotNull(metaData);
 
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize));
+        assertNull(metaData.getAdditionalProperty("fetch"));
+        assertNull(metaData.getAdditionalProperty("offset"));
+        assertNull(metaData.getAdditionalProperty("resultsize"));
 
         assertEquals("... the URI for the executed AQL - used only for GET executions ...", metaData.getHref());
         assertEquals(
@@ -254,10 +254,9 @@ public class MetaDataTest {
         assertEquals(
                 metaData.getCreated().atZoneSameInstant(ZoneOffset.UTC),
                 OffsetDateTime.parse("2017-02-16T13:50:11.308+01:00").atZoneSameInstant(ZoneOffset.UTC));
-        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize), 0);
-
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch));
-        assertNull(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset));
+        assertEquals(metaData.getAdditionalProperty("resultsize"), 0);
+        assertNull(metaData.getAdditionalProperty("fetch"));
+        assertNull(metaData.getAdditionalProperty("offset"));
         assertNull(metaData.getHref());
         assertNull(metaData.getGenerator());
     }
@@ -271,9 +270,9 @@ public class MetaDataTest {
         }));
 
         assertNotNull(metaData, "Expected meta to be null");
-        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch), 100);
-        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset), 0);
-        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize), 0);
+        assertEquals(metaData.getAdditionalProperty("fetch"), 100);
+        assertEquals(metaData.getAdditionalProperty("offset"), 0);
+        assertEquals(metaData.getAdditionalProperty("resultsize"), 0);
     }
 
     @Test
@@ -286,8 +285,8 @@ public class MetaDataTest {
         }));
 
         assertNotNull(metaData, "Expected meta to be null");
-        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.fetch), 100);
-        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.offset), 50);
-        assertEquals(metaData.getAdditionalProperty(MetaData.AdditionalProperty.resultSize), 0);
+        assertEquals(metaData.getAdditionalProperty("fetch"), 100);
+        assertEquals(metaData.getAdditionalProperty("offset"), 50);
+        assertEquals(metaData.getAdditionalProperty("resultsize"), 0);
     }
 }
