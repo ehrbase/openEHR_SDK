@@ -37,6 +37,7 @@ public class QueryResponseData {
 
     // the initial query without substitution (!)
     @JsonProperty(value = "q")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String query;
 
     @JsonProperty(value = "name")
