@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.function.Function;
+import javax.annotation.Nullable;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.QueryResultDto;
 
 /**
@@ -35,6 +37,95 @@ public class MetaData {
      * {@link MetaData} type for an AQL result.
      */
     public static final String RESULTSET = "RESULTSET";
+
+    /**
+     * Allows to store and retrieve {@link MetaData} <code>additional property</code> in a type safe manner.
+     *
+     * @see MetaData#setAdditionalProperty(String, Object)
+     * @param <T> of the additional property.
+     */
+    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true)
+    public interface AdditionalProperty<T> extends Function<Object, T> {
+
+        /**
+         * name of the JSON property field.
+         */
+        String getName();
+
+        @FunctionalInterface
+        interface BooleanProperty extends MetaData.AdditionalProperty<Boolean> {
+
+            @Override
+            default Boolean apply(Object o) {
+                return o instanceof Boolean ? (Boolean) o : null;
+            }
+        }
+
+        @FunctionalInterface
+        interface IntegerProperty extends AdditionalProperty<Integer> {
+
+            @Override
+            default Integer apply(Object o) {
+                return o instanceof Number ? ((Number) o).intValue() : null;
+            }
+        }
+
+        @FunctionalInterface
+        interface StringProperty extends MetaData.AdditionalProperty<String> {
+
+            @Override
+            default String apply(Object o) {
+                return o instanceof String ? (String) o : null;
+            }
+        }
+
+        @FunctionalInterface
+        interface JSONProperty extends MetaData.AdditionalProperty<Map<String, Object>> {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            default Map<String, Object> apply(Object o) {
+                return o instanceof Map ? (Map<String, Object>) o : null;
+            }
+        }
+
+        /**
+         * Extracted from the query <code>fetch</code> parameter or from the server default.
+         * <pre>
+         * Not part of the standard spec, but returned by openEHR since version <code>1.0.0</code> for debugging purposes.
+         * </pre>
+         */
+        IntegerProperty fetch = () -> "fetch";
+
+        /**
+         * Extracted from the query <code>limit</code> parameter.
+         * <pre>
+         * Not part of the standard spec, but returned by openEHR since version <code>1.0.0</code> for debugging purposes.
+         * </pre>
+         */
+        IntegerProperty offset = () -> "offset";
+
+        /**
+         * Size of the returned rows.
+         */
+        IntegerProperty resultSize = () -> "resultsize";
+
+        /**
+         * ehrbase execution-option result - dry_run status
+         */
+        BooleanProperty dryRun = () -> "_dry_run";
+
+        /**
+         * ehrbase execution-option result - executed SQL
+         */
+        StringProperty executedSQL = () -> "_executed_sql";
+
+        /**
+         * ehrbase execution-option result - query plan json
+         */
+        JSONProperty queryPlan = () -> "_query_plan";
+    }
 
     @JsonProperty(value = "_href")
     private String href;
@@ -136,6 +227,37 @@ public class MetaData {
 
     public void setExecutedAql(String executedAql) {
         this.executedAql = executedAql;
+    }
+
+    /**
+     * Set an {@link AdditionalProperty} with the given value.
+     *
+     * <pre>{@code
+     *  var meta = new MetaData();
+     *  meta.setAdditionalProperty(MetaData.AdditionalProperty.fetch, 10L)
+     *
+     *  Long fetch = meta.getAdditionalProperty(MetaData.AdditionalProperty.fetch); // 10L
+     *  // assign to box class to prevent accidental 0 cast.
+     *  Long offset = meta.getAdditionalProperty(MetaData.AdditionalProperty.offset); // -> null
+     *  }</pre>
+     * @param property to set
+     * @param value to use
+     * @param <T> of the {@link AdditionalProperty}
+     */
+    @Deprecated(forRemoval = true)
+    public <T> void setAdditionalProperty(AdditionalProperty<T> property, @Nullable T value) {
+        setAdditionalProperty(property.getName(), value);
+    }
+
+    /**
+     * Get an {@link AdditionalProperty} value or <code>null</code> if it does not exist
+     *
+     * @see #setAdditionalProperty(AdditionalProperty, Object)
+     */
+    @Deprecated(forRemoval = true)
+    public <T> @Nullable T getAdditionalProperty(AdditionalProperty<T> property) {
+        Object prop = additionalProperties().get(property.getName());
+        return prop != null ? property.apply(prop) : null;
     }
 
     public <T> T getAdditionalProperty(String name, Class<T> type) {

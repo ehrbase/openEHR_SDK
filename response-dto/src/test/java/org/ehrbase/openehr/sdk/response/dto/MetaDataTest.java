@@ -152,13 +152,14 @@ public class MetaDataTest {
 
         // additional properties
         assertEquals("a_string", metaData.getAdditionalProperty("string_value"));
-        assertEquals(50, metaData.getAdditionalProperty("numeric_value"));
+        assertEquals(50, metaData.getAdditionalProperty("numeric_value", Integer.class));
         assertEquals(true, metaData.getAdditionalProperty("boolean_value"));
         assertEquals(Map.of("key", "value"), metaData.getAdditionalProperty("json_value"));
     }
 
     @Test
     @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fromQueryResult() {
 
         MetaData metaData = new MetaData(DTOFixtures.fixtureQueryResultResultDto(resultDto -> {
@@ -180,6 +181,7 @@ public class MetaDataTest {
 
     @Test
     @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fromQueryResultDoesContainFetchDefaultOffset() {
 
         MetaData metaData = new MetaData(DTOFixtures.fixtureQueryResultResultDto(resultDto -> {
@@ -195,6 +197,7 @@ public class MetaDataTest {
 
     @Test
     @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     void fromQueryResultContainsFetchOffset() {
 
         MetaData metaData = new MetaData(DTOFixtures.fixtureQueryResultResultDto(resultDto -> {
