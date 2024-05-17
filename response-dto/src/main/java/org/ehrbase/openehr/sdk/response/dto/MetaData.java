@@ -56,12 +56,13 @@ public class MetaData {
 
     /**
      * Meta additional property of type <code>any</code>.
+     * The entries are ordered by key.
      */
     private final Map<String, Object> additionalProperties = new TreeMap<>();
 
     public MetaData() {}
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public MetaData(QueryResultDto queryResultDto) {
 
         // initialize basic response meta data
