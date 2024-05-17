@@ -44,6 +44,8 @@ public class MetaData {
      * @see MetaData#setAdditionalProperty(String, Object)
      * @param <T> of the additional property.
      */
+    @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true)
     public interface AdditionalProperty<T> extends Function<Object, T> {
 
         /**
@@ -145,11 +147,13 @@ public class MetaData {
 
     /**
      * Meta additional property of type <code>any</code>.
+     * The entries are ordered by key.
      */
     private final Map<String, Object> additionalProperties = new TreeMap<>();
 
     public MetaData() {}
 
+    @Deprecated(forRemoval = true)
     public MetaData(QueryResultDto queryResultDto) {
 
         // initialize basic response meta data
@@ -159,7 +163,7 @@ public class MetaData {
 
         // we always add the response set size - also in case it is empty
         setAdditionalProperty(
-                AdditionalProperty.resultSize,
+                "resultsize",
                 Optional.ofNullable(queryResultDto.getResultSet())
                         .map(List::size)
                         .orElse(0));
@@ -168,8 +172,8 @@ public class MetaData {
         Integer resultLimit = queryResultDto.getLimit();
         Integer resultOffset = queryResultDto.getOffset();
         if (resultLimit != null) {
-            setAdditionalProperty(AdditionalProperty.fetch, resultLimit);
-            setAdditionalProperty(AdditionalProperty.offset, resultOffset != null ? resultOffset : 0);
+            setAdditionalProperty("fetch", resultLimit);
+            setAdditionalProperty("offset", resultOffset != null ? resultOffset : 0);
         }
         // the following properties needs to be specified by the application
         this.href = null;
@@ -240,6 +244,7 @@ public class MetaData {
      * @param value to use
      * @param <T> of the {@link AdditionalProperty}
      */
+    @Deprecated(forRemoval = true)
     public <T> void setAdditionalProperty(AdditionalProperty<T> property, @Nullable T value) {
         setAdditionalProperty(property.getName(), value);
     }
@@ -249,15 +254,22 @@ public class MetaData {
      *
      * @see #setAdditionalProperty(AdditionalProperty, Object)
      */
+    @Deprecated(forRemoval = true)
     public <T> @Nullable T getAdditionalProperty(AdditionalProperty<T> property) {
         Object prop = additionalProperties().get(property.getName());
-        return prop != null ? (T) property.apply(prop) : null;
+        return prop != null ? property.apply(prop) : null;
     }
 
-    // Internal access to additional properties
+    public <T> T getAdditionalProperty(String name, Class<T> type) {
+        return type.cast(getAdditionalProperty(name));
+    }
+
+    public Object getAdditionalProperty(String name) {
+        return additionalProperties.get(name);
+    }
 
     @JsonAnySetter
-    private void setAdditionalProperty(String name, Object value) {
+    public void setAdditionalProperty(String name, Object value) {
         additionalProperties.put(name, value);
     }
 
