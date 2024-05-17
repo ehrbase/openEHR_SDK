@@ -17,7 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.response.dto;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.openehr.sdk.response.dto.util.JacksonTestUtil.objectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,11 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
-import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.response.dto.util.DTOFixtures;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +64,7 @@ public class MetaDataTest {
         metaData.setCreated(OffsetDateTime.parse("2017-08-19T12:30:00.568+02:00"));
         metaData.setGenerator("DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)");
         metaData.setExecutedAql("SELECT e/ehr_id/value FROM EHR e");
-        //additional properties
+        // additional properties
         metaData.setAdditionalProperty("string_value", "a_string");
         metaData.setAdditionalProperty("numeric_value", 50);
         metaData.setAdditionalProperty("boolean_value", true);
@@ -153,7 +150,7 @@ public class MetaDataTest {
                 "DIPS.OpenEhr.ResultSets.Serialization.Json.ResultSetJsonWriter (5.0.0.0)", metaData.getGenerator());
         assertEquals("SELECT e/ehr_id/value FROM EHR e", metaData.getExecutedAql());
 
-        //additional properties
+        // additional properties
         assertEquals("a_string", metaData.getAdditionalProperty("string_value"));
         assertEquals(50, metaData.getAdditionalProperty("numeric_value"));
         assertEquals(true, metaData.getAdditionalProperty("boolean_value"));
@@ -171,7 +168,9 @@ public class MetaDataTest {
         assertNotNull(metaData, "Expected meta to be null");
         assertEquals("RESULTSET", metaData.getType());
         assertEquals("SELECT e/ehr_id/value FROM EHR e LIMIT 100 OFFSET 1", metaData.getExecutedAql());
-        assertEquals(OffsetDateTime.parse("2017-02-16T13:50:11.308+01:00").atZoneSameInstant(ZoneOffset.UTC), metaData.getCreated().atZoneSameInstant(ZoneOffset.UTC));
+        assertEquals(
+                OffsetDateTime.parse("2017-02-16T13:50:11.308+01:00").atZoneSameInstant(ZoneOffset.UTC),
+                metaData.getCreated().atZoneSameInstant(ZoneOffset.UTC));
         assertEquals(0, metaData.getAdditionalProperty("resultsize"));
         assertNull(metaData.getAdditionalProperty("fetch"));
         assertNull(metaData.getAdditionalProperty("offset"));
