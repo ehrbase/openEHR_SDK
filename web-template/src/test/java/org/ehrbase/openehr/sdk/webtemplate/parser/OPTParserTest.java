@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 vitasystems GmbH.
+ * Copyright (c) 2024 Vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
