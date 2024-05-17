@@ -229,7 +229,7 @@
                             <version>2.39.0</version>
                         </palantirJavaFormat>
                         <licenseHeader>
-                            <file>${license-header.dir}/license-header</file>
+                            <file>${license-header.dir}/spotless-lic-header</file>
                         </licenseHeader>
                     </java>
                 </configuration>
