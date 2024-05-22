@@ -28,6 +28,8 @@ import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
+import org.ehrbase.openehr.sdk.aql.serializer.ObjectPathDeserializer;
+import org.ehrbase.openehr.sdk.aql.serializer.ObjectPathSerializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateDeserializer;
 import org.ehrbase.openehr.sdk.aql.serializer.PredicateSerializer;
 
@@ -61,10 +63,12 @@ public final class IdentifiedPath implements ColumnExpression, Operand, Comparis
         this.rootPredicate = new ArrayList<>(rootPredicate);
     }
 
+    @JsonSerialize(using = ObjectPathSerializer.class)
     public AqlObjectPath getPath() {
         return path;
     }
 
+    @JsonDeserialize(using = ObjectPathDeserializer.class)
     public void setPath(AqlObjectPath path) {
         this.path = path;
     }
