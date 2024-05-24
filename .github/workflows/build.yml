@@ -34,7 +34,7 @@ jobs:
 
       - name: Sonar - Analyze
         # Dependabot has no access to the SONAR_TOKEN secret, so we need to skip sonar.
-        if: ${{ github.actor != 'dependabot[bot]' }}
+        if: ${{ github.actor != 'dependabot[bot]' && github.repository_owner == 'ehrbase' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
