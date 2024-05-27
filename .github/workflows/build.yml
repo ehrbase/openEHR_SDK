@@ -1,4 +1,4 @@
-name: build
+name: "Build & Test"
 
 # we have multiple workflows - this helps to distinguish for them
 run-name: "${{ github.event.pull_request.title && github.event.pull_request.title || github.ref_name }} - Build & Test"
@@ -32,17 +32,10 @@ jobs:
       - name: Jacoco - Integration Tests
         run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify verify jacoco:report
 
-      - name: Sonar - Analyze
-        # Dependabot has no access to the SONAR_TOKEN secret, so we need to skip sonar.
-        if: ${{ github.actor != 'dependabot[bot]' && github.repository_owner == 'ehrbase' }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn --batch-mode sonar:sonar \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.organization=ehrbase \
-            -Dsonar.projectKey=ehrbase_openEHR_SDK \
-            -Dsonar.exclusions=test/** \
-            -Dsonar.coverage.exclusions=test/**,test-data/**/*,opt-14/**/*,response-dto/**/* \
-            -Dsonar.coverage.jacoco.xmlReportPaths=${{ github.workspace }}/test-coverage/target/site/jacoco-overall-coverage/jacoco.xml
-
+      - name: Upload - Jacoco Overall Coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-coverage-overall
+          path: ${{ github.workspace }}/test-coverage/target/site/jacoco-overall-coverage/jacoco.xml
+          if-no-files-found: error

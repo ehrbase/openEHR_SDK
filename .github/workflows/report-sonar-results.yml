@@ -27,7 +27,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
-      
+
       # Download jacoco overall coverage from build & test output
       - name: Download - Jacoco Overall Coverage
         uses: actions/download-artifact@v4
