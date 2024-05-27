@@ -42,6 +42,8 @@ public final class IdentifiedPath implements ColumnExpression, Operand, Comparis
 
     private List<AndOperatorPredicate> rootPredicate;
 
+    @JsonSerialize(using = ObjectPathSerializer.class)
+    @JsonDeserialize(using = ObjectPathDeserializer.class)
     private AqlObjectPath path;
 
     public AbstractContainmentExpression getRoot() {
@@ -63,12 +65,10 @@ public final class IdentifiedPath implements ColumnExpression, Operand, Comparis
         this.rootPredicate = new ArrayList<>(rootPredicate);
     }
 
-    @JsonSerialize(using = ObjectPathSerializer.class)
     public AqlObjectPath getPath() {
         return path;
     }
 
-    @JsonDeserialize(using = ObjectPathDeserializer.class)
     public void setPath(AqlObjectPath path) {
         this.path = path;
     }
