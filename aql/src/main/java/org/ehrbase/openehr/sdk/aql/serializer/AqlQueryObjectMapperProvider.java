@@ -19,8 +19,6 @@ package org.ehrbase.openehr.sdk.aql.serializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 
 /**
  * @author Stefan Spiska
