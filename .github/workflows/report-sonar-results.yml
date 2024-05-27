@@ -16,7 +16,18 @@ jobs:
   collect-junit-reports:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      - name: Setup - Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      
       # Download jacoco overall coverage from build & test output
       - name: Download - Jacoco Overall Coverage
         uses: actions/download-artifact@v4
