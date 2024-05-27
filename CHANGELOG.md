@@ -4,7 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
- ### Fixed 
+- Make AqlObjectPath serializable ([606](https://github.com/ehrbase/openEHR_SDK/pull/606))
 
 ## [2.10.0]
  ### Added
