@@ -14,7 +14,8 @@ on:
 # Style-check it's a dedicated workflow. This allows us to open a PR, run all tests and fix styling issue later ;).
 #
 jobs:
-  check-codestyle:
+  spotless:
+    name: Spotless-Check
     runs-on: ubuntu-latest
 
     steps:
