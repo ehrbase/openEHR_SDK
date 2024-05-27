@@ -42,8 +42,6 @@ public final class IdentifiedPath implements ColumnExpression, Operand, Comparis
 
     private List<AndOperatorPredicate> rootPredicate;
 
-    @JsonSerialize(using = ObjectPathSerializer.class)
-    @JsonDeserialize(using = ObjectPathDeserializer.class)
     private AqlObjectPath path;
 
     public AbstractContainmentExpression getRoot() {

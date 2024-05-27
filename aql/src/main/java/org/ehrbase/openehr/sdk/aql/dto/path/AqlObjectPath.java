@@ -22,15 +22,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
 import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
+import org.ehrbase.openehr.sdk.aql.serializer.ObjectPathDeserializer;
+import org.ehrbase.openehr.sdk.aql.serializer.ObjectPathSerializer;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.util.Freezable;
 
+@JsonSerialize(using = ObjectPathSerializer.class)
+@JsonDeserialize(using = ObjectPathDeserializer.class)
 public final class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> {
 
     public static class PathNode implements Freezable<PathNode> {

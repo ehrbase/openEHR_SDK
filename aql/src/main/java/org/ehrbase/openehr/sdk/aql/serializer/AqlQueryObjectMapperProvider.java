@@ -39,14 +39,7 @@ public class AqlQueryObjectMapperProvider {
     }
 
     private static ObjectMapper init() {
-
         ObjectMapper aqlobjectMapper = new ObjectMapper();
-
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(AqlObjectPath.class, new ObjectPathSerializer());
-        simpleModule.addDeserializer(AqlObjectPath.class, new ObjectPathDeserializer());
-
-        aqlobjectMapper.registerModule(simpleModule);
         aqlobjectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         return aqlobjectMapper;
     }
