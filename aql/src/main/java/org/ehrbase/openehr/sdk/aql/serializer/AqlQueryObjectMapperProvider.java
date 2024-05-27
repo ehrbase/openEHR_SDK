@@ -19,8 +19,6 @@ package org.ehrbase.openehr.sdk.aql.serializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
 
 /**
  * @author Stefan Spiska
@@ -39,14 +37,7 @@ public class AqlQueryObjectMapperProvider {
     }
 
     private static ObjectMapper init() {
-
         ObjectMapper aqlobjectMapper = new ObjectMapper();
-
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(AqlObjectPath.class, new ObjectPathSerializer());
-        simpleModule.addDeserializer(AqlObjectPath.class, new ObjectPathDeserializer());
-
-        aqlobjectMapper.registerModule(simpleModule);
         aqlobjectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         return aqlobjectMapper;
     }
