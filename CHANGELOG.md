@@ -2,6 +2,10 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.12.0]
+ ### Changed 
+- Bumped libraries
+
 ## [2.11.0]
  ### Added 
 - Make AqlObjectPath serializable ([606](https://github.com/ehrbase/openEHR_SDK/pull/606))
@@ -407,3 +411,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.9.1]: https://github.com/ehrbase/openEHR_SDK/compare/v2.9.0...v2.9.1
 [2.10.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.9.1...v2.10.0
 [2.11.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.10.0...v2.11.0
+[2.12.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.11.0...v2.12.0
