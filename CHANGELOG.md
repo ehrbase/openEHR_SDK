@@ -3,8 +3,8 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
- ### Fixed 
+ ### Changed 
+- Bumped libraries
 
 ## [2.11.0]
  ### Added 
