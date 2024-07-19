@@ -33,6 +33,7 @@ import org.ehrbase.openehr.sdk.response.dto.ehrscape.ContributionDto;
  */
 @JacksonXmlRootElement(localName = "ehr")
 @Deprecated(since = "2.14.0", forRemoval = true)
+@SuppressWarnings("java:S1133")
 public class EhrResponseData {
 
     @JsonProperty(value = "system_id")

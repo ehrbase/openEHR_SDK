@@ -22,8 +22,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 /**
  * @deprecated without replaced because used by EHRbase only.
  */
-@Deprecated(since = "2.14.0", forRemoval = true)
 @JacksonXmlRootElement
+@Deprecated(since = "2.14.0", forRemoval = true)
+@SuppressWarnings("java:S1133")
 public class VersionedCompositionResponseData {
     // TODO only for stub for now. Need to change it to real RM versioned_composition or alike later! makes swagger-ui
     // fail right with: Maximum call stack size exceeded

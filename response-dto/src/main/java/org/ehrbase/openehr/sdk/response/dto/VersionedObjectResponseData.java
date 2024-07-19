@@ -29,9 +29,9 @@ import java.time.format.DateTimeFormatter;
 /**
  * @deprecated without replaced because used by EHRbase only.
  */
-@Deprecated(since = "2.14.0", forRemoval = true)
 @JacksonXmlRootElement(localName = "ehr_status")
-@SuppressWarnings("java:S1452")
+@Deprecated(since = "2.14.0", forRemoval = true)
+@SuppressWarnings({"java:S1133", "java:S1452"})
 public class VersionedObjectResponseData<T> {
 
     @JsonProperty(value = "_type")
