@@ -17,6 +17,10 @@
  */
 package org.ehrbase.openehr.sdk.response.dto.ehrscape;
 
+/**
+ * @deprecated without replaced because used by EHRbase only.
+ */
+@Deprecated(since = "2.14.0", forRemoval = true)
 public class EhrStatusDto {
 
     String subjectId;

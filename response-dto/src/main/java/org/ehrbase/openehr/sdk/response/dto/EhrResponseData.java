@@ -28,8 +28,11 @@ import org.ehrbase.openehr.sdk.response.dto.ehrscape.ContributionDto;
 
 /**
  * Basic set of response data regarding EHR operations. Used as default or when `PREFER` header requests minimal response.
+ *
+ * @deprecated without replaced because used by EHRbase only.
  */
 @JacksonXmlRootElement(localName = "ehr")
+@Deprecated(since = "2.14.0", forRemoval = true)
 public class EhrResponseData {
 
     @JsonProperty(value = "system_id")

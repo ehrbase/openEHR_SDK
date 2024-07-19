@@ -3,6 +3,8 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
+ ### Changed
+- Deprecated `response-dto` `EHR_(STATUS)` related classes that are only used by EHRbase ([621](https://github.com/ehrbase/openEHR_SDK/pull/621))
  ### Added 
  ### Fixed 
 
