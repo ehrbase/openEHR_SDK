@@ -42,14 +42,14 @@ import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJs
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-public class DefaultValuesTest {
+class DefaultValuesTest {
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         Map<String, String> currentValues = new HashMap<>();
         for (Iterator<Map.Entry<String, JsonNode>> it = ArchieObjectMapperProvider.getObjectMapper()
                         .readTree(IOUtils.toString(
@@ -99,7 +99,7 @@ public class DefaultValuesTest {
     }
 
     @Test
-    public void unmarshal() throws IOException, XmlException {
+    void unmarshal() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.CORONA_ANAMNESE.getStream())

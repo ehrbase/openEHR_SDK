@@ -26,18 +26,17 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshallerTest;
 import org.ehrbase.openehr.sdk.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FlatJsonTest {
+class FlatJsonTest {
 
-    public static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+    private static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
 
     @Test
-    public void roundTrip() throws IOException {
+    void roundTrip() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_OTHER_PARTICIPATION;
         String templateId = "Corona_Anamnese";
@@ -46,7 +45,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripSSIAD_PRIeSM() throws IOException {
+    void roundTripSSIAD_PRIeSM() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.SSIAD_PRIESM;
         String templateId = testData.getTemplate().getTemplateId();
@@ -55,7 +54,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripFeederAudit() throws IOException {
+    void roundTripFeederAudit() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_FEEDER_AUDIT;
         String templateId = "Corona_Anamnese";
@@ -64,7 +63,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripFeederAuditRaw() throws IOException {
+    void roundTripFeederAuditRaw() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_FEEDER_AUDIT_RAW;
         String templateId = "Corona_Anamnese";
@@ -90,7 +89,7 @@ public class FlatJsonTest {
         String expected = IOUtils.toString(
                 CompositionTestDataSimSDTJson.CORONA_WITH_FEEDER_AUDIT.getStream(), StandardCharsets.UTF_8);
 
-        List<String> errors = FlatJsonMarshallerTest.compere(actual, expected);
+        List<String> errors = FlatTestHelper.compere(actual, expected);
 
         softAssertions
                 .assertThat(errors)
@@ -103,7 +102,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripRaw() throws IOException {
+    void roundTripRaw() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.CORONA_WITH_RAW;
         String templateId = "Corona_Anamnese";
@@ -128,7 +127,7 @@ public class FlatJsonTest {
 
         String expected = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
 
-        List<String> errors = FlatJsonMarshallerTest.compere(actual, expected);
+        List<String> errors = FlatTestHelper.compere(actual, expected);
 
         softAssertions
                 .assertThat(errors)
@@ -141,7 +140,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripAction() throws IOException {
+    void roundTripAction() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.EREACT_COVID_MANAGEMENT;
         String templateId = OperationalTemplateTestData.EREACT_COVID_MANAGEMENT.getTemplateId();
@@ -150,7 +149,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripNCD() throws IOException {
+    void roundTripNCD() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.NCD;
         String templateId = OperationalTemplateTestData.NCD.getTemplateId();
@@ -202,7 +201,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripVitalSigns() throws IOException {
+    void roundTripVitalSigns() throws IOException {
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.VITALSIGNS;
         String templateId = "EHRN Vital signs.v2";
 
@@ -210,7 +209,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripIcd() throws IOException {
+    void roundTripIcd() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST;
         String templateId = "Adverse Reaction List.v1";
@@ -219,7 +218,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundMultiList() throws IOException {
+    void roundMultiList() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.MULTI_LIST;
         String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
@@ -228,7 +227,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundNameWithAnd() throws IOException {
+    void roundNameWithAnd() throws IOException {
 
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.WORD_WITH_AND;
         String templateId = OperationalTemplateTestData.WORD_WITH_AND.getTemplateId();
@@ -237,7 +236,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripDeterioriationAssessment() throws IOException {
+    void roundTripDeterioriationAssessment() throws IOException {
 
         String templateId = "EREACT - Deterioriation assessment.v0";
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.DETERIORIATION_ASSESSMENT;
@@ -264,7 +263,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripAll() throws IOException {
+    void roundTripAll() throws IOException {
         String templateId = "test_all_types.en.v1";
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.ALL_TYPES;
 
@@ -282,7 +281,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripAlt() throws IOException {
+    void roundTripAlt() throws IOException {
 
         String templateId = "AlternativeEvents";
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS;
@@ -307,7 +306,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripMulti() throws IOException {
+    void roundTripMulti() throws IOException {
 
         String templateId = "ehrbase_multi_occurrence.de.v1";
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.MULTI_OCCURRENCE;
@@ -330,7 +329,7 @@ public class FlatJsonTest {
     }
 
     @Test
-    public void roundTripMissingCount() throws IOException {
+    void roundTripMissingCount() throws IOException {
         String templateId = "ehrbase_multi_occurrence.de.v1";
         CompositionTestDataSimSDTJson testData = CompositionTestDataSimSDTJson.MISSING_COUNT;
 
@@ -385,7 +384,7 @@ public class FlatJsonTest {
 
         String expected = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
 
-        List<String> errors = FlatJsonMarshallerTest.compere(actual, expected);
+        List<String> errors = FlatTestHelper.compere(actual, expected);
 
         softAssertions
                 .assertThat(errors)

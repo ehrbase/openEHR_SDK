@@ -28,12 +28,12 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalXML;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CanonicalXMLTest {
+class CanonicalXMLTest {
 
     @Test
-    public void marshal() throws IOException {
+    void marshal() throws IOException {
         String value = IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), UTF_8);
 
         CanonicalXML cut = new CanonicalXML();
@@ -46,7 +46,7 @@ public class CanonicalXMLTest {
     }
 
     @Test
-    public void unmarshal() throws IOException {
+    void unmarshal() throws IOException {
         String value = IOUtils.toString(CompositionTestDataCanonicalXML.ALL_TYPES.getStream(), UTF_8);
         CanonicalXML cut = new CanonicalXML();
 
@@ -57,7 +57,7 @@ public class CanonicalXMLTest {
     }
 
     @Test
-    public void unmarshalWithDefaultSchema() throws IOException {
+    void unmarshalWithDefaultSchema() throws IOException {
         String value = IOUtils.toString(CompositionTestDataCanonicalXML.DIADEM_DEFAULT_SCHEMA.getStream(), UTF_8);
         CanonicalXML cut = new CanonicalXML();
 
@@ -69,7 +69,7 @@ public class CanonicalXMLTest {
     }
 
     @Test
-    public void unmarshalWithDuplicatedSections() throws IOException {
+    void unmarshalWithDuplicatedSections() throws IOException {
         String value = IOUtils.toString(CompositionTestDataCanonicalXML.REGISTRO_DE_ATENDIMENTO.getStream(), UTF_8);
         CanonicalXML cut = new CanonicalXML();
 
@@ -81,7 +81,7 @@ public class CanonicalXMLTest {
     }
 
     @Test
-    public void marshalInline() {
+    void marshalInline() {
         Folder folder = new Folder();
         folder.setName(new DvText("folder name"));
         folder.addItem(new PartyRef());

@@ -27,10 +27,11 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
@@ -55,7 +56,13 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
                     term + PATH_DIVIDER + "_uid",
                     null,
                     values,
-                    s -> rmObject.setUid(new HierObjectId(s)),
+                    value -> {
+                        if (StringUtils.countMatches(value, "::") == 2) {
+                            rmObject.setUid(new ObjectVersionId(value));
+                        } else {
+                            rmObject.setUid(new HierObjectId(value));
+                        }
+                    },
                     String.class,
                     consumedPaths);
 
@@ -68,7 +75,7 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
             rmObject.getLinks()
                     .addAll(links.entrySet().stream()
                             .map(e -> DefaultValues.createLink(e.getValue(), term + "/_link:" + e.getKey()))
-                            .collect(Collectors.toList()));
+                            .toList());
 
             consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths, false);
 
@@ -84,9 +91,10 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
             Map<FlatPathDto, String> nameValues = FlatHelper.filter(values, term + "/_name", false);
             if (!nameValues.isEmpty()) {
                 final DvText name;
-                boolean isDvCodedText = nameValues.keySet().stream()
-                        .anyMatch(e -> "code".equals(e.getLast().getAttributeName())
-                                && "_name".equals(e.getLast().getName()));
+                boolean isDvCodedText = nameValues.keySet().stream().anyMatch(e -> {
+                    FlatPathDto last = e.getLast();
+                    return "code".equals(last.getAttributeName()) && "_name".equals(last.getName());
+                });
 
                 if (isDvCodedText) {
                     name = new DvCodedText();
