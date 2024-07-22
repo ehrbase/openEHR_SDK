@@ -27,13 +27,13 @@ import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.serialisation.xmlencoding.CanonicalXML;
 import org.ehrbase.openehr.sdk.test_data.folder.FolderTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.folder.FolderTestDataCanonicalXML;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class FolderSerializerTest {
+class FolderSerializerTest {
 
     @Test
-    public void marshalBasicJsonFolder() throws IOException {
+    void marshalBasicJsonFolder() throws IOException {
 
         String value = IOUtils.toString(FolderTestDataCanonicalJson.SIMPLE_EMPTY_FOLDER.getStream(), UTF_8);
         CanonicalJson canonicalJson = new CanonicalJson();
@@ -49,7 +49,7 @@ public class FolderSerializerTest {
     }
 
     @Test
-    public void unmarshalBasicJsonFolder() throws IOException {
+    void unmarshalBasicJsonFolder() throws IOException {
 
         String value = IOUtils.toString(FolderTestDataCanonicalJson.SIMPLE_EMPTY_FOLDER.getStream(), UTF_8);
 
@@ -60,8 +60,8 @@ public class FolderSerializerTest {
     }
 
     @Test
-    @Ignore("Possible bug at Archie with missing XMLRootElement annotation for folders.")
-    public void marshalBasicXmlFolder() throws IOException {
+    @Disabled("Possible bug at Archie with missing XMLRootElement annotation for folders.")
+    void marshalBasicXmlFolder() throws IOException {
 
         String value = IOUtils.toString(FolderTestDataCanonicalXML.SIMPLE_EMPTY_FOLDER.getStrean(), UTF_8);
 

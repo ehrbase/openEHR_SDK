@@ -18,8 +18,11 @@
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
@@ -28,311 +31,317 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.generic.PartySelf;
-import java.io.IOException;
-import java.io.InputStream;
+import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
-import org.assertj.core.api.Assertions;
 import org.ehrbase.openehr.sdk.serialisation.exception.UnmarshalException;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
+import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJsonInterface;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-public class FlatJsonUnmarshallerTest {
+class FlatJsonUnmarshallerTest {
 
-    private Object thing;
+    private final ObjectMapper mapper = ArchieObjectMapperProvider.getObjectMapper();
 
     @Test
-    public void unmarshal() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
+    void unmarshal() {
 
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
-
-        String flat = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
-
-        Composition actual = cut.unmarshal(flat, webTemplate);
-
-        assertThat(actual).isNotNull();
-
-        Observation observation = (Observation) actual.itemAtPath("/content[openEHR-EHR-OBSERVATION.story.v1]");
+        Composition composition = unmarshallComposition(
+                CompositionTestDataSimSDTJson.CORONA, OperationalTemplateTestData.CORONA_ANAMNESE);
+        Observation observation = (Observation) composition.itemAtPath("/content[openEHR-EHR-OBSERVATION.story.v1]");
         assertThat(observation.getData().getOrigin().getValue()).hasToString("2020-05-11T22:53:12.039139+02:00");
         assertThat(observation.getSubject()).isNotNull();
         assertThat(observation.getSubject().getClass()).isEqualTo(PartySelf.class);
     }
 
     @Test
-    public void unmarshalUuid() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CONFORMANCE.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
+    void unmarshalUid() {
 
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
-
-        String flat = IOUtils.toString(
-                CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_OBSERVATION.getStream(),
-                StandardCharsets.UTF_8);
-
-        Composition actual = cut.unmarshal(flat, webTemplate);
-
-        assertThat(actual).isNotNull();
-
+        Composition composition = unmarshallComposition(
+                CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_OBSERVATION,
+                OperationalTemplateTestData.CONFORMANCE);
         Observation observation = (Observation)
-                actual.itemAtPath(
+                composition.itemAtPath(
                         "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]");
-        assertThat(observation.getUid().getValue()).hasToString("9fcc1c70-9349-444d-b9cb-8fa817697f5e");
+        assertThat(observation.getUid()).hasToString("9fcc1c70-9349-444d-b9cb-8fa817697f5e");
         assertThat(observation.getData().getUid()).isNull();
     }
 
     @Test
-    public void unmarshalMulti() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
+    void unmarshalHierObjectId() throws Exception {
 
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
+        Map<String, String> data =
+                flatCompostionMap(CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME);
 
-        String flat =
-                IOUtils.toString(CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
+        data.put("conformance-ehrbase.de.v0/_uid", "0e8c2c01-b92d-453e-828e-d33eb721b5a7");
+        String flatJson = mapper.writeValueAsString(data);
 
-        Composition actual = cut.unmarshal(flat, webTemplate);
-
-        assertThat(actual).isNotNull();
+        Composition composition = unmarshallComposition(flatJson, webTemplate);
+        assertThat(composition.getUid())
+                .isNotNull()
+                .isInstanceOf(HierObjectId.class)
+                .hasToString("0e8c2c01-b92d-453e-828e-d33eb721b5a7");
     }
 
     @Test
-    public void unmarshalAlt() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.ALT_EVENTS.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
+    void unmarshalObjectVersionId() throws Exception {
 
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
+        Map<String, String> data =
+                flatCompostionMap(CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME);
 
-        String flat =
-                IOUtils.toString(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8);
+        data.put("conformance-ehrbase.de.v0/_uid", "0e8c2c01-b92d-453e-828e-d33eb721b5a7::test.ehrbase::42");
+        String flatJson = mapper.writeValueAsString(data);
 
-        Composition actual = cut.unmarshal(flat, webTemplate);
-
-        assertThat(actual).isNotNull();
+        Composition composition = unmarshallComposition(flatJson, webTemplate);
+        assertThat(composition.getUid())
+                .isNotNull()
+                .isInstanceOf(ObjectVersionId.class)
+                .hasToString("0e8c2c01-b92d-453e-828e-d33eb721b5a7::test.ehrbase::42");
     }
 
     @Test
-    public void unmarshalAllTypes() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
+    void unmarshalMulti() {
 
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
+        Composition composition = unmarshallComposition(
+                CompositionTestDataSimSDTJson.MULTI_OCCURRENCE, OperationalTemplateTestData.MULTI_OCCURRENCE);
+        assertThat(composition).isNotNull();
+    }
 
-        String flat = IOUtils.toString(CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
+    @Test
+    void unmarshalAlt() {
 
-        Composition actual = cut.unmarshal(flat, webTemplate);
+        Composition composition = unmarshallComposition(
+                CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS, OperationalTemplateTestData.ALT_EVENTS);
+        assertThat(composition).isNotNull();
+    }
 
-        assertThat(actual).isNotNull();
+    @Test
+    void unmarshalAllTypes() {
+
+        Composition composition =
+                unmarshallComposition(CompositionTestDataSimSDTJson.ALL_TYPES, OperationalTemplateTestData.ALL_TYPES);
 
         // Choice Node was correctly parsed
-        Object choice = actual.itemAtPath(
+        DvQuantity choice = (DvQuantity) composition.itemAtPath(
                 "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0009]/value");
-        assertThat(choice).isNotNull();
-        assertThat(choice.getClass()).isEqualTo(DvQuantity.class);
-        assertThat(((DvQuantity) choice).getMagnitude()).isEqualTo(148.01210165023804d);
-        assertThat(((DvQuantity) choice).getUnits()).isEqualTo("mm[H20]");
+        assertThat(choice.getMagnitude()).isEqualTo(148.01210165023804d);
+        assertThat(choice.getUnits()).isEqualTo("mm[H20]");
     }
 
     @Test
-    public void unmarshalDeterioriationAssessment() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.DETERIORIATION_ASSESSMENT.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
+    void unmarshalDeterioriationAssessment() {
 
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
-
-        String flat = IOUtils.toString(
-                CompositionTestDataSimSDTJson.DETERIORIATION_ASSESSMENT.getStream(), StandardCharsets.UTF_8);
-
-        Composition actual = cut.unmarshal(flat, webTemplate);
-
-        assertThat(actual).isNotNull();
-    }
-
-    @Test
-    public void unmarshallNestedComposition() throws Exception {
-        var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.NESTED.getStream())
-                .getTemplate();
-        var webTemplate = new OPTParser(optTemplate).parse();
-
-        var json = IOUtils.toString(CompositionTestDataSimSDTJson.NESTED.getStream(), StandardCharsets.UTF_8);
-
-        var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
-
+        Composition composition = unmarshallComposition(
+                CompositionTestDataSimSDTJson.DETERIORIATION_ASSESSMENT,
+                OperationalTemplateTestData.DETERIORIATION_ASSESSMENT);
         assertThat(composition).isNotNull();
     }
 
     @Test
-    public void unmarshallIpsComposition() throws Exception {
-        var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.IPS.getStream())
-                .getTemplate();
-        var webTemplate = new OPTParser(optTemplate).parse();
+    void unmarshallNestedComposition() {
 
-        var json = IOUtils.toString(CompositionTestDataSimSDTJson.IPS.getStream(), StandardCharsets.UTF_8);
-
-        var composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
-
+        Composition composition =
+                unmarshallComposition(CompositionTestDataSimSDTJson.NESTED, OperationalTemplateTestData.NESTED);
         assertThat(composition).isNotNull();
     }
 
     @Test
-    public void DvDateTimeTest() throws Exception {
-        var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.CONFORMANCE.getStream())
-                .getTemplate();
-        var webTemplate = new OPTParser(optTemplate).parse();
-        Map<String, String> flat = getKeyValueFromFlatJson(
-                CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME.getStream());
+    void unmarshallIpsComposition() {
+
+        Composition composition =
+                unmarshallComposition(CompositionTestDataSimSDTJson.IPS, OperationalTemplateTestData.IPS);
+        assertThat(composition).isNotNull();
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            textBlock =
+                    """
+                        2022-11-01|2022-11-01
+                        2022-11|2022-11
+                        2022|2022
+                        2022-11-01T13|2022-11-01T13:00
+                        2022-11-01T13+02:00|2022-11-01T13:00+02:00
+                    """,
+            delimiterString = "|")
+    void validDvDateTime(String input, String expected) throws Exception {
+
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
+        Map<String, String> flat =
+                flatCompostionMap(CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME);
 
         String key = "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date_time";
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
-        for (TestCase testCase : Arrays.asList(
-                new TestCase("2022-11-01", "2022-11-01"),
-                new TestCase("2022-11", "2022-11"),
-                new TestCase("2022", "2022"),
-                new TestCase("2022-11-01T13", "2022-11-01T13:00"),
-                new TestCase("2022-11-01T13+02:00", "2022-11-01T13:00+02:00"))) {
-            flat.put(key, testCase.input);
-            String json = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(flat);
-            Composition actual = cut.unmarshal(json, webTemplate);
-            assertThat(actual).isNotNull();
-            Element element = (Element)
-                    actual.itemAtPath(
-                            "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0011]");
-            assertThat(element).isNotNull();
-            DvDateTime dateTime = (DvDateTime) element.getValue();
-            assertThat(dateTime.getValue().toString()).isEqualTo(testCase.expected);
-        }
+        flat.put(key, input);
+        String json = mapper.writeValueAsString(flat);
+
+        Composition composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
+        Element element = (Element)
+                composition.itemAtPath(
+                        "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0011]");
+        assertThat(element).isNotNull();
+        DvDateTime dateTime = (DvDateTime) element.getValue();
+        assertThat(dateTime.getValue()).hasToString(expected);
     }
 
-    @Test
-    public void DvTimeTest() throws Exception {
-        var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.CONFORMANCE.getStream())
-                .getTemplate();
-        var webTemplate = new OPTParser(optTemplate).parse();
-        Map<String, String> flat = getKeyValueFromFlatJson(
-                CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME.getStream());
+    @ParameterizedTest
+    @ValueSource(strings = {"2022-11", "2022-11-01", "2022-11-01T13"})
+    void invalidDvTimeTest(String input) throws Exception {
+
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
+        Map<String, String> flat =
+                flatCompostionMap(CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME);
 
         String key = "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_time";
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
-        for (TestCase testCase : Arrays.asList(
-                new TestCase("13:12:11", "13:12:11"),
-                new TestCase("13:12", "13:12"),
-                new TestCase("13", "13:00"),
-                new TestCase("13+02:00", "13:00+02:00"),
-                new TestCase("2022-11", null),
-                new TestCase("2022-11-01", null),
-                new TestCase("2022-11-01T13", null))) {
-            flat.put(key, testCase.input);
-            String json = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(flat);
-            Composition actual;
-            try {
-                actual = cut.unmarshal(json, webTemplate);
-            } catch (UnmarshalException ex) {
-                if (testCase.expected != null) {
-                    Assertions.fail("should not have failed", ex);
-                }
-                return;
-            }
-            if (testCase.expected == null) {
-                Assertions.fail(testCase.input + " should have failed");
-                return;
-            }
-            assertThat(actual).isNotNull();
-            Element element = (Element)
-                    actual.itemAtPath(
-                            "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0012]");
-            assertThat(element).isNotNull();
-            DvTime time = (DvTime) element.getValue();
-            assertThat(time.getValue().toString()).isEqualTo(testCase.expected);
-        }
+        flat.put(key, input);
+        String json = mapper.writeValueAsString(flat);
+
+        FlatJsonUnmarshaller unmarshaller = new FlatJsonUnmarshaller();
+        assertThatThrownBy(() -> unmarshaller.unmarshal(json, webTemplate))
+                .isInstanceOf(UnmarshalException.class)
+                .hasMessageContaining("Text '%s' could not be parsed, unparsed text found".formatted(input));
     }
 
-    @Test
-    public void DvDateTest() throws Exception {
-        var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.CONFORMANCE.getStream())
-                .getTemplate();
-        var webTemplate = new OPTParser(optTemplate).parse();
-        Map<String, String> flat = getKeyValueFromFlatJson(
-                CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME.getStream());
+    @ParameterizedTest
+    @CsvSource(
+            textBlock =
+                    """
+                13:12:11|13:12:11
+                13:12|13:12
+                13|13:00
+                13+02:00|13:00+02:00
+            """,
+            delimiterString = "|")
+    void validDvTimeTest(String input, String expected) throws Exception {
+
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
+        Map<String, String> flat =
+                flatCompostionMap(CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME);
+
+        String key = "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_time";
+
+        flat.put(key, input);
+        String json = mapper.writeValueAsString(flat);
+
+        Composition composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
+        DvTime time = (DvTime)
+                composition.itemAtPath(
+                        "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0012]/value");
+        assertThat(time.getValue()).hasToString(expected);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2022-11-01T13", "13:00:00", "T13"})
+    void invalidDvDateTest(String input) throws Exception {
+
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
+        Map<String, String> flat =
+                flatCompostionMap(CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME);
 
         String key = "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date";
-        FlatJsonUnmarshaller cut = new FlatJsonUnmarshaller();
 
-        for (TestCase testCase : Arrays.asList(
-                new TestCase("2022-11-01", "2022-11-01"),
-                new TestCase("2022-11", "2022-11"),
-                new TestCase("2022", "2022"),
-                new TestCase("2022-11-01T13", null),
-                new TestCase("13:00:00", null),
-                new TestCase("T13", null))) {
-            flat.put(key, testCase.input);
-            String json = ArchieObjectMapperProvider.getObjectMapper().writeValueAsString(flat);
-            Composition actual;
-            try {
-                actual = cut.unmarshal(json, webTemplate);
-            } catch (UnmarshalException ex) {
-                if (testCase.expected != null) {
-                    Assertions.fail("should not have failed", ex);
-                }
-                return;
-            }
-            if (testCase.expected == null) {
-                Assertions.fail(testCase.input + " should have failed");
-                return;
-            }
-            assertThat(actual).isNotNull();
-            Element element = (Element)
-                    actual.itemAtPath(
-                            "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0013]");
-            assertThat(element).isNotNull();
-            DvDate date = (DvDate) element.getValue();
-            assertThat(date.getValue().toString()).isEqualTo(testCase.expected);
-        }
+        flat.put(key, input);
+        String json = mapper.writeValueAsString(flat);
+
+        FlatJsonUnmarshaller unmarshaller = new FlatJsonUnmarshaller();
+        assertThatThrownBy(() -> unmarshaller.unmarshal(json, webTemplate))
+                .isInstanceOf(UnmarshalException.class)
+                .hasMessageContaining("Text '%s' could not be parsed".formatted(input));
     }
 
-    private static class TestCase {
-        public final String input;
-        public final String expected;
+    @ParameterizedTest
+    @CsvSource(
+            textBlock =
+                    """
+                2022-11-01|2022-11-01
+                2022-11|2022-11
+                2022|2022
+            """,
+            delimiterString = "|")
+    void validDvDateTest(String input, String expected) throws Exception {
 
-        public TestCase(String input, String expected) {
-            this.input = input;
-            this.expected = expected;
-        }
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
+        Map<String, String> flat =
+                flatCompostionMap(CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_DATE_TIME);
+
+        String key = "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_date";
+
+        flat.put(key, input);
+        String json = mapper.writeValueAsString(flat);
+
+        Composition composition = new FlatJsonUnmarshaller().unmarshal(json, webTemplate);
+        DvDate date = (DvDate)
+                composition.itemAtPath(
+                        "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value");
+        assertThat(date.getValue()).hasToString(expected);
     }
 
-    private Map<String, String> getKeyValueFromFlatJson(InputStream in) throws IOException {
+    // -- Helper --
+
+    private static WebTemplate webTemplateFromOTP(OperationalTemplateTestData data) {
+        WebTemplate webTemplate = null;
+        try (var in = data.getStream()) {
+            OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(in).getTemplate();
+            webTemplate = new OPTParser(template).parse();
+            assertThat(webTemplate).isNotNull();
+        } catch (Exception e) {
+            fail(e);
+        }
+        return webTemplate;
+    }
+
+    private static Composition unmarshallComposition(
+            CompositionTestDataSimSDTJsonInterface data, OperationalTemplateTestData templateData) {
+        WebTemplate webTemplate = webTemplateFromOTP(templateData);
+        return unmarshallComposition(data, webTemplate);
+    }
+
+    private static Composition unmarshallComposition(
+            CompositionTestDataSimSDTJsonInterface data, WebTemplate webTemplate) {
+        Composition composition = null;
+        try (var in = data.getStream()) {
+            String content = IOUtils.toString(in, StandardCharsets.UTF_8);
+            composition = unmarshallComposition(content, webTemplate);
+        } catch (Exception e) {
+            fail(e);
+        }
+        return composition;
+    }
+
+    private static Composition unmarshallComposition(String flatJson, WebTemplate webTemplate) {
+
+        return new FlatJsonUnmarshaller().unmarshal(flatJson, webTemplate);
+    }
+
+    private Map<String, String> flatCompostionMap(CompositionTestDataSimSDTJsonInterface data) {
         Map<String, String> currentValues = new HashMap<>();
-        for (Iterator<Map.Entry<String, JsonNode>> it = ArchieObjectMapperProvider.getObjectMapper()
-                        .readTree(IOUtils.toString(in, StandardCharsets.UTF_8))
-                        .fields();
-                it.hasNext(); ) {
-            Map.Entry<String, JsonNode> e = it.next();
-            currentValues.put(e.getKey(), e.getValue().textValue());
+        try (var in = data.getStream()) {
+            for (Iterator<Map.Entry<String, JsonNode>> it = ArchieObjectMapperProvider.getObjectMapper()
+                            .readTree(IOUtils.toString(in, StandardCharsets.UTF_8))
+                            .fields();
+                    it.hasNext(); ) {
+                Map.Entry<String, JsonNode> e = it.next();
+                currentValues.put(e.getKey(), e.getValue().textValue());
+            }
+        } catch (Throwable e) {
+            fail(e);
         }
         return currentValues;
     }

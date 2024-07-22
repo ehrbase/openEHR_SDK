@@ -17,8 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.structured;
 
-import static org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshallerTest.compere;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -27,18 +25,19 @@ import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatTestHelper;
 import org.ehrbase.openehr.sdk.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataStructuredJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-public class StructuredHelperTest {
+class StructuredHelperTest {
 
     @Test
-    public void convert() throws IOException {
+    void convert() throws IOException {
 
         CompositionTestDataStructuredJson structuredJson = CompositionTestDataStructuredJson.CORONA;
         CompositionTestDataSimSDTJson simSDTJson = CompositionTestDataSimSDTJson.CORONA;
@@ -48,7 +47,7 @@ public class StructuredHelperTest {
     }
 
     @Test
-    public void convertRevert() throws IOException {
+    void convertRevert() throws IOException {
 
         CompositionTestDataStructuredJson structuredJson = CompositionTestDataStructuredJson.CORONA;
         CompositionTestDataSimSDTJson simSDTJson = CompositionTestDataSimSDTJson.CORONA;
@@ -68,7 +67,7 @@ public class StructuredHelperTest {
     }
 
     @Test
-    public void convertMultiList() throws IOException {
+    void convertMultiList() throws IOException {
 
         CompositionTestDataStructuredJson structuredJson = CompositionTestDataStructuredJson.MULTI_LIST;
         CompositionTestDataSimSDTJson simSDTJson = CompositionTestDataSimSDTJson.MULTI_LIST;
@@ -78,7 +77,7 @@ public class StructuredHelperTest {
     }
 
     @Test
-    public void convertRevertMultiList() throws IOException {
+    void convertRevertMultiList() throws IOException {
 
         CompositionTestDataStructuredJson structuredJson = CompositionTestDataStructuredJson.MULTI_LIST;
         CompositionTestDataSimSDTJson simSDTJson = CompositionTestDataSimSDTJson.MULTI_LIST;
@@ -100,7 +99,7 @@ public class StructuredHelperTest {
         RMDataFormat flatJson =
                 new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, templateId);
 
-        List<String> errors = compere(flatJson.marshal(flatJson.unmarshal(actual)), expected);
+        List<String> errors = FlatTestHelper.compere(flatJson.marshal(flatJson.unmarshal(actual)), expected);
 
         SoftAssertions softAssertions = new SoftAssertions();
 

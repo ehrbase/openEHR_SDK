@@ -41,12 +41,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CanonicalJsonMarshallingTest {
+class CanonicalJsonMarshallingTest {
 
     @Test
-    public void UnmarshalMultimedia() throws IOException {
+    void UnmarshalMultimedia() throws IOException {
 
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/multimedia.json")));
 
@@ -57,7 +57,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void UnmarshalMultimediaElement() throws IOException {
+    void UnmarshalMultimediaElement() throws IOException {
 
         String value =
                 new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/element_multimedia.json")));
@@ -69,7 +69,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void UnmarshalItemTree() throws IOException {
+    void UnmarshalItemTree() throws IOException {
 
         String value = new String(
                 Files.readAllBytes(Paths.get("src/test/resources/sample_data/item_tree_with_multimedia.json")));
@@ -81,7 +81,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void UnmarshalPartialDate() throws IOException {
+    void UnmarshalPartialDate() throws IOException {
 
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/partialdvdate.json")));
 
@@ -94,7 +94,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void MarshalDuration() {
+    void MarshalDuration() {
         DvDuration duration = new DvDuration(Duration.ofDays(30L));
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(duration);
@@ -103,7 +103,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void MarshalEmptyDvText() {
+    void MarshalEmptyDvText() {
         DvText dvText = new DvText("");
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(dvText);
@@ -112,7 +112,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void MarshalDvDateTimeWithZero() {
+    void MarshalDvDateTimeWithZero() {
         DvDateTime dvDateTime = new DvDateTime("2022-02-25T10:55:41.400Z");
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(dvDateTime);
@@ -124,7 +124,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void MarshalDvTimeWithZero() {
+    void MarshalDvTimeWithZero() {
         DvTime dvTime = new DvTime("10:55:41.400Z");
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(dvTime);
@@ -134,7 +134,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void MarshalEmptyContent() {
+    void MarshalEmptyContent() {
         ItemTree itemTree = new ItemTree();
         itemTree.setNameAsString("test");
         CanonicalJson cut = new CanonicalJson();
@@ -150,7 +150,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void UnmarshalPartialDateTime() throws IOException {
+    void UnmarshalPartialDateTime() throws IOException {
 
         String value =
                 new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/partialdvdatetime.json")));
@@ -165,7 +165,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void marshallContribution() {
+    void marshallContribution() {
         List<ObjectRef<? extends ObjectId>> versions = new ArrayList<>();
         versions.add(new ObjectRef<>(
                 new HierObjectId("COMPOSITION"),
@@ -184,7 +184,7 @@ public class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    public void marshallEhr() {
+    void marshallEhr() {
         List<ObjectRef<? extends ObjectId>> compositions = new ArrayList<>();
         compositions.add(new ObjectRef<>(
                 new HierObjectId("COMPOSITION"),
@@ -215,7 +215,7 @@ public class CanonicalJsonMarshallingTest {
 
     // check that dot is not converted into a comma!
     @Test
-    public void MarshalDvDateTime() {
+    void MarshalDvDateTime() {
         DvDateTime dvDateTime = new DvDateTime("2021-10-01T10:32:51.543+07:00");
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(dvDateTime);

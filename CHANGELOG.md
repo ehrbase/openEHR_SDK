@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+- Fix flat format parsing of `ObjectVersionId` ([622](https://github.com/ehrbase/openEHR_SDK/pull/622))
 
 ## [2.14.0]
  ### Changed 
