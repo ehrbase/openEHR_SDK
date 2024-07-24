@@ -27,14 +27,17 @@ import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.ehrbase.openehr.sdk.webtemplate.path.flat.FlatPathDto;
 
 public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<Locatable> {
@@ -48,54 +51,16 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
             Set<String> consumedPaths,
             Context<Map<FlatPathDto, String>> context) {
 
-        if (RmConstants.ELEMENT.equals(context.getNodeDeque().peek().getRmType())
-                || !context.getFlatHelper().skip(context)) {
+        String rmType = Optional.ofNullable(context.getNodeDeque().peek())
+                .map(WebTemplateNode::getRmType)
+                .orElse(null);
 
-            setValue(
-                    term + PATH_DIVIDER + "_uid",
-                    null,
-                    values,
-                    s -> rmObject.setUid(new HierObjectId(s)),
-                    String.class,
-                    consumedPaths);
+        if (RmConstants.ELEMENT.equals(rmType) || !context.getFlatHelper().skip(context)) {
 
-            Map<Integer, Map<FlatPathDto, String>> links = extractMultiValued(term, "_link", values);
-
-            if (rmObject.getLinks() == null) {
-                rmObject.setLinks(new ArrayList<>());
-            }
-
-            rmObject.getLinks()
-                    .addAll(links.entrySet().stream()
-                            .map(e -> DefaultValues.createLink(e.getValue(), term + "/_link:" + e.getKey()))
-                            .collect(Collectors.toList()));
-
-            consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths, false);
-
-            Map<FlatPathDto, String> feederAuditValues = FlatHelper.filter(values, term + "/_feeder_audit", false);
-
-            if (!feederAuditValues.isEmpty()) {
-
-                rmObject.setFeederAudit(new FeederAudit());
-                handleRmAttribute(
-                        term, rmObject.getFeederAudit(), feederAuditValues, consumedPaths, context, "feeder_audit");
-            }
-
-            Map<FlatPathDto, String> nameValues = FlatHelper.filter(values, term + "/_name", false);
-            if (!nameValues.isEmpty()) {
-                final DvText name;
-                boolean isDvCodedText = nameValues.keySet().stream()
-                        .anyMatch(e -> "code".equals(e.getLast().getAttributeName())
-                                && "_name".equals(e.getLast().getName()));
-
-                if (isDvCodedText) {
-                    name = new DvCodedText();
-                } else {
-                    name = new DvText();
-                }
-                rmObject.setName(name);
-                handleRmAttribute(term, rmObject.getName(), nameValues, consumedPaths, context, "name");
-            }
+            setUID(term, rmObject, values, consumedPaths);
+            setName(term, rmObject, values, consumedPaths, context);
+            setLinks(term, rmObject, values, consumedPaths);
+            setFeederAudit(term, rmObject, values, consumedPaths, context);
         }
     }
 
@@ -103,5 +68,70 @@ public class LocatableUnmarshalPostprocessor extends AbstractUnmarshalPostproces
     @Override
     public Class<Locatable> getAssociatedClass() {
         return Locatable.class;
+    }
+
+    private void setUID(String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+        setValue(
+                term + PATH_DIVIDER + "_uid",
+                null,
+                values,
+                value -> rmObject.setUid(
+                        StringUtils.countMatches(value, "::") == 2
+                                ? new ObjectVersionId(value)
+                                : new HierObjectId(value)),
+                String.class,
+                consumedPaths);
+    }
+
+    private void setName(
+            String term,
+            Locatable rmObject,
+            Map<FlatPathDto, String> values,
+            Set<String> consumedPaths,
+            Context<Map<FlatPathDto, String>> context) {
+
+        Map<FlatPathDto, String> nameValues = FlatHelper.filter(values, term + "/_name", false);
+        if (!nameValues.isEmpty()) {
+            boolean isDvCodedText = nameValues.keySet().stream().anyMatch(e -> {
+                FlatPathDto last = e.getLast();
+                return "code".equals(last.getAttributeName()) && "_name".equals(last.getName());
+            });
+
+            rmObject.setName(isDvCodedText ? new DvCodedText() : new DvText());
+            handleRmAttribute(term, rmObject.getName(), nameValues, consumedPaths, context, "name");
+        }
+    }
+
+    private void setLinks(String term, Locatable rmObject, Map<FlatPathDto, String> values, Set<String> consumedPaths) {
+
+        Map<Integer, Map<FlatPathDto, String>> links = extractMultiValued(term, "_link", values);
+
+        if (rmObject.getLinks() == null) {
+            rmObject.setLinks(new ArrayList<>());
+        }
+
+        rmObject.getLinks()
+                .addAll(links.entrySet().stream()
+                        .map(e -> DefaultValues.createLink(e.getValue(), term + "/_link:" + e.getKey()))
+                        .toList());
+
+        consumeAllMatching(term + PATH_DIVIDER + "_link", values, consumedPaths, false);
+    }
+
+    private void setFeederAudit(
+            String term,
+            Locatable rmObject,
+            Map<FlatPathDto, String> values,
+            Set<String> consumedPaths,
+            Context<Map<FlatPathDto, String>> context) {
+
+        Map<FlatPathDto, String> feederAuditValues = FlatHelper.filter(values, term + "/_feeder_audit", false);
+
+        if (!feederAuditValues.isEmpty()) {
+
+            rmObject.setFeederAudit(new FeederAudit());
+            handleRmAttribute(
+                    term, rmObject.getFeederAudit(), feederAuditValues, consumedPaths, context, "feeder_audit");
+        }
     }
 }

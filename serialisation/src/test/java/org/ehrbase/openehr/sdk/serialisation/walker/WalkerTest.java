@@ -31,14 +31,14 @@ import org.ehrbase.openehr.sdk.webtemplate.filter.Filter;
 import org.ehrbase.openehr.sdk.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-public class WalkerTest {
+class WalkerTest {
 
     @Test
-    public void testClone() throws IOException, XmlException {
+    void testClone() throws IOException, XmlException {
 
         OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
                         OperationalTemplateTestData.CORONA_ANAMNESE.getStream())

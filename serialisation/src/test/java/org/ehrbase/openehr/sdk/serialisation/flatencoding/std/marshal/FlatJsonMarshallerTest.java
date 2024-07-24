@@ -18,74 +18,50 @@
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.io.IOUtils;
-import org.apache.xmlbeans.XmlException;
 import org.assertj.core.api.SoftAssertions;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatTestHelper;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
-public class FlatJsonMarshallerTest {
+class FlatJsonMarshallerTest {
 
     @Test
-    public void toFlatJson() throws IOException, XmlException {
+    void toFlatJson() throws Exception {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
-        Composition composition = new CanonicalJson()
-                .unmarshal(
-                        IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
-                        Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CORONA_ANAMNESE);
+        Composition composition = composition(CompositionTestDataCanonicalJson.CORONA);
 
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.CORONA.getStream(), StandardCharsets.UTF_8);
+        String actual = new FlatJsonMarshaller().toFlatJson(composition, webTemplate);
+        String expected = compositionJson(CompositionTestDataSimSDTJson.CORONA);
 
-        List<String> errors = compere(actual, expected);
-
+        List<String> errors = FlatTestHelper.compere(actual, expected);
         assertThat(errors).filteredOn(s -> s.startsWith("Missing")).containsExactlyInAnyOrder();
-
         assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder();
     }
 
     @Test
-    public void toFlatJsonAltEvents() throws IOException, XmlException {
+    void toFlatJsonAltEventsErrors() throws Exception {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.ALT_EVENTS.getStream())
-                .getTemplate();
-        Composition composition = new CanonicalJson()
-                .unmarshal(
-                        IOUtils.toString(
-                                CompositionTestDataCanonicalJson.ALTERNATIVE_EVENTS.getStream(),
-                                StandardCharsets.UTF_8),
-                        Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.ALT_EVENTS);
+        Composition composition = composition(CompositionTestDataCanonicalJson.ALTERNATIVE_EVENTS);
 
-        String expected = IOUtils.toString(
-                CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS_2.getStream(), StandardCharsets.UTF_8);
+        String actual = new FlatJsonMarshaller().toFlatJson(composition, webTemplate);
+        String expected = compositionJson(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS_2);
 
-        List<String> errors = compere(actual, expected);
-
+        List<String> errors = FlatTestHelper.compere(actual, expected);
         checkErrors(
                 errors,
                 new String[] {
@@ -101,25 +77,15 @@ public class FlatJsonMarshallerTest {
     }
 
     @Test
-    public void toFlatJsonMultiOccurrence() throws IOException, XmlException {
+    void toFlatJsonMultiOccurrenceErrors() throws Exception {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
-                .getTemplate();
-        Composition composition = new CanonicalJson()
-                .unmarshal(
-                        IOUtils.toString(
-                                CompositionTestDataCanonicalJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8),
-                        Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.MULTI_OCCURRENCE);
+        Composition composition = composition(CompositionTestDataCanonicalJson.MULTI_OCCURRENCE);
 
-        String expected =
-                IOUtils.toString(CompositionTestDataSimSDTJson.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8);
+        String actual = new FlatJsonMarshaller().toFlatJson(composition, webTemplate);
+        String expected = compositionJson(CompositionTestDataSimSDTJson.MULTI_OCCURRENCE);
 
-        List<String> errors = compere(actual, expected);
-
+        List<String> errors = FlatTestHelper.compere(actual, expected);
         checkErrors(
                 errors,
                 new String[] {
@@ -137,24 +103,15 @@ public class FlatJsonMarshallerTest {
     }
 
     @Test
-    public void toFlatJsonAllTypes() throws IOException, XmlException {
+    void toFlatJsonAllTypesErrors() throws Exception {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
-                .getTemplate();
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.ALL_TYPES);
+        Composition composition = composition(CompositionTestDataCanonicalJson.ALL_TYPES);
 
-        Composition composition = new CanonicalJson()
-                .unmarshal(
-                        IOUtils.toString(
-                                CompositionTestDataCanonicalJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8),
-                        Composition.class);
-        FlatJsonMarshaller cut = new FlatJsonMarshaller();
-        String actual = cut.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
+        String actual = new FlatJsonMarshaller().toFlatJson(composition, webTemplate);
+        String expected = compositionJson(CompositionTestDataSimSDTJson.ALL_TYPES);
 
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.ALL_TYPES.getStream(), StandardCharsets.UTF_8);
-
-        List<String> errors = compere(actual, expected);
-
+        List<String> errors = FlatTestHelper.compere(actual, expected);
         checkErrors(
                 errors,
                 new String[] {
@@ -172,24 +129,15 @@ public class FlatJsonMarshallerTest {
     }
 
     @Test
-    public void toFlatJsonIps() throws Exception {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.IPS.getStream())
-                .getTemplate();
+    void toFlatJsonIpsErrors() throws Exception {
 
-        Composition composition = new CanonicalJson()
-                .unmarshal(
-                        IOUtils.toString(CompositionTestDataCanonicalJson.IPS.getStream(), StandardCharsets.UTF_8),
-                        Composition.class);
+        WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.IPS);
+        Composition composition = composition(CompositionTestDataCanonicalJson.IPS);
 
-        FlatJsonMarshaller marshaller = new FlatJsonMarshaller();
+        String actual = new FlatJsonMarshaller().toFlatJson(composition, webTemplate);
+        String expected = compositionJson(CompositionTestDataSimSDTJson.IPS);
 
-        String actual = marshaller.toFlatJson(composition, new OPTParser(template).parse());
-        assertThat(actual).isNotNull();
-
-        String expected = IOUtils.toString(CompositionTestDataSimSDTJson.IPS.getStream(), StandardCharsets.UTF_8);
-
-        List<String> errors = compere(actual, expected);
-
+        List<String> errors = FlatTestHelper.compere(actual, expected);
         checkErrors(
                 errors,
                 new String[] {
@@ -232,7 +180,29 @@ public class FlatJsonMarshallerTest {
                 });
     }
 
-    public void checkErrors(List<String> errors, String[] missing, String[] extra) {
+    // -- Helper --
+
+    private static WebTemplate webTemplateFromOTP(OperationalTemplateTestData data) {
+        WebTemplate webTemplate = null;
+        try (var in = data.getStream()) {
+            OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(in).getTemplate();
+            webTemplate = new OPTParser(template).parse();
+            assertThat(webTemplate).isNotNull();
+        } catch (Exception e) {
+            fail(e);
+        }
+        return webTemplate;
+    }
+
+    private static Composition composition(CompositionTestDataCanonicalJson data) throws Exception {
+        return new CanonicalJson().unmarshal(IOUtils.toString(data.getStream(), StandardCharsets.UTF_8));
+    }
+
+    private static String compositionJson(CompositionTestDataSimSDTJson data) throws Exception {
+        return IOUtils.toString(data.getStream(), StandardCharsets.UTF_8);
+    }
+
+    void checkErrors(List<String> errors, String[] missing, String[] extra) {
 
         SoftAssertions softAssertions = new SoftAssertions();
 
@@ -244,27 +214,5 @@ public class FlatJsonMarshallerTest {
         softAssertions.assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder(extra);
 
         softAssertions.assertAll();
-    }
-
-    public static List<String> compere(String actualJson, String expectedJson) throws JsonProcessingException {
-        List<String> errors = new ArrayList<>();
-        ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
-
-        Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
-        Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
-
-        actual.forEach((key, value) -> {
-            if (!expected.containsKey(key) || !expected.get(key).equals(value)) {
-                errors.add(String.format("Missing path: %s, value: %s", key, value));
-            }
-        });
-
-        expected.forEach((key, value) -> {
-            if (!actual.containsKey(key) || !actual.get(key).equals(value)) {
-                errors.add(String.format("Extra path: %s, value: %s", key, value));
-            }
-        });
-
-        return errors;
     }
 }
