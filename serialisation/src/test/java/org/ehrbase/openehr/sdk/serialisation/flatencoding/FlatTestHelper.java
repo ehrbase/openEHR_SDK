@@ -22,30 +22,67 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 
 public class FlatTestHelper {
 
+    public record Error(Type type, String path, Object value) {
+
+        public enum Type {
+            MISSING, // String.format("Missing path: '%s', value: '%s'", key, value)
+            EXTRA // String.format("Extra path: '%s', value: '%s'", key, value)
+        }
+
+        public String describe() {
+            return switch (type) {
+                case MISSING -> String.format("Missing path: %s, value: %s", path, value);
+                case EXTRA -> String.format("Extra path: %s, value: %s", path, value);
+            };
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    public static List<String> compere(String actualJson, String expectedJson) throws JsonProcessingException {
-        List<String> errors = new ArrayList<>();
+    public static List<Error> compere(String actualJson, String expectedJson) throws JsonProcessingException {
+        List<Error> errors = new ArrayList<>();
         ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
 
         Map<String, Object> actual = objectMapper.readValue(actualJson, Map.class);
         Map<String, Object> expected = objectMapper.readValue(expectedJson, Map.class);
 
         actual.forEach((key, value) -> {
-            if (!expected.containsKey(key) || !expected.get(key).equals(value)) {
-                errors.add(String.format("Missing path: %s, value: %s", key, value));
+            Object expectedValue = expected.get(key);
+            if (expectedValue == null || !expectedValue.equals(value)) {
+                errors.add(new Error(Error.Type.MISSING, key, value));
             }
         });
 
         expected.forEach((key, value) -> {
-            if (!actual.containsKey(key) || !actual.get(key).equals(value)) {
-                errors.add(String.format("Extra path: %s, value: %s", key, value));
+            Object actualValue = actual.get(key);
+            if (actualValue == null || !actualValue.equals(value)) {
+                errors.add(new Error(Error.Type.EXTRA, key, value));
             }
         });
 
         return errors;
+    }
+
+    public static void assertErrors(List<FlatTestHelper.Error> errors, List<String> missing, List<String> extra) {
+
+        SoftAssertions softAssertions = new SoftAssertions();
+
+        softAssertions
+                .assertThat(errors)
+                .filteredOn(s -> s.type() == FlatTestHelper.Error.Type.MISSING)
+                .map(FlatTestHelper.Error::describe)
+                .containsExactlyInAnyOrderElementsOf(missing);
+
+        softAssertions
+                .assertThat(errors)
+                .filteredOn(s -> s.type() == FlatTestHelper.Error.Type.EXTRA)
+                .map(FlatTestHelper.Error::describe)
+                .containsExactlyInAnyOrderElementsOf(extra);
+
+        softAssertions.assertAll();
     }
 }

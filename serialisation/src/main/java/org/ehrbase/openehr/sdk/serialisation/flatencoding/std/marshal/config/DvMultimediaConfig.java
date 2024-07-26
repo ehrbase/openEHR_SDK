@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.config;
 
+import com.fasterxml.jackson.core.Base64Variants;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
@@ -91,7 +92,7 @@ public class DvMultimediaConfig extends AbstractsStdConfig<DvMultimedia> {
                 "data",
                 Optional.of(rmObject)
                         .map(DvMultimedia::getData)
-                        .map(b -> new String(b, StandardCharsets.UTF_8))
+                        .map(Base64Variants.MIME_NO_LINEFEEDS::encode)
                         .orElse(null));
 
         addValue(result, currentTerm, "size", rmObject.getSize());

@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.rmunmarshaller;
 
+import com.fasterxml.jackson.core.Base64Variants;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvURI;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
@@ -114,7 +115,7 @@ public class DvMultimediaRMUnmarshaller extends AbstractRMUnmarshaller<DvMultime
                 currentValues,
                 codeString -> {
                     if (codeString != null) {
-                        rmObject.setData(codeString.getBytes(StandardCharsets.UTF_8));
+                        rmObject.setData(Base64Variants.MIME_NO_LINEFEEDS.decode(codeString));
                     }
                 },
                 String.class,

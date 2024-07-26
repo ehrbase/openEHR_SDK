@@ -22,8 +22,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import com.nedap.archie.rm.changecontrol.Contribution;
+import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datastructures.ItemTree;
+import com.nedap.archie.rm.datavalues.DataValue;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
@@ -46,42 +48,59 @@ import org.junit.jupiter.api.Test;
 class CanonicalJsonMarshallingTest {
 
     @Test
-    void UnmarshalMultimedia() throws IOException {
+    void unmarshalMultimedia() throws IOException {
 
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/multimedia.json")));
 
         CanonicalJson cut = new CanonicalJson();
-        DvMultimedia dvMultimedia = cut.unmarshal(value, DvMultimedia.class);
-
-        assertNotNull(dvMultimedia);
+        assertThat(cut.unmarshal(value, DvMultimedia.class)).satisfies(this::assertDvMultimedia);
     }
 
     @Test
-    void UnmarshalMultimediaElement() throws IOException {
+    void unmarshalMultimediaElement() throws IOException {
 
         String value =
                 new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/element_multimedia.json")));
 
         CanonicalJson cut = new CanonicalJson();
-        Element element = cut.unmarshal(value, Element.class);
 
-        assertNotNull(element);
+        assertThat(cut.unmarshal(value, Element.class)).satisfies(element -> assertDvMultimedia(element.getValue()));
     }
 
     @Test
-    void UnmarshalItemTree() throws IOException {
+    void unmarshalMultimediaItemTree() throws IOException {
 
         String value = new String(
                 Files.readAllBytes(Paths.get("src/test/resources/sample_data/item_tree_with_multimedia.json")));
 
         CanonicalJson cut = new CanonicalJson();
-        ItemTree itemTree = cut.unmarshal(value, ItemTree.class);
+        assertThat(cut.unmarshal(value, ItemTree.class))
+                .satisfies(itemTree -> assertThat(itemTree.getItems().get(0))
+                        .isInstanceOf(Cluster.class)
+                        .satisfies(clusterValue -> {
+                            Cluster cluster = (Cluster) clusterValue;
+                            assertThat(cluster.getItems().get(0))
+                                    .isInstanceOf(Element.class)
+                                    .satisfies(itemValue -> assertDvMultimedia(((Element) itemValue).getValue()));
+                        }));
+    }
 
-        assertNotNull(itemTree);
+    private void assertDvMultimedia(DataValue dataValue) {
+
+        assertThat(dataValue).isInstanceOf(DvMultimedia.class).satisfies(elementValue -> {
+            var dvMultimedia = (DvMultimedia) elementValue;
+            assertThat(dvMultimedia.getMediaType()).satisfies(mediaType -> {
+                assertThat(mediaType.getTerminologyId().getValue()).isEqualTo("IANA_media-types");
+                assertThat(mediaType.getCodeString()).isEqualTo("text/plain");
+            });
+            assertThat(dvMultimedia.getSize()).isEqualTo(23);
+            assertThat(dvMultimedia.getData())
+                    .satisfies(bytes -> assertThat(new String(bytes)).isEqualTo("Shall Be Base64 encoded"));
+        });
     }
 
     @Test
-    void UnmarshalPartialDate() throws IOException {
+    void unmarshalPartialDate() throws IOException {
 
         String value = new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/partialdvdate.json")));
 
@@ -94,7 +113,7 @@ class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    void MarshalDuration() {
+    void marshalDuration() {
         DvDuration duration = new DvDuration(Duration.ofDays(30L));
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(duration);
@@ -103,7 +122,7 @@ class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    void MarshalEmptyDvText() {
+    void marshalEmptyDvText() {
         DvText dvText = new DvText("");
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(dvText);
@@ -112,7 +131,7 @@ class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    void MarshalDvDateTimeWithZero() {
+    void marshalDvDateTimeWithZero() {
         DvDateTime dvDateTime = new DvDateTime("2022-02-25T10:55:41.400Z");
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(dvDateTime);
@@ -124,7 +143,7 @@ class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    void MarshalDvTimeWithZero() {
+    void marshalDvTimeWithZero() {
         DvTime dvTime = new DvTime("10:55:41.400Z");
         CanonicalJson cut = new CanonicalJson();
         String actual = cut.marshal(dvTime);
@@ -134,7 +153,7 @@ class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    void MarshalEmptyContent() {
+    void marshalEmptyContent() {
         ItemTree itemTree = new ItemTree();
         itemTree.setNameAsString("test");
         CanonicalJson cut = new CanonicalJson();
@@ -150,7 +169,7 @@ class CanonicalJsonMarshallingTest {
     }
 
     @Test
-    void UnmarshalPartialDateTime() throws IOException {
+    void unmarshalPartialDateTime() throws IOException {
 
         String value =
                 new String(Files.readAllBytes(Paths.get("src/test/resources/sample_data/partialdvdatetime.json")));

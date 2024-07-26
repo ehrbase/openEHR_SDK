@@ -87,22 +87,24 @@ class ExampleGeneratorToCompositionWalkerTest {
                 "BLOOD_PRESSURE_SIMPLE",
                 // DV_CODED_TEXT|name missing
                 "WORD_WITH_AND",
-                // deserialization: could no consume Parts
+                // deserialization: could not consume Parts
                 "IDCR_PROBLEM_LIST",
-                // deserialization: could no consume Parts
+                // deserialization: could not consume Parts
                 "EPISODE_OF_CARE",
-                // deserialization: could no consume Parts
+                // deserialization: could not consume Parts
                 "MINIMAL_EVALUATION",
-                // deserialization: could no consume Parts
+                // deserialization: could not consume Parts
                 "MINIMAL_INSTRUCTION",
-                // deserialization: could no consume Parts
+                // deserialization: could not consume Parts
                 "MINIMAL_ACTION_2",
-                // deserialization: could no consume Parts
+                // deserialization: could not consume Parts
                 "MINIMAL_ACTION",
                 // serialization: Unknown Ordinal with code kg
                 "NESTED",
-                // deserialization: could no consume Parts
-                "SECTION_CARDINALITY"
+                // deserialization: could not consume Parts
+                "SECTION_CARDINALITY",
+                // base64 data missing for DV_MULTIMEDIA
+                "EHRN_ABDM_OP_CONSULT_RECORD"
             },
             mode = EnumSource.Mode.EXCLUDE)
     void testWalkAll(OperationalTemplateTestData template) throws IOException {

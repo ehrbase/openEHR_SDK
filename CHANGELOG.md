@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+- Fix missing Base64 encoding og ´DV_MULTIMEDIA` `data` ([624](https://github.com/ehrbase/openEHR_SDK/pull/624))
 
 ## [2.15.0]
  ### Added 
