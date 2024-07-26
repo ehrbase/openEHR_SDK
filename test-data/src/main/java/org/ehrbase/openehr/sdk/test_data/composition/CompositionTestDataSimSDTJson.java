@@ -74,7 +74,11 @@ public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJs
     ISM_INVALID_STATE(
             "ISM withn invaild current state",
             "ism_invalid_current_state.json",
-            OperationalTemplateTestData.ISM_INVALID_STATE);
+            OperationalTemplateTestData.ISM_INVALID_STATE),
+    EHRN_ABDM_OP_CONSULT_RECORD(
+            "Cluster with DV_MULTIMEDIA base64 encoded data",
+            "ehrb_adbm_op_consult_record.json",
+            OperationalTemplateTestData.EHRN_ABDM_OP_CONSULT_RECORD);
 
     private final String filename;
     private final String description;

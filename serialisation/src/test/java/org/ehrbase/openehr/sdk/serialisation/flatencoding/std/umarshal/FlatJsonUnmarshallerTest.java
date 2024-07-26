@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
@@ -291,6 +292,22 @@ class FlatJsonUnmarshallerTest {
                 composition.itemAtPath(
                         "/content[openEHR-EHR-SECTION.conformance_section.v0]/items[openEHR-EHR-OBSERVATION.conformance_observation.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0013]/value");
         assertThat(date.getValue()).hasToString(expected);
+    }
+
+    @Test
+    void dvMultimediaTestDataBase64Decoded() {
+
+        Composition composition = unmarshallComposition(
+                CompositionTestDataSimSDTJson.EHRN_ABDM_OP_CONSULT_RECORD,
+                OperationalTemplateTestData.EHRN_ABDM_OP_CONSULT_RECORD);
+
+        Object object = composition.itemAtPath(
+                "/content[openEHR-EHR-ADMIN_ENTRY.document_attachment.v0]/data[at0003]/items[openEHR-EHR-CLUSTER.media_file.v1]/items[at0001]/value");
+        assertThat(object).isInstanceOf(DvMultimedia.class).satisfies(obj -> {
+            var dvMultimedia = (DvMultimedia) obj;
+            assertThat(dvMultimedia.getData()).isNotNull().satisfies(bytes -> assertThat(new String(bytes))
+                    .isEqualTo("Shall Be Base64 encoded"));
+        });
     }
 
     // -- Helper --

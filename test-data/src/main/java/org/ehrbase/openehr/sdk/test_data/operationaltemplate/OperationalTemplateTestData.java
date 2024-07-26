@@ -104,7 +104,12 @@ public enum OperationalTemplateTestData {
     SKIPPED_INVALID_NODE_IDS(
             "Small template (Schwangerschaftsstatus.opt) with node_id set for non-locatables (/category and /context)",
             "skipped_invalid_node_ids.opt",
-            "skipped_invalid_node_ids");
+            "skipped_invalid_node_ids"),
+
+    EHRN_ABDM_OP_CONSULT_RECORD(
+            "Capturing of OP consult data for consent based sharing. Used for validating DV_MULTIMEDIA base64 encoded data",
+            "EHRN-ABDM-OPConsultRecord.v2.0.opt",
+            "EHRN-ABDM-OPConsultRecord.v2.0");
     //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
 
     public static final String OPERATIONALTEMPLATE_PATH_SEGMENT = "operationaltemplate";

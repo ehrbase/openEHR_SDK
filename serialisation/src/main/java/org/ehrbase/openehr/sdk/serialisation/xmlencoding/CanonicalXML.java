@@ -74,10 +74,8 @@ public class CanonicalXML implements RMDataFormat {
 
         StringWriter stringWriter = new StringWriter();
         try {
-            Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
-            marshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
-            marshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
-            marshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
+            Marshaller marshaller = createMarshaller();
+
             marshaller.setProperty("jaxb.fragment", !withHeader);
             if (rmObject.getClass().getAnnotation(XmlRootElement.class) == null) {
                 QName qName = new QName(null, new SnakeCase(rmObject.getClass().getSimpleName()).camelToSnake());
@@ -97,15 +95,12 @@ public class CanonicalXML implements RMDataFormat {
     public String marshalInline(RMObject rmObject, QName qName) {
 
         try {
+            DOMResult res = new DOMResult();
             JAXBElement<RMObject> root = new JAXBElement<>(qName, RMObject.class, rmObject);
 
-            Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
-            marshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
-            marshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
-            marshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
-
-            DOMResult res = new DOMResult();
+            Marshaller marshaller = createMarshaller();
             marshaller.marshal(root, res);
+
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
@@ -130,10 +125,8 @@ public class CanonicalXML implements RMDataFormat {
     public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
         T composition;
         try {
-            Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
-            unmarshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
-            unmarshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
-            unmarshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
+            Unmarshaller unmarshaller = createUnmarshaller();
+
             // Set the parentss XMLReader on the XMLFilter
             SAXParserFactory spf = SAXParserFactory.newInstance();
             // disable external entities
@@ -156,7 +149,23 @@ public class CanonicalXML implements RMDataFormat {
         return composition;
     }
 
-    private class NamespaceFilter extends XMLFilterImpl {
+    private Marshaller createMarshaller() throws JAXBException {
+        Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
+        marshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
+        marshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
+        marshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
+        return marshaller;
+    }
+
+    private Unmarshaller createUnmarshaller() throws JAXBException {
+        Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
+        unmarshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
+        unmarshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
+        unmarshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
+        return unmarshaller;
+    }
+
+    private static class NamespaceFilter extends XMLFilterImpl {
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -167,14 +176,13 @@ public class CanonicalXML implements RMDataFormat {
         public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 
             AttributesImpl attributesImpl = new AttributesImpl(atts);
-
             super.startElement(NAMESPACE, localName, qName, attributesImpl);
         }
 
         @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException {
             // remove default namespace http://schemas.openehr.org/v1
-            if (!prefix.equals("")) {
+            if (!prefix.isEmpty()) {
                 super.startPrefixMapping(prefix, uri);
             }
         }

@@ -75,9 +75,11 @@ public class CanonicalJson implements RMDataFormat {
         module.addSerializer(DvDateTime.class, new DateTimeSerializer());
         module.addSerializer(DvTime.class, new TimeSerializer());
         module.addSerializer(DvDate.class, new DateSerializer());
+        module.addSerializer(byte[].class, new Base64Serializer());
         module.addDeserializer(DvDateTime.class, new DateTimeDeserializer());
         module.addDeserializer(DvTime.class, new TimeDeserializer());
         module.addDeserializer(DvDate.class, new DateDeserializer());
+        module.addDeserializer(byte[].class, new Base64Deserializer());
         MARSHAL_OM.registerModule(module);
 
         // Global configuration to not include empty lists in the JSON
