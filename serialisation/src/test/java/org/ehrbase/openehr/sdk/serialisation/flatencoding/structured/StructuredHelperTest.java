@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
@@ -99,17 +98,8 @@ class StructuredHelperTest {
         RMDataFormat flatJson =
                 new FlatJasonProvider(new TestDataTemplateProvider()).buildFlatJson(FlatFormat.SIM_SDT, templateId);
 
-        List<String> errors = FlatTestHelper.compere(flatJson.marshal(flatJson.unmarshal(actual)), expected);
-
-        SoftAssertions softAssertions = new SoftAssertions();
-
-        softAssertions
-                .assertThat(errors)
-                .filteredOn(s -> s.startsWith("Missing"))
-                .containsExactlyInAnyOrder();
-
-        softAssertions.assertThat(errors).filteredOn(s -> s.startsWith("Extra")).containsExactlyInAnyOrder();
-
-        softAssertions.assertAll();
+        List<FlatTestHelper.Error> errors =
+                FlatTestHelper.compere(flatJson.marshal(flatJson.unmarshal(actual)), expected);
+        FlatTestHelper.assertErrors(errors, List.of(), List.of());
     }
 }
