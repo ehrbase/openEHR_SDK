@@ -126,7 +126,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
      * @throws ClientException
      * @throws WrongStatusCodeException
      */
-    String upload(OPERATIONALTEMPLATE operationaltemplate) {
+   public String upload(OPERATIONALTEMPLATE operationaltemplate) {
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH);
         XmlOptions opts = new XmlOptions();
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
