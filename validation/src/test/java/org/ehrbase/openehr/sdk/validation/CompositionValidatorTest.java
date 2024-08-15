@@ -215,6 +215,16 @@ class CompositionValidatorTest {
     }
 
     @Test
+    void validateName() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+
+        var result = validator.validate(composition, template);
+        assertEquals(0, result.size());
+        result.forEach(System.out::println);
+    }
+
+    @Test
     void compositionValidationCRSDK120() throws Exception {
         var template = getOperationalTemplate(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE);
         var composition = getComposition(CompositionTestDataCanonicalJson.CHOICE_DV_QUANTITY);
@@ -246,6 +256,12 @@ class CompositionValidatorTest {
     private Composition getComposition(String name) throws IOException, JAXBException {
         var unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
         return (Composition) unmarshaller.unmarshal(new FileInputStream("./src/test/resources/composition/" + name));
+    }
+
+    private Composition getCompositionJson(String name) throws IOException {
+        var unmarshaller = new CanonicalJson();
+        return (Composition) unmarshaller.unmarshal(IOUtils.toString(
+                new FileInputStream("./src/test/resources/composition/" + name), StandardCharsets.UTF_8));
     }
 
     private OPERATIONALTEMPLATE getOperationalTemplate(OperationalTemplateTestData template)
