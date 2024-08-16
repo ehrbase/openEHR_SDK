@@ -17,18 +17,23 @@
  */
 package org.ehrbase.openehr.sdk.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datastructures.Cluster;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.xml.JAXBUtil;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
@@ -222,6 +227,35 @@ class CompositionValidatorTest {
         var result = validator.validate(composition, template);
         assertEquals(0, result.size());
         result.forEach(System.out::println);
+    }
+
+    @Test
+    void validateNameWrongType() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+
+        List<Cluster> objects = composition
+                .itemsAtPath(
+                        "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]/items")
+                .stream()
+                .map(Cluster.class::cast)
+                .toList();
+
+        repaceName(objects, "NameOne", new DvText("NameOne"));
+
+        var result = validator.validate(composition, template);
+        assertEquals(1, result.size());
+
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(new Tuple(
+                        "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.name_code.v0 and name/value='NameOne']/name",
+                        "Expected a DV_CODED_TEXT but got DV_TEXT"));
+    }
+
+    private void repaceName(List<Cluster> cluster, String nameOne, DvText dvText) {
+
+        cluster.stream().filter(c -> c.getName().getValue().equals(nameOne)).forEach(c -> c.setName(dvText));
     }
 
     @Test
