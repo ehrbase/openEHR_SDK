@@ -18,6 +18,7 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,22 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     @Override
     protected void postHandle(Context<List<ConstraintViolation>> context) {
         // No-op
+    }
+
+    @Override
+    protected void handleMissingChildren(Context<List<ConstraintViolation>> context, RMObject c) {
+
+        if (c instanceof Locatable locatable) {
+            context.getObjectDeque()
+                    .peek()
+                    .add(new ConstraintViolation(
+                            context.getNodeDeque().peek().getAqlPath(),
+                            "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_code.v0,name:not in template not in template"
+                                    .formatted(
+                                            locatable.getClass().getSimpleName(),
+                                            locatable.getArchetypeNodeId(),
+                                            locatable.getName().getValue())));
+        }
     }
 
     @SuppressWarnings("unchecked")

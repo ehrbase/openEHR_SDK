@@ -25,10 +25,12 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.composition.IsmTransition;
+import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -143,13 +145,47 @@ public abstract class Walker<T> {
                     handle(context);
                 });
             }
+
+            RMObject curentRmObject = context.getRmObjectDeque().peek();
+
+            List<? extends Locatable> templateChildren;
+
+            if (curentRmObject instanceof ItemTree itemTree) {
+                templateChildren = itemTree.getItems();
+            } else {
+                templateChildren = Collections.emptyList();
+            }
+
+            List<? extends Locatable> missingChildren = templateChildren.stream()
+                    .filter(c -> currentNode.getChildren().stream().noneMatch(n -> {
+                        AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
+
+                        if (!Objects.equals(n.getNodeId(), c.getArchetypeNodeId())) {
+                            return false;
+                        }
+
+                        String otherPredicate = lastNode.findOtherPredicate("name/value");
+
+                        if (otherPredicate != null
+                                && !Objects.equals(otherPredicate, c.getName().getValue())) {
+                            return false;
+                        }
+
+                        return true;
+                    }))
+                    .toList();
+
+            missingChildren.forEach(c -> handleMissingChildren(context, c));
         }
+
         postHandle(context);
         insertDefaults(context);
         context.getRmObjectDeque().remove();
         context.getNodeDeque().remove();
         context.getObjectDeque().remove();
     }
+
+    protected void handleMissingChildren(Context<T> context, RMObject c) {}
 
     private Stream<NodeConstellation> streamChildConstellations(
             Context<T> context,

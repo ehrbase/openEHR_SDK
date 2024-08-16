@@ -241,7 +241,7 @@ class CompositionValidatorTest {
                 .map(Cluster.class::cast)
                 .toList();
 
-        repaceName(objects, "NameOne", new DvText("NameOne"));
+        replaceName(objects, "NameOne", new DvText("NameOne"));
 
         var result = validator.validate(composition, template);
         assertEquals(1, result.size());
@@ -253,7 +253,32 @@ class CompositionValidatorTest {
                         "Expected a DV_CODED_TEXT but got DV_TEXT"));
     }
 
-    private void repaceName(List<Cluster> cluster, String nameOne, DvText dvText) {
+    @Test
+    void validateNameNotInTemplate() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+
+        List<Cluster> objects = composition
+                .itemsAtPath(
+                        "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]/items")
+                .stream()
+                .map(Cluster.class::cast)
+                .toList();
+
+        replaceName(objects, "NameOne", new DvText("not in template"));
+
+        var result = validator.validate(composition, template);
+        assertEquals(1, result.size());
+
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(
+                        new Tuple(
+                                "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]",
+                                "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_code.v0,name:not in template not in template"));
+    }
+
+    private void replaceName(List<Cluster> cluster, String nameOne, DvText dvText) {
 
         cluster.stream().filter(c -> c.getName().getValue().equals(nameOne)).forEach(c -> c.setName(dvText));
     }
