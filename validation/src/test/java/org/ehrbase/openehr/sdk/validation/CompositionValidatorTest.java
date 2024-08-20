@@ -220,6 +220,16 @@ class CompositionValidatorTest {
     }
 
     @Test
+    void validateClusterSlot() throws Exception {
+        var composition = getCompositionJson("cluster-slot.ehrbase.or.v0.json");
+        var template = getOperationalTemplate("cluster-slot.ehrbase.org.v0.opt");
+
+        var result = validator.validate(composition, template);
+        assertEquals(0, result.size());
+        result.forEach(System.out::println);
+    }
+
+    @Test
     void validateName() throws Exception {
         var composition = getCompositionJson("name-test.json");
         var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
