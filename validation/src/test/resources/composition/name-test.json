@@ -170,7 +170,7 @@
                   },
                   "archetype_details": {
                     "archetype_id": {
-                      "value": "openEHR-EHR-CLUSTER.name_restricted.v0"
+                      "value": "openEHR-EHR-CLUSTER.name.v0"
                     },
                     "rm_version": "1.0.4"
                   },

@@ -81,7 +81,7 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
                     .peek()
                     .add(new ConstraintViolation(
                             context.getNodeDeque().peek().getAqlPath(),
-                            "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_code.v0,name:not in template not in template"
+                            "RmObject with type:%s, nodeId:%s,name:%s; not in template"
                                     .formatted(
                                             locatable.getClass().getSimpleName(),
                                             locatable.getArchetypeNodeId(),

@@ -169,7 +169,13 @@ class CompositionValidatorTest {
         var composition = getComposition("RIPPLE-ConformanceTest.xml");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertEquals(1, result.size());
+
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(new Tuple(
+                        "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]",
+                        "RmObject with type:Element, nodeId:at0065,name:Run-time coded name; not in template"));
     }
 
     @Test
@@ -240,16 +246,51 @@ class CompositionValidatorTest {
     }
 
     @Test
-    void validateNameWrongType() throws Exception {
+    void validateNameRuntimeName() throws Exception {
         var composition = getCompositionJson("name-test.json");
         var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        List<Cluster> objects = getClusterList(composition);
 
-        List<Cluster> objects = composition
+        replaceName(objects, "costume name", new DvText("costume name2"));
+
+        var result = validator.validate(composition, template);
+        assertEquals(0, result.size());
+        result.forEach(System.out::println);
+    }
+
+    @Test
+    void validateNameRuntimeNameForbidden() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        List<Cluster> objects = getClusterList(composition);
+
+        replaceName(objects, "Fv1", new DvText("costume name2"));
+
+        var result = validator.validate(composition, template);
+        assertEquals(1, result.size());
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(
+                        new Tuple(
+                                "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]",
+                                "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_restricted.v0,name:costume name2; not in template"));
+    }
+
+    private static List<Cluster> getClusterList(Composition composition) {
+        return composition
                 .itemsAtPath(
                         "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]/items")
                 .stream()
                 .map(Cluster.class::cast)
                 .toList();
+    }
+
+    @Test
+    void validateNameWrongType() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+
+        List<Cluster> objects = getClusterList(composition);
 
         replaceName(objects, "NameOne", new DvText("NameOne"));
 
@@ -268,12 +309,7 @@ class CompositionValidatorTest {
         var composition = getCompositionJson("name-test.json");
         var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
 
-        List<Cluster> objects = composition
-                .itemsAtPath(
-                        "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]/items")
-                .stream()
-                .map(Cluster.class::cast)
-                .toList();
+        List<Cluster> objects = getClusterList(composition);
 
         replaceName(objects, "NameOne", new DvText("not in template"));
 
@@ -285,7 +321,7 @@ class CompositionValidatorTest {
                 .containsExactly(
                         new Tuple(
                                 "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]",
-                                "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_code.v0,name:not in template not in template"));
+                                "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_code.v0,name:not in template; not in template"));
     }
 
     private void replaceName(List<Cluster> cluster, String nameOne, DvText dvText) {
