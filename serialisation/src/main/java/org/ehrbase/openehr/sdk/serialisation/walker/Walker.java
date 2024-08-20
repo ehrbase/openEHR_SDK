@@ -19,13 +19,19 @@ package org.ehrbase.openehr.sdk.serialisation.walker;
 
 import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.*;
 
-import com.nedap.archie.openehrtestrm.Element;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.composition.IsmTransition;
-import com.nedap.archie.rm.datastructures.ItemTree;
+import com.nedap.archie.rm.composition.Section;
+import com.nedap.archie.rm.datastructures.Cluster;
+import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.Event;
+import com.nedap.archie.rm.datastructures.History;
+import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
@@ -36,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -146,34 +153,7 @@ public abstract class Walker<T> {
                 });
             }
 
-            RMObject curentRmObject = context.getRmObjectDeque().peek();
-
-            List<? extends Locatable> templateChildren;
-
-            if (curentRmObject instanceof ItemTree itemTree) {
-                templateChildren = itemTree.getItems();
-            } else {
-                templateChildren = Collections.emptyList();
-            }
-
-            List<? extends Locatable> missingChildren = templateChildren.stream()
-                    .filter(c -> currentNode.getChildren().stream().noneMatch(n -> {
-                        AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
-
-                        if (!Objects.equals(n.getNodeId(), c.getArchetypeNodeId())) {
-                            return false;
-                        }
-
-                        String otherPredicate = lastNode.findOtherPredicate("name/value");
-
-                        if (otherPredicate != null
-                                && !Objects.equals(otherPredicate, c.getName().getValue())) {
-                            return false;
-                        }
-
-                        return true;
-                    }))
-                    .toList();
+            List<? extends Locatable> missingChildren = findMissingChildren(context, currentNode);
 
             missingChildren.forEach(c -> handleMissingChildren(context, c));
         }
@@ -185,7 +165,73 @@ public abstract class Walker<T> {
         context.getObjectDeque().remove();
     }
 
-    protected void handleMissingChildren(Context<T> context, RMObject c) {}
+    private static <T> List<? extends Locatable> findMissingChildren(Context<T> context, WebTemplateNode currentNode) {
+        RMObject curentRmObject = context.getRmObjectDeque().peek();
+
+        return getLocatable(curentRmObject).stream()
+                .filter(c -> currentNode.getChildren().stream().noneMatch(n -> {
+                    AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
+
+                    if (!Objects.equals(n.getNodeId(), c.getArchetypeNodeId())) {
+                        return false;
+                    }
+
+                    String otherPredicate = lastNode.findOtherPredicate("name/value");
+
+                    if (otherPredicate != null
+                            && !Objects.equals(otherPredicate, c.getName().getValue())) {
+                        return false;
+                    }
+
+                    return true;
+                }))
+                .toList();
+    }
+
+    private static List<? extends Locatable> getLocatable(RMObject curentRmObject) {
+
+        List<? extends Locatable> templateChildren;
+
+        if (curentRmObject instanceof ItemStructure itemTree) {
+            templateChildren = itemTree.getItems();
+        } else if (curentRmObject instanceof Cluster cluster) {
+
+            templateChildren = cluster.getItems();
+        } else if (curentRmObject instanceof History<?> history) {
+
+            templateChildren = history.getEvents();
+        } else if (curentRmObject instanceof Event<?> event) {
+
+            templateChildren = Stream.concat(
+                            Optional.of(event).map(Event::getData).stream(),
+                            Optional.of(event).map(Event::getState).stream())
+                    .toList();
+        } else if (curentRmObject instanceof AdminEntry adminEntry) {
+
+            templateChildren =
+                    Optional.of(adminEntry).map(AdminEntry::getData).stream().toList();
+        } else if (curentRmObject instanceof Evaluation evaluation) {
+
+            templateChildren =
+                    Optional.of(evaluation).map(Evaluation::getData).stream().toList();
+        } else if (curentRmObject instanceof Composition composition) {
+
+            templateChildren = composition.getContent();
+        } else if (curentRmObject instanceof Section section) {
+
+            templateChildren = section.getItems();
+        } else {
+            templateChildren = Collections.emptyList();
+        }
+
+        if (templateChildren == null) {
+            templateChildren = Collections.emptyList();
+        }
+
+        return templateChildren;
+    }
+
+    protected void handleMissingChildren(Context<T> context, Locatable c) {}
 
     private Stream<NodeConstellation> streamChildConstellations(
             Context<T> context,

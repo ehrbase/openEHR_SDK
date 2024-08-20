@@ -277,7 +277,7 @@
                         "_type": "DV_TEXT",
                         "value": "value2"
                       },
-                      "archetype_node_id": "at0001"
+                      "archetype_node_id": "at0003"
                     }
                   ],
                   "archetype_node_id": "openEHR-EHR-CLUSTER.name_code.v0"

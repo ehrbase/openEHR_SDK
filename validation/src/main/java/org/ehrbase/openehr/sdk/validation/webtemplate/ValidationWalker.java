@@ -22,6 +22,7 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.openehr.sdk.util.reflection.ReflectionHelper;
@@ -74,13 +75,18 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     }
 
     @Override
-    protected void handleMissingChildren(Context<List<ConstraintViolation>> context, RMObject c) {
+    protected void handleMissingChildren(Context<List<ConstraintViolation>> context, Locatable locatable) {
 
-        if (c instanceof Locatable locatable) {
+        WebTemplateNode peek = context.getNodeDeque().peek();
+
+        boolean clusterSlot = Objects.equals(peek.getRmType(), "CLUSTER")
+                && peek.getChildren().isEmpty();
+        if (!clusterSlot) {
+
             context.getObjectDeque()
                     .peek()
                     .add(new ConstraintViolation(
-                            context.getNodeDeque().peek().getAqlPath(),
+                            peek.getAqlPath(),
                             "RmObject with type:%s, nodeId:%s,name:%s; not in template"
                                     .formatted(
                                             locatable.getClass().getSimpleName(),
