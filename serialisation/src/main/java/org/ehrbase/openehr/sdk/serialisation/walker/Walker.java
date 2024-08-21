@@ -165,10 +165,11 @@ public abstract class Walker<T> {
         context.getObjectDeque().remove();
     }
 
-    private static <T> List<? extends Locatable> findMissingChildren(Context<T> context, WebTemplateNode currentNode) {
+    protected <T> List<? extends Locatable> findMissingChildren(Context<T> context, WebTemplateNode currentNode) {
         RMObject curentRmObject = context.getRmObjectDeque().peek();
 
         return getLocatable(curentRmObject).stream()
+                .filter(Objects::nonNull)
                 .filter(c -> currentNode.getChildren().stream().noneMatch(n -> {
                     AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
 

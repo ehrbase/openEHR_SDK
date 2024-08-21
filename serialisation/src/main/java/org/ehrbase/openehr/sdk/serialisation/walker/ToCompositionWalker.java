@@ -45,6 +45,7 @@ import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -317,5 +318,17 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
                 context.getRmObjectDeque().peek(),
                 context.getDefaultValues(),
                 context.getNodeDeque().peek()));
+    }
+
+    @Override
+    protected final void handleMissingChildren(Context<T> context, Locatable c) {
+        // NOP
+    }
+
+    @Override
+    protected final <T1> List<? extends Locatable> findMissingChildren(
+            Context<T1> context, WebTemplateNode currentNode) {
+        // NOP
+        return Collections.emptyList();
     }
 }
