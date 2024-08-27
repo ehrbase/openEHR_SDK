@@ -26,8 +26,12 @@ import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectRef;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @deprecated without replaced because used by EHRbase only.
+ */
 @JacksonXmlRootElement(localName = "ehr_status")
-@SuppressWarnings("java:S1452")
+@Deprecated(since = "2.14.0", forRemoval = true)
+@SuppressWarnings({"java:S1133", "java:S1452"})
 public class VersionedObjectResponseData<T> {
 
     @JsonProperty(value = "_type")
@@ -52,8 +56,8 @@ public class VersionedObjectResponseData<T> {
         setType(CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, className));
         setUid(versionedObject.getUid());
         setOwnerId(versionedObject.getOwnerId());
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        setTimeCreated(formatter.format(versionedObject.getTimeCreated().getValue()));
+        setTimeCreated(DateTimeFormatter.ISO_DATE_TIME.format(
+                versionedObject.getTimeCreated().getValue()));
     }
 
     public String getType() {

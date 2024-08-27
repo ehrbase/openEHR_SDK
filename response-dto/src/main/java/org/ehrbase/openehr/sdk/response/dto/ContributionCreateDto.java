@@ -18,6 +18,7 @@
 package org.ehrbase.openehr.sdk.response.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.nedap.archie.rm.RMObject;
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
  * The duplicate of Contribution from com.nedap.archie.rm.changecontrol
  * with changed field versions list of ObjectRef to list of OriginalVersion.
  */
+@JsonRootName(value = "CONTRIBUTION")
 @XmlType(
         name = "CONTRIBUTION",
         propOrder = {"uid", "versions", "audit"})

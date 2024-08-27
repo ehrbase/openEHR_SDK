@@ -24,7 +24,12 @@ import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
 
+/**
+ * @deprecated without replaced because used by EHRbase only.
+ */
 @JacksonXmlRootElement(localName = "ehr_status")
+@Deprecated(since = "2.14.0", forRemoval = true)
+@SuppressWarnings("java:S1133")
 public class EhrStatusResponseData {
 
     @JsonProperty(value = "_type")
