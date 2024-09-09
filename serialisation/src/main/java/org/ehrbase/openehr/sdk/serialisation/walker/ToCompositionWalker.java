@@ -45,12 +45,12 @@ import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.support.identification.ArchetypeID;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
@@ -321,14 +321,14 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     }
 
     @Override
-    protected final void handleMissingChildren(Context<T> context, Locatable c) {
+    protected final void handleChildrenNotInTemplate(Context<T> context, Locatable c) {
         // NOP
     }
 
     @Override
-    protected final <T1> List<? extends Locatable> findMissingChildren(
+    protected final <T1> Stream<? extends Locatable> findChildrenNotInTemplate(
             Context<T1> context, WebTemplateNode currentNode) {
         // NOP
-        return Collections.emptyList();
+        return Stream.empty();
     }
 }

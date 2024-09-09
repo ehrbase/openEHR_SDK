@@ -75,13 +75,13 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     }
 
     @Override
-    protected void handleMissingChildren(Context<List<ConstraintViolation>> context, Locatable locatable) {
+    protected void handleChildrenNotInTemplate(Context<List<ConstraintViolation>> context, Locatable locatable) {
 
         WebTemplateNode peek = context.getNodeDeque().peek();
 
         boolean clusterSlot = Objects.equals(peek.getRmType(), "CLUSTER")
                 && peek.getChildren().isEmpty();
-        if (!clusterSlot) {
+        if (!clusterSlot && !peek.getAqlPath().equals("/context")) {
 
             context.getObjectDeque()
                     .peek()

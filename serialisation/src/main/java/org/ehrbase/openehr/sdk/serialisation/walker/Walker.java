@@ -21,28 +21,21 @@ import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.*;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.AdminEntry;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.Evaluation;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.composition.IsmTransition;
-import com.nedap.archie.rm.composition.Section;
-import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datastructures.Element;
-import com.nedap.archie.rm.datastructures.Event;
-import com.nedap.archie.rm.datastructures.History;
-import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -153,9 +146,9 @@ public abstract class Walker<T> {
                 });
             }
 
-            List<? extends Locatable> missingChildren = findMissingChildren(context, currentNode);
+            Stream<? extends Locatable> childrenNotInTemplate = findChildrenNotInTemplate(context, currentNode);
 
-            missingChildren.forEach(c -> handleMissingChildren(context, c));
+            childrenNotInTemplate.forEach(c -> handleChildrenNotInTemplate(context, c));
         }
 
         postHandle(context);
@@ -165,12 +158,12 @@ public abstract class Walker<T> {
         context.getObjectDeque().remove();
     }
 
-    protected <T> List<? extends Locatable> findMissingChildren(Context<T> context, WebTemplateNode currentNode) {
+    protected <T> Stream<? extends Locatable> findChildrenNotInTemplate(
+            Context<T> context, WebTemplateNode currentNode) {
         RMObject curentRmObject = context.getRmObjectDeque().peek();
 
-        return getLocatable(curentRmObject).stream()
-                .filter(Objects::nonNull)
-                .filter(c -> currentNode.getChildren().stream().noneMatch(n -> {
+        return getChildLocatable(curentRmObject).filter(Objects::nonNull).filter(c -> currentNode.getChildren().stream()
+                .noneMatch(n -> {
                     AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
 
                     if (!Objects.equals(n.getNodeId(), c.getArchetypeNodeId())) {
@@ -185,54 +178,38 @@ public abstract class Walker<T> {
                     }
 
                     return true;
-                }))
-                .toList();
+                }));
     }
 
-    private static List<? extends Locatable> getLocatable(RMObject curentRmObject) {
+    private static Stream<? extends Locatable> getChildLocatable(RMObject curentRmObject) {
 
-        List<? extends Locatable> templateChildren;
+        return ArchieRMInfoLookup.getInstance().getTypeInfo(curentRmObject.getClass()).getAttributes().values().stream()
+                .filter(s -> !s.isComputed())
+                .filter(s -> Locatable.class.isAssignableFrom(s.getTypeInCollection()))
+                .flatMap(a -> {
+                    Object invoke = null;
+                    try {
 
-        if (curentRmObject instanceof ItemStructure itemTree) {
-            templateChildren = itemTree.getItems();
-        } else if (curentRmObject instanceof Cluster cluster) {
+                        invoke = a.getGetMethod().invoke(curentRmObject);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
 
-            templateChildren = cluster.getItems();
-        } else if (curentRmObject instanceof History<?> history) {
+                    if (invoke == null) {
+                        return Stream.empty();
+                    } else if (invoke instanceof Collection<?> c) {
 
-            templateChildren = history.getEvents();
-        } else if (curentRmObject instanceof Event<?> event) {
-
-            templateChildren = Stream.concat(
-                            Optional.of(event).map(Event::getData).stream(),
-                            Optional.of(event).map(Event::getState).stream())
-                    .toList();
-        } else if (curentRmObject instanceof AdminEntry adminEntry) {
-
-            templateChildren =
-                    Optional.of(adminEntry).map(AdminEntry::getData).stream().toList();
-        } else if (curentRmObject instanceof Evaluation evaluation) {
-
-            templateChildren =
-                    Optional.of(evaluation).map(Evaluation::getData).stream().toList();
-        } else if (curentRmObject instanceof Composition composition) {
-
-            templateChildren = composition.getContent();
-        } else if (curentRmObject instanceof Section section) {
-
-            templateChildren = section.getItems();
-        } else {
-            templateChildren = Collections.emptyList();
-        }
-
-        if (templateChildren == null) {
-            templateChildren = Collections.emptyList();
-        }
-
-        return templateChildren;
+                        return c.stream();
+                    } else {
+                        return Stream.of(invoke);
+                    }
+                })
+                .map(Locatable.class::cast);
     }
 
-    protected void handleMissingChildren(Context<T> context, Locatable c) {}
+    protected void handleChildrenNotInTemplate(Context<T> context, Locatable c) {}
 
     private Stream<NodeConstellation> streamChildConstellations(
             Context<T> context,
