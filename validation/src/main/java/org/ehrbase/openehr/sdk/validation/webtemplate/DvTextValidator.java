@@ -17,7 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
-import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.datavalues.DvText;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +51,7 @@ public class DvTextValidator implements ConstraintValidator<DvText> {
             return Collections.emptyList();
         }
 
-        if (RmConstants.DV_CODED_TEXT.equals(node.getRmType()) && !(dvText instanceof DvCodedText)) {
+        if (RmConstants.DV_CODED_TEXT.equals(node.getRmType())) {
             return List.of(new ConstraintViolation(node.getAqlPath(), "Expected a DV_CODED_TEXT but got DV_TEXT"));
         }
 
