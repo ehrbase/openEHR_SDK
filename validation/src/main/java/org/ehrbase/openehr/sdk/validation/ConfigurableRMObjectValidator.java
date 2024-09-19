@@ -51,6 +51,10 @@ public class ConfigurableRMObjectValidator extends RMObjectValidator {
         this(lookup, provider, null);
     }
 
+    public boolean isArchetypeValidation() {
+        return archetypeValidation;
+    }
+
     protected void addMessage(RMObjectValidationMessage message) {
         if (!archetypeValidation && message.getType() == RMObjectValidationMessageType.ARCHETYPE_NOT_FOUND) return;
         super.addMessage(message);
