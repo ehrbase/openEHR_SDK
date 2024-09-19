@@ -20,9 +20,11 @@ package org.ehrbase.openehr.sdk.validation;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessage;
-import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
+import com.nedap.archie.rmobjectvalidator.ValidationConfiguration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.validation.webtemplate.ValidationWalker;
@@ -36,12 +38,45 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
  * This class is NOT thread-safe!
  */
 public class CompositionValidator {
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final RMObjectValidator rmObjectValidator =
-            new RMObjectValidator(ArchieRMInfoLookup.getInstance(), archetypeId -> null);
+    private ValidationConfiguration validationCfg = new ValidationConfiguration.Builder()
+            .validateInvariants(true)
+            .failOnUnknownTerminologyId(false)
+            .build();
+
+    private ConfigurableRMObjectValidator rmObjectValidator;
+
+    {
+        initObjectValidator(false);
+    }
 
     private ExternalTerminologyValidation externalTerminologyValidation;
 
+    public void setArchetypeValidation(boolean archetypeValidation) {
+        initObjectValidator(archetypeValidation);
+    }
+
+    private void initObjectValidator(boolean archetypeValidation) {
+        try {
+            lock.writeLock().lock();
+            rmObjectValidator = new ConfigurableRMObjectValidator(
+                    ArchieRMInfoLookup.getInstance(), archetypeId -> null, validationCfg, archetypeValidation);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public ConfigurableRMObjectValidator getRmObjectValidator() {
+        try {
+            lock.readLock().lock();
+            return rmObjectValidator;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    //////////////////////////////
     public CompositionValidator() {}
 
     public CompositionValidator(ExternalTerminologyValidation externalTerminologyValidation) {
@@ -67,7 +102,7 @@ public class CompositionValidator {
      * @return the list of constraint violations
      */
     public List<ConstraintViolation> validate(Composition composition, WebTemplate template) {
-        List<RMObjectValidationMessage> messages = rmObjectValidator.validate(composition);
+        List<RMObjectValidationMessage> messages = getRmObjectValidator().validate(composition);
         if (messages.isEmpty()) {
             List<ConstraintViolation> result = new ArrayList<>();
             new ValidationWalker(externalTerminologyValidation)
@@ -87,7 +122,16 @@ public class CompositionValidator {
      * @param validateInvariants the boolean value
      */
     public void setRunInvariantChecks(boolean validateInvariants) {
-        rmObjectValidator.setRunInvariantChecks(validateInvariants);
+        try {
+            lock.writeLock().lock();
+            validationCfg = new ValidationConfiguration.Builder()
+                    .validateInvariants(validateInvariants)
+                    .failOnUnknownTerminologyId(false)
+                    .build();
+            initObjectValidator(rmObjectValidator.isArchetypeValidation());
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     /**
@@ -97,9 +141,5 @@ public class CompositionValidator {
      */
     public void setExternalTerminologyValidation(ExternalTerminologyValidation externalTerminologyValidation) {
         this.externalTerminologyValidation = externalTerminologyValidation;
-    }
-
-    public RMObjectValidator getRmObjectValidator() {
-        return rmObjectValidator;
     }
 }
