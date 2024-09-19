@@ -438,12 +438,16 @@ public class OPTParser {
             List<WebTemplateNode> newChildren = new ArrayList<>();
             for (COBJECT cobject : cattribute.getChildrenArray()) {
 
-                if (cobject instanceof CPRIMITIVEOBJECT) {
-                    inputMap.put(
-                            cattribute.getRmAttributeName(), inputHandler.extractInput((CPRIMITIVEOBJECT) cobject));
+                if (cobject instanceof CPRIMITIVEOBJECT cprimitiveobject) {
+                    inputMap.put(cattribute.getRmAttributeName(), inputHandler.extractInput(cprimitiveobject));
                 } else {
                     List<WebTemplateNode> childNode =
                             parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
+
+                    if (cobject instanceof ARCHETYPESLOT && childNode != null) {
+
+                        childNode.forEach(c -> c.setArchetypeSlot(true));
+                    }
                     if (childNode != null) {
                         newChildren.addAll(childNode);
                     }

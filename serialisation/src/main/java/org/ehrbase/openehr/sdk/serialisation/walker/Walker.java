@@ -41,6 +41,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
@@ -146,9 +147,10 @@ public abstract class Walker<T> {
                 });
             }
 
-            Stream<? extends Locatable> childrenNotInTemplate = findChildrenNotInTemplate(context, currentNode);
+            Stream<? extends Pair<String, Locatable>> childrenNotInTemplate =
+                    findChildrenNotInTemplate(context, currentNode);
 
-            childrenNotInTemplate.forEach(c -> handleChildrenNotInTemplate(context, c));
+            childrenNotInTemplate.forEach(c -> handleChildrenNotInTemplate(context, c.getLeft(), c.getRight()));
         }
 
         postHandle(context);
@@ -158,30 +160,36 @@ public abstract class Walker<T> {
         context.getObjectDeque().remove();
     }
 
-    protected <T> Stream<? extends Locatable> findChildrenNotInTemplate(
+    protected <T> Stream<? extends Pair<String, Locatable>> findChildrenNotInTemplate(
             Context<T> context, WebTemplateNode currentNode) {
         RMObject curentRmObject = context.getRmObjectDeque().peek();
 
         return getChildLocatable(curentRmObject).filter(Objects::nonNull).filter(c -> currentNode.getChildren().stream()
-                .noneMatch(n -> {
-                    AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
-
-                    if (!Objects.equals(n.getNodeId(), c.getArchetypeNodeId())) {
-                        return false;
-                    }
-
-                    String otherPredicate = lastNode.findOtherPredicate("name/value");
-
-                    if (otherPredicate != null
-                            && !Objects.equals(otherPredicate, c.getName().getValue())) {
-                        return false;
-                    }
-
-                    return true;
-                }));
+                .noneMatch(n -> matches(c.getLeft(), c.getRight(), n)));
     }
 
-    private static Stream<? extends Locatable> getChildLocatable(RMObject curentRmObject) {
+    private static boolean matches(String attributeName, Locatable locatable, WebTemplateNode n) {
+        AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
+
+        if (!attributeName.matches(lastNode.getName())) {
+            return false;
+        }
+
+        if (!Objects.equals(n.getNodeId(), locatable.getArchetypeNodeId())) {
+            return false;
+        }
+
+        String otherPredicate = lastNode.findOtherPredicate("name/value");
+
+        if (otherPredicate != null
+                && !Objects.equals(otherPredicate, locatable.getName().getValue())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static Stream<? extends Pair<String, Locatable>> getChildLocatable(RMObject curentRmObject) {
 
         return ArchieRMInfoLookup.getInstance().getTypeInfo(curentRmObject.getClass()).getAttributes().values().stream()
                 .filter(s -> !s.isComputed())
@@ -201,15 +209,14 @@ public abstract class Walker<T> {
                         return Stream.empty();
                     } else if (invoke instanceof Collection<?> c) {
 
-                        return c.stream();
+                        return c.stream().map(Locatable.class::cast).map(l -> Pair.of(a.getRmName(), l));
                     } else {
-                        return Stream.of(invoke);
+                        return Stream.of(invoke).map(Locatable.class::cast).map(l -> Pair.of(a.getRmName(), l));
                     }
-                })
-                .map(Locatable.class::cast);
+                });
     }
 
-    protected void handleChildrenNotInTemplate(Context<T> context, Locatable c) {}
+    protected void handleChildrenNotInTemplate(Context<T> context, String name, Locatable c) {}
 
     private Stream<NodeConstellation> streamChildConstellations(
             Context<T> context,
