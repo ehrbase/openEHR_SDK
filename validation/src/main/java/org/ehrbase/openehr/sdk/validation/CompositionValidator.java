@@ -67,7 +67,7 @@ public class CompositionValidator {
         }
     }
 
-    private ConfigurableRMObjectValidator getRmObjectValidator() {
+    public ConfigurableRMObjectValidator getRmObjectValidator() {
         try {
             lock.readLock().lock();
             return rmObjectValidator;
