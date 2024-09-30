@@ -2,21 +2,27 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.18.0]
+ ### Changed
+- Updated archie to 3.11.0 and antlr to 4.13.1 ([#640](https://github.com/ehrbase/openEHR_SDK/pull/640))
+ ### Added 
+ ### Fixed 
+
 ## [2.17.0]
  ### Changed
-- Deprecated `response-dto` `EHR_(STATUS)` related classes that are only used by EHRbase ([621](https://github.com/ehrbase/openEHR_SDK/pull/621))
+- Deprecated `response-dto` `EHR_(STATUS)` related classes that are only used by EHRbase ([#621](https://github.com/ehrbase/openEHR_SDK/pull/621))
  ### Added 
  ### Fixed 
 
 ## [2.16.0]
  ### Added 
  ### Fixed 
-- Fix missing Base64 encoding og ´DV_MULTIMEDIA` `data` ([624](https://github.com/ehrbase/openEHR_SDK/pull/624))
+- Fix missing Base64 encoding og ´DV_MULTIMEDIA` `data` ([#624](https://github.com/ehrbase/openEHR_SDK/pull/624))
 
 ## [2.15.0]
  ### Added 
  ### Fixed 
-- Fix flat format parsing of `ObjectVersionId` ([622](https://github.com/ehrbase/openEHR_SDK/pull/622))
+- Fix flat format parsing of `ObjectVersionId` ([#622](https://github.com/ehrbase/openEHR_SDK/pull/622))
 
 ## [2.14.0]
  ### Changed 
@@ -32,11 +38,11 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [2.11.0]
  ### Added 
-- Make AqlObjectPath serializable ([606](https://github.com/ehrbase/openEHR_SDK/pull/606))
+- Make AqlObjectPath serializable ([#606](https://github.com/ehrbase/openEHR_SDK/pull/606))
 
 ## [2.10.0]
  ### Added
-- Added EHRbase AQL `MetaData` debug execution data ([594](https://github.com/ehrbase/openEHR_SDK/pull/594))
+- Added EHRbase AQL `MetaData` debug execution data ([#594](https://github.com/ehrbase/openEHR_SDK/pull/594))
  ### Changed
 - OptParser now ignores node_id tags for all RM types that are not subtypes of LOCATABLE ([#596](https://github.com/ehrbase/openEHR_SDK/pull/596))
 - Removed OpenEhrClient::getFolder (use directoryCrudEndpoint()::getFolder instead) ([#588](https://github.com/ehrbase/openEHR_SDK/pull/588))
@@ -441,3 +447,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.15.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.14.0...v2.15.0
 [2.16.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.15.0...v2.16.0
 [2.17.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.16.0...v2.17.0
+[2.18.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.17.0...v2.18.0
