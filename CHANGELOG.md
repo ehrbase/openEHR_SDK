@@ -2,6 +2,10 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [unreleased]
+ ### Added 
+ ### Fixed 
+
 ## [2.18.0]
  ### Changed
 - Updated archie to 3.11.0 and antlr to 4.13.1 ([#640](https://github.com/ehrbase/openEHR_SDK/pull/640))
@@ -448,3 +452,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.16.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.15.0...v2.16.0
 [2.17.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.16.0...v2.17.0
 [2.18.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.17.0...v2.18.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v2.18.0...HEAD
