@@ -45,6 +45,8 @@ public class WebTemplateNode implements Serializable {
     @JsonIgnore
     private Integer optionalIdNumber;
 
+    private boolean archetypeSlot = false;
+
     private String name;
     private String localizedName;
     private String rmType;
@@ -90,6 +92,7 @@ public class WebTemplateNode implements Serializable {
         this.max = other.max;
         this.aqlPath = other.aqlPath;
         this.inContext = other.inContext;
+        this.archetypeSlot = other.archetypeSlot;
         this.dependsOn = new ArrayList<>(other.dependsOn);
         if (other.annotations != null) {
             this.annotations = new WebTemplateAnnotation(other.annotations);
@@ -341,11 +344,7 @@ public class WebTemplateNode implements Serializable {
 
     @JsonIgnore
     public boolean isArchetypeSlot() {
-        return RM_INFO_LOOKUP.getTypeInfo(this.getRmType()) != null
-                && Locatable.class.isAssignableFrom(
-                        RM_INFO_LOOKUP.getTypeInfo(this.getRmType()).getJavaClass())
-                && StringUtils.startsWith(this.getNodeId(), "at")
-                && this.getChildren().isEmpty();
+        return archetypeSlot;
     }
 
     @JsonIgnore
@@ -415,5 +414,9 @@ public class WebTemplateNode implements Serializable {
                 + name + '\'' + ", rmType='"
                 + rmType + '\'' + ", aqlPath='"
                 + aqlPath + '\'' + '}';
+    }
+
+    public void setArchetypeSlot(boolean archetypeSlot) {
+        this.archetypeSlot = archetypeSlot;
     }
 }
