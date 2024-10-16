@@ -19,7 +19,9 @@ package org.ehrbase.openehr.sdk.serialisation.flatencoding;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessageType;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
+import com.nedap.archie.rmobjectvalidator.ValidationConfiguration;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -77,11 +79,16 @@ class FlatJsonTest {
 
         softAssertions.assertThat(unmarshal).isNotNull();
 
-        RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+        ValidationConfiguration cfg = new ValidationConfiguration.Builder()
+                .validateInvariants(true)
+                .failOnUnknownTerminologyId(!true)
+                .build();
+
+        RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null, cfg);
 
         softAssertions
                 .assertThat(rmObjectValidator.validate(unmarshal))
-                .filteredOn(m -> !m.getMessage().contains("Inv_null_flavour_indicated"))
+                .filteredOn(m -> m.getType() != RMObjectValidationMessageType.ARCHETYPE_NOT_FOUND)
                 .containsExactlyInAnyOrder();
 
         softAssertions.assertAll();
@@ -110,11 +117,16 @@ class FlatJsonTest {
 
         softAssertions.assertThat(unmarshal).isNotNull();
 
-        RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+        ValidationConfiguration cfg = new ValidationConfiguration.Builder()
+                .validateInvariants(true)
+                .failOnUnknownTerminologyId(!true)
+                .build();
+
+        RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null, cfg);
 
         softAssertions
                 .assertThat(rmObjectValidator.validate(unmarshal))
-                .filteredOn(m -> !m.getMessage().contains("Inv_null_flavour_indicated"))
+                .filteredOn(m -> m.getType() != RMObjectValidationMessageType.ARCHETYPE_NOT_FOUND)
                 .containsExactlyInAnyOrder();
 
         softAssertions.assertAll();
@@ -352,11 +364,16 @@ class FlatJsonTest {
 
         softAssertions.assertThat(unmarshal).isNotNull();
 
-        RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+        ValidationConfiguration cfg = new ValidationConfiguration.Builder()
+                .validateInvariants(true)
+                .failOnUnknownTerminologyId(!true)
+                .build();
+
+        RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null, cfg);
 
         softAssertions
                 .assertThat(rmObjectValidator.validate(unmarshal))
-                .filteredOn(m -> !m.getMessage().contains("Inv_null_flavour_indicated"))
+                .filteredOn(m -> m.getType() != RMObjectValidationMessageType.ARCHETYPE_NOT_FOUND)
                 .containsExactlyInAnyOrder();
 
         softAssertions.assertAll();
