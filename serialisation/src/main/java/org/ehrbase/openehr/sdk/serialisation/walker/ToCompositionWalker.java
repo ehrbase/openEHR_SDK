@@ -50,10 +50,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.defaultinserter.DefaultValueInserter;
 import org.ehrbase.openehr.sdk.util.reflection.ReflectionHelper;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
@@ -319,17 +317,5 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
                 context.getRmObjectDeque().peek(),
                 context.getDefaultValues(),
                 context.getNodeDeque().peek()));
-    }
-
-    @Override
-    protected final void handleChildrenNotInTemplate(Context<T> context, String name, Locatable c) {
-        // NOP
-    }
-
-    @Override
-    protected final <T1> Stream<Pair<String, Locatable>> findChildrenNotInTemplate(
-            Context<T1> context, WebTemplateNode currentNode) {
-        // NOP
-        return Stream.empty();
     }
 }

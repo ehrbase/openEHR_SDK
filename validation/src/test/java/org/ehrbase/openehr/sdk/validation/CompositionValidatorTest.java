@@ -18,9 +18,6 @@
 package org.ehrbase.openehr.sdk.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
@@ -59,7 +56,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.IPS);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -68,7 +65,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.RE_SPECT);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -77,7 +74,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_VAILD);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -86,7 +83,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_INVALID_STATE);
 
         var result = validator.validate(composition, template);
-        assertFalse(result.isEmpty());
+        assertThat(result).isNotEmpty();
     }
 
     @Test
@@ -95,7 +92,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_WRONG);
 
         var result = validator.validate(composition, template);
-        assertFalse(result.isEmpty());
+        assertThat(result).isNotEmpty();
     }
 
     @Test
@@ -104,7 +101,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_MISSING);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -113,7 +110,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.IPS_INVALID);
 
         var result = validator.validate(composition, template);
-        assertEquals(11, result.size());
+        assertThat(result).hasSize(11);
         result.forEach(System.out::println);
     }
 
@@ -123,7 +120,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.CORONA);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -132,7 +129,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.DURATION_VALIDATION);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -141,7 +138,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.SECTION_CARDINALITY);
 
         var result = validator.validate(composition, template);
-        assertEquals(4, result.size());
+        assertThat(result).hasSize(4);
         result.forEach(System.out::println);
     }
 
@@ -151,7 +148,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.ALL_TYPES);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -160,7 +157,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.CHOICE_ELEMENT);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -169,7 +166,7 @@ class CompositionValidatorTest {
         var composition = getComposition("RIPPLE-ConformanceTest.xml");
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
 
         assertThat(result)
                 .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
@@ -184,7 +181,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR-LaboratoryTestReport.opt");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -193,7 +190,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR Problem List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -202,7 +199,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -211,7 +208,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
         result.forEach(System.out::println);
     }
 
@@ -221,7 +218,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
         result.forEach(System.out::println);
     }
 
@@ -231,8 +228,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("cluster-slot.ehrbase.org.v0.opt");
 
         var result = validator.validate(composition, template);
-        assertEquals(0, result.size());
-        result.forEach(System.out::println);
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -241,8 +237,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
 
         var result = validator.validate(composition, template);
-        assertEquals(0, result.size());
-        result.forEach(System.out::println);
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -254,8 +249,7 @@ class CompositionValidatorTest {
         replaceName(objects, "costume name", new DvText("costume name2"));
 
         var result = validator.validate(composition, template);
-        assertEquals(0, result.size());
-        result.forEach(System.out::println);
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -267,7 +261,7 @@ class CompositionValidatorTest {
         replaceName(objects, "Fv1", new DvText("costume name2"));
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
         assertThat(result)
                 .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
                 .containsExactly(
@@ -295,7 +289,7 @@ class CompositionValidatorTest {
         replaceName(objects, "NameOne", new DvText("NameOne"));
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
 
         assertThat(result)
                 .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
@@ -314,7 +308,7 @@ class CompositionValidatorTest {
         replaceName(objects, "NameOne", new DvText("not in template"));
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
 
         assertThat(result)
                 .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
@@ -335,7 +329,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.CHOICE_DV_QUANTITY);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -344,7 +338,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.MINIMAL_ACTION_2);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     private Composition getComposition(CompositionTestDataCanonicalJson composition) throws IOException {

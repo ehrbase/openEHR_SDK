@@ -355,7 +355,7 @@ public class OPTParser {
                                 ccomplexobject, node.getAqlPathDto(), termDefinitionMap, localNameNode, node);
                         return node;
                     })
-                    .collect(Collectors.toList());
+                    .toList();
 
         } else {
             Optional<Name> explicitName = nameValues.stream().findAny();
@@ -444,13 +444,10 @@ public class OPTParser {
                     List<WebTemplateNode> childNode =
                             parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
 
-                    if (cobject instanceof ARCHETYPESLOT && childNode != null) {
-
+                    if (cobject instanceof ARCHETYPESLOT) {
                         childNode.forEach(c -> c.setArchetypeSlot(true));
                     }
-                    if (childNode != null) {
-                        newChildren.addAll(childNode);
-                    }
+                    newChildren.addAll(childNode);
                 }
 
                 if (cattribute instanceof CSINGLEATTRIBUTE
@@ -468,7 +465,7 @@ public class OPTParser {
 
             List<WebTemplateNode> ismTransitionList = newChildren.stream()
                     .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
-                    .collect(Collectors.toList());
+                    .toList();
             if (!ismTransitionList.isEmpty()) {
                 WebTemplateNode firstChild = ismTransitionList.get(0);
                 WebTemplateNode ismTransition = new WebTemplateNode();
@@ -683,7 +680,6 @@ public class OPTParser {
                 .filter(c -> c.getRmAttributeName().equals("name"))
                 .filter(c -> c.getChildrenArray().length == 1)
                 .map(c -> parseCOBJECT(c.getChildrenArray(0), aqlPath, termDefinitionMap, c.getRmAttributeName()))
-                .filter(Objects::nonNull)
                 .flatMap(List::stream)
                 .findAny();
     }
@@ -898,7 +894,7 @@ public class OPTParser {
                     MessageFormat.format("The supplied template is not supported: Unsupported type {0}.", "DV_SCALE"));
         }
 
-        return null;
+        return List.of();
     }
 
     /**

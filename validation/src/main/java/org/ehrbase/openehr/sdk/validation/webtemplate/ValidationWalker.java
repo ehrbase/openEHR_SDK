@@ -20,9 +20,15 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
+import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.serialisation.walker.FromCompositionWalker;
 import org.ehrbase.openehr.sdk.util.reflection.ReflectionHelper;
@@ -74,19 +80,22 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
         // No-op
     }
 
-    @Override
     protected void handleChildrenNotInTemplate(
             Context<List<ConstraintViolation>> context, String attributeName, Locatable locatable) {
 
         WebTemplateNode peek = context.getNodeDeque().peek();
 
-        boolean clusterSlot = peek.getChildren().stream()
+        boolean foundArchetypeSlot = peek.getChildren().stream()
                 .filter(WebTemplateNode::isArchetypeSlot)
                 .filter(n -> Objects.equals(n.getAqlPathDto().getLastNode().getName(), attributeName))
+                .filter(n -> {
+                    String otherPredicate = n.getAqlPathDto().getLastNode().findOtherPredicate("name/value");
+                    return otherPredicate == null
+                            || otherPredicate.equals(locatable.getName().getValue());
+                })
                 .anyMatch(c -> locatable.getArchetypeNodeId().startsWith("openEHR-EHR-" + c.getRmType()));
 
-        if (!clusterSlot && !peek.getAqlPath().equals("/context")) {
-
+        if (!foundArchetypeSlot) {
             context.getObjectDeque()
                     .peek()
                     .add(new ConstraintViolation(
@@ -102,5 +111,61 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     @SuppressWarnings("unchecked")
     private <T extends RMObject> ConstraintValidator<T> getValidator(RMObject object) {
         return VALIDATORS.getOrDefault(object.getClass(), defaultValidator);
+    }
+
+    @Override
+    protected void postVisitChildren(Context<List<ConstraintViolation>> context, WebTemplateNode currentNode) {
+        Stream<? extends Pair<String, Locatable>> childrenNotInTemplate =
+                findChildrenNotInTemplate(context, currentNode);
+
+        childrenNotInTemplate.forEach(c -> handleChildrenNotInTemplate(context, c.getLeft(), c.getRight()));
+    }
+
+    protected <T> Stream<? extends Pair<String, Locatable>> findChildrenNotInTemplate(
+            Context<T> context, WebTemplateNode currentNode) {
+        RMObject curentRmObject = context.getRmObjectDeque().peek();
+
+        return getChildLocatable(curentRmObject).filter(Objects::nonNull).filter(c -> currentNode.getChildren().stream()
+                .filter(n -> !n.isArchetypeSlot())
+                .noneMatch(n -> matches(c.getLeft(), c.getRight(), n)));
+    }
+
+    private static boolean matches(String attributeName, Locatable locatable, WebTemplateNode n) {
+        AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
+
+        if (!attributeName.matches(lastNode.getName())) {
+            return false;
+        }
+
+        if (!Objects.equals(n.getNodeId(), locatable.getArchetypeNodeId())) {
+            return false;
+        }
+
+        String otherPredicate = lastNode.findOtherPredicate("name/value");
+        return otherPredicate == null
+                || otherPredicate.equals(locatable.getName().getValue());
+    }
+
+    private static Stream<? extends Pair<String, Locatable>> getChildLocatable(RMObject curentRmObject) {
+
+        return ArchieRMInfoLookup.getInstance().getTypeInfo(curentRmObject.getClass()).getAttributes().values().stream()
+                .filter(s -> !s.isComputed())
+                .filter(s -> Locatable.class.isAssignableFrom(s.getTypeInCollection()))
+                .flatMap(a -> {
+                    Object invoke;
+                    try {
+                        invoke = a.getGetMethod().invoke(curentRmObject);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    if (invoke == null) {
+                        return Stream.empty();
+                    } else if (invoke instanceof Collection<?> c) {
+                        return c.stream().map(Locatable.class::cast).map(l -> Pair.of(a.getRmName(), l));
+                    } else {
+                        return Stream.of(invoke).map(Locatable.class::cast).map(l -> Pair.of(a.getRmName(), l));
+                    }
+                });
     }
 }
