@@ -93,7 +93,7 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
                     return otherPredicate == null
                             || otherPredicate.equals(locatable.getName().getValue());
                 })
-                .anyMatch(c -> locatable.getArchetypeNodeId().startsWith("openEHR-EHR-" + c.getRmType()));
+                .anyMatch(c -> locatable.getArchetypeNodeId().startsWith("openEHR-EHR-" + c.getRmType() + "."));
 
         if (!foundArchetypeSlot) {
             context.getObjectDeque()
