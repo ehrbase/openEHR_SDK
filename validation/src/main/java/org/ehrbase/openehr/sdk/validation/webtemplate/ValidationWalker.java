@@ -51,10 +51,15 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     private final DefaultValidator defaultValidator = new DefaultValidator();
 
-    public ValidationWalker(ExternalTerminologyValidation externalTerminologyValidation) {
+    private final boolean checkForChildrenNotInTemplate;
+
+    public ValidationWalker(
+            ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate1) {
         if (externalTerminologyValidation != null) {
             VALIDATORS.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
         }
+
+        checkForChildrenNotInTemplate = checkForChildrenNotInTemplate1;
     }
 
     @Override
@@ -115,10 +120,13 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     @Override
     protected void postVisitChildren(Context<List<ConstraintViolation>> context, WebTemplateNode currentNode) {
-        Stream<? extends Pair<String, Locatable>> childrenNotInTemplate =
-                findChildrenNotInTemplate(context, currentNode);
 
-        childrenNotInTemplate.forEach(c -> handleChildrenNotInTemplate(context, c.getLeft(), c.getRight()));
+        if (checkForChildrenNotInTemplate) {
+            Stream<? extends Pair<String, Locatable>> childrenNotInTemplate =
+                    findChildrenNotInTemplate(context, currentNode);
+
+            childrenNotInTemplate.forEach(c -> handleChildrenNotInTemplate(context, c.getLeft(), c.getRight()));
+        }
     }
 
     protected <T> Stream<? extends Pair<String, Locatable>> findChildrenNotInTemplate(

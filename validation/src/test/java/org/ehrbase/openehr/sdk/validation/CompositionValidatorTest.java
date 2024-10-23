@@ -48,7 +48,7 @@ import org.openehr.schemas.v1.TemplateDocument;
 @SuppressWarnings("java:S5976")
 class CompositionValidatorTest {
 
-    private final CompositionValidator validator = new CompositionValidator();
+    private final CompositionValidator validator = new CompositionValidator(true);
 
     @Test
     void validateInternationalPatientSummary() throws Exception {
