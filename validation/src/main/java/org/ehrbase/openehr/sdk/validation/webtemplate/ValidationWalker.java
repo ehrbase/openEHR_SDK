@@ -141,7 +141,7 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     private static boolean matches(String attributeName, Locatable locatable, WebTemplateNode n) {
         AqlPath.AqlNode lastNode = n.getAqlPathDto().getLastNode();
 
-        if (!attributeName.matches(lastNode.getName())) {
+        if (!attributeName.equals(lastNode.getName())) {
             return false;
         }
 
