@@ -38,6 +38,8 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
  * This class is NOT thread-safe!
  */
 public class CompositionValidator {
+
+    private final boolean checkForChildrenNotInTemplate;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private ValidationConfiguration validationCfg = new ValidationConfiguration.Builder()
@@ -76,11 +78,24 @@ public class CompositionValidator {
         }
     }
 
-    //////////////////////////////
-    public CompositionValidator() {}
+    public CompositionValidator() {
+        this(false);
+    }
+
+    public CompositionValidator(boolean checkForChildrenNotInTemplate) {
+
+        this(null, checkForChildrenNotInTemplate);
+    }
 
     public CompositionValidator(ExternalTerminologyValidation externalTerminologyValidation) {
+
+        this(externalTerminologyValidation, false);
+    }
+
+    public CompositionValidator(
+            ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate) {
         this.externalTerminologyValidation = externalTerminologyValidation;
+        this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
     }
 
     /**
@@ -105,7 +120,7 @@ public class CompositionValidator {
         List<RMObjectValidationMessage> messages = getRmObjectValidator().validate(composition);
         if (messages.isEmpty()) {
             List<ConstraintViolation> result = new ArrayList<>();
-            new ValidationWalker(externalTerminologyValidation)
+            new ValidationWalker(externalTerminologyValidation, true)
                     .walk(composition, result, template.getTree(), template.getTemplateId());
             return result;
         } else {

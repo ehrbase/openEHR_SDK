@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- Option to validate compositions for child nodes not defined in template ([631](https://github.com/ehrbase/openEHR_SDK/pull/631))
  ### Fixed 
 
 ## [2.18.0]
