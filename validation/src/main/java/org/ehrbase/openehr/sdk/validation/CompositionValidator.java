@@ -33,7 +33,7 @@ import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 /**
- * Validator that checks a composition against constraints define in an Operational Template or a
+ * Validator that checks a composition against constraints defined in an Operational Template or a
  * Web Template.
  * This class is NOT thread-safe!
  */
@@ -120,7 +120,7 @@ public class CompositionValidator {
         List<RMObjectValidationMessage> messages = getRmObjectValidator().validate(composition);
         if (messages.isEmpty()) {
             List<ConstraintViolation> result = new ArrayList<>();
-            new ValidationWalker(externalTerminologyValidation, true)
+            new ValidationWalker(externalTerminologyValidation, checkForChildrenNotInTemplate)
                     .walk(composition, result, template.getTree(), template.getTemplateId());
             return result;
         } else {
