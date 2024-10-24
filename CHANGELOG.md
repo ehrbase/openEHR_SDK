@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- Option to validate compositions for child nodes not defined in template ([631](https://github.com/ehrbase/openEHR_SDK/pull/631))
  ### Fixed 
 
 ## [2.18.0]
@@ -17,7 +18,6 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Deprecated `response-dto` `EHR_(STATUS)` related classes that are only used by EHRbase ([#621](https://github.com/ehrbase/openEHR_SDK/pull/621))
  ### Added 
  ### Fixed 
-- validate for unexpected children ([631](https://github.com/ehrbase/openEHR_SDK/pull/631))
 
 ## [2.16.0]
  ### Added 
