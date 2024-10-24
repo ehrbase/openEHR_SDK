@@ -54,12 +54,12 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     private final boolean checkForChildrenNotInTemplate;
 
     public ValidationWalker(
-            ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate1) {
+            ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate) {
         if (externalTerminologyValidation != null) {
             VALIDATORS.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
         }
 
-        checkForChildrenNotInTemplate = checkForChildrenNotInTemplate1;
+        this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
     }
 
     @Override

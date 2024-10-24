@@ -17,14 +17,14 @@
  */
 package org.ehrbase.openehr.sdk.validation;
 
+import com.nedap.archie.flattener.OperationalTemplateProvider;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessage;
+import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
 import com.nedap.archie.rmobjectvalidator.ValidationConfiguration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.validation.webtemplate.ValidationWalker;
@@ -40,62 +40,42 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 public class CompositionValidator {
 
     private final boolean checkForChildrenNotInTemplate;
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private ValidationConfiguration validationCfg = new ValidationConfiguration.Builder()
-            .validateInvariants(true)
-            .failOnUnknownTerminologyId(false)
-            .build();
-
-    private ConfigurableRMObjectValidator rmObjectValidator;
-
-    {
-        initObjectValidator(false);
-    }
+    private final RMObjectValidator rmObjectValidator;
 
     private ExternalTerminologyValidation externalTerminologyValidation;
 
-    public void setArchetypeValidation(boolean archetypeValidation) {
-        initObjectValidator(archetypeValidation);
-    }
-
-    private void initObjectValidator(boolean archetypeValidation) {
-        try {
-            lock.writeLock().lock();
-            rmObjectValidator = new ConfigurableRMObjectValidator(
-                    ArchieRMInfoLookup.getInstance(), archetypeId -> null, validationCfg, archetypeValidation);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    public ConfigurableRMObjectValidator getRmObjectValidator() {
-        try {
-            lock.readLock().lock();
-            return rmObjectValidator;
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
     public CompositionValidator() {
-        this(false);
+        this(null, false, true, null);
     }
 
-    public CompositionValidator(boolean checkForChildrenNotInTemplate) {
-
-        this(null, checkForChildrenNotInTemplate);
-    }
-
-    public CompositionValidator(ExternalTerminologyValidation externalTerminologyValidation) {
-
-        this(externalTerminologyValidation, false);
-    }
-
+    /**
+     *
+     * @param externalTerminologyValidation
+     * @param checkForChildrenNotInTemplate
+     * @param validateInvariants perform invariant checks in archie library
+     * @param archetypeProvider
+     */
     public CompositionValidator(
-            ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate) {
+            ExternalTerminologyValidation externalTerminologyValidation,
+            boolean checkForChildrenNotInTemplate,
+            boolean validateInvariants,
+            OperationalTemplateProvider archetypeProvider) {
         this.externalTerminologyValidation = externalTerminologyValidation;
         this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
+
+        ValidationConfiguration validationCfg = new ValidationConfiguration.Builder()
+                .validateInvariants(validateInvariants)
+                .failOnUnknownTerminologyId(false)
+                .build();
+
+        if (archetypeProvider != null) {
+            rmObjectValidator =
+                    new RMObjectValidator(ArchieRMInfoLookup.getInstance(), archetypeProvider, validationCfg);
+        } else {
+            rmObjectValidator = new ArchetypeNeglectingRMObjectValidator(
+                    ArchieRMInfoLookup.getInstance(), archetypeId -> null, validationCfg);
+        }
     }
 
     /**
@@ -117,7 +97,7 @@ public class CompositionValidator {
      * @return the list of constraint violations
      */
     public List<ConstraintViolation> validate(Composition composition, WebTemplate template) {
-        List<RMObjectValidationMessage> messages = getRmObjectValidator().validate(composition);
+        List<RMObjectValidationMessage> messages = rmObjectValidator.validate(composition);
         if (messages.isEmpty()) {
             List<ConstraintViolation> result = new ArrayList<>();
             new ValidationWalker(externalTerminologyValidation, checkForChildrenNotInTemplate)
@@ -128,24 +108,6 @@ public class CompositionValidator {
                     .map(validationMessage ->
                             new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
                     .collect(Collectors.toList());
-        }
-    }
-
-    /**
-     * Enable or disable invariant checks in archie library.
-     *
-     * @param validateInvariants the boolean value
-     */
-    public void setRunInvariantChecks(boolean validateInvariants) {
-        try {
-            lock.writeLock().lock();
-            validationCfg = new ValidationConfiguration.Builder()
-                    .validateInvariants(validateInvariants)
-                    .failOnUnknownTerminologyId(false)
-                    .build();
-            initObjectValidator(rmObjectValidator.isArchetypeValidation());
-        } finally {
-            lock.writeLock().unlock();
         }
     }
 
