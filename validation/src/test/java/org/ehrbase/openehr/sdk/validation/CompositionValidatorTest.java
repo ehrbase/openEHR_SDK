@@ -17,18 +17,20 @@
  */
 package org.ehrbase.openehr.sdk.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.datastructures.Cluster;
+import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.xml.JAXBUtil;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.assertj.core.groups.Tuple;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
@@ -46,7 +48,7 @@ import org.openehr.schemas.v1.TemplateDocument;
 @SuppressWarnings("java:S5976")
 class CompositionValidatorTest {
 
-    private final CompositionValidator validator = new CompositionValidator();
+    private final CompositionValidator validator = new CompositionValidator(null, true, true, null);
 
     @Test
     void validateInternationalPatientSummary() throws Exception {
@@ -54,7 +56,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.IPS);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -63,7 +65,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.RE_SPECT);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -72,7 +74,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_VAILD);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -81,7 +83,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_INVALID_STATE);
 
         var result = validator.validate(composition, template);
-        assertFalse(result.isEmpty());
+        assertThat(result).isNotEmpty();
     }
 
     @Test
@@ -90,7 +92,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_WRONG);
 
         var result = validator.validate(composition, template);
-        assertFalse(result.isEmpty());
+        assertThat(result).isNotEmpty();
     }
 
     @Test
@@ -99,7 +101,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_MISSING);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -108,7 +110,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.IPS_INVALID);
 
         var result = validator.validate(composition, template);
-        assertEquals(11, result.size());
+        assertThat(result).hasSize(11);
         result.forEach(System.out::println);
     }
 
@@ -118,7 +120,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.CORONA);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -127,7 +129,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataSimSDTJson.DURATION_VALIDATION);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -136,7 +138,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.SECTION_CARDINALITY);
 
         var result = validator.validate(composition, template);
-        assertEquals(4, result.size());
+        assertThat(result).hasSize(4);
         result.forEach(System.out::println);
     }
 
@@ -146,7 +148,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.ALL_TYPES);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -155,7 +157,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.CHOICE_ELEMENT);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -164,7 +166,13 @@ class CompositionValidatorTest {
         var composition = getComposition("RIPPLE-ConformanceTest.xml");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).hasSize(1);
+
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(new Tuple(
+                        "/content[openEHR-EHR-SECTION.adhoc.v1]/items[openEHR-EHR-ACTION.procedure.v1]/description[at0001]",
+                        "RmObject with type:Element, nodeId:at0065,name:Run-time coded name; not in template"));
     }
 
     @Test
@@ -173,7 +181,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR-LaboratoryTestReport.opt");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -182,7 +190,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR Problem List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -191,7 +199,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -200,7 +208,7 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
         result.forEach(System.out::println);
     }
 
@@ -210,8 +218,109 @@ class CompositionValidatorTest {
         var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
-        assertEquals(1, result.size());
+        assertThat(result).hasSize(1);
         result.forEach(System.out::println);
+    }
+
+    @Test
+    void validateClusterSlot() throws Exception {
+        var composition = getCompositionJson("cluster-slot.ehrbase.or.v0.json");
+        var template = getOperationalTemplate("cluster-slot.ehrbase.org.v0.opt");
+
+        var result = validator.validate(composition, template);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void validateName() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+
+        var result = validator.validate(composition, template);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void validateNameRuntimeName() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        List<Cluster> objects = getClusterList(composition);
+
+        replaceName(objects, "costume name", new DvText("costume name2"));
+
+        var result = validator.validate(composition, template);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void validateNameRuntimeNameForbidden() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        List<Cluster> objects = getClusterList(composition);
+
+        replaceName(objects, "Fv1", new DvText("costume name2"));
+
+        var result = validator.validate(composition, template);
+        assertThat(result).hasSize(1);
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(
+                        new Tuple(
+                                "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]",
+                                "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_restricted.v0,name:costume name2; not in template"));
+    }
+
+    private static List<Cluster> getClusterList(Composition composition) {
+        return composition
+                .itemsAtPath(
+                        "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]/items")
+                .stream()
+                .map(Cluster.class::cast)
+                .toList();
+    }
+
+    @Test
+    void validateNameWrongType() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+
+        List<Cluster> objects = getClusterList(composition);
+
+        replaceName(objects, "NameOne", new DvText("NameOne"));
+
+        var result = validator.validate(composition, template);
+        assertThat(result).hasSize(1);
+
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(new Tuple(
+                        "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.name_code.v0 and name/value='NameOne']/name",
+                        "Expected a DV_CODED_TEXT but got DV_TEXT"));
+    }
+
+    @Test
+    void validateNameNotInTemplate() throws Exception {
+        var composition = getCompositionJson("name-test.json");
+        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+
+        List<Cluster> objects = getClusterList(composition);
+
+        replaceName(objects, "NameOne", new DvText("not in template"));
+
+        var result = validator.validate(composition, template);
+        assertThat(result).hasSize(1);
+
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(
+                        new Tuple(
+                                "/content[openEHR-EHR-OBSERVATION.name_test.v0]/data[at0001]/events[at0002]/data[at0003]",
+                                "RmObject with type:Cluster, nodeId:openEHR-EHR-CLUSTER.name_code.v0,name:not in template; not in template"));
+    }
+
+    private void replaceName(List<Cluster> cluster, String nameOne, DvText dvText) {
+
+        cluster.stream().filter(c -> c.getName().getValue().equals(nameOne)).forEach(c -> c.setName(dvText));
     }
 
     @Test
@@ -220,7 +329,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.CHOICE_DV_QUANTITY);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -229,7 +338,7 @@ class CompositionValidatorTest {
         var composition = getComposition(CompositionTestDataCanonicalJson.MINIMAL_ACTION_2);
 
         var result = validator.validate(composition, template);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     private Composition getComposition(CompositionTestDataCanonicalJson composition) throws IOException {
@@ -246,6 +355,12 @@ class CompositionValidatorTest {
     private Composition getComposition(String name) throws IOException, JAXBException {
         var unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
         return (Composition) unmarshaller.unmarshal(new FileInputStream("./src/test/resources/composition/" + name));
+    }
+
+    private Composition getCompositionJson(String name) throws IOException {
+        var unmarshaller = new CanonicalJson();
+        return (Composition) unmarshaller.unmarshal(IOUtils.toString(
+                new FileInputStream("./src/test/resources/composition/" + name), StandardCharsets.UTF_8));
     }
 
     private OPERATIONALTEMPLATE getOperationalTemplate(OperationalTemplateTestData template)

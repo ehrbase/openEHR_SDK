@@ -19,12 +19,12 @@ package org.ehrbase.openehr.sdk.serialisation.walker;
 
 import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.*;
 
-import com.nedap.archie.openehrtestrm.Element;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.EventContext;
 import com.nedap.archie.rm.composition.IsmTransition;
+import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
@@ -143,12 +143,19 @@ public abstract class Walker<T> {
                     handle(context);
                 });
             }
+
+            postVisitChildren(context, currentNode);
         }
+
         postHandle(context);
         insertDefaults(context);
         context.getRmObjectDeque().remove();
         context.getNodeDeque().remove();
         context.getObjectDeque().remove();
+    }
+
+    protected void postVisitChildren(Context<T> context, WebTemplateNode currentNode) {
+        // NOOP
     }
 
     private Stream<NodeConstellation> streamChildConstellations(
