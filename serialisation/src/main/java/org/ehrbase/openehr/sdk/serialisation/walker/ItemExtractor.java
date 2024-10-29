@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.walker;
 
+import com.nedap.archie.paths.PathSegment;
 import com.nedap.archie.query.RMObjectWithPath;
 import com.nedap.archie.query.RMPathQuery;
 import com.nedap.archie.rm.RMObject;
@@ -26,158 +27,105 @@ import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
-public class ItemExtractor {
-    private RMObject currentRM;
-    private WebTemplateNode currentNode;
-    private WebTemplateNode childNode;
-    private boolean isChoice;
-    private Object child;
-    private Object parent;
+public final class ItemExtractor {
 
-    public ItemExtractor(RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice) {
-        this.currentRM = currentRM;
-        this.currentNode = currentNode;
-        this.childNode = childNode;
-        this.isChoice = isChoice;
+    private ItemExtractor() {
+        // NOOP
     }
 
-    public Object getChild() {
-        return child;
-    }
-
-    public ItemExtractor invoke() {
-
+    public static Object extractChild(
+            RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice) {
         AqlPath childPath = currentNode.buildRelativePath(childNode, false);
-        AqlPath parentAql;
-        if (childPath.getNodeCount() > 1) {
-            parentAql = childPath.removeEnd(1);
-        } else {
-            parentAql = AqlPath.ROOT_PATH;
-        }
 
-        if (currentRM instanceof Pathable) {
-            Pathable currentPathable = (Pathable) currentRM;
-            try {
-                child = itemsAtPath(childPath, currentPathable);
-            } catch (RuntimeException e) {
-                // work around known issue with archie where Event::getOffset throws a NPE due to time being null
-                if (e.getCause() instanceof InvocationTargetException
-                        && e.getCause().getCause() instanceof NullPointerException) {
-                    child = List.of();
-                } else {
-                    throw e;
-                }
+        if (!(currentRM instanceof Pathable currentPathable)) {
+            if (currentRM instanceof DvInterval dvi) {
+                return switch (childPath.getLastNode().getName()) {
+                    case "upper_included" -> new RmBoolean(dvi.isUpperIncluded());
+                    case "lower_included" -> new RmBoolean(dvi.isLowerIncluded());
+                    case "lower" -> dvi.getLower();
+                    case "upper" -> dvi.getUpper();
+                    default -> null;
+                };
             }
-            if (((List<?>) child).isEmpty()) {
-                child = null;
-            }
-            parent = itemAtPath(parentAql, currentPathable);
 
-        } else if (currentRM instanceof DvInterval) {
-            switch (childPath.getLastNode().getName()) {
-                case "upper_included":
-                    child = new RmBoolean(((DvInterval<?>) currentRM).isUpperIncluded());
-                    break;
-                case "lower_included":
-                    child = new RmBoolean(((DvInterval<?>) currentRM).isLowerIncluded());
-                    break;
-                case "lower":
-                    child = ((DvInterval<?>) currentRM).getLower();
-                    break;
-                case "upper":
-                    child = ((DvInterval<?>) currentRM).getUpper();
-                    break;
-                default:
-                    // NOOP
-            }
-            parent = currentRM;
-
-        } else {
             throw new SdkException(String.format(
                     "Can not extract from class %s", currentRM.getClass().getSimpleName()));
         }
+        Stream<?> itemsAtPath;
+        try { // FIXME Performance itemsAtPath
+            itemsAtPath = itemsAtPath(childPath, currentPathable);
 
-        if (StringUtils.isNotBlank(childPath.getBaseNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY))
-                && child instanceof List
-                && Locatable.class.isAssignableFrom(Walker.ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
-            child = ((List<?>) child)
-                    .stream()
-                            .filter(c -> childPath
-                                    .getBaseNode()
-                                    .findOtherPredicate(AqlPath.NAME_VALUE_KEY)
-                                    .equals(((Locatable) c).getNameAsString()))
-                            .collect(Collectors.toList());
-            // if name not found return null
-            if (((List<?>) child).isEmpty()) {
-                child = null;
+            String baseName = childPath.getBaseNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY);
+
+            if (StringUtils.isNotBlank(baseName)
+                    && Locatable.class.isAssignableFrom(Walker.ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
+                itemsAtPath = itemsAtPath.filter(c -> baseName.equals(((Locatable) c).getNameAsString()));
+            }
+
+            if (isChoice) {
+                itemsAtPath = itemsAtPath.filter(c -> Walker.ARCHIE_RM_INFO_LOOKUP
+                        .getTypeInfo(c.getClass())
+                        .getRmName()
+                        // childNode.getRmType my include Type "DV_INTERVAL<DV_TIME>"
+                        .equals(StringUtils.substringBefore(childNode.getRmType(), "<")));
+            }
+
+        } catch (RuntimeException e) {
+            // work around known issue with archie where Event::getOffset throws a NPE due to time being null
+            if (e.getCause() instanceof InvocationTargetException target
+                    && target.getCause() instanceof NullPointerException) {
+                return null;
+            } else {
+                throw e;
             }
         }
-        if (isChoice && child instanceof List) {
-            child = ((List<?>) child)
-                    .stream()
-                            .filter(c -> Walker.ARCHIE_RM_INFO_LOOKUP
-                                    .getTypeInfo(c.getClass())
-                                    .getRmName()
-                                    // childNode.getRmType my include Type "DV_INTERVAL<DV_TIME>"
-                                    .equals(StringUtils.substringBefore(childNode.getRmType(), "<")))
-                            .collect(Collectors.toList());
-            // if rmType not found return null
-            if (((List<?>) child).isEmpty()) {
-                child = null;
-            }
+
+        Iterator<?> childIt = itemsAtPath.iterator();
+
+        // if rmType not found return null
+        if (!childIt.hasNext()) {
+            return null;
         }
 
-        if (!RMHelper.isMulti(currentNode, childNode) && child instanceof List) {
-            child = ((List<?>) child).stream().findFirst().orElse(null);
+        if (RMHelper.isMulti(currentNode, childNode)) {
+            return IteratorUtils.toList(childIt);
         }
-
-        if (child instanceof Element && !childNode.getRmType().equals(RmConstants.ELEMENT)) {
-            child = ((Element) child).getValue();
+        Object child = childIt.next();
+        if (child instanceof Element el && !childNode.getRmType().equals(RmConstants.ELEMENT)) {
+            return el.getValue();
+        } else {
+            return child;
         }
-        return this;
     }
-
-    private BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathQueryCache =
-            (path, provider) -> provider.apply(path);
 
     /**
-     * Adds a cache to prevent costly construction of duplicate RMPathQuery instances.
-     *
-     * @see com.nedap.archie.rmobjectvalidator.APathQueryCache
-     * @param rmPathQueryCache
-     * @return
+     * Omits String concatenation + parsing
      */
-    public ItemExtractor withRmPathQueryCache(
-            BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathQueryCache) {
-        this.rmPathQueryCache = rmPathQueryCache;
-        return this;
+    public static final class AqlPathRMPathQuery extends RMPathQuery {
+
+        public AqlPathRMPathQuery(AqlPath path) {
+            super("");
+            List<PathSegment> pathSegments = getPathSegments();
+            pathSegments.clear();
+            ((ArrayList<?>) pathSegments).ensureCapacity(path.getNodes().size());
+            path.getNodes().forEach(node -> pathSegments.add(new PathSegment(node.getName(), node.getAtCode())));
+        }
     }
 
-    private RMPathQuery getRmPathQuery(AqlPath path) {
-        return rmPathQueryCache.apply(path, p -> new RMPathQuery(p.format(false)));
-    }
-
-    private Object itemAtPath(AqlPath path, Pathable currentPathable) {
-        return getRmPathQuery(path).find(ArchieRMInfoLookup.getInstance(), currentPathable);
-    }
-
-    private List<?> itemsAtPath(AqlPath path, Pathable currentPathable) {
-        return getRmPathQuery(path).findList(ArchieRMInfoLookup.getInstance(), currentPathable).stream()
-                .map(RMObjectWithPath::getObject)
-                .collect(Collectors.toList());
-    }
-
-    public Object getParent() {
-        return parent;
+    private static Stream<?> itemsAtPath(AqlPath path, Pathable currentPathable) {
+        return new AqlPathRMPathQuery(path)
+                .findList(ArchieRMInfoLookup.getInstance(), currentPathable).stream()
+                        .map(RMObjectWithPath::getObject);
     }
 }

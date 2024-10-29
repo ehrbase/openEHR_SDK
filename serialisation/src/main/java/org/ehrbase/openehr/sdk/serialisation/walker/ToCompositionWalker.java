@@ -278,22 +278,21 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
             Map<String, List<WebTemplateNode>> choices,
             WebTemplateNode childNode,
             Integer i) {
-        RMObject currentChild = null;
-        T childObject = null;
-        childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
-        if (childObject != null) {
-
-            boolean isChoice = choices.containsKey(childNode.getAqlPath());
-
-            if (currentNode.getRmType().equals(RmConstants.ELEMENT)
-                    && childNode.getRmType().equals(RmConstants.DV_CODED_TEXT)
-                    && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
-                isChoice = true;
-            }
-
-            currentChild =
-                    (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, isChoice, i);
+        T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
+        if (childObject == null) {
+            return null;
         }
+
+        boolean isChoice = choices.containsKey(childNode.getAqlPath());
+
+        if (currentNode.getRmType().equals(RmConstants.ELEMENT)
+                && childNode.getRmType().equals(RmConstants.DV_CODED_TEXT)
+                && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
+            isChoice = true;
+        }
+
+        RMObject currentChild =
+                (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, isChoice, i);
 
         return new ImmutablePair<>(childObject, currentChild);
     }

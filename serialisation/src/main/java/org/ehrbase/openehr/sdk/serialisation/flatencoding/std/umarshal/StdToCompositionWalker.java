@@ -171,7 +171,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                         && context.getFlatHelper().skip(childNode, currentNode))
                 //  NonMandatoryRmAttribute are handled in the UnmarshalPostprocessor
                 || (currentNode != null && context.getFlatHelper().isNonMandatoryRmAttribute(childNode, currentNode))) {
-            return new ImmutablePair<>(null, null);
+            return null;
         }
         return super.extractPair(context, currentNode, choices, childNode, i);
     }

@@ -17,15 +17,18 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.walker;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateComparisonSymbol;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInterval;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateValidation;
 import org.threeten.extra.PeriodDuration;
@@ -36,8 +39,31 @@ public class DurationHelper {
     }
 
     public enum MIN_MAX {
-        MIN,
-        MAX;
+        MIN(WebTemplateInterval::getMin, WebTemplateInterval::getMinOp),
+        MAX(WebTemplateInterval::getMax, WebTemplateInterval::getMaxOp);
+
+        private final Function<WebTemplateInterval, Serializable> valueFunc;
+
+        private final Function<WebTemplateInterval, WebTemplateComparisonSymbol> opFunc;
+
+        MIN_MAX(
+                Function<WebTemplateInterval, Serializable> valueFunc,
+                Function<WebTemplateInterval, WebTemplateComparisonSymbol> opFunc) {
+            this.valueFunc = valueFunc;
+            this.opFunc = opFunc;
+        }
+
+        public <T extends Serializable> T getValue(WebTemplateInterval<T> v) {
+            return (T) valueFunc.apply(v);
+        }
+
+        public <V extends Serializable> V getValue(WebTemplateInterval<?> v, Class<V> targetType) {
+            return (V) valueFunc.apply(v);
+        }
+
+        public WebTemplateComparisonSymbol getOp(WebTemplateInterval v) {
+            return opFunc.apply(v);
+        }
     }
 
     /**
@@ -48,35 +74,16 @@ public class DurationHelper {
      * @return
      */
     public static Optional<TemporalAmount> buildTotalRange(WebTemplateNode node, MIN_MAX minMax) {
-
-        List<TemporalAmount> temporalAmounts = Optional.ofNullable(node).map(WebTemplateNode::getInputs).stream()
+        return Optional.ofNullable(node).map(WebTemplateNode::getInputs).stream()
                 .flatMap(List::stream)
-                .filter(i -> Optional.of(i)
+                .flatMap(input -> Optional.of(input)
                         .map(WebTemplateInput::getValidation)
                         .map(WebTemplateValidation::getRange)
-                        .map(v -> MIN_MAX.MAX.equals(minMax) ? v.getMax() : v.getMin())
-                        .map(Object::getClass)
-                        .filter(Integer.class::isAssignableFrom)
-                        .isPresent())
-                .map(input -> build(
-                        input,
-                        MIN_MAX.MAX.equals(minMax)
-                                ? ((Integer) input.getValidation().getRange().getMax())
-                                : ((Integer) input.getValidation().getRange().getMin())))
-                .collect(Collectors.toList());
-
-        if (temporalAmounts.isEmpty()) {
-
-            return Optional.empty();
-        } else {
-
-            PeriodDuration offset = PeriodDuration.ZERO;
-            for (TemporalAmount amount : temporalAmounts) {
-
-                offset = offset.plus(amount);
-            }
-            return Optional.of(offset);
-        }
+                        .map(range -> minMax.getValue(range))
+                        .filter(value -> value instanceof Integer)
+                        .map(value -> build(input, (Integer) value))
+                        .stream())
+                .reduce((a, b) -> PeriodDuration.from(a).plus(b));
     }
 
     /**
@@ -86,46 +93,45 @@ public class DurationHelper {
      * @param minMax
      * @return
      */
-    public static Optional<WebTemplateComparisonSymbol> getTotalComparisonSymbol(WebTemplateNode node, MIN_MAX minMax) {
+    public static WebTemplateComparisonSymbol getTotalComparisonSymbol(WebTemplateNode node, MIN_MAX minMax) {
+        Iterator<WebTemplateComparisonSymbol> symbols =
+                Optional.ofNullable(node).map(WebTemplateNode::getInputs).stream()
+                        .flatMap(List::stream)
+                        .map(WebTemplateInput::getValidation)
+                        .filter(Objects::nonNull)
+                        .map(WebTemplateValidation::getRange)
+                        .filter(Objects::nonNull)
+                        .map(minMax::getOp)
+                        .filter(Objects::nonNull)
+                        .iterator();
 
-        List<WebTemplateComparisonSymbol> symbols = Optional.ofNullable(node).map(WebTemplateNode::getInputs).stream()
-                .flatMap(List::stream)
-                .map(WebTemplateInput::getValidation)
-                .filter(Objects::nonNull)
-                .map(WebTemplateValidation::getRange)
-                .filter(Objects::nonNull)
-                .map(v -> MIN_MAX.MAX.equals(minMax) ? v.getMaxOp() : v.getMinOp())
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        if (!symbols.hasNext()) {
+            return null;
+        }
 
-        return symbols.stream()
-                .filter(s -> List.of(WebTemplateComparisonSymbol.GT, WebTemplateComparisonSymbol.LT)
-                        .contains(s))
-                .findAny()
-                .or(() -> symbols.stream().findAny());
+        WebTemplateComparisonSymbol first = symbols.next();
+        if (first == WebTemplateComparisonSymbol.GT || first == WebTemplateComparisonSymbol.LT) {
+            return first;
+        }
+        while (symbols.hasNext()) {
+            WebTemplateComparisonSymbol next = symbols.next();
+            if (next == WebTemplateComparisonSymbol.GT || next == WebTemplateComparisonSymbol.LT) {
+                return next;
+            }
+        }
+        return first;
     }
 
     private static TemporalAmount build(WebTemplateInput input, Integer integer) {
-
-        String suffix = input.getSuffix();
-
-        switch (suffix) {
-            case "year":
-                return Period.ofYears(integer);
-            case "month":
-                return Period.ofMonths(integer);
-            case "day":
-                return Period.ofDays(integer);
-            case "week":
-                return Period.ofWeeks(integer);
-            case "hour":
-                return Duration.ofHours(integer);
-            case "minute":
-                return Duration.ofMinutes(integer);
-            case "second":
-                return Duration.ofSeconds(integer);
-            default:
-                throw new IllegalArgumentException("Unsupported suffix: " + suffix);
-        }
+        return switch (input.getSuffix()) {
+            case "year" -> Period.ofYears(integer);
+            case "month" -> Period.ofMonths(integer);
+            case "day" -> Period.ofDays(integer);
+            case "week" -> Period.ofWeeks(integer);
+            case "hour" -> Duration.ofHours(integer);
+            case "minute" -> Duration.ofMinutes(integer);
+            case "second" -> Duration.ofSeconds(integer);
+            default -> throw new IllegalArgumentException("Unsupported suffix: " + input.getSuffix());
+        };
     }
 }

@@ -123,7 +123,7 @@ public abstract class Walker<T> {
                     // Number of entries to be added
                     int size = calculateSize(context, childrenForPath.get(0));
                     childConstellations = IntStream.range(0, size)
-                            .mapToObj(Integer::valueOf)
+                            .boxed()
                             .flatMap(index ->
                                     streamChildConstellations(context, currentNode, allChoices, childrenForPath, index)
                                             // for each index at most one of the choices is retained
@@ -167,7 +167,7 @@ public abstract class Walker<T> {
         return childrenForPath.stream()
                 .map(childNode -> {
                     var pair = extractPair(context, currentNode, choices, childNode, index);
-                    if (ObjectUtils.anyNull(pair.getLeft(), pair.getRight())) {
+                    if (pair == null || ObjectUtils.anyNull(pair.getLeft(), pair.getRight())) {
                         return null;
                     } else {
                         return new NodeConstellation(index, pair.getLeft(), pair.getRight(), childNode);
@@ -342,17 +342,17 @@ public abstract class Walker<T> {
     protected void insertDefaults(Context<T> context) {}
 
     protected Object wrap(Object child) {
-        if (child != null) {
-            if (String.class.isAssignableFrom(child.getClass())) {
-                child = new RmString((String) child);
-            } else if (Long.class.isAssignableFrom(child.getClass())) {
-                child = new RmLong((Long) child);
-            }
-            if (Boolean.class.isAssignableFrom(child.getClass())) {
-                child = new RmBoolean((Boolean) child);
-            }
+        if (child == null) {
+            return null;
+        } else if (child instanceof String strVal) {
+            return new RmString(strVal);
+        } else if (child instanceof Long longVal) {
+            return new RmLong(longVal);
+        } else if (child instanceof Boolean boolVal) {
+            return new RmBoolean(boolVal);
+        } else {
+            return child;
         }
-        return child;
     }
 
     protected abstract int calculateSize(Context<T> context, WebTemplateNode childNode);
