@@ -30,7 +30,7 @@ public class WebTemplateInput implements Serializable {
 
     private String suffix;
     private String type;
-    private final List<WebTemplateInputValue> list = new ArrayList<>();
+    private final List<WebTemplateInputValue> list;
     private Boolean listOpen;
     private WebTemplateValidation validation;
     private String terminology;
@@ -38,7 +38,9 @@ public class WebTemplateInput implements Serializable {
     @JsonSerialize(using = StringToNumberSerializer.class)
     private String defaultValue;
 
-    public WebTemplateInput() {}
+    public WebTemplateInput() {
+        list = new ArrayList<>();
+    }
 
     public WebTemplateInput(WebTemplateInput other) {
         this.suffix = other.suffix;
@@ -51,7 +53,8 @@ public class WebTemplateInput implements Serializable {
         }
         this.terminology = other.terminology;
         this.defaultValue = other.defaultValue;
-        this.list.addAll(other.list.stream().map(WebTemplateInputValue::new).collect(Collectors.toList()));
+        this.list = new ArrayList<>(other.list.size());
+        other.list.forEach(e -> this.list.add(new WebTemplateInputValue(e)));
     }
 
     public String getSuffix() {

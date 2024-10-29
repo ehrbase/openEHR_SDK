@@ -33,12 +33,14 @@ public class WebTemplateInputValue implements Serializable {
     private String label;
     private final Map<String, String> localizedLabels = new HashMap<>();
     private final Map<String, String> localizedDescriptions = new HashMap<>();
-    private final Map<String, WebTemplateTerminology> termBindings = new HashMap<>();
+    private final Map<String, WebTemplateTerminology> termBindings;
     private Integer ordinal;
     private final List<String> currentStates = new ArrayList<>();
     private WebTemplateValidation validation;
 
-    public WebTemplateInputValue() {}
+    public WebTemplateInputValue() {
+        termBindings = new HashMap<>();
+    }
 
     public WebTemplateInputValue(WebTemplateInputValue other) {
         this.value = other.value;
@@ -51,8 +53,8 @@ public class WebTemplateInputValue implements Serializable {
         }
         this.localizedLabels.putAll(other.localizedLabels);
         this.localizedDescriptions.putAll(other.localizedDescriptions);
-        this.termBindings.putAll(other.termBindings.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new WebTemplateTerminology(e.getValue()))));
+        this.termBindings = other.termBindings.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> new WebTemplateTerminology(e.getValue())));
         this.currentStates.addAll(other.currentStates);
     }
 

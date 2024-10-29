@@ -91,6 +91,8 @@ public class WebTemplateNode implements Serializable {
         this.min = other.min;
         this.max = other.max;
         this.aqlPath = other.aqlPath;
+        this.aqlCache[0] = other.getAqlPath(true);
+        this.aqlCache[1] = other.getAqlPath(false);
         this.inContext = other.inContext;
         this.archetypeSlot = other.archetypeSlot;
         this.dependsOn = new ArrayList<>(other.dependsOn);
@@ -101,7 +103,8 @@ public class WebTemplateNode implements Serializable {
         this.cardinalities =
                 other.cardinalities.stream().map(WebtemplateCardinality::new).collect(Collectors.toList());
         this.inputs = other.inputs.stream().map(WebTemplateInput::new).collect(Collectors.toList());
-        this.children = other.children.stream().map(WebTemplateNode::new).collect(Collectors.toList());
+        this.children = new ArrayList<>(other.children.size());
+        other.children.forEach(n -> this.children.add(new WebTemplateNode(n)));
         this.localizedNames = new LinkedHashMap<>(other.localizedNames);
         this.localizedDescriptions = new LinkedHashMap<>(other.localizedDescriptions);
         this.proportionTypes = new ArrayList<>(other.getProportionTypes());
