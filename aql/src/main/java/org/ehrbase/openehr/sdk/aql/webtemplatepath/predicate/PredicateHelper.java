@@ -317,54 +317,57 @@ public class PredicateHelper {
 
     public static Optional<PredicateComparisonOperator> find(Predicate predicate, String statement) {
 
-        if (predicate instanceof PredicateComparisonOperator) {
-            return Optional.of(predicate)
-                    .map(PredicateComparisonOperator.class::cast)
-                    .filter(op -> statement.equals(op.getStatement()));
+        if (predicate instanceof PredicateComparisonOperator cmpOp) {
+            return Optional.of(cmpOp).filter(op -> statement.equals(op.getStatement()));
         }
 
         Deque<Predicate> deque;
         {
             List<? extends Predicate> values;
-            if (predicate instanceof PredicateLogicalOrOperation) {
-                values = ((PredicateLogicalOrOperation) predicate).getValues();
-            } else if (predicate instanceof PredicateLogicalAndOperation) {
-                values = ((PredicateLogicalAndOperation) predicate).getValues();
+            if (predicate instanceof PredicateLogicalOrOperation orOp) {
+                values = orOp.getValues();
+            } else if (predicate instanceof PredicateLogicalAndOperation andOp) {
+                values = andOp.getValues();
             } else {
                 return Optional.empty();
             }
 
             for (Predicate v : values) {
-                if (v instanceof PredicateComparisonOperator) {
-                    PredicateComparisonOperator cmpOp = (PredicateComparisonOperator) v;
+                if (v instanceof PredicateComparisonOperator cmpOp) {
                     if (statement.equals(cmpOp.getStatement())) {
                         return Optional.of(cmpOp);
                     }
                 }
             }
-            deque = new ArrayDeque<>(values);
+
+            if (values.isEmpty()) {
+                return Optional.empty();
+            } else {
+                deque = new ArrayDeque<>(values);
+            }
         }
 
         while (!deque.isEmpty()) {
             var pred = deque.pop();
 
             List<? extends Predicate> values;
-            if (pred instanceof PredicateLogicalOrOperation) {
-                values = ((PredicateLogicalOrOperation) pred).getValues();
-            } else if (pred instanceof PredicateLogicalAndOperation) {
-                values = ((PredicateLogicalAndOperation) pred).getValues();
+            if (pred instanceof PredicateLogicalOrOperation orOp) {
+                values = orOp.getValues();
+            } else if (pred instanceof PredicateLogicalAndOperation andOp) {
+                values = andOp.getValues();
             } else {
                 continue;
             }
             for (Predicate v : values) {
-                if (v instanceof PredicateComparisonOperator) {
-                    PredicateComparisonOperator cmpOp = (PredicateComparisonOperator) v;
+                if (v instanceof PredicateComparisonOperator cmpOp) {
                     if (statement.equals(cmpOp.getStatement())) {
                         return Optional.of(cmpOp);
                     }
                 }
             }
-            deque.addAll(values);
+            if (!values.isEmpty()) {
+                deque.addAll(values);
+            }
         }
 
         return Optional.empty();
