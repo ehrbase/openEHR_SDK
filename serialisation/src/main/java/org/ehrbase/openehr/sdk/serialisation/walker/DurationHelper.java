@@ -57,10 +57,6 @@ public class DurationHelper {
             return (T) valueFunc.apply(v);
         }
 
-        public <V extends Serializable> V getValue(WebTemplateInterval<?> v, Class<V> targetType) {
-            return (V) valueFunc.apply(v);
-        }
-
         public WebTemplateComparisonSymbol getOp(WebTemplateInterval v) {
             return opFunc.apply(v);
         }

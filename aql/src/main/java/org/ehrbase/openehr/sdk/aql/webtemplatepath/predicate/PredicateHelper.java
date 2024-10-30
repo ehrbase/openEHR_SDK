@@ -333,10 +333,8 @@ public class PredicateHelper {
             }
 
             for (Predicate v : values) {
-                if (v instanceof PredicateComparisonOperator cmpOp) {
-                    if (statement.equals(cmpOp.getStatement())) {
-                        return Optional.of(cmpOp);
-                    }
+                if (v instanceof PredicateComparisonOperator cmpOp && statement.equals(cmpOp.getStatement())) {
+                    return Optional.of(cmpOp);
                 }
             }
 
@@ -359,10 +357,8 @@ public class PredicateHelper {
                 continue;
             }
             for (Predicate v : values) {
-                if (v instanceof PredicateComparisonOperator cmpOp) {
-                    if (statement.equals(cmpOp.getStatement())) {
-                        return Optional.of(cmpOp);
-                    }
+                if (v instanceof PredicateComparisonOperator cmpOp && statement.equals(cmpOp.getStatement())) {
+                    return Optional.of(cmpOp);
                 }
             }
             if (!values.isEmpty()) {

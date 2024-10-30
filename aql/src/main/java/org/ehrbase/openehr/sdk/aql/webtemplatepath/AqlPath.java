@@ -179,7 +179,6 @@ public final class AqlPath implements Serializable {
     }
 
     public AqlPath addEnd(AqlNode... nodesToAdd) {
-        int nodeCount = getNodeCount();
         AqlNode[] mergedNodes = new AqlNode[nodeCount + nodesToAdd.length];
         System.arraycopy(nodes, firstNode(), mergedNodes, 0, nodeCount);
         System.arraycopy(nodesToAdd, 0, mergedNodes, nodeCount, nodesToAdd.length);
@@ -210,7 +209,6 @@ public final class AqlPath implements Serializable {
             }
         }
 
-        int nodeCount = getNodeCount();
         AqlNode[] mergedNodes = new AqlNode[nodeCount + nodesToAdd.length];
         System.arraycopy(nodes, firstNode(), mergedNodes, 0, nodeCount);
         System.arraycopy(nodesToAdd, 0, mergedNodes, nodeCount, nodesToAdd.length);
