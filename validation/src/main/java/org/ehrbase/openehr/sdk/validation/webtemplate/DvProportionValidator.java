@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.DvProportion;
-import java.util.Collections;
 import java.util.List;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
@@ -31,8 +30,6 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
  */
 @SuppressWarnings("unused")
 public class DvProportionValidator implements ConstraintValidator<DvProportion> {
-
-    private final PrimitiveConstraintValidator validator = new PrimitiveConstraintValidator();
 
     /**
      * {@inheritDoc}
@@ -48,14 +45,13 @@ public class DvProportionValidator implements ConstraintValidator<DvProportion> 
     @Override
     public List<ConstraintViolation> validate(DvProportion dvProportion, WebTemplateNode node) {
         if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         var numerator = WebTemplateValidationUtils.getInputWithSuffix(node, "numerator");
-        var result = validator.validate(node.getAqlPath(), dvProportion.getNumerator(), numerator);
-
         var denominator = WebTemplateValidationUtils.getInputWithSuffix(node, "denominator");
-        result.addAll(validator.validate(node.getAqlPath(), dvProportion.getDenominator(), denominator));
-        return result;
+        return ConstraintValidator.concat(
+                PrimitiveConstraintValidator.validate(node.getAqlPath(), dvProportion.getNumerator(), numerator),
+                PrimitiveConstraintValidator.validate(node.getAqlPath(), dvProportion.getDenominator(), denominator));
     }
 }

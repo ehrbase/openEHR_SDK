@@ -18,7 +18,11 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.RMObject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+import org.apache.commons.collections4.ListUtils;
 import org.ehrbase.openehr.sdk.util.reflection.ClassDependent;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
@@ -40,4 +44,38 @@ public interface ConstraintValidator<T extends RMObject> extends ClassDependent<
      * @return the validation result
      */
     List<ConstraintViolation> validate(T rmObject, WebTemplateNode node);
+
+    static <S> List<S> concat(List<S> l0, List<S> l1) {
+        if (l1.isEmpty()) {
+            return l0;
+        }
+        if (l0.isEmpty()) {
+            return l1;
+        } else if (l0 instanceof ArrayList) {
+            l0.addAll(l1);
+            return l0;
+        } else {
+            return ListUtils.union(l0, l1);
+        }
+    }
+
+    static <S> List<S> concat(Stream<S> s0, Stream<S> s1) {
+        return Stream.of(s0, s1).flatMap(s -> s).toList();
+    }
+
+    static <S> List<S> concat(Optional<S> s0, Optional<S> s1) {
+        if (s1.isEmpty()) {
+            return s0.map(List::of).orElse(List.of());
+        } else if (s0.isEmpty()) {
+            return List.of(s1.get());
+        } else {
+            return List.of(s0.get(), s1.get());
+        }
+    }
+
+    static void addAll(List<ConstraintViolation> target, List<ConstraintViolation> toBeAdded) {
+        if (!toBeAdded.isEmpty()) {
+            target.addAll(toBeAdded);
+        }
+    }
 }

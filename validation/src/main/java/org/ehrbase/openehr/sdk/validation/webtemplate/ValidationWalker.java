@@ -70,8 +70,7 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
         logger.trace("PreHandle: {}, rmObject={}", node, rmObject);
 
-        var validator = getValidator(rmObject);
-        result.addAll(validator.validate(rmObject, node));
+        ConstraintValidator.addAll(result, getValidator(rmObject).validate(rmObject, node));
     }
 
     @Override

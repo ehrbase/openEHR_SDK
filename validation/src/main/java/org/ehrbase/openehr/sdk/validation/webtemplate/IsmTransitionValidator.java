@@ -19,29 +19,24 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.composition.IsmTransition;
 import com.nedap.archie.rm.datavalues.DvCodedText;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.openehr.sdk.generator.commons.interfaces.EnumValueSet;
 import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.State;
 import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.Transition;
-import org.ehrbase.openehr.sdk.util.functional.Either;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 /**
- * @see com.nedap.archie.rm.datavalues.IsmTransition
+ * @see com.nedap.archie.rm.composition.IsmTransition
  * @since 1.7
  */
 public class IsmTransitionValidator implements ConstraintValidator<IsmTransition> {
-
-    public IsmTransitionValidator() {}
 
     @Override
     public Class<IsmTransition> getAssociatedClass() {
@@ -53,59 +48,47 @@ public class IsmTransitionValidator implements ConstraintValidator<IsmTransition
      */
     @Override
     public List<ConstraintViolation> validate(IsmTransition transition, WebTemplateNode node) {
-        List<ConstraintViolation> constraintViolations = new ArrayList<>();
-        constraintViolations.addAll(new CurrentStateValidator().apply(transition, node));
-        constraintViolations.addAll(new CareFlowValidator().apply(transition, node));
-        return constraintViolations;
+        return ConstraintValidator.concat(
+                CurrentStateValidator.apply(transition, node), CareFlowValidator.apply(transition, node));
     }
 
-    private String ismToString(IsmTransition ism) {
-        return new StringBuilder()
-                .append(ism.getTransition().getValue())
-                .append("/")
-                .append(ism.getTransition().getDefiningCode().getTerminologyId().getValue())
-                .append("/")
-                .append(ism.getTransition().getDefiningCode().getCodeString())
-                .toString();
+    private static String ismToString(IsmTransition ism) {
+        return "%s/%s/%s"
+                .formatted(
+                        ism.getTransition().getValue(),
+                        ism.getTransition().getDefiningCode().getTerminologyId().getValue(),
+                        ism.getTransition().getDefiningCode().getCodeString());
     }
 
     // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    private class CurrentStateValidator
-            implements BiFunction<IsmTransition, WebTemplateNode, List<ConstraintViolation>> {
+    private static class CurrentStateValidator {
         private static final String ERR_NO_VALID_TRANSITION = "No valid transition found for ism transition[%s]";
 
         @SuppressWarnings("unchecked")
-        public List<ConstraintViolation> apply(IsmTransition transition, WebTemplateNode node) {
+        public static Stream<ConstraintViolation> apply(IsmTransition ismTransition, WebTemplateNode node) {
             /* transition is optional see https://specifications.openehr.org/releases/RM/latest/ehr.html#_ism_transition_class*/
-            if (transition.getTransition() == null) return Collections.emptyList();
+            DvCodedText transition = ismTransition.getTransition();
+            if (transition == null) {
+                return Stream.empty();
+            }
 
-            List<Transition> allTransitions = Optional.ofNullable(transition)
-                    .map(ism -> candidates(
+            return candidates(
                             Transition.class,
-                            t -> t.getValue().equals(ism.getTransition().getValue()),
+                            t -> t.getValue().equals(transition.getValue()),
                             t -> t.getTerminologyId()
-                                    .equals(ism.getTransition()
+                                    .equals(transition
                                             .getDefiningCode()
                                             .getTerminologyId()
                                             .getValue()),
-                            t -> t.getCode()
-                                    .equals(ism.getTransition()
-                                            .getDefiningCode()
-                                            .getCodeString())))
-                    .orElseGet(() -> Collections.emptyList());
-
-            return allTransitions.stream()
-                    .map(t -> Pair.of(isValidTransition(transition, t), t))
-                    .filter(p -> !p.getLeft())
+                            t -> t.getCode().equals(transition.getDefiningCode().getCodeString()))
+                    .filter(t -> !isValidTransition(ismTransition, t))
                     .map(p -> new ConstraintViolation(
                             node.getAqlPath(),
-                            String.format(
-                                    ERR_NO_VALID_TRANSITION, IsmTransitionValidator.this.ismToString(transition))))
-                    .collect(Collectors.toList());
+                            String.format(ERR_NO_VALID_TRANSITION, IsmTransitionValidator.ismToString(ismTransition))));
         }
 
-        public boolean isValidTransition(IsmTransition ism, Transition transition) {
+        private static boolean isValidTransition(IsmTransition ism, Transition transition) {
             State targetState = transition.getTargetState();
             DvCodedText currentState = ism.getCurrentState();
 
@@ -122,61 +105,65 @@ public class IsmTransitionValidator implements ConstraintValidator<IsmTransition
         }
 
         @SuppressWarnings("unchecked")
-        private <E extends Enum<E> & EnumValueSet> List<E> candidates(Class<E> type, Predicate<E>... pred) {
-            Predicate<E> passAll = t -> Stream.of(pred).map(p -> p.test(t)).reduce(true, (b0, b1) -> b0 && b1);
-
-            return Stream.of(type.getEnumConstants()).filter(passAll).collect(Collectors.toList());
+        private static <E extends Enum<E> & EnumValueSet> Stream<E> candidates(Class<E> type, Predicate<E>... pred) {
+            Predicate<E> passAll = t -> {
+                for (Predicate<E> ePredicate : pred) {
+                    if (!ePredicate.test(t)) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+            return EnumSet.allOf(type).stream().filter(passAll);
         }
     }
 
     // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    private class CareFlowValidator implements BiFunction<IsmTransition, WebTemplateNode, List<ConstraintViolation>> {
+    private static class CareFlowValidator {
 
-        public List<ConstraintViolation> apply(IsmTransition transition, WebTemplateNode node) {
-            if (transition.getTransition() == null || transition.getCareflowStep() == null)
-                return Collections.emptyList();
+        public static Stream<ConstraintViolation> apply(IsmTransition transition, WebTemplateNode node) {
+            if (transition.getTransition() == null || transition.getCareflowStep() == null) return Stream.empty();
 
-            Either<List<WebTemplateNode>, ConstraintViolation> careflows = extractCareflow(node);
+            Iterator<WebTemplateNode> cfStepIt = iterateCareflowSteps(node);
 
-            return careflows.map((l, r) -> {
-                if (careflows.isRight()) return List.of(careflows.getAsRight());
-                else {
-                    Boolean isValid = careflows.getAsLeft().stream()
-                            .map(cf -> cf.getInputs())
-                            .flatMap(list -> list.stream())
-                            .flatMap(tmpl -> tmpl.getList().stream())
+            if (cfStepIt.hasNext()) {
+                WebTemplateNode cfStep = cfStepIt.next();
+                if (cfStepIt.hasNext()) {
+                    return Stream.of(new ConstraintViolation(
+                            node.getAqlPath(), "Specification violation[too many careflow_step]"));
+                } else {
+                    boolean isValid = Stream.of(cfStep)
+                            .map(WebTemplateNode::getInputs)
+                            .flatMap(Collection::stream)
+                            .map(WebTemplateInput::getList)
+                            .flatMap(Collection::stream)
                             .filter(tmpl -> isMatchingCareflowStep(transition.getCareflowStep(), tmpl.getValue()))
-                            .map(tmpl -> isCurrentStateValid(transition.getCurrentState(), tmpl.getCurrentStates()))
-                            .findFirst()
-                            .orElse(false);
+                            .anyMatch(
+                                    tmpl -> isCurrentStateValid(transition.getCurrentState(), tmpl.getCurrentStates()));
                     return isValid
-                            ? Collections.emptyList()
-                            : List.of(new ConstraintViolation(
+                            ? Stream.empty()
+                            : Stream.of(new ConstraintViolation(
                                     node.getAqlPath(), "IsmTransition contains invalid current_state"));
                 }
-            });
+            } else {
+                return Stream.of();
+            }
         }
 
-        private boolean isMatchingCareflowStep(DvCodedText cfsFromIsm, String codeFromWTV) {
+        private static boolean isMatchingCareflowStep(DvCodedText cfsFromIsm, String codeFromWTV) {
             return cfsFromIsm.getDefiningCode().getCodeString().equals(codeFromWTV);
         }
 
-        private boolean isCurrentStateValid(DvCodedText currentState, List<String> allowedStates) {
+        private static boolean isCurrentStateValid(DvCodedText currentState, List<String> allowedStates) {
             return allowedStates.contains(currentState.getDefiningCode().getCodeString());
         }
 
-        private Either<List<WebTemplateNode>, ConstraintViolation> extractCareflow(WebTemplateNode node) {
-            List<WebTemplateNode> candiate = node.getChildren().stream()
+        private static Iterator<WebTemplateNode> iterateCareflowSteps(WebTemplateNode node) {
+            return node.getChildren().stream()
                     .filter(n -> n.getAqlPath() != null)
                     .filter(n -> n.getAqlPath().endsWith("careflow_step"))
-                    .collect(Collectors.toList());
-
-            if (candiate.size() > 1)
-                return Either.right(
-                        new ConstraintViolation(node.getAqlPath(), "Specification violation[too many careflow_step]"));
-
-            return Either.left(candiate);
+                    .iterator();
         }
     }
 }
