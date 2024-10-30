@@ -17,7 +17,17 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.walker;
 
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.*;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.ACTION;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.DV_CODED_TEXT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.EVENT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.INTERVAL_EVENT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.ISM_TRANSITION;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_IDENTIFIED;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_PROXY;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_RELATED;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_SELF;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.POINT_EVENT;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
@@ -220,59 +230,61 @@ public abstract class Walker<T> {
             WebTemplateNode childNode = it.next();
 
             // Add explicit DV_CODED_TEXT
-            if (childNode.getRmType().equals(DV_TEXT) && siblingMissing(currentNode, childNode, DV_CODED_TEXT)) {
-                nodesToAdd.add(buildCopy(childNode, DV_CODED_TEXT));
-            }
+            switch (childNode.getRmType()) {
+                case DV_TEXT -> {
+                    if (siblingMissing(currentNode, childNode, DV_CODED_TEXT)) {
+                        nodesToAdd.add(buildCopy(childNode, DV_CODED_TEXT));
+                    }
+                }
+                case PARTY_PROXY -> {
+                    // Add explicit Party
+                    nodesToAdd.add(buildCopy(childNode, PARTY_SELF));
+                    nodesToAdd.add(buildCopy(childNode, PARTY_IDENTIFIED));
+                    nodesToAdd.add(copyAsPartyRelated(childNode));
+                    it.remove();
+                }
+                case PARTY_IDENTIFIED -> {
+                    if (siblingMissing(currentNode, childNode, PARTY_RELATED))
+                        // Add explicit Party related
+                        nodesToAdd.add(copyAsPartyRelated(childNode));
+                }
+                case EVENT -> {
+                    // Add explicit Event
 
-            // Add explicit Party
-            if (childNode.getRmType().equals(PARTY_PROXY)) {
-                nodesToAdd.add(buildCopy(childNode, PARTY_SELF));
-                nodesToAdd.add(buildCopy(childNode, PARTY_IDENTIFIED));
-                nodesToAdd.add(copyAsPartyRelated(childNode));
-                it.remove();
+                    WebTemplateNode intervalEvent = buildCopy(childNode, INTERVAL_EVENT);
 
-            } else if (childNode.getRmType().equals(PARTY_IDENTIFIED)
-                    && siblingMissing(currentNode, childNode, PARTY_RELATED)) {
-                // Add explicit Party related
-                nodesToAdd.add(copyAsPartyRelated(childNode));
-            }
+                    WebTemplateNode width = new WebTemplateNode();
+                    width.setId("width");
+                    width.setName("width");
+                    width.setRmType(RmConstants.DV_DURATION);
+                    width.setMax(1);
+                    width.setMin(1);
+                    width.setAqlPath(intervalEvent.getAqlPathDto().addEnd("width"));
+                    intervalEvent.getChildren().add(width);
 
-            // Add explicit Event
-            if (childNode.getRmType().equals(EVENT)) {
+                    WebTemplateNode math = new WebTemplateNode();
+                    math.setId("math_function");
+                    math.setName("math_function");
+                    math.setRmType(DV_CODED_TEXT);
+                    math.setMax(1);
+                    math.setMin(1);
+                    math.setAqlPath(intervalEvent.getAqlPathDto().addEnd("math_function"));
+                    intervalEvent.getChildren().add(math);
 
-                WebTemplateNode intervalEvent = buildCopy(childNode, INTERVAL_EVENT);
+                    WebTemplateNode sampleCount = new WebTemplateNode();
+                    sampleCount.setId("sample_count");
+                    sampleCount.setName("sample_count");
+                    sampleCount.setRmType("LONG");
+                    sampleCount.setMax(1);
+                    sampleCount.setAqlPath(intervalEvent.getAqlPathDto().addEnd("sample_count"));
+                    intervalEvent.getChildren().add(sampleCount);
 
-                WebTemplateNode width = new WebTemplateNode();
-                width.setId("width");
-                width.setName("width");
-                width.setRmType(RmConstants.DV_DURATION);
-                width.setMax(1);
-                width.setMin(1);
-                width.setAqlPath(intervalEvent.getAqlPathDto().addEnd("width"));
-                intervalEvent.getChildren().add(width);
+                    nodesToAdd.add(intervalEvent);
 
-                WebTemplateNode math = new WebTemplateNode();
-                math.setId("math_function");
-                math.setName("math_function");
-                math.setRmType(DV_CODED_TEXT);
-                math.setMax(1);
-                math.setMin(1);
-                math.setAqlPath(intervalEvent.getAqlPathDto().addEnd("math_function"));
-                intervalEvent.getChildren().add(math);
+                    nodesToAdd.add(buildCopy(childNode, POINT_EVENT));
 
-                WebTemplateNode sampleCount = new WebTemplateNode();
-                sampleCount.setId("sample_count");
-                sampleCount.setName("sample_count");
-                sampleCount.setRmType("LONG");
-                sampleCount.setMax(1);
-                sampleCount.setAqlPath(intervalEvent.getAqlPathDto().addEnd("sample_count"));
-                intervalEvent.getChildren().add(sampleCount);
-
-                nodesToAdd.add(intervalEvent);
-
-                nodesToAdd.add(buildCopy(childNode, POINT_EVENT));
-
-                it.remove();
+                    it.remove();
+                }
             }
         }
 
@@ -284,9 +296,9 @@ public abstract class Walker<T> {
     private static boolean siblingMissing(WebTemplateNode parentNode, WebTemplateNode childNode, String rmType) {
         return parentNode.getChildren().size() <= 1
                 || parentNode.getChildren().stream()
+                        .filter(n -> rmType.equals(n.getRmType()))
                         .filter(n -> n != childNode)
-                        .filter(n -> n.getAqlPathDto().equals(childNode.getAqlPathDto()))
-                        .noneMatch(n -> rmType.equals(n.getRmType()));
+                        .noneMatch(n -> n.getAqlPathDto().equals(childNode.getAqlPathDto()));
     }
 
     private static WebTemplateNode copyAsPartyRelated(WebTemplateNode party) {

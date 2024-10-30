@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -100,11 +101,9 @@ public class WebTemplateNode implements Serializable {
             this.annotations = new WebTemplateAnnotation(other.annotations);
         }
 
-        this.cardinalities =
-                other.cardinalities.stream().map(WebtemplateCardinality::new).collect(Collectors.toList());
-        this.inputs = other.inputs.stream().map(WebTemplateInput::new).collect(Collectors.toList());
-        this.children = new ArrayList<>(other.children.size());
-        other.children.forEach(n -> this.children.add(new WebTemplateNode(n)));
+        this.cardinalities = cloneList(other.cardinalities, WebtemplateCardinality::new);
+        this.inputs = cloneList(other.inputs, WebTemplateInput::new);
+        this.children = cloneList(other.children, WebTemplateNode::new);
         this.localizedNames = new LinkedHashMap<>(other.localizedNames);
         this.localizedDescriptions = new LinkedHashMap<>(other.localizedDescriptions);
         this.proportionTypes = new ArrayList<>(other.getProportionTypes());
@@ -114,6 +113,12 @@ public class WebTemplateNode implements Serializable {
                         e -> new WebTemplateTerminology(e.getValue()),
                         (a, b) -> a,
                         LinkedHashMap::new));
+    }
+
+    private static <T> List<T> cloneList(List<T> list, UnaryOperator<T> elementCloner) {
+        List<T> clonedList = new ArrayList<>(list.size());
+        list.forEach(el -> clonedList.add(elementCloner.apply(el)));
+        return clonedList;
     }
 
     public String getId() {
