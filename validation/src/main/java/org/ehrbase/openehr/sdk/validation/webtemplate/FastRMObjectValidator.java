@@ -276,9 +276,7 @@ public class FastRMObjectValidator extends RMObjectValidator {
         }
         for (RMObjectWithPath objectWithPath : rmObjects) {
             List<RMObjectValidationMessage> messages = validateInvariants(objectWithPath, path);
-            if (!messages.isEmpty()) {
-                result.addAll(messages);
-            }
+            addAll(result, messages);
         }
         if (cobject == null) {
             // add default validations
@@ -286,14 +284,14 @@ public class FastRMObjectValidator extends RMObjectValidator {
                 validateUnconstrainedObjectWithPath(result, path, objectWithPath);
             }
         } else if (cobject instanceof CPrimitiveObject) {
-            result.addAll(rmPrimitiveObjectValidator.validate(rmObjects, path, (CPrimitiveObject<?, ?>) cobject));
+            addAll(result, rmPrimitiveObjectValidator.validate(rmObjects, path, (CPrimitiveObject<?, ?>) cobject));
         } else if (cobject instanceof ArchetypeSlot) {
             validateArchetypeSlot(rmObjects, path, cobject, result);
         } else {
             if (cobject instanceof CComplexObject) {
                 CComplexObject cComplexObject = (CComplexObject) cobject;
                 for (CAttributeTuple tuple : cComplexObject.getAttributeTuples()) {
-                    result.addAll(rmTupleValidator.validate(cobject, path, rmObjects, tuple));
+                    addAll(result, rmTupleValidator.validate(cobject, path, rmObjects, tuple));
                 }
             }
             for (RMObjectWithPath objectWithPath : rmObjects) {
@@ -309,9 +307,9 @@ public class FastRMObjectValidator extends RMObjectValidator {
         }
         // pathSoFar ends with an attribute, but objectWithPath contains it, so remove that.
         pathSoFar = pathSoFar.stripLastPathSegment();
-        List<RMObjectValidationMessage> result = new ArrayList<>();
         Object rmObject = objectWithPath.getObject();
         if (rmObject != null) {
+            List<RMObjectValidationMessage> result = new ArrayList<>();
             RMTypeInfo typeInfo = lookup.getTypeInfo(rmObject.getClass());
             if (typeInfo != null) {
                 for (InvariantMethod invariantMethod : typeInfo.getInvariants()) {
@@ -352,8 +350,10 @@ public class FastRMObjectValidator extends RMObjectValidator {
                     }
                 }
             }
+            return result;
+        } else {
+            return Collections.emptyList();
         }
-        return result;
     }
 
     private void validateUnconstrainedObjectWithPath(
@@ -452,15 +452,23 @@ public class FastRMObjectValidator extends RMObjectValidator {
             RMTypeInfo typeInfo = lookup.getTypeInfo(rmObject.getClass());
             if (typeInfo != null) {
                 attributes = RMObjectValidationUtil.getDefaultAttributeConstraints(
-                        typeInfo.getRmName(), Lists.newArrayList(), lookup, constraintImposer);
+                        typeInfo.getRmName(), List.of(), lookup, constraintImposer);
             } else {
                 return; // Type unknown, nothing to validate
             }
         } else {
-            attributes = new ArrayList<>(cobject.getAttributes());
+            List<CAttribute> cobjectAttributes = cobject.getAttributes();
             List<CAttribute> defaultAttributeConstraints = RMObjectValidationUtil.getDefaultAttributeConstraints(
-                    cobject, attributes, lookup, constraintImposer);
-            addAll(attributes, defaultAttributeConstraints);
+                    cobject, cobjectAttributes, lookup, constraintImposer);
+            if (defaultAttributeConstraints.isEmpty()) {
+                attributes = cobjectAttributes;
+            } else if (cobjectAttributes.isEmpty()) {
+                attributes = defaultAttributeConstraints;
+            } else {
+                attributes = new ArrayList<>();
+                attributes.addAll(cobjectAttributes);
+                attributes.addAll(defaultAttributeConstraints);
+            }
         }
         validateCAttributes(result, path, objectWithPath, rmObject, cobject, attributes);
     }
@@ -492,21 +500,23 @@ public class FastRMObjectValidator extends RMObjectValidator {
         Object attributeValue = aPathQuery.find(lookup, rmObject);
         List<RMObjectValidationMessage> emptyObservationErrors =
                 isObservationEmpty(attribute, rmAttributeName, attributeValue, pathSoFar, cobject);
-        result.addAll(emptyObservationErrors);
+        addAll(result, emptyObservationErrors);
 
         if (emptyObservationErrors.isEmpty()) {
 
-            result.addAll(rmMultiplicityValidator.validate(
-                    attribute,
-                    pathSoFar.joinPaths(rmAttributeName, true) /*joinPaths(pathSoFar, "/", rmAttributeName)*/,
-                    attributeValue));
+            addAll(
+                    result,
+                    rmMultiplicityValidator.validate(
+                            attribute,
+                            pathSoFar.joinPaths(rmAttributeName, true) /*joinPaths(pathSoFar, "/", rmAttributeName)*/,
+                            attributeValue));
 
             if (attribute.getChildren() == null || attribute.getChildren().isEmpty()) {
                 // no child CObjects. Cardinality/existence has already been validated. Run default RM validations
                 String query = "/" + rmAttributeName;
                 aPathQuery = queryCache.getApathQuery(query);
                 List<RMObjectWithPath> childRmObjects = aPathQuery.findList(lookup, rmObject);
-                result.addAll(runArchetypeValidations(childRmObjects, pathSoFar.joinPaths(query, false), null));
+                addAll(result, runArchetypeValidations(childRmObjects, pathSoFar.joinPaths(query, false), null));
             } else if (attribute.isSingle()) {
                 validateSingleAttribute(result, attribute, rmObject, pathSoFar);
             } else {
@@ -515,7 +525,8 @@ public class FastRMObjectValidator extends RMObjectValidator {
                     String query = "/" + rmAttributeName + "[" + childCObject.getNodeId() + "]";
                     aPathQuery = queryCache.getApathQuery(query);
                     List<RMObjectWithPath> childRmObjects = aPathQuery.findList(lookup, rmObject);
-                    result.addAll(
+                    addAll(
+                            result,
                             runArchetypeValidations(childRmObjects, pathSoFar.joinPaths(query, false), childCObject));
                     // TODO: find all other child RM Objects that don't match with a given node id (eg unconstraint in
                     // archetype) and
@@ -529,35 +540,35 @@ public class FastRMObjectValidator extends RMObjectValidator {
             List<RMObjectValidationMessage> result, CAttribute attribute, Object rmObject, LazyPath pathSoFar) {
         List<List<RMObjectValidationMessage>> subResults = new ArrayList<>();
 
+        // a single attribute with multiple CObjects means you can choose which CObject you use
+        // for example, a data value can be a string or an integer.
+        // in this case, only one of the CObjects will validate to a correct value
+        // so as soon as one is correct, so is the data!
+
         for (CObject childCObject : attribute.getChildren()) {
             String query = "/" + attribute.getRmAttributeName() + "[" + childCObject.getNodeId() + "]";
             RMPathQuery aPathQuery = queryCache.getApathQuery(query);
             List<RMObjectWithPath> childNodes = aPathQuery.findList(lookup, rmObject);
             List<RMObjectValidationMessage> subResult =
                     runArchetypeValidations(childNodes, pathSoFar.joinPaths(query, false), childCObject);
+            if (subResult.isEmpty()) {
+                // cObjectWithoutErrorsFound
+                return;
+            }
             subResults.add(subResult);
         }
-        // a single attribute with multiple CObjects means you can choose which CObject you use
-        // for example, a data value can be a string or an integer.
-        // in this case, only one of the CObjects will validate to a correct value
-        // so as soon as one is correct, so is the data!
-        boolean cObjectWithoutErrorsFound = subResults.stream().anyMatch(List::isEmpty);
+
         boolean atLeastOneWithoutWrongTypeFound =
                 subResults.stream().anyMatch(RMObjectValidationUtil::hasNoneWithWrongType);
-
-        if (!cObjectWithoutErrorsFound) {
-            if (atLeastOneWithoutWrongTypeFound) {
-                for (List<RMObjectValidationMessage> subResult : subResults) {
-                    // at least one has the correct type, we can filter out all others
-                    result.addAll(subResult.stream()
-                            .filter((message) -> message.getType() != RMObjectValidationMessageType.WRONG_TYPE)
-                            .collect(Collectors.toList()));
-                }
-            } else {
-                for (List<RMObjectValidationMessage> subResult : subResults) {
-                    result.addAll(subResult);
-                }
+        if (atLeastOneWithoutWrongTypeFound) {
+            for (List<RMObjectValidationMessage> subResult : subResults) {
+                // at least one has the correct type, we can filter out all others
+                subResult.stream()
+                        .filter((message) -> message.getType() != RMObjectValidationMessageType.WRONG_TYPE)
+                        .forEach(result::add);
             }
+        } else {
+            subResults.forEach(result::addAll);
         }
     }
 
