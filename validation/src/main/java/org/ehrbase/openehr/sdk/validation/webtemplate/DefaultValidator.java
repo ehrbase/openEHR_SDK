@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.base.MultiplicityInterval;
-import com.nedap.archie.paths.PathSegment;
 import com.nedap.archie.query.RMObjectWithPath;
 import com.nedap.archie.query.RMPathQuery;
 import com.nedap.archie.rm.RMObject;
@@ -35,6 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+import org.ehrbase.openehr.sdk.serialisation.walker.ItemExtractor;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebtemplateCardinality;
@@ -62,20 +62,7 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
     }
 
     private RMPathQuery getRmPathQuery(AqlPath path) {
-        return rmPathQueryCache.apply(path, AqlPathRMPathQuery::new);
-    }
-
-    /**
-     * Omits String concatenation + parsing
-     */
-    public static final class AqlPathRMPathQuery extends RMPathQuery {
-
-        public AqlPathRMPathQuery(AqlPath path) {
-            super("");
-            List<PathSegment> pathSegments = getPathSegments();
-            pathSegments.clear();
-            path.getNodes().forEach(node -> pathSegments.add(new PathSegment(node.getName(), node.getAtCode())));
-        }
+        return rmPathQueryCache.apply(path, ItemExtractor.AqlPathRMPathQuery::new);
     }
 
     private Stream<Object> itemsAtPath(AqlPath path, Pathable currentPathable) {
@@ -114,7 +101,7 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
                 .filter(item -> {
                     if (item instanceof Locatable loc) {
                         return Objects.equals(loc.getNameAsString(), childNode.getName())
-                                || !node.isRelativePathNameDependent(childNode);
+                                || !WebTemplateNode.isNameDependent(relativePath);
                     } else {
                         return true;
                     }

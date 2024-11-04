@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
@@ -66,16 +67,19 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     protected void preHandle(Context<List<ConstraintViolation>> context) {
         var node = context.getNodeDeque().element();
         var rmObject = context.getRmObjectDeque().element();
-        var result = context.getObjectDeque().element();
 
         logger.trace("PreHandle: {}, rmObject={}", node, rmObject);
 
-        ConstraintValidator.addAll(result, getValidator(rmObject).validate(rmObject, node));
+        List<ConstraintViolation> toBeAdded = getValidator(rmObject).validate(rmObject, node);
+        if (!toBeAdded.isEmpty()) {
+            var result = context.getObjectDeque().element();
+            result.addAll(toBeAdded);
+        }
     }
 
     @Override
     protected List<ConstraintViolation> extract(
-            Context<List<ConstraintViolation>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+            Context<List<ConstraintViolation>> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i) {
         return context.getObjectDeque().peek();
     }
 

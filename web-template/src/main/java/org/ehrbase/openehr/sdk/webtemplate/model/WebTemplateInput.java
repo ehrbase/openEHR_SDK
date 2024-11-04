@@ -52,8 +52,7 @@ public class WebTemplateInput implements Serializable {
         }
         this.terminology = other.terminology;
         this.defaultValue = other.defaultValue;
-        this.list = new ArrayList<>(other.list.size());
-        other.list.forEach(e -> this.list.add(new WebTemplateInputValue(e)));
+        this.list = WebTemplateNode.cloneList(other.list, WebTemplateInputValue::new);
     }
 
     public String getSuffix() {

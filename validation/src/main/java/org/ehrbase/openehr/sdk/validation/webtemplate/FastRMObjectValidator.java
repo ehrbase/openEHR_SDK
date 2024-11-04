@@ -1096,9 +1096,9 @@ public class FastRMObjectValidator extends RMObjectValidator {
                 ModelInfoLookup lookup,
                 ModelConstraintImposer constraintImposer) {
             List<CAttribute> result = new ArrayList<>();
-            Set<String> alreadyConstrainedAttributes = attributes.stream()
-                    .map(attribute -> attribute.getRmAttributeName())
-                    .collect(Collectors.toSet());
+            Set<String> alreadyConstrainedAttributes = attributes.isEmpty()
+                    ? Set.of()
+                    : attributes.stream().map(CAttribute::getRmAttributeName).collect(Collectors.toSet());
 
             RMTypeInfo typeInfo = lookup.getTypeInfo(cObject.getRmTypeName());
 

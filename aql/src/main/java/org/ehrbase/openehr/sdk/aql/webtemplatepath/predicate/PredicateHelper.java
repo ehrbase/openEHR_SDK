@@ -17,11 +17,11 @@
  */
 package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -321,7 +321,7 @@ public class PredicateHelper {
             return Optional.of(cmpOp).filter(op -> statement.equals(op.getStatement()));
         }
 
-        Deque<Predicate> deque;
+        List<? extends Predicate> currentList;
         {
             List<? extends Predicate> values;
             if (predicate instanceof PredicateLogicalOrOperation orOp) {
@@ -332,39 +332,43 @@ public class PredicateHelper {
                 return Optional.empty();
             }
 
-            for (Predicate v : values) {
-                if (v instanceof PredicateComparisonOperator cmpOp && statement.equals(cmpOp.getStatement())) {
-                    return Optional.of(cmpOp);
-                }
-            }
-
             if (values.isEmpty()) {
                 return Optional.empty();
-            } else {
-                deque = new ArrayDeque<>(values);
             }
-        }
 
-        while (!deque.isEmpty()) {
-            var pred = deque.pop();
-
-            List<? extends Predicate> values;
-            if (pred instanceof PredicateLogicalOrOperation orOp) {
-                values = orOp.getValues();
-            } else if (pred instanceof PredicateLogicalAndOperation andOp) {
-                values = andOp.getValues();
-            } else {
-                continue;
-            }
             for (Predicate v : values) {
                 if (v instanceof PredicateComparisonOperator cmpOp && statement.equals(cmpOp.getStatement())) {
                     return Optional.of(cmpOp);
                 }
             }
-            if (!values.isEmpty()) {
-                deque.addAll(values);
-            }
+
+            currentList = values;
         }
+
+        Deque<List<? extends Predicate>> remainingLists = new LinkedList<>();
+
+        do {
+            for (Predicate pred : currentList) {
+                List<? extends Predicate> values;
+                if (pred instanceof PredicateLogicalOrOperation orOp) {
+                    values = orOp.getValues();
+                } else if (pred instanceof PredicateLogicalAndOperation andOp) {
+                    values = andOp.getValues();
+                } else {
+                    continue;
+                }
+                for (Predicate v : values) {
+                    if (v instanceof PredicateComparisonOperator cmpOp && statement.equals(cmpOp.getStatement())) {
+                        return Optional.of(cmpOp);
+                    }
+                }
+                if (!values.isEmpty()) {
+                    remainingLists.add(values);
+                }
+            }
+            currentList = remainingLists.pollFirst();
+
+        } while (currentList != null);
 
         return Optional.empty();
     }

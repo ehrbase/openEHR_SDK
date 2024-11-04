@@ -21,25 +21,28 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateInputValue implements Serializable {
 
     private String value;
     private String label;
-    private final Map<String, String> localizedLabels = new HashMap<>();
-    private final Map<String, String> localizedDescriptions = new HashMap<>();
+    private final Map<String, String> localizedLabels;
+    private final Map<String, String> localizedDescriptions;
     private final Map<String, WebTemplateTerminology> termBindings;
     private Integer ordinal;
-    private final List<String> currentStates = new ArrayList<>();
+    private final List<String> currentStates;
     private WebTemplateValidation validation;
 
     public WebTemplateInputValue() {
-        termBindings = new HashMap<>();
+        localizedLabels = new HashMap<>();
+        localizedDescriptions = new HashMap<>();
+        termBindings = new LinkedHashMap<>();
+        currentStates = new ArrayList<>();
     }
 
     public WebTemplateInputValue(WebTemplateInputValue other) {
@@ -51,11 +54,10 @@ public class WebTemplateInputValue implements Serializable {
         } else {
             this.validation = null;
         }
-        this.localizedLabels.putAll(other.localizedLabels);
-        this.localizedDescriptions.putAll(other.localizedDescriptions);
-        this.termBindings = other.termBindings.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new WebTemplateTerminology(e.getValue())));
-        this.currentStates.addAll(other.currentStates);
+        this.localizedLabels = new HashMap<>(other.localizedLabels);
+        this.localizedDescriptions = new HashMap<>(other.localizedDescriptions);
+        this.termBindings = WebTemplateNode.cloneMap(other.termBindings, WebTemplateTerminology::new);
+        this.currentStates = new ArrayList<>(other.currentStates);
     }
 
     public String getValue() {
@@ -113,10 +115,10 @@ public class WebTemplateInputValue implements Serializable {
         WebTemplateInputValue value1 = (WebTemplateInputValue) o;
         return Objects.equals(value, value1.value)
                 && Objects.equals(label, value1.label)
+                && Objects.equals(ordinal, value1.ordinal)
                 && Objects.equals(localizedLabels, value1.localizedLabels)
                 && Objects.equals(localizedDescriptions, value1.localizedDescriptions)
                 && Objects.equals(termBindings, value1.termBindings)
-                && Objects.equals(ordinal, value1.ordinal)
                 && Objects.equals(currentStates, value1.currentStates)
                 && Objects.equals(validation, value1.validation);
     }

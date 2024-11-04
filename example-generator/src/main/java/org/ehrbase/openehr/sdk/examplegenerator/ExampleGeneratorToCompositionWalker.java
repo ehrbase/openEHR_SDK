@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datastructures.*;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import org.apache.commons.lang3.ObjectUtils;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.serialisation.walker.ToCompositionWalker;
@@ -45,13 +46,13 @@ public class ExampleGeneratorToCompositionWalker extends ToCompositionWalker<Exa
 
     @Override
     protected ExampleGeneratorConfig extract(
-            Context<ExampleGeneratorConfig> context, WebTemplateNode child, boolean isChoice, Integer i) {
+            Context<ExampleGeneratorConfig> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i) {
         if (peekObject(context).doSkip(peekNode(context), child)) {
             log("skip extract {}", child.getRmType());
             return null;
         }
         log("extract {}", child.getRmType());
-        if (isChoice) {
+        if (isChoice.getAsBoolean()) {
             ExampleGeneratorConfig config = peekObject(context);
             if (config.isChooseChoice(
                     peekNode(context), child, Optional.ofNullable(i).orElse(0))) {

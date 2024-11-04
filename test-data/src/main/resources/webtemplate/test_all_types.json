@@ -19,12 +19,38 @@
     "localizedDescriptions": {
       "en": "unknown"
     },
-    "aqlPath": "",
     "children": [
       {
+        "id": "category",
+        "name": "category",
+        "localizedName": "category",
+        "rmType": "DV_CODED_TEXT",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/category",
+        "inputs": [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "433",
+                "label": "event",
+                "localizedLabels": {
+                  "en": "event"
+                }
+              }
+            ],
+            "terminology": "openehr"
+          }
+        ],
+        "inContext": true
+      },
+      {
         "id": "context",
+        "name": "context",
+        "localizedName": "context",
         "rmType": "EVENT_CONTEXT",
-        "nodeId": "",
         "min": 1,
         "max": 1,
         "aqlPath": "/context",
@@ -79,15 +105,16 @@
                       "en": "*"
                     }
                   }
-                ]
+                ],
+                "terminology": "local"
               }
             ]
           },
           {
             "id": "start_time",
-            "name": "Start_time",
+            "name": "start_time",
             "rmType": "DV_DATE_TIME",
-            "min": 0,
+            "min": 1,
             "max": 1,
             "aqlPath": "/context/start_time",
             "inputs": [
@@ -99,9 +126,9 @@
           },
           {
             "id": "setting",
-            "name": "Setting",
+            "name": "setting",
             "rmType": "DV_CODED_TEXT",
-            "min": 0,
+            "min": 1,
             "max": 1,
             "aqlPath": "/context/setting",
             "inputs": [
@@ -453,8 +480,8 @@
                 "type": "INTEGER",
                 "validation": {
                   "range": {
-                    "minOp": ">=",
-                    "min": 0
+                    "min": 0,
+                    "minOp": ">="
                   }
                 }
               },
@@ -463,8 +490,8 @@
                 "type": "INTEGER",
                 "validation": {
                   "range": {
-                    "minOp": ">=",
-                    "min": 0
+                    "min": 0,
+                    "minOp": ">="
                   }
                 }
               },
@@ -473,8 +500,8 @@
                 "type": "INTEGER",
                 "validation": {
                   "range": {
-                    "minOp": ">=",
-                    "min": 0
+                    "min": 0,
+                    "minOp": ">="
                   }
                 }
               },
@@ -483,8 +510,8 @@
                 "type": "INTEGER",
                 "validation": {
                   "range": {
-                    "minOp": ">=",
-                    "min": 0
+                    "min": 0,
+                    "minOp": ">="
                   }
                 }
               },
@@ -493,8 +520,8 @@
                 "type": "INTEGER",
                 "validation": {
                   "range": {
-                    "minOp": ">=",
-                    "min": 0
+                    "min": 0,
+                    "minOp": ">="
                   }
                 }
               },
@@ -503,8 +530,8 @@
                 "type": "INTEGER",
                 "validation": {
                   "range": {
-                    "minOp": ">=",
-                    "min": 0
+                    "min": 0,
+                    "minOp": ">="
                   }
                 }
               },
@@ -513,8 +540,8 @@
                 "type": "INTEGER",
                 "validation": {
                   "range": {
-                    "minOp": ">=",
-                    "min": 0
+                    "min": 0,
+                    "minOp": ">="
                   }
                 }
               }
@@ -616,13 +643,6 @@
               "en": "*"
             },
             "aqlPath": "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/data[at0001]/events[at0002]/data[at0003]/items[at0022]/value",
-            "proportionTypes": [
-              "integer_fraction",
-              "unitary",
-              "percent",
-              "ratio",
-              "fraction"
-            ],
             "inputs": [
               {
                 "suffix": "numerator",
@@ -632,13 +652,20 @@
                 "suffix": "denominator",
                 "type": "DECIMAL"
               }
+            ],
+            "proportionTypes": [
+              "ratio",
+              "unitary",
+              "percent",
+              "fraction",
+              "integer_fraction"
             ]
           },
           {
             "id": "time2",
-            "name": "Time",
+            "name": "time",
             "rmType": "DV_DATE_TIME",
-            "min": 0,
+            "min": 1,
             "max": 1,
             "aqlPath": "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/data[at0001]/events[at0002]/time",
             "inputs": [
@@ -649,28 +676,10 @@
             "inContext": true
           },
           {
-            "id": "language",
-            "name": "Language",
-            "rmType": "CODE_PHRASE",
-            "min": 0,
-            "max": 1,
-            "aqlPath": "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/language",
-            "inContext": true
-          },
-          {
-            "id": "encoding",
-            "name": "Encoding",
-            "rmType": "CODE_PHRASE",
-            "min": 0,
-            "max": 1,
-            "aqlPath": "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/encoding",
-            "inContext": true
-          },
-          {
             "id": "subject",
-            "name": "Subject",
+            "name": "subject",
             "rmType": "PARTY_PROXY",
-            "min": 0,
+            "min": 1,
             "max": 1,
             "aqlPath": "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/subject",
             "inputs": [
@@ -691,6 +700,24 @@
                 "type": "TEXT"
               }
             ],
+            "inContext": true
+          },
+          {
+            "id": "language",
+            "name": "language",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/language",
+            "inContext": true
+          },
+          {
+            "id": "encoding",
+            "name": "encoding",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-OBSERVATION.test_all_types.v1]/encoding",
             "inContext": true
           }
         ]
@@ -750,8 +777,9 @@
             "children": [
               {
                 "id": "upper",
+                "name": "upper",
+                "localizedName": "upper",
                 "rmType": "DV_COUNT",
-                "nodeId": "",
                 "min": 1,
                 "max": 1,
                 "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0003]/value/upper",
@@ -763,8 +791,9 @@
               },
               {
                 "id": "lower",
+                "name": "lower",
+                "localizedName": "lower",
                 "rmType": "DV_COUNT",
-                "nodeId": "",
                 "min": 1,
                 "max": 1,
                 "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0003]/value/lower",
@@ -794,8 +823,9 @@
             "children": [
               {
                 "id": "upper",
+                "name": "upper",
+                "localizedName": "upper",
                 "rmType": "DV_QUANTITY",
-                "nodeId": "",
                 "min": 1,
                 "max": 1,
                 "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0004]/value/upper",
@@ -812,8 +842,9 @@
               },
               {
                 "id": "lower",
+                "name": "lower",
+                "localizedName": "lower",
                 "rmType": "DV_QUANTITY",
-                "nodeId": "",
                 "min": 1,
                 "max": 1,
                 "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0004]/value/lower",
@@ -848,8 +879,9 @@
             "children": [
               {
                 "id": "upper",
+                "name": "upper",
+                "localizedName": "upper",
                 "rmType": "DV_DATE_TIME",
-                "nodeId": "",
                 "min": 1,
                 "max": 1,
                 "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0005]/value/upper",
@@ -861,8 +893,9 @@
               },
               {
                 "id": "lower",
+                "name": "lower",
+                "localizedName": "lower",
                 "rmType": "DV_DATE_TIME",
-                "nodeId": "",
                 "min": 1,
                 "max": 1,
                 "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/data[at0001]/items[at0005]/value/lower",
@@ -892,10 +925,11 @@
             "children": [
               {
                 "id": "quantity_value",
+                "name": "choice",
                 "localizedName": "choice",
                 "rmType": "DV_QUANTITY",
-                "nodeId": "",
-                "min": 0,
+                "nodeId": "at0009",
+                "min": 1,
                 "max": 1,
                 "localizedNames": {
                   "en": "choice"
@@ -927,10 +961,11 @@
               },
               {
                 "id": "count_value",
+                "name": "choice",
                 "localizedName": "choice",
                 "rmType": "DV_COUNT",
-                "nodeId": "",
-                "min": 0,
+                "nodeId": "at0009",
+                "min": 1,
                 "max": 1,
                 "localizedNames": {
                   "en": "choice"
@@ -1023,28 +1058,10 @@
             ]
           },
           {
-            "id": "language",
-            "name": "Language",
-            "rmType": "CODE_PHRASE",
-            "min": 0,
-            "max": 1,
-            "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/language",
-            "inContext": true
-          },
-          {
-            "id": "encoding",
-            "name": "Encoding",
-            "rmType": "CODE_PHRASE",
-            "min": 0,
-            "max": 1,
-            "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/encoding",
-            "inContext": true
-          },
-          {
             "id": "subject",
-            "name": "Subject",
+            "name": "subject",
             "rmType": "PARTY_PROXY",
-            "min": 0,
+            "min": 1,
             "max": 1,
             "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/subject",
             "inputs": [
@@ -1065,6 +1082,24 @@
                 "type": "TEXT"
               }
             ],
+            "inContext": true
+          },
+          {
+            "id": "language",
+            "name": "language",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/language",
+            "inContext": true
+          },
+          {
+            "id": "encoding",
+            "name": "encoding",
+            "rmType": "CODE_PHRASE",
+            "min": 1,
+            "max": 1,
+            "aqlPath": "/content[openEHR-EHR-EVALUATION.test_all_types.v1]/encoding",
             "inContext": true
           }
         ]
@@ -1150,19 +1185,6 @@
                         "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]",
                         "children": [
                           {
-                            "id": "action_archetype_id",
-                            "rmType": "STRING",
-                            "nodeId": "",
-                            "min": 1,
-                            "max": 1,
-                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/action_archetype_id",
-                            "inputs": [
-                              {
-                                "type": "TEXT"
-                              }
-                            ]
-                          },
-                          {
                             "id": "partial_date",
                             "name": "partial date",
                             "localizedName": "partial date",
@@ -1212,7 +1234,7 @@
                           },
                           {
                             "id": "timing",
-                            "name": "Timing",
+                            "name": "timing",
                             "rmType": "DV_PARSABLE",
                             "min": 0,
                             "max": 1,
@@ -1228,59 +1250,28 @@
                               }
                             ],
                             "inContext": true
+                          },
+                          {
+                            "id": "action_archetype_id",
+                            "name": "action_archetype_id",
+                            "rmType": "STRING",
+                            "min": 1,
+                            "max": 1,
+                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/action_archetype_id",
+                            "inputs": [
+                              {
+                                "type": "TEXT"
+                              }
+                            ],
+                            "inContext": true
                           }
                         ]
-                      },
-                      {
-                        "id": "expiry_time",
-                        "name": "expiry_time",
-                        "rmType": "DV_DATE_TIME",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/expiry_time",
-                        "inputs": [
-                          {
-                            "type": "DATETIME"
-                          }
-                        ]
-                      },
-                      {
-                        "id": "narrative",
-                        "name": "Narrative",
-                        "rmType": "DV_TEXT",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/narrative",
-                        "inputs": [
-                          {
-                            "type": "TEXT"
-                          }
-                        ],
-                        "inContext": true
-                      },
-                      {
-                        "id": "language",
-                        "name": "Language",
-                        "rmType": "CODE_PHRASE",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/language",
-                        "inContext": true
-                      },
-                      {
-                        "id": "encoding",
-                        "name": "Encoding",
-                        "rmType": "CODE_PHRASE",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/encoding",
-                        "inContext": true
                       },
                       {
                         "id": "subject",
-                        "name": "Subject",
+                        "name": "subject",
                         "rmType": "PARTY_PROXY",
-                        "min": 0,
+                        "min": 1,
                         "max": 1,
                         "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/subject",
                         "inputs": [
@@ -1302,6 +1293,51 @@
                           }
                         ],
                         "inContext": true
+                      },
+                      {
+                        "id": "narrative",
+                        "name": "narrative",
+                        "rmType": "DV_TEXT",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/narrative",
+                        "inputs": [
+                          {
+                            "type": "TEXT"
+                          }
+                        ],
+                        "inContext": true
+                      },
+                      {
+                        "id": "language",
+                        "name": "language",
+                        "rmType": "CODE_PHRASE",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/language",
+                        "inContext": true
+                      },
+                      {
+                        "id": "encoding",
+                        "name": "encoding",
+                        "rmType": "CODE_PHRASE",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/encoding",
+                        "inContext": true
+                      },
+                      {
+                        "id": "expiry_time",
+                        "name": "expiry_time",
+                        "rmType": "DV_DATE_TIME",
+                        "min": 0,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/expiry_time",
+                        "inputs": [
+                          {
+                            "type": "DATETIME"
+                          }
+                        ]
                       }
                     ]
                   },
@@ -1321,112 +1357,6 @@
                     },
                     "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]",
                     "children": [
-                      {
-                        "id": "ism_transition",
-                        "name": "Ism_transition",
-                        "rmType": "ISM_TRANSITION",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition",
-                        "children": [
-                          {
-                            "id": "current_state",
-                            "name": "Current_state",
-                            "rmType": "DV_CODED_TEXT",
-                            "min": 1,
-                            "max": 1,
-                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
-                            "inputs": [
-                              {
-                                "suffix": "code",
-                                "type": "CODED_TEXT",
-                                "list": [
-                                  {
-                                    "value": "245",
-                                    "label": "active"
-                                  },
-                                  {
-                                    "value": "532",
-                                    "label": "completed"
-                                  },
-                                  {
-                                    "value": "526",
-                                    "label": "planned"
-                                  }
-                                ]
-                              }
-                            ],
-                            "inContext": true
-                          },
-                          {
-                            "id": "transition",
-                            "name": "Transition",
-                            "rmType": "DV_CODED_TEXT",
-                            "min": 0,
-                            "max": 1,
-                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/transition",
-                            "inputs": [
-                              {
-                                "suffix": "code",
-                                "type": "TEXT"
-                              },
-                              {
-                                "suffix": "value",
-                                "type": "TEXT"
-                              }
-                            ],
-                            "inContext": true
-                          },
-                          {
-                            "id": "careflow_step",
-                            "name": "Careflow_step",
-                            "rmType": "DV_CODED_TEXT",
-                            "min": 0,
-                            "max": 1,
-                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
-                            "inputs": [
-                              {
-                                "suffix": "code",
-                                "type": "CODED_TEXT",
-                                "list": [
-                                  {
-                                    "value": "at0003",
-                                    "label": "Planned",
-                                    "localizedLabels": {
-                                      "en": "Planned"
-                                    },
-                                    "currentStates": [
-                                      "526"
-                                    ]
-                                  },
-                                  {
-                                    "value": "at0004",
-                                    "label": "Active",
-                                    "localizedLabels": {
-                                      "en": "Active"
-                                    },
-                                    "currentStates": [
-                                      "245"
-                                    ]
-                                  },
-                                  {
-                                    "value": "at0005",
-                                    "label": "Completed",
-                                    "localizedLabels": {
-                                      "en": "Completed"
-                                    },
-                                    "currentStates": [
-                                      "532"
-                                    ]
-                                  }
-                                ]
-                              }
-                            ],
-                            "inContext": true
-                          }
-                        ],
-                        "inContext": true
-                      },
                       {
                         "id": "test_all_types",
                         "name": "Test all types",
@@ -1503,42 +1433,10 @@
                         ]
                       },
                       {
-                        "id": "time",
-                        "name": "Time",
-                        "rmType": "DV_DATE_TIME",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/time",
-                        "inputs": [
-                          {
-                            "type": "DATETIME"
-                          }
-                        ],
-                        "inContext": true
-                      },
-                      {
-                        "id": "language",
-                        "name": "Language",
-                        "rmType": "CODE_PHRASE",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/language",
-                        "inContext": true
-                      },
-                      {
-                        "id": "encoding",
-                        "name": "Encoding",
-                        "rmType": "CODE_PHRASE",
-                        "min": 0,
-                        "max": 1,
-                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/encoding",
-                        "inContext": true
-                      },
-                      {
                         "id": "subject",
-                        "name": "Subject",
+                        "name": "subject",
                         "rmType": "PARTY_PROXY",
-                        "min": 0,
+                        "min": 1,
                         "max": 1,
                         "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/subject",
                         "inputs": [
@@ -1557,6 +1455,185 @@
                           {
                             "suffix": "name",
                             "type": "TEXT"
+                          }
+                        ],
+                        "inContext": true
+                      },
+                      {
+                        "id": "language",
+                        "name": "language",
+                        "rmType": "CODE_PHRASE",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/language",
+                        "inContext": true
+                      },
+                      {
+                        "id": "encoding",
+                        "name": "encoding",
+                        "rmType": "CODE_PHRASE",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/encoding",
+                        "inContext": true
+                      },
+                      {
+                        "id": "activity_id",
+                        "name": "activity_id",
+                        "rmType": "STRING",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/instruction_details/activity_id",
+                        "inputs": [
+                          {
+                            "type": "TEXT"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "instruction_id",
+                        "name": "instruction_id",
+                        "rmType": "LOCATABLE_REF",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/instruction_details/instruction_id"
+                      },
+                      {
+                        "id": "time",
+                        "name": "time",
+                        "rmType": "DV_DATE_TIME",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/time",
+                        "inputs": [
+                          {
+                            "type": "DATETIME"
+                          }
+                        ],
+                        "inContext": true
+                      },
+                      {
+                        "id": "ism_transition",
+                        "name": "ism_transition",
+                        "rmType": "ISM_TRANSITION",
+                        "min": 1,
+                        "max": 1,
+                        "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition",
+                        "children": [
+                          {
+                            "id": "careflow_step",
+                            "name": "Careflow_step",
+                            "rmType": "DV_CODED_TEXT",
+                            "min": 1,
+                            "max": 1,
+                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
+                            "inputs": [
+                              {
+                                "suffix": "code",
+                                "type": "CODED_TEXT",
+                                "list": [
+                                  {
+                                    "value": "at0003",
+                                    "label": "Planned",
+                                    "localizedLabels": {
+                                      "en": "Planned"
+                                    },
+                                    "localizedDescriptions": {
+                                      "en": "*"
+                                    },
+                                    "currentStates": [
+                                      "526"
+                                    ]
+                                  },
+                                  {
+                                    "value": "at0004",
+                                    "label": "Active",
+                                    "localizedLabels": {
+                                      "en": "Active"
+                                    },
+                                    "localizedDescriptions": {
+                                      "en": "*"
+                                    },
+                                    "currentStates": [
+                                      "245"
+                                    ]
+                                  },
+                                  {
+                                    "value": "at0005",
+                                    "label": "Completed",
+                                    "localizedLabels": {
+                                      "en": "Completed"
+                                    },
+                                    "localizedDescriptions": {
+                                      "en": "*"
+                                    },
+                                    "currentStates": [
+                                      "532"
+                                    ]
+                                  }
+                                ],
+                                "terminology": "local"
+                              }
+                            ],
+                            "inContext": true
+                          },
+                          {
+                            "id": "current_state",
+                            "name": "Current_state",
+                            "rmType": "DV_CODED_TEXT",
+                            "min": 1,
+                            "max": 1,
+                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
+                            "inputs": [
+                              {
+                                "suffix": "code",
+                                "type": "CODED_TEXT",
+                                "list": [
+                                  {
+                                    "value": "526",
+                                    "label": "planned",
+                                    "localizedLabels": {
+                                      "en": "planned"
+                                    }
+                                  },
+                                  {
+                                    "value": "245",
+                                    "label": "active",
+                                    "localizedLabels": {
+                                      "en": "active"
+                                    }
+                                  },
+                                  {
+                                    "value": "532",
+                                    "label": "completed",
+                                    "localizedLabels": {
+                                      "en": "completed"
+                                    }
+                                  }
+                                ],
+                                "terminology": "openehr"
+                              }
+                            ],
+                            "inContext": true
+                          },
+                          {
+                            "id": "transition",
+                            "name": "transition",
+                            "rmType": "DV_CODED_TEXT",
+                            "min": 0,
+                            "max": 1,
+                            "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/transition",
+                            "inputs": [
+                              {
+                                "suffix": "code",
+                                "type": "TEXT"
+                              },
+                              {
+                                "suffix": "value",
+                                "type": "TEXT"
+                              }
+                            ],
+                            "inContext": true
                           }
                         ],
                         "inContext": true
@@ -1603,28 +1680,10 @@
                     ]
                   },
                   {
-                    "id": "language",
-                    "name": "Language",
-                    "rmType": "CODE_PHRASE",
-                    "min": 0,
-                    "max": 1,
-                    "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]/language",
-                    "inContext": true
-                  },
-                  {
-                    "id": "encoding",
-                    "name": "Encoding",
-                    "rmType": "CODE_PHRASE",
-                    "min": 0,
-                    "max": 1,
-                    "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]/encoding",
-                    "inContext": true
-                  },
-                  {
                     "id": "subject",
-                    "name": "Subject",
+                    "name": "subject",
                     "rmType": "PARTY_PROXY",
-                    "min": 0,
+                    "min": 1,
                     "max": 1,
                     "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]/subject",
                     "inputs": [
@@ -1646,6 +1705,24 @@
                       }
                     ],
                     "inContext": true
+                  },
+                  {
+                    "id": "language",
+                    "name": "language",
+                    "rmType": "CODE_PHRASE",
+                    "min": 1,
+                    "max": 1,
+                    "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]/language",
+                    "inContext": true
+                  },
+                  {
+                    "id": "encoding",
+                    "name": "encoding",
+                    "rmType": "CODE_PHRASE",
+                    "min": 1,
+                    "max": 1,
+                    "aqlPath": "/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[openEHR-EHR-ADMIN_ENTRY.test_all_types.v1]/encoding",
+                    "inContext": true
                   }
                 ]
               }
@@ -1654,53 +1731,10 @@
         ]
       },
       {
-        "id": "category",
-        "rmType": "DV_CODED_TEXT",
-        "nodeId": "",
-        "min": 1,
-        "max": 1,
-        "aqlPath": "/category",
-        "inputs": [
-          {
-            "suffix": "code",
-            "type": "CODED_TEXT",
-            "list": [
-              {
-                "value": "433",
-                "label": "event",
-                "localizedLabels": {
-                  "en": "event"
-                }
-              }
-            ],
-            "terminology": "openehr"
-          }
-        ],
-        "inContext": true
-      },
-      {
-        "id": "language",
-        "name": "Language",
-        "rmType": "CODE_PHRASE",
-        "min": 0,
-        "max": 1,
-        "aqlPath": "/language",
-        "inContext": true
-      },
-      {
-        "id": "territory",
-        "name": "Territory",
-        "rmType": "CODE_PHRASE",
-        "min": 0,
-        "max": 1,
-        "aqlPath": "/territory",
-        "inContext": true
-      },
-      {
         "id": "composer",
-        "name": "Composer",
+        "name": "composer",
         "rmType": "PARTY_PROXY",
-        "min": 0,
+        "min": 1,
         "max": 1,
         "aqlPath": "/composer",
         "inputs": [
@@ -1721,6 +1755,24 @@
             "type": "TEXT"
           }
         ],
+        "inContext": true
+      },
+      {
+        "id": "language",
+        "name": "language",
+        "rmType": "CODE_PHRASE",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/language",
+        "inContext": true
+      },
+      {
+        "id": "territory",
+        "name": "territory",
+        "rmType": "CODE_PHRASE",
+        "min": 1,
+        "max": 1,
+        "aqlPath": "/territory",
         "inContext": true
       }
     ]

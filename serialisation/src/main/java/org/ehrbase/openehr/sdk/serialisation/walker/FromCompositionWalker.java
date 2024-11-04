@@ -20,7 +20,7 @@ package org.ehrbase.openehr.sdk.serialisation.walker;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.util.List;
-import java.util.Map;
+import java.util.function.BooleanSupplier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
@@ -31,14 +31,15 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
             RMObject currentRM,
             WebTemplateNode currentNode,
             WebTemplateNode childNode,
-            boolean isChoice,
+            BooleanSupplier isChoice,
             Integer count) {
-        Object child = ItemExtractor.extractChild(currentRM, currentNode, childNode, isChoice && count == null);
+        Object child =
+                ItemExtractor.extractChild(currentRM, currentNode, childNode, count != null ? (() -> false) : isChoice);
 
         if (count != null && child instanceof List<?> childList) {
 
             Object selectedChild = childList.get(count);
-            if (isChoice
+            if (isChoice.getAsBoolean()
                     && !ARCHIE_RM_INFO_LOOKUP
                             .getTypeInfo(childNode.getRmType())
                             .getJavaClass()
@@ -55,7 +56,7 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     protected int calculateSize(Context<T> context, WebTemplateNode childNode) {
 
         Object child = extractRMChild(
-                context.getRmObjectDeque().peek(), context.getNodeDeque().peek(), childNode, false, null);
+                context.getRmObjectDeque().peek(), context.getNodeDeque().peek(), childNode, () -> false, null);
         if (child instanceof List<?> l) {
             return l.size();
         } else {
@@ -66,21 +67,17 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     protected ImmutablePair<T, RMObject> extractPair(
             Context<T> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            BooleanSupplier isChoice,
             WebTemplateNode childNode,
             Integer i) {
 
-        RMObject currentChild = (RMObject) extractRMChild(
-                context.getRmObjectDeque().peek(),
-                currentNode,
-                childNode,
-                choices.containsKey(childNode.getAqlPath()),
-                i);
+        RMObject currentChild =
+                (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, isChoice, i);
 
         if (currentChild == null) {
             return null;
         }
-        T childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
+        T childObject = extract(context, childNode, isChoice, i);
 
         return new ImmutablePair<>(childObject, currentChild);
     }

@@ -26,10 +26,10 @@ import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +45,7 @@ public final class ItemExtractor {
     }
 
     public static Object extractChild(
-            RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, boolean isChoice) {
+            RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, BooleanSupplier isChoice) {
         AqlPath childPath = currentNode.buildRelativePath(childNode, false);
 
         if (!(currentRM instanceof Pathable currentPathable)) {
@@ -60,35 +60,44 @@ public final class ItemExtractor {
             }
 
             throw new SdkException(String.format(
-                    "Can not extract from class %s", currentRM.getClass().getSimpleName()));
+                    "Cannot extract %s from class %s",
+                    childNode.getAqlPathDto(), currentRM.getClass().getSimpleName()));
         }
-        Stream<?> itemsAtPath;
-        try { // FIXME Performance itemsAtPath
-            itemsAtPath = itemsAtPath(childPath, currentPathable);
 
-            String baseName = childPath.getBaseNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY);
+        // FIXME Performance itemsAtPath
+        Stream<?> itemsAtPath = itemsAtPath(childPath, currentPathable);
 
-            if (StringUtils.isNotBlank(baseName)
-                    && Locatable.class.isAssignableFrom(Walker.ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
-                itemsAtPath = itemsAtPath.filter(c -> baseName.equals(((Locatable) c).getNameAsString()));
-            }
+        String baseName = childPath.getBaseNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY);
 
-            if (isChoice) {
-                itemsAtPath = itemsAtPath.filter(c -> Walker.ARCHIE_RM_INFO_LOOKUP
-                        .getTypeInfo(c.getClass())
-                        .getRmName()
-                        // childNode.getRmType my include Type "DV_INTERVAL<DV_TIME>"
-                        .equals(StringUtils.substringBefore(childNode.getRmType(), "<")));
-            }
+        if (StringUtils.isNotBlank(baseName)
+                && Locatable.class.isAssignableFrom(Walker.ARCHIE_RM_INFO_LOOKUP.getClass(childNode.getRmType()))) {
+            itemsAtPath = itemsAtPath.filter(c -> baseName.equals(((Locatable) c).getNameAsString()));
+        }
 
-        } catch (RuntimeException e) {
-            // work around known issue with archie where Event::getOffset throws a NPE due to time being null
-            if (e.getCause() instanceof InvocationTargetException target
-                    && target.getCause() instanceof NullPointerException) {
-                return null;
-            } else {
-                throw e;
-            }
+        if (isChoice.getAsBoolean()) {
+            //                itemsAtPath = itemsAtPath.filter(c -> Walker.ARCHIE_RM_INFO_LOOKUP
+            //                        .getTypeInfo(c.getClass())
+            //                        .getRmName()
+            //                        // childNode.getRmType my include Type "DV_INTERVAL<DV_TIME>"
+            //                        .equals(StringUtils.substringBefore(childNode.getRmType(), "<")));
+            itemsAtPath = itemsAtPath.filter(c -> {
+                String childRmType = childNode.getRmType();
+
+                String typeRmName =
+                        Walker.ARCHIE_RM_INFO_LOOKUP.getTypeInfo(c.getClass()).getRmName();
+
+                int childLength = childRmType.length();
+                int typeLength = typeRmName.length();
+                if (childLength == typeLength) {
+                    return childRmType.equals(typeRmName);
+                } else if (childLength < typeLength) {
+                    return false;
+                } else if (childRmType.charAt(typeLength) == '<') {
+                    return childRmType.startsWith(typeRmName);
+                } else {
+                    return false;
+                }
+            });
         }
 
         Iterator<?> childIt = itemsAtPath.iterator();

@@ -30,11 +30,8 @@ import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_SELF;
 import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.POINT_EVENT;
 
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.EventContext;
-import com.nedap.archie.rm.composition.IsmTransition;
-import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
@@ -44,6 +41,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -58,6 +57,7 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 public abstract class Walker<T> {
 
+    // XXX see PathAnalysis
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     public void walk(
@@ -118,28 +118,26 @@ public abstract class Walker<T> {
                     .collect(Collectors.groupingBy(
                             WebTemplateNode::getAqlPathDto, LinkedHashMap::new, Collectors.toList()));
 
-            Map<String, List<WebTemplateNode>> allChoices = currentNode.getChoicesInChildren();
+            Predicate<WebTemplateNode> choicePredicate =
+                    n -> childrenByPath.get(n.getAqlPathDto()).size() > 1;
 
             for (List<WebTemplateNode> childrenForPath : childrenByPath.values()) {
 
-                boolean isMulti = childrenForPath.stream().anyMatch(n -> RMHelper.isMulti(currentNode, n));
+                boolean anyMulti = isMulti(currentNode, childrenForPath);
 
                 Stream<NodeConstellation> childConstellations;
-                if (!isMulti) {
+                if (!anyMulti) {
                     childConstellations =
-                            streamChildConstellations(context, currentNode, allChoices, childrenForPath, null);
+                            streamChildConstellations(context, currentNode, choicePredicate, childrenForPath, null);
 
                 } else {
                     // Number of entries to be added
                     int size = calculateSize(context, childrenForPath.get(0));
-                    childConstellations = IntStream.range(0, size)
-                            .boxed()
-                            .flatMap(index ->
-                                    streamChildConstellations(context, currentNode, allChoices, childrenForPath, index)
-                                            // for each index at most one of the choices is retained
-                                            .findFirst()
-                                            // an index may be skipped if none of the choices is accepted
-                                            .stream());
+                    childConstellations = IntStream.range(0, size).boxed().flatMap(index -> streamChildConstellations(
+                                    context, currentNode, choicePredicate, childrenForPath, index)
+                            // for each index at most one of the choices is retained
+                            // an index may be skipped if none of the choices is accepted
+                            .limit(1));
                 }
 
                 childConstellations.forEach(constellation -> {
@@ -164,6 +162,15 @@ public abstract class Walker<T> {
         context.getObjectDeque().remove();
     }
 
+    private static boolean isMulti(WebTemplateNode currentNode, List<WebTemplateNode> childrenForPath) {
+        for (WebTemplateNode n : childrenForPath) {
+            if (RMHelper.isMulti(currentNode, n)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected void postVisitChildren(Context<T> context, WebTemplateNode currentNode) {
         // NOOP
     }
@@ -171,12 +178,13 @@ public abstract class Walker<T> {
     private Stream<NodeConstellation> streamChildConstellations(
             Context<T> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            Predicate<WebTemplateNode> choicePredicate,
             List<WebTemplateNode> childrenForPath,
             Integer index) {
         return childrenForPath.stream()
                 .map(childNode -> {
-                    var pair = extractPair(context, currentNode, choices, childNode, index);
+                    var pair =
+                            extractPair(context, currentNode, () -> choicePredicate.test(childNode), childNode, index);
                     if (pair == null || ObjectUtils.anyNull(pair.getLeft(), pair.getRight())) {
                         return null;
                     } else {
@@ -294,11 +302,19 @@ public abstract class Walker<T> {
     }
 
     private static boolean siblingMissing(WebTemplateNode parentNode, WebTemplateNode childNode, String rmType) {
-        return parentNode.getChildren().size() <= 1
-                || parentNode.getChildren().stream()
-                        .filter(n -> rmType.equals(n.getRmType()))
-                        .filter(n -> n != childNode)
-                        .noneMatch(n -> n.getAqlPathDto().equals(childNode.getAqlPathDto()));
+        List<WebTemplateNode> children = parentNode.getChildren();
+        if (children.size() <= 1) {
+            return true;
+        } else {
+            for (var child : children) {
+                if (rmType.equals(child.getRmType())
+                        && child != childNode
+                        && child.getAqlPathDto().equals(childNode.getAqlPathDto())) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     private static WebTemplateNode copyAsPartyRelated(WebTemplateNode party) {
@@ -324,7 +340,7 @@ public abstract class Walker<T> {
     protected abstract ImmutablePair<T, RMObject> extractPair(
             Context<T> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            BooleanSupplier isChoice,
             WebTemplateNode childNode,
             Integer i);
 
@@ -332,20 +348,28 @@ public abstract class Walker<T> {
             RMObject currentRM,
             WebTemplateNode currentNode,
             WebTemplateNode childNode,
-            boolean isChoice,
+            BooleanSupplier isChoice,
             Integer count);
 
     protected boolean visitChildren(WebTemplateNode node) {
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-        return typeInfo != null
-                && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || Element.class.isAssignableFrom(typeInfo.getJavaClass()));
+        if (typeInfo == null) {
+            return false;
+        }
+        Class<?> javaType = typeInfo.getJavaClass();
+        if (Pathable.class.isAssignableFrom(javaType)) {
+            //            if (InstructionDetails.class.isAssignableFrom(javaType)) {
+            //                return false;
+            //            }
+            return true;
+        } else if (DvInterval.class.isAssignableFrom(javaType)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    protected abstract T extract(Context<T> context, WebTemplateNode child, boolean isChoice, Integer i);
+    protected abstract T extract(Context<T> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i);
 
     protected abstract void preHandle(Context<T> context);
 

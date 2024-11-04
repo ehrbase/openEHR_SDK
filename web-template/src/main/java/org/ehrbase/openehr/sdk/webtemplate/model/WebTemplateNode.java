@@ -107,18 +107,22 @@ public class WebTemplateNode implements Serializable {
         this.localizedNames = new LinkedHashMap<>(other.localizedNames);
         this.localizedDescriptions = new LinkedHashMap<>(other.localizedDescriptions);
         this.proportionTypes = new ArrayList<>(other.getProportionTypes());
-        this.termBindings = other.termBindings.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> new WebTemplateTerminology(e.getValue()),
-                        (a, b) -> a,
-                        LinkedHashMap::new));
+        this.termBindings = cloneMap(other.termBindings, WebTemplateTerminology::new);
     }
 
-    private static <T> List<T> cloneList(List<T> list, UnaryOperator<T> elementCloner) {
+    static <T> List<T> cloneList(List<T> list, UnaryOperator<T> elementCloner) {
         List<T> clonedList = new ArrayList<>(list.size());
         list.forEach(el -> clonedList.add(elementCloner.apply(el)));
         return clonedList;
+    }
+
+    static <K, V> LinkedHashMap<K, V> cloneMap(Map<K, V> map, UnaryOperator<V> valueCloner) {
+        if (map.isEmpty()) {
+            return new LinkedHashMap<>();
+        }
+        LinkedHashMap<K, V> newMap = new LinkedHashMap<>((map.size() * 4 / 3) + 1, 0.75f);
+        map.forEach((k, v) -> newMap.put(k, valueCloner.apply(v)));
+        return newMap;
     }
 
     public String getId() {
@@ -277,7 +281,7 @@ public class WebTemplateNode implements Serializable {
     public AqlPath buildRelativePath(WebTemplateNode child, boolean checkIfTrueChild) {
 
         if (checkIfTrueChild) {
-            return child.getAqlPathDto().removeStart(this.getAqlPathDto());
+            return child.aqlPath.removeStart(this.aqlPath);
 
         } else {
             AqlPath me = this.aqlPath;
@@ -292,7 +296,11 @@ public class WebTemplateNode implements Serializable {
     }
 
     public boolean isRelativePathNameDependent(WebTemplateNode child) {
-        return buildRelativePath(child, false).getLastNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY) != null;
+        return isNameDependent(buildRelativePath(child, false));
+    }
+
+    public static boolean isNameDependent(AqlPath aqlPath) {
+        return aqlPath.getLastNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY) != null;
     }
 
     public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {

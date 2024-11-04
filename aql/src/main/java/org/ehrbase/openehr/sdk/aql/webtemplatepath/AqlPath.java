@@ -639,10 +639,10 @@ public final class AqlPath implements Serializable {
         }
 
         public boolean equals(AqlNode o, boolean withOtherPredicates) {
-            if (withOtherPredicates) {
-                return equals(o);
-            } else if (this == o) {
+            if (this == o) {
                 return true;
+            } else if (withOtherPredicates) {
+                return equals(o);
             } else {
                 return Objects.equals(name, o.name) && Objects.equals(atCode, o.atCode);
             }
