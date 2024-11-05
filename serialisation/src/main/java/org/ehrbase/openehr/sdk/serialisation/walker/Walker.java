@@ -293,6 +293,9 @@ public abstract class Walker<T> {
 
                     it.remove();
                 }
+                default -> {
+                    /* no need to fix inheritance */
+                }
             }
         }
 
@@ -357,16 +360,7 @@ public abstract class Walker<T> {
             return false;
         }
         Class<?> javaType = typeInfo.getJavaClass();
-        if (Pathable.class.isAssignableFrom(javaType)) {
-            //            if (InstructionDetails.class.isAssignableFrom(javaType)) {
-            //                return false;
-            //            }
-            return true;
-        } else if (DvInterval.class.isAssignableFrom(javaType)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Pathable.class.isAssignableFrom(javaType) || DvInterval.class.isAssignableFrom(javaType);
     }
 
     protected abstract T extract(Context<T> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i);

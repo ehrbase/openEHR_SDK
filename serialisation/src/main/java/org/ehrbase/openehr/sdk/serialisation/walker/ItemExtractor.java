@@ -83,11 +83,6 @@ public final class ItemExtractor {
         }
 
         if (isChoice.getAsBoolean()) {
-            //                itemsAtPath = itemsAtPath.filter(c -> Walker.ARCHIE_RM_INFO_LOOKUP
-            //                        .getTypeInfo(c.getClass())
-            //                        .getRmName()
-            //                        // childNode.getRmType my include Type "DV_INTERVAL<DV_TIME>"
-            //                        .equals(StringUtils.substringBefore(childNode.getRmType(), "<")));
             itemsAtPath = itemsAtPath.filter(c -> {
                 String childRmType = childNode.getRmType();
 

@@ -314,12 +314,8 @@ public class FlatHelper<T> {
             return false;
         }
 
-        boolean nonMandatoryRmAttribute =
-                node.getMin() == 0 && typeInfo.getAttributes().containsKey(nodeName);
-        if (nonMandatoryRmAttribute) {
-            return true;
-        }
-        return false;
+        // nonMandatoryRmAttribute
+        return node.getMin() == 0 && typeInfo.getAttributes().containsKey(nodeName);
     }
 
     public static void consumeAllMatching(

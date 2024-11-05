@@ -30,11 +30,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+import org.ehrbase.openehr.sdk.webtemplate.util.WebTemplateUtils;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {
@@ -101,28 +101,13 @@ public class WebTemplateNode implements Serializable {
             this.annotations = new WebTemplateAnnotation(other.annotations);
         }
 
-        this.cardinalities = cloneList(other.cardinalities, WebtemplateCardinality::new);
-        this.inputs = cloneList(other.inputs, WebTemplateInput::new);
-        this.children = cloneList(other.children, WebTemplateNode::new);
+        this.cardinalities = WebTemplateUtils.cloneList(other.cardinalities, WebtemplateCardinality::new);
+        this.inputs = WebTemplateUtils.cloneList(other.inputs, WebTemplateInput::new);
+        this.children = WebTemplateUtils.cloneList(other.children, WebTemplateNode::new);
         this.localizedNames = new LinkedHashMap<>(other.localizedNames);
         this.localizedDescriptions = new LinkedHashMap<>(other.localizedDescriptions);
         this.proportionTypes = new ArrayList<>(other.getProportionTypes());
-        this.termBindings = cloneMap(other.termBindings, WebTemplateTerminology::new);
-    }
-
-    static <T> List<T> cloneList(List<T> list, UnaryOperator<T> elementCloner) {
-        List<T> clonedList = new ArrayList<>(list.size());
-        list.forEach(el -> clonedList.add(elementCloner.apply(el)));
-        return clonedList;
-    }
-
-    static <K, V> LinkedHashMap<K, V> cloneMap(Map<K, V> map, UnaryOperator<V> valueCloner) {
-        if (map.isEmpty()) {
-            return new LinkedHashMap<>();
-        }
-        LinkedHashMap<K, V> newMap = new LinkedHashMap<>((map.size() * 4 / 3) + 1, 0.75f);
-        map.forEach((k, v) -> newMap.put(k, valueCloner.apply(v)));
-        return newMap;
+        this.termBindings = WebTemplateUtils.cloneMap(other.termBindings, WebTemplateTerminology::new);
     }
 
     public String getId() {

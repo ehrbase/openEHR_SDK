@@ -17,8 +17,12 @@
  */
 package org.ehrbase.openehr.sdk.webtemplate.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
@@ -64,5 +68,20 @@ public class WebTemplateUtils {
                 .filter(childNode -> !List.of("null_flavour", "feeder_audit").contains(childNode.getName())
                         || !childNode.isNullable())
                 .collect(Collectors.toList());
+    }
+
+    public static <T> List<T> cloneList(List<T> list, UnaryOperator<T> elementCloner) {
+        List<T> clonedList = new ArrayList<>(list.size());
+        list.forEach(el -> clonedList.add(elementCloner.apply(el)));
+        return clonedList;
+    }
+
+    public static <K, V> LinkedHashMap<K, V> cloneMap(Map<K, V> map, UnaryOperator<V> valueCloner) {
+        if (map.isEmpty()) {
+            return new LinkedHashMap<>();
+        }
+        LinkedHashMap<K, V> newMap = new LinkedHashMap<>((map.size() * 4 / 3) + 1, 0.75f);
+        map.forEach((k, v) -> newMap.put(k, valueCloner.apply(v)));
+        return newMap;
     }
 }

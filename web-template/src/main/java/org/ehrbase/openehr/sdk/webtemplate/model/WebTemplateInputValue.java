@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.ehrbase.openehr.sdk.webtemplate.util.WebTemplateUtils;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateInputValue implements Serializable {
@@ -56,7 +57,7 @@ public class WebTemplateInputValue implements Serializable {
         }
         this.localizedLabels = new HashMap<>(other.localizedLabels);
         this.localizedDescriptions = new HashMap<>(other.localizedDescriptions);
-        this.termBindings = WebTemplateNode.cloneMap(other.termBindings, WebTemplateTerminology::new);
+        this.termBindings = WebTemplateUtils.cloneMap(other.termBindings, WebTemplateTerminology::new);
         this.currentStates = new ArrayList<>(other.currentStates);
     }
 

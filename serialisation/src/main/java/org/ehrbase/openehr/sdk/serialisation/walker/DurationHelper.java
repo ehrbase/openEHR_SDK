@@ -75,8 +75,8 @@ public class DurationHelper {
                 .flatMap(input -> Optional.of(input)
                         .map(WebTemplateInput::getValidation)
                         .map(WebTemplateValidation::getRange)
-                        .map(range -> minMax.getValue(range))
-                        .filter(value -> value instanceof Integer)
+                        .map(r -> minMax.getValue(r))
+                        .filter(Integer.class::isInstance)
                         .map(value -> build(input, (Integer) value))
                         .stream())
                 .reduce((a, b) -> PeriodDuration.from(a).plus(b));

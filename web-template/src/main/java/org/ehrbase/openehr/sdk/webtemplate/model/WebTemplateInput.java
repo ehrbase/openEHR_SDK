@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.ehrbase.openehr.sdk.webtemplate.util.WebTemplateUtils;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateInput implements Serializable {
@@ -52,7 +53,7 @@ public class WebTemplateInput implements Serializable {
         }
         this.terminology = other.terminology;
         this.defaultValue = other.defaultValue;
-        this.list = WebTemplateNode.cloneList(other.list, WebTemplateInputValue::new);
+        this.list = WebTemplateUtils.cloneList(other.list, WebTemplateInputValue::new);
     }
 
     public String getSuffix() {
