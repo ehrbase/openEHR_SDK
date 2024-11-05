@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.DvScale;
-import java.util.Collections;
 import java.util.List;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
@@ -45,6 +44,6 @@ public class DvScaleValidator implements ConstraintValidator<DvScale> {
      */
     @Override
     public List<ConstraintViolation> validate(DvScale dvScale, WebTemplateNode node) {
-        return Collections.emptyList();
+        return List.of();
     }
 }

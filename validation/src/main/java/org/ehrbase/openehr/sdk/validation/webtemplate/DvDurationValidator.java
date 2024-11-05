@@ -20,12 +20,7 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import org.apache.commons.lang3.tuple.Pair;
 import org.ehrbase.openehr.sdk.serialisation.walker.DurationHelper;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateComparisonSymbol;
@@ -41,8 +36,6 @@ import org.threeten.extra.PeriodDuration;
 @SuppressWarnings("unused")
 public class DvDurationValidator implements ConstraintValidator<DvDuration> {
 
-    private final PrimitiveConstraintValidator validator = new PrimitiveConstraintValidator();
-
     /** {@inheritDoc} */
     @Override
     public Class<DvDuration> getAssociatedClass() {
@@ -53,58 +46,44 @@ public class DvDurationValidator implements ConstraintValidator<DvDuration> {
     @Override
     public List<ConstraintViolation> validate(DvDuration dvDuration, WebTemplateNode node) {
         if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return Collections.emptyList();
+            return List.of();
         }
-
-        List<ConstraintViolation> result = new ArrayList<>();
 
         var duration = PeriodDuration.from(dvDuration.getValue());
 
-        Arrays.stream(DurationHelper.MIN_MAX.values())
-                .map(m -> DurationHelper.getTotalComparisonSymbol(node, m).map(s -> Pair.of(m, s)))
-                .flatMap(Optional::stream)
-                .map(p -> validate(
-                        node,
-                        duration,
-                        p.getRight(),
-                        DurationHelper.buildTotalRange(node, p.getLeft()).orElse(PeriodDuration.ZERO)))
-                .forEach(result::addAll);
-
+        List<ConstraintViolation> result = List.of();
+        for (DurationHelper.MIN_MAX m : DurationHelper.MIN_MAX.values()) {
+            WebTemplateComparisonSymbol s = DurationHelper.getTotalComparisonSymbol(node, m);
+            if (s == null) {
+                continue;
+            }
+            ConstraintViolation violation = validate(
+                    node, duration, s, DurationHelper.buildTotalRange(node, m).orElse(PeriodDuration.ZERO));
+            if (violation != null) {
+                result = ConstraintValidator.concat(result, List.of(violation));
+            }
+        }
         return result;
     }
 
-    private List<ConstraintViolation> validate(
+    private ConstraintViolation validate(
             WebTemplateNode node, PeriodDuration duration, WebTemplateComparisonSymbol symbol, TemporalAmount range) {
+        int durationCmp = new DvDuration(duration).compareTo(new DvDuration(range));
+        boolean valid =
+                switch (symbol) {
+                    case GT_EQ -> durationCmp >= 0;
+                    case GT -> durationCmp > 0;
+                    case LT_EQ -> durationCmp <= 0;
+                    case LT -> durationCmp < 0;
+                };
 
-        List<ConstraintViolation> result = new ArrayList<>();
-
-        boolean condition;
-
-        switch (symbol) {
-            case GT_EQ:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) >= 0;
-                break;
-            case GT:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) > 0;
-                break;
-
-            case LT_EQ:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) <= 0;
-                break;
-            case LT:
-                condition = new DvDuration(duration).compareTo(new DvDuration(range)) < 0;
-                break;
-            default:
-                condition = false;
-        }
-
-        if (!condition) {
-            result.add(new ConstraintViolation(
+        if (valid) {
+            return null;
+        } else {
+            return new ConstraintViolation(
                     node.getAqlPath(),
-                    String.format("The value %s must be %s %s", duration, symbol.getSymbol(), range)));
+                    String.format("The value %s must be %s %s", duration, symbol.getSymbol(), range));
         }
-
-        return result;
     }
 
     private Long getValue(PeriodDuration duration, String unit) {

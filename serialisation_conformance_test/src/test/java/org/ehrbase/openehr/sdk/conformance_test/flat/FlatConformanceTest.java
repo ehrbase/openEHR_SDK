@@ -96,7 +96,7 @@ class FlatConformanceTest {
 
         String expected = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
 
-        List<String> errors = compere(actual, expected);
+        List<String> errors = compare(actual, expected);
 
         softAssertions
                 .assertThat(errors)
@@ -111,7 +111,7 @@ class FlatConformanceTest {
         softAssertions.assertAll();
     }
 
-    private List<String> compere(String actualJson, String expectedJson) throws JsonProcessingException {
+    private List<String> compare(String actualJson, String expectedJson) throws JsonProcessingException {
         List<String> errors = new ArrayList<>();
         ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
 

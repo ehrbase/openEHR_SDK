@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
-import java.util.Collections;
 import java.util.List;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
@@ -46,10 +45,10 @@ public class DvDateValidator implements ConstraintValidator<DvDate> {
     @Override
     public List<ConstraintViolation> validate(DvDate dvDate, WebTemplateNode node) {
         if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         var input = WebTemplateValidationUtils.getInputWithType(node, "DATE");
-        return new PrimitiveConstraintValidator().validate(node.getAqlPath(), dvDate.getValue(), input);
+        return PrimitiveConstraintValidator.validate(node.getAqlPath(), dvDate.getValue(), input);
     }
 }

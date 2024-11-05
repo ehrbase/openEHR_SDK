@@ -31,7 +31,7 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 @SuppressWarnings("unused")
 public class DvStateValidator implements ConstraintValidator<DvState> {
 
-    private final DvCodedTextValidator dvCodedTextValidator = new DvCodedTextValidator();
+    private static final DvCodedTextValidator DV_CODED_TEXT_VALIDATOR = new DvCodedTextValidator();
 
     /**
      * {@inheritDoc}
@@ -46,6 +46,6 @@ public class DvStateValidator implements ConstraintValidator<DvState> {
      */
     @Override
     public List<ConstraintViolation> validate(DvState dvState, WebTemplateNode node) {
-        return dvCodedTextValidator.validate(dvState.getValue(), node);
+        return DV_CODED_TEXT_VALIDATOR.validate(dvState.getValue(), node);
     }
 }

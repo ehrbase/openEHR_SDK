@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -90,7 +91,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
 
     @Override
     protected DtoWithMatchingFields extract(
-            Context<DtoWithMatchingFields> context, WebTemplateNode child, boolean isChoice, Integer i) {
+            Context<DtoWithMatchingFields> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i) {
         Map<AqlPath, Field> subValues = context.getObjectDeque().peek().getFieldByPath().entrySet().stream()
                 .map(e -> ImmutablePair.of(PATH_MATCHER.matchesPath(context, child, e), e.getValue()))
                 .filter(p -> Objects.nonNull(p.getKey()))
@@ -114,7 +115,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
             }
             return null;
         } else if (subValues.size() > 1) {
-            if (isChoice && child.getRmType().equals("INTERVAL_EVENT")) {
+            if (isChoice.getAsBoolean() && child.getRmType().equals("INTERVAL_EVENT")) {
                 logger.warn(
                         "Path {} is choice but missing OptionFor: Transforming INTERVAL_EVENT to POINT_EVENT ",
                         child.getAqlPath());
@@ -128,7 +129,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
                 type = TypeToken.of(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0])
                         .getRawType();
             }
-            if (isChoice) {
+            if (isChoice.getAsBoolean()) {
                 type = findActual(type, child.getRmType()).orElseThrow();
             }
             if (type.isAnnotationPresent(Entity.class) && path.isEmpty()) {

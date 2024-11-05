@@ -62,7 +62,7 @@ public class FlatHelper<T> {
             nodeIdPath.add(node.getId(true));
 
             if (!skip) {
-                if (namePathBuilder.length() > 0) {
+                if (!namePathBuilder.isEmpty()) {
                     namePathBuilder.append('/');
                 }
 
@@ -269,7 +269,7 @@ public class FlatHelper<T> {
                     .filter(n ->
                             !List.of("name", "null_flavour", "feeder_audit").contains(n.getName()))
                     .map(WebTemplateNode::getRmType)
-                    .collect(Collectors.toList());
+                    .toList();
             return node.getChildren().stream().anyMatch(n -> n.getId().equals("value"))
                     || (trueChildren.size() == 2 && trueChildren.containsAll(List.of(DV_TEXT, DV_CODED_TEXT)));
         } else if (node.getRmType().equals(CODE_PHRASE) && parent != null) {
@@ -286,10 +286,12 @@ public class FlatHelper<T> {
     }
 
     public boolean isNonMandatoryRmAttribute(WebTemplateNode node, WebTemplateNode parent) {
+
         RMTypeInfo typeInfo = Walker.ARCHIE_RM_INFO_LOOKUP.getTypeInfo(parent.getRmType());
+        String rmName = typeInfo.getRmName();
         String nodeName = node.getName();
-        boolean nonMandatoryRmAttribute = typeInfo.getAttributes().containsKey(nodeName) && node.getMin() == 0;
-        boolean mandatoryNotInWebTemplate = List.of(
+
+        boolean mandatoryNotInWebTemplate = Set.of(
                         "name",
                         "archetype_node_id",
                         "origin",
@@ -299,14 +301,21 @@ public class FlatHelper<T> {
                         "upper_unbounded",
                         "lower_unbounded")
                 .contains(nodeName);
-        String rmName = typeInfo.getRmName();
-        boolean nonMandatoryInWebTemplate = rmName.equals(RmConstants.ACTIVITY) && nodeName.equals("timing")
-                || rmName.equals(RmConstants.INSTRUCTION) && nodeName.equals("expiry_time")
-                || rmName.equals(RmConstants.INTERVAL_EVENT) && nodeName.equals("width")
-                || rmName.equals(RmConstants.INTERVAL_EVENT) && nodeName.equals("math_function")
-                || rmName.equals(ISM_TRANSITION) && nodeName.equals("transition");
+        if (mandatoryNotInWebTemplate) {
+            return true;
+        }
 
-        return (nonMandatoryRmAttribute || mandatoryNotInWebTemplate) && !nonMandatoryInWebTemplate;
+        boolean nonMandatoryInWebTemplate = (RmConstants.ACTIVITY.equals(rmName) && "timing".equals(nodeName))
+                || (RmConstants.INSTRUCTION.equals(rmName) && "expiry_time".equals(nodeName))
+                || (RmConstants.INTERVAL_EVENT.equals(rmName) && "width".equals(nodeName))
+                || (RmConstants.INTERVAL_EVENT.equals(rmName) && "math_function".equals(nodeName))
+                || (ISM_TRANSITION.equals(rmName) && "transition".equals(nodeName));
+        if (nonMandatoryInWebTemplate) {
+            return false;
+        }
+
+        // nonMandatoryRmAttribute
+        return node.getMin() == 0 && typeInfo.getAttributes().containsKey(nodeName);
     }
 
     public static void consumeAllMatching(

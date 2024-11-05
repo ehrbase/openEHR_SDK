@@ -53,24 +53,28 @@ public final class AqlPath implements Serializable {
 
     private final boolean isEmpty;
     private final AqlNode[] nodes;
-    private final int firstNode;
+    private final int nodeCount;
     private final String attributeName;
 
     private final int hashCode;
 
-    private AqlPath(boolean isEmpty, AqlNode[] nodes, int firstNode, String attributeName) {
+    private AqlPath(boolean isEmpty, AqlNode[] nodes, int nodeCount, String attributeName) {
 
         this.isEmpty = isEmpty;
         if (isEmpty) {
             this.nodes = new AqlNode[0];
-            this.firstNode = 0;
+            this.nodeCount = nodeCount;
         } else {
             this.nodes = nodes;
-            this.firstNode = firstNode;
+            this.nodeCount = nodeCount;
         }
         this.attributeName = attributeName;
 
         this.hashCode = calcHash();
+    }
+
+    private int firstNode() {
+        return nodes.length - nodeCount;
     }
 
     public String getAttributeName() {
@@ -78,27 +82,27 @@ public final class AqlPath implements Serializable {
     }
 
     public AqlPath withAttributeName(String attributeName) {
-        return new AqlPath(isEmpty, nodes, firstNode, attributeName);
+        return new AqlPath(isEmpty, nodes, nodeCount, attributeName);
     }
 
     public int getNodeCount() {
-        return nodes.length - firstNode;
+        return nodeCount;
     }
 
     public AqlNode getNode(int pos) {
-        return nodes[firstNode + pos];
+        return nodes[firstNode() + pos];
     }
 
     public List<AqlNode> getNodes() {
-        return Collections.unmodifiableList(Arrays.asList(nodes).subList(firstNode, nodes.length));
+        return Collections.unmodifiableList(Arrays.asList(nodes).subList(firstNode(), nodes.length));
     }
 
     public AqlNode getBaseNode() {
-        return firstNode == nodes.length ? NO_NODE : nodes[firstNode];
+        return nodeCount == 0 ? NO_NODE : nodes[firstNode()];
     }
 
     public AqlNode getLastNode() {
-        return firstNode == nodes.length ? NO_NODE : nodes[nodes.length - 1];
+        return nodeCount == 0 ? NO_NODE : nodes[nodes.length - 1];
     }
 
     public boolean isEmpty() {
@@ -106,15 +110,17 @@ public final class AqlPath implements Serializable {
     }
 
     public boolean hasPath() {
-        return getNodeCount() > 0;
+        return nodeCount > 0;
     }
 
     public boolean startsWith(AqlPath aqlPath) {
-        if (getNodeCount() < aqlPath.getNodeCount()) {
+        if (nodeCount < aqlPath.getNodeCount()) {
             return false;
         }
-        for (int i = 0; i < aqlPath.getNodeCount(); i++) {
-            if (!aqlPath.getNode(i).equals(getNode(i))) {
+        for (int i0 = this.firstNode() + aqlPath.nodeCount - 1, i1 = aqlPath.nodes.length - 1, c = this.firstNode();
+                i0 >= c;
+                i0--, i1--) {
+            if (!this.nodes[i0].equals(aqlPath.nodes[i1])) {
                 return false;
             }
         }
@@ -129,34 +135,34 @@ public final class AqlPath implements Serializable {
         }
     }
 
-    public AqlPath removeStart(int nodeCount) {
-        if (isEmpty || nodeCount == 0) {
+    public AqlPath removeStart(int removeCount) {
+        if (isEmpty || removeCount == 0) {
             return this;
         }
-        if (nodeCount == this.getNodeCount()) {
+        if (removeCount == this.getNodeCount()) {
             if (getAttributeName() != null) {
                 return EMPTY_PATH.withAttributeName(attributeName);
             } else {
                 return EMPTY_PATH;
             }
         }
-        if (nodeCount < 1 || nodeCount > this.getNodeCount()) {
+        if (removeCount < 1 || removeCount > this.getNodeCount()) {
             throw new IllegalArgumentException();
         }
-        return new AqlPath(false, nodes, firstNode + nodeCount, attributeName);
+        return new AqlPath(false, nodes, this.nodeCount - removeCount, attributeName);
     }
 
     public AqlPath getEnd(int nodeCount) {
         if (isEmpty) {
             return this;
         }
-        if (nodeCount == this.getNodeCount()) {
+        if (nodeCount == this.nodeCount) {
             return this;
         }
-        if (nodeCount < 0 || nodeCount >= this.getNodeCount()) {
+        if (nodeCount < 0 || nodeCount >= this.nodeCount) {
             throw new IllegalArgumentException();
         }
-        return new AqlPath(nodeCount == 0, nodes, nodes.length - nodeCount, this.attributeName);
+        return new AqlPath(nodeCount == 0, nodes, nodeCount, this.attributeName);
     }
 
     public AqlPath addEnd(AqlPath add) {
@@ -166,19 +172,18 @@ public final class AqlPath implements Serializable {
             return this;
         }
         AqlNode[] mergedNodes = new AqlNode[getNodeCount() + add.getNodeCount()];
-        System.arraycopy(nodes, firstNode, mergedNodes, 0, getNodeCount());
-        System.arraycopy(add.nodes, add.firstNode, mergedNodes, getNodeCount(), add.getNodeCount());
+        System.arraycopy(nodes, firstNode(), mergedNodes, 0, getNodeCount());
+        System.arraycopy(add.nodes, add.firstNode(), mergedNodes, getNodeCount(), add.getNodeCount());
 
-        return new AqlPath(false, mergedNodes, 0, add.getAttributeName());
+        return new AqlPath(false, mergedNodes, mergedNodes.length, add.getAttributeName());
     }
 
     public AqlPath addEnd(AqlNode... nodesToAdd) {
-        int nodeCount = getNodeCount();
         AqlNode[] mergedNodes = new AqlNode[nodeCount + nodesToAdd.length];
-        System.arraycopy(nodes, firstNode, mergedNodes, 0, nodeCount);
+        System.arraycopy(nodes, firstNode(), mergedNodes, 0, nodeCount);
         System.arraycopy(nodesToAdd, 0, mergedNodes, nodeCount, nodesToAdd.length);
 
-        return new AqlPath(false, mergedNodes, 0, null);
+        return new AqlPath(false, mergedNodes, mergedNodes.length, null);
     }
 
     public AqlPath addEnd(String... pathExp) {
@@ -200,33 +205,32 @@ public final class AqlPath implements Serializable {
             if (Objects.equals(attributeName, newAttributeName)) {
                 return this;
             } else {
-                return new AqlPath(isEmpty, nodes, firstNode, newAttributeName);
+                return new AqlPath(isEmpty, nodes, nodeCount, newAttributeName);
             }
         }
 
-        int nodeCount = getNodeCount();
         AqlNode[] mergedNodes = new AqlNode[nodeCount + nodesToAdd.length];
-        System.arraycopy(nodes, firstNode, mergedNodes, 0, nodeCount);
+        System.arraycopy(nodes, firstNode(), mergedNodes, 0, nodeCount);
         System.arraycopy(nodesToAdd, 0, mergedNodes, nodeCount, nodesToAdd.length);
 
-        return new AqlPath(false, mergedNodes, 0, newAttributeName);
+        return new AqlPath(false, mergedNodes, mergedNodes.length, newAttributeName);
     }
 
     public AqlPath removeEnd(AqlPath remove) {
         if (!StringUtils.equals(this.attributeName, remove.attributeName)) {
             return this;
         }
-        int remainingNodes = this.getNodeCount() - remove.getNodeCount();
+        int remainingNodes = nodeCount - remove.nodeCount;
         if (remainingNodes < 1) {
             return this;
         } else {
-            for (int i = 0; i < remove.getNodeCount(); i++) {
+            for (int i = 0; i < remove.nodeCount; i++) {
                 if (!this.getNode(remainingNodes + i).equals(remove.getNode(i))) {
                     return this;
                 }
             }
-            AqlNode[] subNodes = Arrays.copyOfRange(nodes, firstNode, firstNode + remainingNodes);
-            return new AqlPath(false, subNodes, 0, null);
+            AqlNode[] subNodes = Arrays.copyOfRange(nodes, nodes.length - nodeCount, nodes.length - remove.nodeCount);
+            return new AqlPath(false, subNodes, subNodes.length, null);
         }
     }
 
@@ -240,14 +244,14 @@ public final class AqlPath implements Serializable {
         if (nodeCount < 1 || nodeCount > this.getNodeCount()) {
             throw new IllegalArgumentException();
         }
-        AqlNode[] subNodes = Arrays.copyOfRange(nodes, firstNode, nodes.length - nodeCount);
-        return new AqlPath(false, subNodes, 0, null);
+        AqlNode[] subNodes = Arrays.copyOfRange(nodes, firstNode(), nodes.length - nodeCount);
+        return new AqlPath(false, subNodes, subNodes.length, null);
     }
 
     public AqlPath replaceNode(int pos, AqlNode newNode) {
-        AqlNode[] newNodes = Arrays.copyOfRange(nodes, firstNode, nodes.length);
+        AqlNode[] newNodes = Arrays.copyOfRange(nodes, firstNode(), nodes.length);
         newNodes[pos] = newNode;
-        return new AqlPath(isEmpty, newNodes, 0, attributeName);
+        return new AqlPath(isEmpty, newNodes, newNodes.length, attributeName);
     }
 
     public AqlPath replaceLastNode(UnaryOperator<AqlNode> op) {
@@ -314,10 +318,9 @@ public final class AqlPath implements Serializable {
         } else if (getNodeCount() == 0) {
             sb.append('/');
         } else {
-            for (int i = firstNode; i < nodes.length; i++) {
+            for (int i = firstNode(); i < nodes.length; i++) {
                 sb.append('/');
-                AqlNode node = nodes[i];
-                node.appendFormat(sb, otherPredicatesFormat);
+                nodes[i].appendFormat(sb, otherPredicatesFormat);
             }
         }
 
@@ -369,7 +372,7 @@ public final class AqlPath implements Serializable {
             nodes = Arrays.copyOf(nodes, nodePos);
         }
 
-        return new AqlPath(isAttributeOnly, nodes, 0, attributeName);
+        return new AqlPath(isAttributeOnly, nodes, nodes.length, attributeName);
     }
 
     private static Optional<AqlNode> parseNode(CharSequence currentNode, boolean isLastNode, String nameValue) {
@@ -440,12 +443,15 @@ public final class AqlPath implements Serializable {
         if (isEmpty != aqlPath.isEmpty) {
             return false;
         }
-        int nodeCount = getNodeCount();
-        if (nodeCount != aqlPath.getNodeCount()) {
+        if (this.nodeCount != aqlPath.getNodeCount()) {
             return false;
         }
-        for (int i = 0; i < nodeCount; i++) {
-            if (!getNode(i).equals(aqlPath.getNode(i), withOtherPredicates)) {
+        // for (int i = nodes.length - nodeCount, j = aqlPath.nodes.length - aqlPath.nodeCount; i < nodes.length; i++,
+        // j++) {
+        for (int i0 = this.nodes.length - 1, i1 = aqlPath.nodes.length - 1, c = this.nodes.length - this.nodeCount;
+                i0 >= c;
+                i0--, i1--) {
+            if (!this.nodes[i0].equals(aqlPath.nodes[i1], withOtherPredicates)) {
                 return false;
             }
         }
@@ -455,7 +461,7 @@ public final class AqlPath implements Serializable {
     private int calcHash() {
         int result = 31 * Objects.hashCode(attributeName) + Boolean.hashCode(isEmpty);
 
-        for (int i = firstNode, c = nodes.length; i < c; i++) {
+        for (int i = firstNode(), c = nodes.length; i < c; i++) {
             result = 31 * result + nodes[i].hashCode;
         }
         return result;
@@ -633,10 +639,10 @@ public final class AqlPath implements Serializable {
         }
 
         public boolean equals(AqlNode o, boolean withOtherPredicates) {
-            if (withOtherPredicates) {
-                return equals(o);
-            } else if (this == o) {
+            if (this == o) {
                 return true;
+            } else if (withOtherPredicates) {
+                return equals(o);
             } else {
                 return Objects.equals(name, o.name) && Objects.equals(atCode, o.atCode);
             }

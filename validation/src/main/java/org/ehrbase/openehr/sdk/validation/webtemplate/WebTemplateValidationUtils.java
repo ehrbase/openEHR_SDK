@@ -55,9 +55,12 @@ public class WebTemplateValidationUtils {
      * @return the input element
      */
     public static Optional<WebTemplateInput> findInputWithType(WebTemplateNode node, String type) {
-        return node.getInputs().stream()
-                .filter(input -> Objects.equals(input.getType(), type))
-                .findFirst();
+        for (WebTemplateInput input : node.getInputs()) {
+            if (Objects.equals(input.getType(), type)) {
+                return Optional.of(input);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
