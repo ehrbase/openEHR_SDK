@@ -72,7 +72,9 @@ public class WebTemplateUtils {
 
     public static <T> List<T> cloneList(List<T> list, UnaryOperator<T> elementCloner) {
         List<T> clonedList = new ArrayList<>(list.size());
-        list.forEach(el -> clonedList.add(elementCloner.apply(el)));
+        for (T el : list) {
+            clonedList.add(elementCloner.apply(el));
+        }
         return clonedList;
     }
 
@@ -81,7 +83,9 @@ public class WebTemplateUtils {
             return new LinkedHashMap<>();
         }
         LinkedHashMap<K, V> newMap = new LinkedHashMap<>((map.size() * 4 / 3) + 1, 0.75f);
-        map.forEach((k, v) -> newMap.put(k, valueCloner.apply(v)));
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            newMap.put(entry.getKey(), valueCloner.apply(entry.getValue()));
+        }
         return newMap;
     }
 }
