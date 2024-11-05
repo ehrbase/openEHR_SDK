@@ -20,9 +20,9 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 import com.nedap.archie.aom.CPrimitiveObject;
 import com.nedap.archie.query.RMObjectWithPath;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessage;
 import com.nedap.archie.rmobjectvalidator.validations.RMPrimitiveObjectValidation;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
 
@@ -31,18 +31,27 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
  */
 public class PrimitiveConstraintValidator {
 
-    private final PrimitiveConstraintMapper constraintMapper = new PrimitiveConstraintMapper();
+    private static final PrimitiveConstraintMapper CONSTRAINT_MAPPER = new PrimitiveConstraintMapper();
 
-    public List<ConstraintViolation> validate(String aqlPath, Object value, CPrimitiveObject<?, ?> cobject) {
-        var validationMessages = RMPrimitiveObjectValidation.validate(
-                ArchieRMInfoLookup.getInstance(), List.of(new RMObjectWithPath(value, aqlPath)), aqlPath, cobject);
-        return validationMessages.stream()
-                .map(validationMessage ->
-                        new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
-                .collect(Collectors.toList());
+    private PrimitiveConstraintValidator() {
+        // NOOP
     }
 
-    public List<ConstraintViolation> validate(String aqlPath, Object value, WebTemplateInput input) {
-        return validate(aqlPath, value, constraintMapper.mapInput(input));
+    public static List<ConstraintViolation> validate(String aqlPath, Object value, CPrimitiveObject<?, ?> cobject) {
+        // TODO fix deprecation
+        List<RMObjectValidationMessage> msgs = RMPrimitiveObjectValidation.validate(
+                ArchieRMInfoLookup.getInstance(), List.of(new RMObjectWithPath(value, aqlPath)), aqlPath, cobject);
+        if (msgs.isEmpty()) {
+            return List.of();
+        } else {
+            return msgs.stream()
+                    .map(validationMessage ->
+                            new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
+                    .toList();
+        }
+    }
+
+    public static List<ConstraintViolation> validate(String aqlPath, Object value, WebTemplateInput input) {
+        return validate(aqlPath, value, CONSTRAINT_MAPPER.mapInput(input));
     }
 }

@@ -18,6 +18,7 @@
 package org.ehrbase.openehr.sdk.webtemplate.parser;
 
 import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Action;
 import com.nedap.archie.rm.composition.Activity;
 import com.nedap.archie.rm.composition.Composition;
@@ -647,7 +648,7 @@ public class OPTParser {
                     .map(s -> node.findMatching(n -> n.getAqlPathDto().equals(s)))
                     .flatMap(List::stream)
                     .map(WebTemplateNode::getId)
-                    .collect(Collectors.toList());
+                    .toList();
             // only add non-trivial cardinalities.
             if ((p.getKey().getMax() != null
                             && p.getKey().getMax() != -1
@@ -794,28 +795,30 @@ public class OPTParser {
             WebTemplateNode node, AqlPath aqlPath, Map<String, Map<String, TermDefinition>> termDefinitionMap) {
         // Add RM Attributes
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-        if (typeInfo != null
-                && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass()))) {
+        if (typeInfo == null) {
+            return;
+        }
+        Class<?> javaClass = typeInfo.getJavaClass();
+        if (Pathable.class.isAssignableFrom(javaClass) || DvInterval.class.isAssignableFrom(javaClass)) {
 
             node.getChildren()
                     .addAll(typeInfo.getAttributes().values().stream()
                             .filter(s -> !s.isComputed())
-                            .filter(s -> !Element.class.isAssignableFrom(typeInfo.getJavaClass())
-                                    || List.of("name", "feeder_audit", "null_flavour")
-                                            .contains(s.getRmName()))
-                            .filter(s -> !List.of("value").contains(s.getRmName()))
+                            // EVENT.offset is not marked computed in archie
+                            .filter(s -> !(Event.class.isAssignableFrom(javaClass) && "offset".equals(s.getRmName())))
+                            .filter(s -> !(Element.class.isAssignableFrom(javaClass)
+                                    && !List.of("name", "feeder_audit", "null_flavour")
+                                            .contains(s.getRmName())))
+                            .filter(s -> !"value".equals(s.getRmName()))
                             .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
-                            .filter(s -> !DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-                                    || !Objects.equals("interval", s.getRmName()))
+                            .filter(s ->
+                                    !(DvInterval.class.isAssignableFrom(javaClass) && "interval".equals(s.getRmName())))
                             .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
                             // only add if not already there
                             .filter(n -> node.getChildren().stream()
                                     .map(WebTemplateNode::getId)
                                     .noneMatch(s -> s.equals(n.getId())))
-                            .collect(Collectors.toList()));
+                            .toList());
         }
     }
 

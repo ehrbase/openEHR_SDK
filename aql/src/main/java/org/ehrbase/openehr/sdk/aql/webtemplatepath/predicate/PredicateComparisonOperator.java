@@ -19,6 +19,7 @@ package org.ehrbase.openehr.sdk.aql.webtemplatepath.predicate;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorSymbol;
 import org.ehrbase.openehr.sdk.aql.dto.operand.PathPredicateOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Primitive;
@@ -27,9 +28,9 @@ import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
 public final class PredicateComparisonOperator implements DisjunctablePredicate, Serializable {
 
-    private String statement;
-    private ComparisonOperatorSymbol symbol;
-    private PathPredicateOperand value;
+    private final String statement;
+    private final ComparisonOperatorSymbol symbol;
+    private final PathPredicateOperand value;
 
     public PredicateComparisonOperator(PredicateComparisonOperator other) {
         this.statement = other.statement;
@@ -58,8 +59,6 @@ public final class PredicateComparisonOperator implements DisjunctablePredicate,
         this.value = value;
     }
 
-    PredicateComparisonOperator() {}
-
     public String getStatement() {
         return this.statement;
     }
@@ -73,24 +72,17 @@ public final class PredicateComparisonOperator implements DisjunctablePredicate,
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof PredicateComparisonOperator)) return false;
-        final PredicateComparisonOperator other = (PredicateComparisonOperator) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$statement = this.getStatement();
-        final Object other$statement = other.getStatement();
-        if (this$statement == null ? other$statement != null : !this$statement.equals(other$statement)) return false;
-        final Object this$symbol = this.getSymbol();
-        final Object other$symbol = other.getSymbol();
-        if (this$symbol == null ? other$symbol != null : !this$symbol.equals(other$symbol)) return false;
-        final Object this$value = this.getValue();
-        final Object other$value = other.getValue();
-        if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
-        return true;
-    }
-
-    protected boolean canEqual(final Object other) {
-        return other instanceof PredicateComparisonOperator;
+        if (o == this) {
+            return true;
+        } else if (!(o instanceof PredicateComparisonOperator other)) {
+            return false;
+        } else if (!Objects.equals(this.getStatement(), other.getStatement())) {
+            return false;
+        } else if (!Objects.equals(this.getSymbol(), other.getSymbol())) {
+            return false;
+        } else {
+            return Objects.equals(this.getValue(), other.getValue());
+        }
     }
 
     public int hashCode() {

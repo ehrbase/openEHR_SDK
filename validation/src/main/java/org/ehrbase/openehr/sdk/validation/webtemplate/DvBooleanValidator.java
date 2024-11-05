@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.DvBoolean;
-import java.util.Collections;
 import java.util.List;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
@@ -31,8 +30,6 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
  */
 @SuppressWarnings("unused")
 public class DvBooleanValidator implements ConstraintValidator<DvBoolean> {
-
-    private final PrimitiveConstraintValidator validator = new PrimitiveConstraintValidator();
 
     /**
      * {@inheritDoc}
@@ -48,10 +45,10 @@ public class DvBooleanValidator implements ConstraintValidator<DvBoolean> {
     @Override
     public List<ConstraintViolation> validate(DvBoolean dvBoolean, WebTemplateNode node) {
         if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         var input = WebTemplateValidationUtils.getInputWithType(node, "BOOLEAN");
-        return validator.validate(node.getAqlPath(), dvBoolean.getValue(), input);
+        return PrimitiveConstraintValidator.validate(node.getAqlPath(), dvBoolean.getValue(), input);
     }
 }

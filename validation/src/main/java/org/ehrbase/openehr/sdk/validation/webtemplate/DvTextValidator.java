@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.DvText;
-import java.util.Collections;
 import java.util.List;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
@@ -46,9 +45,8 @@ public class DvTextValidator implements ConstraintValidator<DvText> {
      */
     @Override
     public List<ConstraintViolation> validate(DvText dvText, WebTemplateNode node) {
-
         if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         if (RmConstants.DV_CODED_TEXT.equals(node.getRmType())) {
@@ -56,6 +54,6 @@ public class DvTextValidator implements ConstraintValidator<DvText> {
         }
 
         var input = WebTemplateValidationUtils.getInputWithType(node, "TEXT");
-        return new PrimitiveConstraintValidator().validate(node.getAqlPath(), dvText.getValue(), input);
+        return PrimitiveConstraintValidator.validate(node.getAqlPath(), dvText.getValue(), input);
     }
 }
