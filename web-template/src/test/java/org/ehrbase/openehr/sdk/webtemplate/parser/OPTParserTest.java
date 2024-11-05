@@ -413,16 +413,7 @@ class OPTParserTest {
                         new Tuple(null, ""));
 
         List<String> errors = compareWebTemplate(actual, expected);
-
-        checkErrors(errors, new String[] {
-            "LocalizedNames not equal [en=active] != [] in inputValue.code:245 id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
-            "LocalizedNames not equal [en=completed] != [] in inputValue.code:532 id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
-            "LocalizedNames not equal [en=planned] != [] in inputValue.code:526 id=current_state aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/current_state",
-            "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0005 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
-            "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0004 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
-            "LocalizedDescriptions not equal {en=*} != {} in inputValue.code:at0003 id=careflow_step aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-ACTION.test_all_types.v1]/ism_transition/careflow_step",
-            "InContext not equal true != null in  id=action_archetype_id aql=/content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]/items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/action_archetype_id"
-        });
+        checkErrors(errors);
     }
 
     @Test
@@ -569,7 +560,7 @@ class OPTParserTest {
         List<String> errors = new ArrayList<>();
         errors.addAll(compareNodes(actual.getChildren(), expected.getChildren()));
 
-        errors.addAll(compereInputs(actual, actual.getInputs(), expected.getInputs()));
+        errors.addAll(compareInputs(actual, actual.getInputs(), expected.getInputs()));
 
         if (!CollectionUtils.isEqualCollection(actual.getProportionTypes(), expected.getProportionTypes())) {
             errors.add(String.format(
@@ -619,7 +610,7 @@ class OPTParserTest {
         return errors;
     }
 
-    private Collection<String> compereInputs(
+    private Collection<String> compareInputs(
             WebTemplateNode node, List<WebTemplateInput> actual, List<WebTemplateInput> expected) {
         List<String> errors = new ArrayList<>();
 

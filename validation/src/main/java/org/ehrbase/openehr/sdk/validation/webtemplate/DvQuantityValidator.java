@@ -18,10 +18,11 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.DvQuantity;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 /**
@@ -33,9 +34,7 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 @SuppressWarnings("unused")
 public class DvQuantityValidator implements ConstraintValidator<DvQuantity> {
 
-    private final PrimitiveConstraintMapper mapper = new PrimitiveConstraintMapper();
-
-    private final PrimitiveConstraintValidator validator = new PrimitiveConstraintValidator();
+    private static final PrimitiveConstraintMapper CONSTRAINT_MAPPER = new PrimitiveConstraintMapper();
 
     /**
      * {@inheritDoc}
@@ -50,43 +49,58 @@ public class DvQuantityValidator implements ConstraintValidator<DvQuantity> {
      */
     @Override
     public List<ConstraintViolation> validate(DvQuantity quantity, WebTemplateNode node) {
-        List<ConstraintViolation> result = new ArrayList<>();
 
-        WebTemplateValidationUtils.findInputWithSuffix(node, "magnitude")
-                .ifPresent(input -> result.addAll(validateMagnitude(node.getAqlPath(), quantity, input)));
-
-        WebTemplateValidationUtils.findInputWithSuffix(node, "unit")
-                .ifPresent(input -> result.addAll(validateUnit(node.getAqlPath(), quantity, input)));
-
-        return result;
+        return ConstraintValidator.concat(
+                WebTemplateValidationUtils.findInputWithSuffix(node, "magnitude")
+                        .map(input -> validateMagnitude(node.getAqlPath(), quantity, input))
+                        .orElse(List.of()),
+                WebTemplateValidationUtils.findInputWithSuffix(node, "unit")
+                        .map(input -> validateUnit(node.getAqlPath(), quantity, input))
+                        .orElse(List.of()));
     }
 
     private List<ConstraintViolation> validateMagnitude(String path, DvQuantity quantity, WebTemplateInput input) {
-        return validator.validate(path, quantity.getMagnitude(), input);
+        return PrimitiveConstraintValidator.validate(path, quantity.getMagnitude(), input);
     }
 
     private List<ConstraintViolation> validateUnit(String path, DvQuantity quantity, WebTemplateInput unitInput) {
-        var cString = mapper.mapTextInput(unitInput);
-        var result = validator.validate(path, quantity.getUnits(), cString);
+        var cString = CONSTRAINT_MAPPER.mapTextInput(unitInput);
+        var violations = PrimitiveConstraintValidator.validate(path, quantity.getUnits(), cString);
 
-        if (result.isEmpty()) {
-            WebTemplateValidationUtils.findInputValue(unitInput, quantity.getUnits())
-                    .ifPresent(unitValue -> {
-                        if (WebTemplateValidationUtils.hasValidationRange(unitValue)) {
-                            var cReal = mapper.mapRealInterval(
-                                    unitValue.getValidation().getRange());
-                            result.addAll(validator.validate(path, quantity.getMagnitude(), cReal));
-                        }
-
-                        if (WebTemplateValidationUtils.hasValidationPrecision(unitValue)
-                                && quantity.getPrecision() != null) {
-                            var cInteger = mapper.mapIntegerInterval(
-                                    unitValue.getValidation().getPrecision());
-                            result.addAll(validator.validate(path, quantity.getPrecision(), cInteger));
-                        }
-                    });
+        if (!violations.isEmpty()) {
+            return violations;
         }
 
-        return result;
+        Optional<WebTemplateInputValue> inputValue =
+                WebTemplateValidationUtils.findInputValue(unitInput, quantity.getUnits());
+
+        return inputValue
+                .map(unitValue -> ConstraintValidator.concat(
+                        validateRange(path, quantity, unitValue), validatePrecision(path, quantity, unitValue)))
+                .orElse(List.of());
+    }
+
+    private List<ConstraintViolation> validateRange(String path, DvQuantity quantity, WebTemplateInputValue unitValue) {
+        if (WebTemplateValidationUtils.hasValidationRange(unitValue)) {
+            return PrimitiveConstraintValidator.validate(
+                    path,
+                    quantity.getMagnitude(),
+                    CONSTRAINT_MAPPER.mapRealInterval(unitValue.getValidation().getRange()));
+        } else {
+            return List.of();
+        }
+    }
+
+    private List<ConstraintViolation> validatePrecision(
+            String path, DvQuantity quantity, WebTemplateInputValue unitValue) {
+        if (WebTemplateValidationUtils.hasValidationPrecision(unitValue) && quantity.getPrecision() != null) {
+            return PrimitiveConstraintValidator.validate(
+                    path,
+                    quantity.getPrecision(),
+                    CONSTRAINT_MAPPER.mapIntegerInterval(
+                            unitValue.getValidation().getPrecision()));
+        } else {
+            return List.of();
+        }
     }
 }

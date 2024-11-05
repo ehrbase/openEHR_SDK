@@ -19,10 +19,10 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 /**
@@ -33,6 +33,8 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
  */
 @SuppressWarnings("unused")
 public class DvOrdinalValidator implements ConstraintValidator<DvOrdinal> {
+
+    private static final DvCodedTextValidator DV_CODED_TEXT_VALIDATOR = new DvCodedTextValidator();
 
     /**
      * {@inheritDoc}
@@ -48,30 +50,33 @@ public class DvOrdinalValidator implements ConstraintValidator<DvOrdinal> {
     @Override
     public List<ConstraintViolation> validate(DvOrdinal dvOrdinal, WebTemplateNode node) {
         if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         var symbol = dvOrdinal.getSymbol();
-        var result = new DvCodedTextValidator().validate(symbol, node);
-
-        if (result.isEmpty()) {
-            var input = WebTemplateValidationUtils.getInputWithType(node, "CODED_TEXT");
-            input.getList().stream()
-                    .filter(inputValue -> Objects.equals(
-                            inputValue.getValue(), symbol.getDefiningCode().getCodeString()))
-                    .findFirst()
-                    .ifPresent(inputValue -> {
-                        if (dvOrdinal.getValue() != inputValue.getOrdinal().longValue()) {
-                            result.add(new ConstraintViolation(
-                                    node.getAqlPath(),
-                                    MessageFormat.format(
-                                            "The value {0} must be {1}",
-                                            dvOrdinal.getValue(),
-                                            inputValue.getOrdinal().longValue())));
-                        }
-                    });
+        var violations = DV_CODED_TEXT_VALIDATOR.validate(symbol, node);
+        if (!violations.isEmpty()) {
+            return violations;
         }
 
-        return result;
+        List<WebTemplateInputValue> inputs =
+                WebTemplateValidationUtils.getInputWithType(node, "CODED_TEXT").getList();
+        if (inputs.isEmpty()) {
+            return List.of();
+        }
+
+        return inputs.stream()
+                .filter(inputValue -> Objects.equals(
+                        inputValue.getValue(), symbol.getDefiningCode().getCodeString()))
+                .findFirst()
+                .filter(inputValue ->
+                        dvOrdinal.getValue() != inputValue.getOrdinal().longValue())
+                .map(inputValue -> new ConstraintViolation(
+                        node.getAqlPath(),
+                        MessageFormat.format(
+                                "The value {0} must be {1}",
+                                dvOrdinal.getValue(), inputValue.getOrdinal().longValue())))
+                .map(List::of)
+                .orElse(List.of());
     }
 }

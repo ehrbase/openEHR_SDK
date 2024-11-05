@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+import org.ehrbase.openehr.sdk.webtemplate.util.WebTemplateUtils;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateNode implements Serializable {
@@ -91,6 +92,8 @@ public class WebTemplateNode implements Serializable {
         this.min = other.min;
         this.max = other.max;
         this.aqlPath = other.aqlPath;
+        this.aqlCache[0] = other.getAqlPath(true);
+        this.aqlCache[1] = other.getAqlPath(false);
         this.inContext = other.inContext;
         this.archetypeSlot = other.archetypeSlot;
         this.dependsOn = new ArrayList<>(other.dependsOn);
@@ -98,19 +101,13 @@ public class WebTemplateNode implements Serializable {
             this.annotations = new WebTemplateAnnotation(other.annotations);
         }
 
-        this.cardinalities =
-                other.cardinalities.stream().map(WebtemplateCardinality::new).collect(Collectors.toList());
-        this.inputs = other.inputs.stream().map(WebTemplateInput::new).collect(Collectors.toList());
-        this.children = other.children.stream().map(WebTemplateNode::new).collect(Collectors.toList());
+        this.cardinalities = WebTemplateUtils.cloneList(other.cardinalities, WebtemplateCardinality::new);
+        this.inputs = WebTemplateUtils.cloneList(other.inputs, WebTemplateInput::new);
+        this.children = WebTemplateUtils.cloneList(other.children, WebTemplateNode::new);
         this.localizedNames = new LinkedHashMap<>(other.localizedNames);
         this.localizedDescriptions = new LinkedHashMap<>(other.localizedDescriptions);
         this.proportionTypes = new ArrayList<>(other.getProportionTypes());
-        this.termBindings = other.termBindings.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> new WebTemplateTerminology(e.getValue()),
-                        (a, b) -> a,
-                        LinkedHashMap::new));
+        this.termBindings = WebTemplateUtils.cloneMap(other.termBindings, WebTemplateTerminology::new);
     }
 
     public String getId() {
@@ -269,7 +266,7 @@ public class WebTemplateNode implements Serializable {
     public AqlPath buildRelativePath(WebTemplateNode child, boolean checkIfTrueChild) {
 
         if (checkIfTrueChild) {
-            return child.getAqlPathDto().removeStart(this.getAqlPathDto());
+            return child.aqlPath.removeStart(this.aqlPath);
 
         } else {
             AqlPath me = this.aqlPath;
@@ -284,7 +281,11 @@ public class WebTemplateNode implements Serializable {
     }
 
     public boolean isRelativePathNameDependent(WebTemplateNode child) {
-        return buildRelativePath(child, false).getLastNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY) != null;
+        return isNameDependent(buildRelativePath(child, false));
+    }
+
+    public static boolean isNameDependent(AqlPath aqlPath) {
+        return aqlPath.getLastNode().findOtherPredicate(AqlPath.NAME_VALUE_KEY) != null;
     }
 
     public List<WebTemplateNode> findMatching(Predicate<WebTemplateNode> filter) {

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
+import org.ehrbase.openehr.sdk.validation.webtemplate.FastRMObjectValidator;
 import org.ehrbase.openehr.sdk.validation.webtemplate.ValidationWalker;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
@@ -71,7 +72,7 @@ public class CompositionValidator {
 
         if (archetypeProvider != null) {
             rmObjectValidator =
-                    new RMObjectValidator(ArchieRMInfoLookup.getInstance(), archetypeProvider, validationCfg);
+                    new FastRMObjectValidator(ArchieRMInfoLookup.getInstance(), archetypeProvider, validationCfg);
         } else {
             rmObjectValidator = new ArchetypeNeglectingRMObjectValidator(
                     ArchieRMInfoLookup.getInstance(), archetypeId -> null, validationCfg);
@@ -109,6 +110,10 @@ public class CompositionValidator {
                             new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
                     .collect(Collectors.toList());
         }
+    }
+
+    public RMObjectValidator getRmObjectValidator() {
+        return rmObjectValidator;
     }
 
     /**
