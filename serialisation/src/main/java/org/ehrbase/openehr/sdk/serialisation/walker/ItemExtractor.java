@@ -24,6 +24,7 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.Event;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.util.ArrayList;
@@ -46,11 +47,10 @@ public final class ItemExtractor {
 
     public static Object extractChild(
             RMObject currentRM, WebTemplateNode currentNode, WebTemplateNode childNode, BooleanSupplier isChoice) {
-        AqlPath childPath = currentNode.buildRelativePath(childNode, false);
 
         if (!(currentRM instanceof Pathable currentPathable)) {
             if (currentRM instanceof DvInterval dvi) {
-                return switch (childPath.getLastNode().getName()) {
+                return switch (childNode.getAqlPathDto().getLastNode().getName()) {
                     case "upper_included" -> new RmBoolean(dvi.isUpperIncluded());
                     case "lower_included" -> new RmBoolean(dvi.isLowerIncluded());
                     case "lower" -> dvi.getLower();
@@ -63,6 +63,14 @@ public final class ItemExtractor {
                     "Cannot extract %s from class %s",
                     childNode.getAqlPathDto(), currentRM.getClass().getSimpleName()));
         }
+
+        // EVENT.offset is a calculated and can only be used as template constraint, see ObservationValueInserter
+        if (currentRM instanceof Event<?>
+                && childNode.getAqlPathDto().getLastNode().getName().equals("offset")) {
+            return null;
+        }
+
+        AqlPath childPath = currentNode.buildRelativePath(childNode, false);
 
         // FIXME Performance itemsAtPath
         Stream<?> itemsAtPath = itemsAtPath(childPath, currentPathable);

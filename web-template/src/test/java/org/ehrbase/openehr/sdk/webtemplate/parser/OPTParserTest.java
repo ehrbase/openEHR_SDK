@@ -20,7 +20,6 @@ package org.ehrbase.openehr.sdk.webtemplate.parser;
 import static org.assertj.core.api.Assertions.*;
 import static org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData.OPERATIONALTEMPLATE_PATH_SEGMENT;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -414,11 +413,6 @@ class OPTParserTest {
                         new Tuple(null, ""));
 
         List<String> errors = compareWebTemplate(actual, expected);
-        System.out.println(objectMapper
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .writerWithDefaultPrettyPrinter()
-                .writeValueAsString(new Filter().filter(actual)));
-
         checkErrors(errors);
     }
 

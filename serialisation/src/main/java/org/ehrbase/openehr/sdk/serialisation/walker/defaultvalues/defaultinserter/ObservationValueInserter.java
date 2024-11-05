@@ -89,13 +89,17 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
 
     private void insert(Event<?> rmObject, TemporalAccessor origin, WebTemplateNode node) {
         if (RMHelper.isEmpty(rmObject.getTime())) {
-
-            TemporalAccessor defaultValue = origin;
-            if (defaultValue instanceof Temporal) {
-                defaultValue = ((Temporal) defaultValue)
-                        .plus(DurationHelper.buildTotalRange(
-                                        node.findChildById("offset").orElse(null), DurationHelper.MIN_MAX.MIN)
-                                .orElse(PeriodDuration.ZERO));
+            /*
+             if no time is given and the template has a constraint on the offset,
+             the minimum offset is added to the origin.
+            */
+            TemporalAccessor defaultValue;
+            if (origin instanceof Temporal originTemporal) {
+                defaultValue = originTemporal.plus(DurationHelper.buildTotalRange(
+                                node.findChildById("offset").orElse(null), DurationHelper.MIN_MAX.MIN)
+                        .orElse(PeriodDuration.ZERO));
+            } else {
+                defaultValue = origin;
             }
             rmObject.setTime(new DvDateTime(defaultValue));
         }
