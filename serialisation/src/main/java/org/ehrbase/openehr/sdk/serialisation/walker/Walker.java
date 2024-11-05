@@ -17,14 +17,21 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.walker;
 
-import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.*;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.ACTION;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.DV_CODED_TEXT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.DV_TEXT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.EVENT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.INTERVAL_EVENT;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.ISM_TRANSITION;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_IDENTIFIED;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_PROXY;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_RELATED;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.PARTY_SELF;
+import static org.ehrbase.openehr.sdk.util.rmconstants.RmConstants.POINT_EVENT;
 
 import com.nedap.archie.rm.RMObject;
-import com.nedap.archie.rm.archetyped.Locatable;
+import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.composition.EventContext;
-import com.nedap.archie.rm.composition.IsmTransition;
-import com.nedap.archie.rm.datastructures.Element;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rminfo.RMTypeInfo;
@@ -34,6 +41,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -48,6 +57,7 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 public abstract class Walker<T> {
 
+    // XXX see PathAnalysis
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
     public void walk(
@@ -108,28 +118,26 @@ public abstract class Walker<T> {
                     .collect(Collectors.groupingBy(
                             WebTemplateNode::getAqlPathDto, LinkedHashMap::new, Collectors.toList()));
 
-            Map<String, List<WebTemplateNode>> allChoices = currentNode.getChoicesInChildren();
+            Predicate<WebTemplateNode> choicePredicate =
+                    n -> childrenByPath.get(n.getAqlPathDto()).size() > 1;
 
             for (List<WebTemplateNode> childrenForPath : childrenByPath.values()) {
 
-                boolean isMulti = childrenForPath.stream().anyMatch(n -> RMHelper.isMulti(currentNode, n));
+                boolean anyMulti = isMulti(currentNode, childrenForPath);
 
                 Stream<NodeConstellation> childConstellations;
-                if (!isMulti) {
+                if (!anyMulti) {
                     childConstellations =
-                            streamChildConstellations(context, currentNode, allChoices, childrenForPath, null);
+                            streamChildConstellations(context, currentNode, choicePredicate, childrenForPath, null);
 
                 } else {
                     // Number of entries to be added
                     int size = calculateSize(context, childrenForPath.get(0));
-                    childConstellations = IntStream.range(0, size)
-                            .mapToObj(Integer::valueOf)
-                            .flatMap(index ->
-                                    streamChildConstellations(context, currentNode, allChoices, childrenForPath, index)
-                                            // for each index at most one of the choices is retained
-                                            .findFirst()
-                                            // an index may be skipped if none of the choices is accepted
-                                            .stream());
+                    childConstellations = IntStream.range(0, size).boxed().flatMap(index -> streamChildConstellations(
+                                    context, currentNode, choicePredicate, childrenForPath, index)
+                            // for each index at most one of the choices is retained
+                            // an index may be skipped if none of the choices is accepted
+                            .limit(1));
                 }
 
                 childConstellations.forEach(constellation -> {
@@ -154,6 +162,15 @@ public abstract class Walker<T> {
         context.getObjectDeque().remove();
     }
 
+    private static boolean isMulti(WebTemplateNode currentNode, List<WebTemplateNode> childrenForPath) {
+        for (WebTemplateNode n : childrenForPath) {
+            if (RMHelper.isMulti(currentNode, n)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected void postVisitChildren(Context<T> context, WebTemplateNode currentNode) {
         // NOOP
     }
@@ -161,13 +178,14 @@ public abstract class Walker<T> {
     private Stream<NodeConstellation> streamChildConstellations(
             Context<T> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            Predicate<WebTemplateNode> choicePredicate,
             List<WebTemplateNode> childrenForPath,
             Integer index) {
         return childrenForPath.stream()
                 .map(childNode -> {
-                    var pair = extractPair(context, currentNode, choices, childNode, index);
-                    if (ObjectUtils.anyNull(pair.getLeft(), pair.getRight())) {
+                    var pair =
+                            extractPair(context, currentNode, () -> choicePredicate.test(childNode), childNode, index);
+                    if (pair == null || ObjectUtils.anyNull(pair.getLeft(), pair.getRight())) {
                         return null;
                     } else {
                         return new NodeConstellation(index, pair.getLeft(), pair.getRight(), childNode);
@@ -220,59 +238,64 @@ public abstract class Walker<T> {
             WebTemplateNode childNode = it.next();
 
             // Add explicit DV_CODED_TEXT
-            if (childNode.getRmType().equals(DV_TEXT) && siblingMissing(currentNode, childNode, DV_CODED_TEXT)) {
-                nodesToAdd.add(buildCopy(childNode, DV_CODED_TEXT));
-            }
+            switch (childNode.getRmType()) {
+                case DV_TEXT -> {
+                    if (siblingMissing(currentNode, childNode, DV_CODED_TEXT)) {
+                        nodesToAdd.add(buildCopy(childNode, DV_CODED_TEXT));
+                    }
+                }
+                case PARTY_PROXY -> {
+                    // Add explicit Party
+                    nodesToAdd.add(buildCopy(childNode, PARTY_SELF));
+                    nodesToAdd.add(buildCopy(childNode, PARTY_IDENTIFIED));
+                    nodesToAdd.add(copyAsPartyRelated(childNode));
+                    it.remove();
+                }
+                case PARTY_IDENTIFIED -> {
+                    if (siblingMissing(currentNode, childNode, PARTY_RELATED))
+                        // Add explicit Party related
+                        nodesToAdd.add(copyAsPartyRelated(childNode));
+                }
+                case EVENT -> {
+                    // Add explicit Event
 
-            // Add explicit Party
-            if (childNode.getRmType().equals(PARTY_PROXY)) {
-                nodesToAdd.add(buildCopy(childNode, PARTY_SELF));
-                nodesToAdd.add(buildCopy(childNode, PARTY_IDENTIFIED));
-                nodesToAdd.add(copyAsPartyRelated(childNode));
-                it.remove();
+                    WebTemplateNode intervalEvent = buildCopy(childNode, INTERVAL_EVENT);
 
-            } else if (childNode.getRmType().equals(PARTY_IDENTIFIED)
-                    && siblingMissing(currentNode, childNode, PARTY_RELATED)) {
-                // Add explicit Party related
-                nodesToAdd.add(copyAsPartyRelated(childNode));
-            }
+                    WebTemplateNode width = new WebTemplateNode();
+                    width.setId("width");
+                    width.setName("width");
+                    width.setRmType(RmConstants.DV_DURATION);
+                    width.setMax(1);
+                    width.setMin(1);
+                    width.setAqlPath(intervalEvent.getAqlPathDto().addEnd("width"));
+                    intervalEvent.getChildren().add(width);
 
-            // Add explicit Event
-            if (childNode.getRmType().equals(EVENT)) {
+                    WebTemplateNode math = new WebTemplateNode();
+                    math.setId("math_function");
+                    math.setName("math_function");
+                    math.setRmType(DV_CODED_TEXT);
+                    math.setMax(1);
+                    math.setMin(1);
+                    math.setAqlPath(intervalEvent.getAqlPathDto().addEnd("math_function"));
+                    intervalEvent.getChildren().add(math);
 
-                WebTemplateNode intervalEvent = buildCopy(childNode, INTERVAL_EVENT);
+                    WebTemplateNode sampleCount = new WebTemplateNode();
+                    sampleCount.setId("sample_count");
+                    sampleCount.setName("sample_count");
+                    sampleCount.setRmType("LONG");
+                    sampleCount.setMax(1);
+                    sampleCount.setAqlPath(intervalEvent.getAqlPathDto().addEnd("sample_count"));
+                    intervalEvent.getChildren().add(sampleCount);
 
-                WebTemplateNode width = new WebTemplateNode();
-                width.setId("width");
-                width.setName("width");
-                width.setRmType(RmConstants.DV_DURATION);
-                width.setMax(1);
-                width.setMin(1);
-                width.setAqlPath(intervalEvent.getAqlPathDto().addEnd("width"));
-                intervalEvent.getChildren().add(width);
+                    nodesToAdd.add(intervalEvent);
 
-                WebTemplateNode math = new WebTemplateNode();
-                math.setId("math_function");
-                math.setName("math_function");
-                math.setRmType(DV_CODED_TEXT);
-                math.setMax(1);
-                math.setMin(1);
-                math.setAqlPath(intervalEvent.getAqlPathDto().addEnd("math_function"));
-                intervalEvent.getChildren().add(math);
+                    nodesToAdd.add(buildCopy(childNode, POINT_EVENT));
 
-                WebTemplateNode sampleCount = new WebTemplateNode();
-                sampleCount.setId("sample_count");
-                sampleCount.setName("sample_count");
-                sampleCount.setRmType("LONG");
-                sampleCount.setMax(1);
-                sampleCount.setAqlPath(intervalEvent.getAqlPathDto().addEnd("sample_count"));
-                intervalEvent.getChildren().add(sampleCount);
-
-                nodesToAdd.add(intervalEvent);
-
-                nodesToAdd.add(buildCopy(childNode, POINT_EVENT));
-
-                it.remove();
+                    it.remove();
+                }
+                default -> {
+                    /* no need to fix inheritance */
+                }
             }
         }
 
@@ -282,11 +305,19 @@ public abstract class Walker<T> {
     }
 
     private static boolean siblingMissing(WebTemplateNode parentNode, WebTemplateNode childNode, String rmType) {
-        return parentNode.getChildren().size() <= 1
-                || parentNode.getChildren().stream()
-                        .filter(n -> n != childNode)
-                        .filter(n -> n.getAqlPathDto().equals(childNode.getAqlPathDto()))
-                        .noneMatch(n -> rmType.equals(n.getRmType()));
+        List<WebTemplateNode> children = parentNode.getChildren();
+        if (children.size() <= 1) {
+            return true;
+        } else {
+            for (var child : children) {
+                if (rmType.equals(child.getRmType())
+                        && child != childNode
+                        && child.getAqlPathDto().equals(childNode.getAqlPathDto())) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     private static WebTemplateNode copyAsPartyRelated(WebTemplateNode party) {
@@ -312,7 +343,7 @@ public abstract class Walker<T> {
     protected abstract ImmutablePair<T, RMObject> extractPair(
             Context<T> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            BooleanSupplier isChoice,
             WebTemplateNode childNode,
             Integer i);
 
@@ -320,20 +351,19 @@ public abstract class Walker<T> {
             RMObject currentRM,
             WebTemplateNode currentNode,
             WebTemplateNode childNode,
-            boolean isChoice,
+            BooleanSupplier isChoice,
             Integer count);
 
     protected boolean visitChildren(WebTemplateNode node) {
         RMTypeInfo typeInfo = ARCHIE_RM_INFO_LOOKUP.getTypeInfo(node.getRmType());
-        return typeInfo != null
-                && (Locatable.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || EventContext.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || DvInterval.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || IsmTransition.class.isAssignableFrom(typeInfo.getJavaClass())
-                        || Element.class.isAssignableFrom(typeInfo.getJavaClass()));
+        if (typeInfo == null) {
+            return false;
+        }
+        Class<?> javaType = typeInfo.getJavaClass();
+        return Pathable.class.isAssignableFrom(javaType) || DvInterval.class.isAssignableFrom(javaType);
     }
 
-    protected abstract T extract(Context<T> context, WebTemplateNode child, boolean isChoice, Integer i);
+    protected abstract T extract(Context<T> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i);
 
     protected abstract void preHandle(Context<T> context);
 
@@ -342,17 +372,17 @@ public abstract class Walker<T> {
     protected void insertDefaults(Context<T> context) {}
 
     protected Object wrap(Object child) {
-        if (child != null) {
-            if (String.class.isAssignableFrom(child.getClass())) {
-                child = new RmString((String) child);
-            } else if (Long.class.isAssignableFrom(child.getClass())) {
-                child = new RmLong((Long) child);
-            }
-            if (Boolean.class.isAssignableFrom(child.getClass())) {
-                child = new RmBoolean((Boolean) child);
-            }
+        if (child == null) {
+            return null;
+        } else if (child instanceof String strVal) {
+            return new RmString(strVal);
+        } else if (child instanceof Long longVal) {
+            return new RmLong(longVal);
+        } else if (child instanceof Boolean boolVal) {
+            return new RmBoolean(boolVal);
+        } else {
+            return child;
         }
-        return child;
     }
 
     protected abstract int calculateSize(Context<T> context, WebTemplateNode childNode);

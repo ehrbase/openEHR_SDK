@@ -22,11 +22,11 @@ import com.nedap.archie.flattener.OperationalTemplateProvider;
 import com.nedap.archie.rminfo.ModelInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessage;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessageType;
-import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
 import com.nedap.archie.rmobjectvalidator.ValidationConfiguration;
 import java.util.Collection;
+import org.ehrbase.openehr.sdk.validation.webtemplate.FastRMObjectValidator;
 
-public class ArchetypeNeglectingRMObjectValidator extends RMObjectValidator {
+public class ArchetypeNeglectingRMObjectValidator extends FastRMObjectValidator {
 
     public ArchetypeNeglectingRMObjectValidator(
             ModelInfoLookup lookup,

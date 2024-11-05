@@ -5,6 +5,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+- ACTION.instruction_details now included in web template
+- 
 
 ## [2.19.0]
  ### Added 

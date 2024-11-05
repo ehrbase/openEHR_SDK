@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -66,7 +67,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<AqlPath, Obj
 
     @Override
     protected Map<AqlPath, Object> extract(
-            Context<Map<AqlPath, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+            Context<Map<AqlPath, Object>> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i) {
 
         Map<AqlPath, Object> subValues = filterValues(context, child);
 
@@ -74,16 +75,17 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<AqlPath, Obj
             return null;
 
         } else if (subValues.size() > 1) {
-            if (isChoice && child.getRmType().equals("INTERVAL_EVENT")) {
+            if (child.getRmType().equals("INTERVAL_EVENT") && isChoice.getAsBoolean()) {
                 logger.warn("Path {} is choice but missing OptionFor", child.getAqlPath());
                 return null;
+            } else {
+                return subValues;
             }
-            return subValues;
         }
 
         Object value = subValues.values().stream().findAny().orElseThrow();
 
-        if (value instanceof List && i != null) {
+        if (i != null && value instanceof List) {
             value = Optional.of(value)
                     .map(List.class::cast)
                     .filter(l -> l.size() > i)
@@ -91,7 +93,7 @@ public class DtoToCompositionWalker extends ToCompositionWalker<Map<AqlPath, Obj
                     .orElse(null);
         }
 
-        if (isChoice && value != null) {
+        if (value != null && isChoice.getAsBoolean()) {
             Optional<String> optionFor = Optional.of(value)
                     .map(Object::getClass)
                     .map(c -> c.getAnnotation(OptionFor.class))
