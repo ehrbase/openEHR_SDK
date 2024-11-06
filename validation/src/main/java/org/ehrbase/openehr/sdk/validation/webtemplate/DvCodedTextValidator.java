@@ -19,9 +19,9 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.ehrbase.openehr.sdk.util.functional.Try;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolationException;
@@ -38,8 +38,6 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
  */
 @SuppressWarnings("unused")
 public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
-
-    private final PrimitiveConstraintValidator validator = new PrimitiveConstraintValidator();
 
     private ExternalTerminologyValidation externalTerminologyValidation;
 
@@ -59,75 +57,78 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
      */
     @Override
     public List<ConstraintViolation> validate(DvCodedText dvCodedText, WebTemplateNode node) {
-        List<ConstraintViolation> result = new ArrayList<>();
-
-        WebTemplateValidationUtils.findInputWithType(node, "CODED_TEXT")
-                .ifPresent(input -> result.addAll(validateInternalCode(node.getAqlPath(), dvCodedText, input)));
-
-        WebTemplateValidationUtils.findInputWithType(node, "TEXT")
-                .ifPresent(input -> result.addAll(validateExternalTerminology(node.getAqlPath(), dvCodedText, input)));
-
-        return result;
+        List<ConstraintViolation> codedText = WebTemplateValidationUtils.findInputWithType(node, "CODED_TEXT")
+                .map(input -> validateInternalCode(node.getAqlPath(), dvCodedText, input))
+                .orElse(List.of());
+        List<ConstraintViolation> text = WebTemplateValidationUtils.findInputWithType(node, "TEXT")
+                .map(input1 -> validateExternalTerminology(node.getAqlPath(), dvCodedText, input1))
+                .orElse(List.of());
+        return ConstraintValidator.concat(codedText, text);
     }
 
     private List<ConstraintViolation> validateInternalCode(
             String aqlPath, DvCodedText dvCodedText, WebTemplateInput input) {
-        List<ConstraintViolation> result = new ArrayList<>();
 
         var definingCode = dvCodedText.getDefiningCode();
-        if (input.getTerminology() != null
-                && !Objects.equals(
-                        input.getTerminology(), definingCode.getTerminologyId().getValue())) {
-            result.add(new ConstraintViolation(
-                    aqlPath,
-                    MessageFormat.format(
-                            "CodePhrase terminology does not match, expected: {0}, found: {1}",
-                            input.getTerminology(),
-                            definingCode.getTerminologyId().getValue())));
-        }
 
-        if (WebTemplateValidationUtils.hasList(input)) {
-            var matching = input.getList().stream()
-                    .filter(inputValue -> Objects.equals(inputValue.getValue(), definingCode.getCodeString()))
-                    .findFirst();
-
-            if (matching.isEmpty()) {
-                result.add(new ConstraintViolation(
+        Optional<ConstraintViolation> terminologyViolation = Optional.of(input)
+                .filter(i -> i.getTerminology() != null
+                        && !Objects.equals(
+                                i.getTerminology(),
+                                definingCode.getTerminologyId().getValue()))
+                .map(i -> new ConstraintViolation(
                         aqlPath,
                         MessageFormat.format(
-                                "CodePhrase codeString does not match any option, found: {0}",
-                                definingCode.getCodeString())));
-            } else {
-                if (!matching.get().getLabel().equals(dvCodedText.getValue())) {
-                    result.add(new ConstraintViolation(
-                            aqlPath,
-                            MessageFormat.format(
-                                    "Dv_Coded_Text value does not match. found: {0} expected: {1}",
-                                    dvCodedText.getValue(), matching.get().getLabel())));
-                }
-            }
-        }
+                                "CodePhrase terminology does not match, expected: {0}, found: {1}",
+                                input.getTerminology(),
+                                definingCode.getTerminologyId().getValue())));
 
-        return result;
+        Optional<ConstraintViolation> otherViolation = Optional.of(input)
+                .filter(WebTemplateValidationUtils::hasList)
+                .map(i -> {
+                    var matching = input.getList().stream()
+                            .filter(inputValue -> Objects.equals(inputValue.getValue(), definingCode.getCodeString()))
+                            .findFirst();
+
+                    if (matching.isEmpty()) {
+                        return new ConstraintViolation(
+                                aqlPath,
+                                MessageFormat.format(
+                                        "CodePhrase codeString does not match any option, found: {0}",
+                                        definingCode.getCodeString()));
+                    } else if (!matching.get().getLabel().equals(dvCodedText.getValue())) {
+                        return new ConstraintViolation(
+                                aqlPath,
+                                MessageFormat.format(
+                                        "Dv_Coded_Text value does not match. found: {0} expected: {1}",
+                                        dvCodedText.getValue(), matching.get().getLabel()));
+                    } else {
+                        return null;
+                    }
+                });
+
+        return ConstraintValidator.concat(terminologyViolation, otherViolation);
     }
 
     private List<ConstraintViolation> validateExternalTerminology(
             String aqlPath, DvCodedText dvCodedText, WebTemplateInput input) {
-        List<ConstraintViolation> result = new ArrayList<>();
+        if (externalTerminologyValidation == null) {
+            return List.of();
+        }
 
         TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology());
         tp.setCodePhrase(dvCodedText.getDefiningCode());
 
-        if (externalTerminologyValidation != null && externalTerminologyValidation.supports(tp)) {
+        if (externalTerminologyValidation.supports(tp)) {
             Try<Boolean, ConstraintViolationException> validationResult = externalTerminologyValidation.validate(tp);
             if (validationResult.isFailure()) {
                 ConstraintViolationException ex =
                         validationResult.getAsFailure().get();
-                result.add(new ConstraintViolation(aqlPath, "Failed to validate " + dvCodedText.toString()));
-                result.addAll(ex.getConstraintViolations());
+                return ConstraintValidator.concat(
+                        List.of(new ConstraintViolation(aqlPath, "Failed to validate " + dvCodedText)),
+                        ex.getConstraintViolations());
             }
         }
-
-        return result;
+        return List.of();
     }
 }

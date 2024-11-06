@@ -25,19 +25,19 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.archetyped.Pathable;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessageIds;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
+import org.ehrbase.openehr.sdk.serialisation.walker.ItemExtractor;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebtemplateCardinality;
 
 /**
  * Default {@link ConstraintValidator} implementation that validates cardinalities.
@@ -46,11 +46,11 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
  */
 public class DefaultValidator implements ConstraintValidator<RMObject> {
 
-    private BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathQueryCache;
+    private final BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathQueryCache;
 
     public DefaultValidator() {
         Map<AqlPath, RMPathQuery> cache = new HashMap<>();
-        rmPathQueryCache = (path, provider) -> cache.computeIfAbsent(path, provider::apply);
+        rmPathQueryCache = cache::computeIfAbsent;
     }
 
     /**
@@ -62,13 +62,12 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
     }
 
     private RMPathQuery getRmPathQuery(AqlPath path) {
-        return rmPathQueryCache.apply(path, p -> new RMPathQuery(p.toString()));
+        return rmPathQueryCache.apply(path, ItemExtractor.AqlPathRMPathQuery::new);
     }
 
-    private List<Object> itemsAtPath(AqlPath path, Pathable currentPathable) {
+    private Stream<Object> itemsAtPath(AqlPath path, Pathable currentPathable) {
         return getRmPathQuery(path).findList(ArchieRMInfoLookup.getInstance(), currentPathable).stream()
-                .map(RMObjectWithPath::getObject)
-                .collect(Collectors.toList());
+                .map(RMObjectWithPath::getObject);
     }
 
     /**
@@ -76,54 +75,58 @@ public class DefaultValidator implements ConstraintValidator<RMObject> {
      */
     @Override
     public List<ConstraintViolation> validate(RMObject object, WebTemplateNode node) {
-        if (node == null || !(object instanceof Locatable)) {
-            return Collections.emptyList();
+        if (node == null || !(object instanceof Locatable locatable)) {
+            return List.of();
         }
-
-        return validate((Locatable) object, node);
+        return validate(locatable, node);
     }
 
     private List<ConstraintViolation> validate(Locatable locatable, WebTemplateNode node) {
-        List<ConstraintViolation> result = new ArrayList<>();
-        node.getChildren().forEach(childNode -> {
-            var count = 0;
-            AqlPath relativePath = node.buildRelativePath(childNode, false);
-            List<Object> children = itemsAtPath(relativePath, locatable);
+        List<WebTemplateNode> children = node.getChildren();
 
-            for (var item : children) {
-                if (item instanceof Locatable) {
-                    if (Objects.equals(((Locatable) item).getNameAsString(), childNode.getName())
-                            || !node.isRelativePathNameDependent(childNode)) {
-                        count++;
-                    }
-                } else {
-                    count++;
-                }
+        List<ConstraintViolation> result = List.of();
+        for (WebTemplateNode childNode : children) {
+            ConstraintViolation violation = validateChild(locatable, node, childNode);
+            if (violation != null) {
+                result = ConstraintValidator.concat(result, List.of(violation));
             }
-
-            var interval = getMultiplicityInterval(childNode, node);
-            if (!interval.has(count)) {
-                String message =
-                        RMObjectValidationMessageIds.rm_OCCURRENCE_MISMATCH.getMessage(count, interval.toString());
-                result.add(new ConstraintViolation(childNode.getAqlPath(), message));
-            }
-        });
-
+        }
         return result;
+    }
+
+    private ConstraintViolation validateChild(Locatable locatable, WebTemplateNode node, WebTemplateNode childNode) {
+        AqlPath relativePath = node.buildRelativePath(childNode, false);
+
+        var count = (int) itemsAtPath(relativePath, locatable)
+                .filter(item -> {
+                    if (item instanceof Locatable loc) {
+                        return Objects.equals(loc.getNameAsString(), childNode.getName())
+                                || !WebTemplateNode.isNameDependent(relativePath);
+                    } else {
+                        return true;
+                    }
+                })
+                .count();
+
+        var interval = getMultiplicityInterval(childNode, node);
+        if (interval.has(count)) {
+            return null;
+        } else {
+            String message = RMObjectValidationMessageIds.rm_OCCURRENCE_MISMATCH.getMessage(count, interval.toString());
+            return new ConstraintViolation(childNode.getAqlPath(), message);
+        }
     }
 
     private MultiplicityInterval getMultiplicityInterval(WebTemplateNode node, WebTemplateNode parentNode) {
         var interval = WebTemplateValidationUtils.getMultiplicityInterval(node);
-
-        parentNode.getCardinalities().stream()
-                .filter(cardinality -> BooleanUtils.isTrue(cardinality.getExcludeFromWebTemplate())
-                        && cardinality.getIds().contains(node.getId(false)))
-                .findFirst()
-                .ifPresent(cardinality -> {
-                    interval.setLower(cardinality.getMin());
-                    interval.setUpper(cardinality.getMax());
-                });
-
+        for (WebtemplateCardinality cardinality : parentNode.getCardinalities()) {
+            if (BooleanUtils.isTrue(cardinality.getExcludeFromWebTemplate())
+                    && cardinality.getIds().contains(node.getId(false))) {
+                interval.setLower(cardinality.getMin());
+                interval.setUpper(cardinality.getMax());
+                break;
+            }
+        }
         return interval;
     }
 }

@@ -17,61 +17,48 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.walker;
 
-import com.nedap.archie.query.RMPathQuery;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.BooleanSupplier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 public abstract class FromCompositionWalker<T> extends Walker<T> {
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
 
-    private final Map<AqlPath, RMPathQuery> rmPathableCache = new HashMap<>();
-
-    private final BiFunction<AqlPath, Function<AqlPath, RMPathQuery>, RMPathQuery> rmPathableCacheFunc =
-            (path, provider) -> rmPathableCache.computeIfAbsent(path, provider::apply);
-
     protected Object extractRMChild(
             RMObject currentRM,
             WebTemplateNode currentNode,
             WebTemplateNode childNode,
-            boolean isChoice,
+            BooleanSupplier isChoice,
             Integer count) {
+        Object child =
+                ItemExtractor.extractChild(currentRM, currentNode, childNode, count != null ? (() -> false) : isChoice);
 
-        ItemExtractor itemExtractor = new ItemExtractor(currentRM, currentNode, childNode, isChoice && count == null)
-                .withRmPathQueryCache(rmPathableCacheFunc)
-                .invoke();
+        if (count != null && child instanceof List<?> childList) {
 
-        Object child = itemExtractor.getChild();
-
-        if (count != null && child instanceof List) {
-
-            child = ((List<RMObject>) child).get(count);
-            if (isChoice
+            Object selectedChild = childList.get(count);
+            if (isChoice.getAsBoolean()
                     && !ARCHIE_RM_INFO_LOOKUP
                             .getTypeInfo(childNode.getRmType())
                             .getJavaClass()
-                            .isAssignableFrom(child.getClass())) {
-                child = null;
+                            .isAssignableFrom(selectedChild.getClass())) {
+                return null;
+            } else {
+                child = selectedChild;
             }
         }
-        child = wrap(child);
-        return child;
+        return wrap(child);
     }
 
     @Override
     protected int calculateSize(Context<T> context, WebTemplateNode childNode) {
 
         Object child = extractRMChild(
-                context.getRmObjectDeque().peek(), context.getNodeDeque().peek(), childNode, false, null);
-        if (child instanceof List) {
-            return ((List) child).size();
+                context.getRmObjectDeque().peek(), context.getNodeDeque().peek(), childNode, () -> false, null);
+        if (child instanceof List<?> l) {
+            return l.size();
         } else {
             return 0;
         }
@@ -80,24 +67,18 @@ public abstract class FromCompositionWalker<T> extends Walker<T> {
     protected ImmutablePair<T, RMObject> extractPair(
             Context<T> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            BooleanSupplier isChoice,
             WebTemplateNode childNode,
             Integer i) {
-        RMObject currentChild = null;
-        T childObject = null;
 
-        currentChild = (RMObject) extractRMChild(
-                context.getRmObjectDeque().peek(),
-                currentNode,
-                childNode,
-                choices.containsKey(childNode.getAqlPath()),
-                i);
+        RMObject currentChild =
+                (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, isChoice, i);
 
-        if (currentChild != null) {
-            childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
+        if (currentChild == null) {
+            return null;
         }
+        T childObject = extract(context, childNode, isChoice, i);
 
-        ImmutablePair<T, RMObject> pair = new ImmutablePair<>(childObject, currentChild);
-        return pair;
+        return new ImmutablePair<>(childObject, currentChild);
     }
 }

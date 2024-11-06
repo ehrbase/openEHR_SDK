@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -100,8 +101,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
 
     @Override
     protected Map<FlatPathDto, String> extract(
-            Context<Map<FlatPathDto, String>> context, WebTemplateNode child, boolean isChoice, Integer count) {
-
+            Context<Map<FlatPathDto, String>> context, WebTemplateNode child, BooleanSupplier isChoice, Integer count) {
         context.getNodeDeque().push(child);
 
         Integer oldCount = null;
@@ -122,7 +122,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                 .filter(e -> e.getKey().startsWith(path))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        if (isChoice && !isMatchingNode(subValues, context, child, new FlatPathDto(path))) {
+        if (isChoice.getAsBoolean() && !isMatchingNode(subValues, context, child, new FlatPathDto(path))) {
             subValues = Collections.emptyMap();
         }
 
@@ -160,7 +160,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
     protected ImmutablePair<Map<FlatPathDto, String>, RMObject> extractPair(
             Context<Map<FlatPathDto, String>> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            BooleanSupplier isChoiceSupplier,
             WebTemplateNode childNode,
             Integer i) {
 
@@ -171,9 +171,9 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                         && context.getFlatHelper().skip(childNode, currentNode))
                 //  NonMandatoryRmAttribute are handled in the UnmarshalPostprocessor
                 || (currentNode != null && context.getFlatHelper().isNonMandatoryRmAttribute(childNode, currentNode))) {
-            return new ImmutablePair<>(null, null);
+            return null;
         }
-        return super.extractPair(context, currentNode, choices, childNode, i);
+        return super.extractPair(context, currentNode, isChoiceSupplier, childNode, i);
     }
 
     private boolean isMatchingNode(

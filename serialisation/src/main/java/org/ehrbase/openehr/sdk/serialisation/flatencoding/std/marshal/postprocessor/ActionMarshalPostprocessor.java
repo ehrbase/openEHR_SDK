@@ -31,6 +31,10 @@ public class ActionMarshalPostprocessor extends AbstractMarshalPostprocessor<Act
         if (rmObject.getInstructionDetails() != null) {
             handleRmAttribute(term, rmObject.getInstructionDetails(), values, context, "instruction_details");
         }
+        // contents handled via InstructionDetailsConfig
+        // Note: the paths are unexpectedly missing the _instruction_details node
+        values.remove(term + "/instruction_id");
+        values.remove(term + "/activity_id");
     }
 
     /** {@inheritDoc} */

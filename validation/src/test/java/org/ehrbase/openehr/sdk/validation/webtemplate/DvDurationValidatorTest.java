@@ -36,8 +36,6 @@ class DvDurationValidatorTest extends AbstractRMObjectValidatorTest {
 
         // min
         assertThat(DurationHelper.getTotalComparisonSymbol(node, DurationHelper.MIN_MAX.MIN))
-                .isPresent()
-                .get()
                 .isEqualTo(WebTemplateComparisonSymbol.GT_EQ);
         assertThat(DurationHelper.buildTotalRange(node, DurationHelper.MIN_MAX.MIN))
                 .isPresent()
@@ -45,8 +43,6 @@ class DvDurationValidatorTest extends AbstractRMObjectValidatorTest {
                 .hasToString("PT0S");
         // max
         assertThat(DurationHelper.getTotalComparisonSymbol(node, DurationHelper.MIN_MAX.MAX))
-                .isPresent()
-                .get()
                 .isEqualTo(WebTemplateComparisonSymbol.LT_EQ);
         assertThat(DurationHelper.buildTotalRange(node, DurationHelper.MIN_MAX.MAX))
                 .isPresent()
@@ -79,8 +75,6 @@ class DvDurationValidatorTest extends AbstractRMObjectValidatorTest {
 
         // min
         assertThat(DurationHelper.getTotalComparisonSymbol(node, DurationHelper.MIN_MAX.MIN))
-                .isPresent()
-                .get()
                 .isEqualTo(WebTemplateComparisonSymbol.GT);
         assertThat(DurationHelper.buildTotalRange(node, DurationHelper.MIN_MAX.MIN))
                 .isPresent()
@@ -88,7 +82,7 @@ class DvDurationValidatorTest extends AbstractRMObjectValidatorTest {
                 .hasToString("P1M");
         // max
         assertThat(DurationHelper.getTotalComparisonSymbol(node, DurationHelper.MIN_MAX.MAX))
-                .isEmpty();
+                .isNull();
         assertThat(DurationHelper.buildTotalRange(node, DurationHelper.MIN_MAX.MAX))
                 .isEmpty();
 
@@ -121,8 +115,6 @@ class DvDurationValidatorTest extends AbstractRMObjectValidatorTest {
 
         // min
         assertThat(DurationHelper.getTotalComparisonSymbol(node, DurationHelper.MIN_MAX.MIN))
-                .isPresent()
-                .get()
                 .isEqualTo(WebTemplateComparisonSymbol.GT_EQ);
         assertThat(DurationHelper.buildTotalRange(node, DurationHelper.MIN_MAX.MIN))
                 .isPresent()
@@ -130,8 +122,6 @@ class DvDurationValidatorTest extends AbstractRMObjectValidatorTest {
                 .hasToString("P5Y4M15D");
         // max
         assertThat(DurationHelper.getTotalComparisonSymbol(node, DurationHelper.MIN_MAX.MAX))
-                .isPresent()
-                .get()
                 .isEqualTo(WebTemplateComparisonSymbol.LT);
         assertThat(DurationHelper.buildTotalRange(node, DurationHelper.MIN_MAX.MAX))
                 .isPresent()

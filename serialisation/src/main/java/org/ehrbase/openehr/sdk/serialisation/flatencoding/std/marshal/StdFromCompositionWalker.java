@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.config.DefaultStdConfig;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.config.StdConfig;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.postprocessor.MarshalPostprocessor;
@@ -46,7 +47,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
 
     @Override
     protected Map<String, Object> extract(
-            Context<Map<String, Object>> context, WebTemplateNode child, boolean isChoice, Integer i) {
+            Context<Map<String, Object>> context, WebTemplateNode child, BooleanSupplier isChoice, Integer i) {
 
         return context.getObjectDeque().peek();
     }
@@ -54,7 +55,7 @@ public class StdFromCompositionWalker extends FromCompositionWalker<Map<String, 
     @Override
     protected void preHandle(Context<Map<String, Object>> context) {
 
-        // Handle if at a End-Node
+        // Handle if at an End-Node
         if (!visitChildren(context.getNodeDeque().peek())
                 && !context.getFlatHelper().skip(context)) {
             RMObject currentObject = context.getRmObjectDeque().peek();

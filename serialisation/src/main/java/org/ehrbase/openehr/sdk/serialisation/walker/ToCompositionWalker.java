@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -262,7 +263,7 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
             RMObject currentRM,
             WebTemplateNode currentNode,
             WebTemplateNode childNode,
-            boolean isChoice,
+            BooleanSupplier isChoice,
             Integer count) {
 
         Object newChild = WebTemplateSkeletonBuilder.build(childNode, false, Object.class);
@@ -275,27 +276,30 @@ public abstract class ToCompositionWalker<T> extends Walker<T> {
     protected ImmutablePair<T, RMObject> extractPair(
             Context<T> context,
             WebTemplateNode currentNode,
-            Map<String, List<WebTemplateNode>> choices,
+            BooleanSupplier isChoiceSupplier,
             WebTemplateNode childNode,
             Integer i) {
-        RMObject currentChild = null;
-        T childObject = null;
-        childObject = extract(context, childNode, choices.containsKey(childNode.getAqlPath()), i);
-        if (childObject != null) {
-
-            boolean isChoice = choices.containsKey(childNode.getAqlPath());
-
-            if (currentNode.getRmType().equals(RmConstants.ELEMENT)
-                    && childNode.getRmType().equals(RmConstants.DV_CODED_TEXT)
-                    && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
-                isChoice = true;
-            }
-
-            currentChild =
-                    (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, isChoice, i);
+        boolean childIsChoice = isChoiceSupplier.getAsBoolean();
+        T childObject = extract(context, childNode, () -> childIsChoice, i);
+        if (childObject == null) {
+            return null;
         }
 
-        return new ImmutablePair<>(childObject, currentChild);
+        boolean isChoice;
+        if (!childIsChoice
+                // see Filter::mergeDVText
+                && currentNode.getRmType().equals(RmConstants.ELEMENT)
+                && childNode.getRmType().equals(RmConstants.DV_CODED_TEXT)
+                && childNode.getInputs().stream().anyMatch(in -> "other".equals(in.getSuffix()))) {
+            isChoice = true;
+        } else {
+            isChoice = childIsChoice;
+        }
+
+        RMObject currentRmChild =
+                (RMObject) extractRMChild(context.getRmObjectDeque().peek(), currentNode, childNode, () -> isChoice, i);
+
+        return new ImmutablePair<>(childObject, currentRmChild);
     }
 
     @Override
