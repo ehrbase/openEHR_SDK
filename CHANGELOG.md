@@ -2,6 +2,10 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [unreleased]
+ ### Added 
+ ### Fixed 
+
 ## [2.20.0]
  ### Changed
 - Improved Walker and validation performance
@@ -463,3 +467,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.18.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.17.0...v2.18.0
 [2.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.18.0...v2.19.0
 [2.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.19.0...v2.20.0
+[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v2.20.0...HEAD
