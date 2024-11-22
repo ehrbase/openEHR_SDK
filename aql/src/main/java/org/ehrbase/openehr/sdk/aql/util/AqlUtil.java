@@ -24,13 +24,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
-import org.ehrbase.openehr.sdk.aql.dto.condition.ComparisonOperatorCondition;
-import org.ehrbase.openehr.sdk.aql.dto.condition.LogicalOperatorCondition;
-import org.ehrbase.openehr.sdk.aql.dto.condition.WhereCondition;
+import org.ehrbase.openehr.sdk.aql.dto.condition.*;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.dto.containment.Containment;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentNotOperator;
 import org.ehrbase.openehr.sdk.aql.dto.containment.ContainmentSetOperator;
+import org.ehrbase.openehr.sdk.aql.dto.operand.LikeOperand;
+import org.ehrbase.openehr.sdk.aql.dto.operand.MatchesOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.Operand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.QueryParameter;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
@@ -58,13 +58,14 @@ public final class AqlUtil {
     }
 
     private static WhereCondition removeParameter(WhereCondition condition, String parameterName) {
-        if (condition instanceof ComparisonOperatorCondition) {
-            Operand value = ((ComparisonOperatorCondition) condition).getValue();
-            if (value instanceof QueryParameter && Objects.equals(((QueryParameter) value).getName(), parameterName)) {
+        if (condition instanceof ComparisonOperatorCondition comparisonOperatorCondition) {
+            Operand value = comparisonOperatorCondition.getValue();
+            if (value instanceof QueryParameter queryParameter
+                    && Objects.equals(queryParameter.getName(), parameterName)) {
                 return null;
             }
-        } else if (condition instanceof LogicalOperatorCondition) {
-            List<WhereCondition> values = ((LogicalOperatorCondition) condition).getValues();
+        } else if (condition instanceof LogicalOperatorCondition logicalOperatorCondition) {
+            List<WhereCondition> values = logicalOperatorCondition.getValues();
 
             for (WhereCondition value : new ArrayList<>(values)) {
                 values.remove(value);
@@ -80,8 +81,32 @@ public final class AqlUtil {
                 return null;
             } else if (values.size() == 1) {
                 return values.get(0);
+            }
+        } else if (condition instanceof NotCondition notCondition) {
+            var value = removeParameter(notCondition.getConditionDto(), parameterName);
+            if (value != null) {
+                notCondition.setConditionDto(value);
             } else {
-                return condition;
+                return null;
+            }
+        } else if (condition instanceof MatchesCondition matchesCondition) {
+            List<MatchesOperand> values = matchesCondition.getValues();
+            values.removeIf(value -> value instanceof QueryParameter queryParameter
+                    && Objects.equals(queryParameter.getName(), parameterName));
+            if (values.isEmpty()) {
+                return null;
+            }
+        } else if (condition instanceof LikeCondition likeCondition) {
+            LikeOperand value = likeCondition.getValue();
+            if (value instanceof QueryParameter queryParameter
+                    && Objects.equals(queryParameter.getName(), parameterName)) {
+                return null;
+            }
+        } else if (condition instanceof ExistsCondition) {
+            // doesn't have parameter
+        } else {
+            if (condition != null) {
+                throw new IllegalStateException("Unexpected condition: " + condition);
             }
         }
 
