@@ -109,8 +109,12 @@ public enum OperationalTemplateTestData {
     EHRN_ABDM_OP_CONSULT_RECORD(
             "Capturing of OP consult data for consent based sharing. Used for validating DV_MULTIMEDIA base64 encoded data",
             "EHRN-ABDM-OPConsultRecord.v2.0.opt",
-            "EHRN-ABDM-OPConsultRecord.v2.0");
+            "EHRN-ABDM-OPConsultRecord.v2.0"),
     //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
+    INFORME_AMB_1_ARQUETIP_OBS(
+            "episodic example",
+            "informe_amb_1_arquetip_OBS.opt",
+            "informe_amb_1_arquetip_OBS");
 
     public static final String OPERATIONALTEMPLATE_PATH_SEGMENT = "operationaltemplate";
     private final String filename;

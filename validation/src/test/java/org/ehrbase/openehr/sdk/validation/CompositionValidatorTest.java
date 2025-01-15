@@ -51,6 +51,15 @@ class CompositionValidatorTest {
     private final CompositionValidator validator = new CompositionValidator(null, true, true, null);
 
     @Test
+    void validateEpisodicComposition() throws Exception {
+        var template = getOperationalTemplate(OperationalTemplateTestData.INFORME_AMB_1_ARQUETIP_OBS);
+        var composition = getComposition(CompositionTestDataCanonicalJson.INFORME_AMB_1_ARQUETIP_OBS);
+
+        var result = validator.validate(composition, template);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     void validateInternationalPatientSummary() throws Exception {
         var template = getOperationalTemplate(OperationalTemplateTestData.IPS);
         var composition = getComposition(CompositionTestDataCanonicalJson.IPS);
