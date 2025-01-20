@@ -17,7 +17,9 @@
  */
 package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.TerminologyId;
@@ -44,10 +46,10 @@ public class TerminologyAccessTest {
         assertEquals("openehr", terminologyAccess.id());
 
         Set<CodePhrase> codePhrases = terminologyAccess.allCodes();
-        assertEquals(216, codePhrases.size());
+        assertEquals(231, codePhrases.size());
 
         codePhrases = terminologyAccess.codesForGroupId("setting");
-        assertEquals(13, codePhrases.size());
+        assertEquals(14, codePhrases.size());
 
         assertTrue(terminologyAccess.hasCodeForGroupId(
                 "setting", new CodePhrase(new TerminologyId("openehr"), "237"))); // nursing home care

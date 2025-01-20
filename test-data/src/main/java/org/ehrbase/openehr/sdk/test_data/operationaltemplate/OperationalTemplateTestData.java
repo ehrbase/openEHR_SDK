@@ -111,10 +111,7 @@ public enum OperationalTemplateTestData {
             "EHRN-ABDM-OPConsultRecord.v2.0.opt",
             "EHRN-ABDM-OPConsultRecord.v2.0"),
     //  TEST_ISM("ISM transition test", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1");
-    INFORME_AMB_1_ARQUETIP_OBS(
-            "episodic example",
-            "informe_amb_1_arquetip_OBS.opt",
-            "informe_amb_1_arquetip_OBS");
+    INFORME_AMB_1_ARQUETIP_OBS("episodic example", "informe_amb_1_arquetip_OBS.opt", "informe_amb_1_arquetip_OBS");
 
     public static final String OPERATIONALTEMPLATE_PATH_SEGMENT = "operationaltemplate";
     private final String filename;
