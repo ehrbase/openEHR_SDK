@@ -155,6 +155,93 @@ public class AqlUtilTest {
     }
 
     @Test
+    public void removeParameterInNotConditionInsideAndCondition() {
+        String aql =
+                """
+                SELECT c0 AS F1, e/ehr_id/value
+                FROM EHR e
+                CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                WHERE (
+                  e/ehr_id/value = $ehrid1
+                  AND NOT e/ehr_id/value = $ehrid2
+                )""";
+        String actual = AqlUtil.removeParameter(aql, "ehrid2");
+
+        assertThat(actual)
+                .isEqualToIgnoringCase(
+                        "SELECT c0 AS F1, e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] WHERE e/ehr_id/value = $ehrid1");
+    }
+
+    @Test
+    public void removeParameterInNotCondition() {
+        String aql =
+                """
+                SELECT c0 AS F1, e/ehr_id/value
+                FROM EHR e
+                CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                WHERE NOT (
+                  e/ehr_id/value = $ehrid1
+                  AND e/ehr_id/value = $ehrid2
+                )""";
+        String actual = AqlUtil.removeParameter(aql, "ehrid2");
+
+        assertThat(actual)
+                .isEqualToIgnoringCase(
+                        "SELECT c0 AS F1, e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] WHERE NOT e/ehr_id/value = $ehrid1");
+    }
+
+    @Test
+    public void removeParameterInLikeCondition() {
+        String aql =
+                """
+                SELECT c0 AS F1, e/ehr_id/value
+                FROM EHR e
+                CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                WHERE
+                e/ehr_id/value LIKE $ehrid1
+                """;
+        String actual = AqlUtil.removeParameter(aql, "ehrid1");
+
+        assertThat(actual)
+                .isEqualToIgnoringCase(
+                        "SELECT c0 AS F1, e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+    }
+
+    @Test
+    public void removeParameterInMatchesConditionMatchesIsKept() {
+        String aql =
+                """
+                SELECT c0 AS F1, e/ehr_id/value
+                FROM EHR e
+                CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                WHERE
+                e/ehr_id/value MATCHES { $ehrid1, $ehrid2 }
+                """;
+        String actual = AqlUtil.removeParameter(aql, "ehrid1");
+
+        assertThat(actual)
+                .isEqualToIgnoringCase(
+                        "SELECT c0 AS F1, e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] WHERE e/ehr_id/value MATCHES {$ehrid2}");
+    }
+
+    @Test
+    public void removeParameterInMatchesConditionMatchesIsRemoved() {
+        String aql =
+                """
+                SELECT c0 AS F1, e/ehr_id/value
+                FROM EHR e
+                CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
+                WHERE
+                e/ehr_id/value MATCHES { $ehrid1 }
+                """;
+        String actual = AqlUtil.removeParameter(aql, "ehrid1");
+
+        assertThat(actual)
+                .isEqualToIgnoringCase(
+                        "SELECT c0 AS F1, e/ehr_id/value FROM EHR e CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]");
+    }
+
+    @Test
     public void containmentExpressionsByIdentifier() {
         AqlQuery aqlQuery = AqlQueryParser.parse(
                 """

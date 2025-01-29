@@ -24,13 +24,14 @@ import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyResourceException;
 
 public class LocalizedTerminologies {
 
-    private Map<String, TerminologyInterface> terminologies = new HashMap<>();
-    private AttributeCodesetMapping codesetMapping;
+    private final Map<String, TerminologyInterface> terminologies = new HashMap<>();
+    private final AttributeCodesetMapping codesetMapping;
 
     public LocalizedTerminologies() throws TerminologyResourceException {
         terminologies.put("en", new SimpleTerminologyInterface("en"));
         terminologies.put("ja", new SimpleTerminologyInterface("ja"));
         terminologies.put("pt", new SimpleTerminologyInterface("pt"));
+        terminologies.put("es", new SimpleTerminologyInterface("es"));
 
         codesetMapping = AttributeCodesetMapping.getInstance();
     }
