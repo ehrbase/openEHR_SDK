@@ -3,6 +3,8 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
+ ### Changed
+ - Updated openehr terminologies to spec version 2.4.0 ([#660](https://github.com/ehrbase/openEHR_SDK/pull/660))
  ### Added 
  ### Fixed 
 

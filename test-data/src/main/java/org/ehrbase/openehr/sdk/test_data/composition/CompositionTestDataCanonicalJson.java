@@ -67,7 +67,8 @@ public enum CompositionTestDataCanonicalJson {
     IPS_INVALID("IPS Invalid", "ips_invalid.json"),
     OTHER_PARTICIPATIONS("to test querying other_participations in composition", "other_participations.json"),
     SECTION_CARDINALITY("cardinality_of_section", "cardinality_of_section__full.json"),
-    EHRN_ABDM_OP_CONSULT_RECORD("Cluster with DV_MULTIMEDIA base64 encoded data", "ehrb_adbm_op_consult_record.json");
+    EHRN_ABDM_OP_CONSULT_RECORD("Cluster with DV_MULTIMEDIA base64 encoded data", "ehrb_adbm_op_consult_record.json"),
+    INFORME_AMB_1_ARQUETIP_OBS("episodic example", "informe_amb_1_arquetip_OBS.json");
 
     private final String filename;
     private final String description;

@@ -34,6 +34,7 @@ import org.assertj.core.groups.Tuple;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -49,6 +50,15 @@ import org.openehr.schemas.v1.TemplateDocument;
 class CompositionValidatorTest {
 
     private final CompositionValidator validator = new CompositionValidator(null, true, true, null);
+
+    @Test
+    void validateEpisodicComposition() throws Exception {
+        var template = getOperationalTemplate(OperationalTemplateTestData.INFORME_AMB_1_ARQUETIP_OBS);
+        var composition = getComposition(CompositionTestDataCanonicalJson.INFORME_AMB_1_ARQUETIP_OBS);
+        TerminologyProvider.findOpenEhrValueSet("openehr", "composition category", "ca");
+        var result = validator.validate(composition, template);
+        assertThat(result).isEmpty();
+    }
 
     @Test
     void validateInternationalPatientSummary() throws Exception {
@@ -359,7 +369,7 @@ class CompositionValidatorTest {
 
     private Composition getCompositionJson(String name) throws IOException {
         var unmarshaller = new CanonicalJson();
-        return (Composition) unmarshaller.unmarshal(IOUtils.toString(
+        return unmarshaller.unmarshal(IOUtils.toString(
                 new FileInputStream("./src/test/resources/composition/" + name), StandardCharsets.UTF_8));
     }
 

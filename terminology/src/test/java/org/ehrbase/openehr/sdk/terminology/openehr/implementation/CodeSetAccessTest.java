@@ -38,7 +38,7 @@ public class CodeSetAccessTest {
 
         assertEquals("openehr_integrity_check_algorithms", codeSetAccess.id());
 
-        assertEquals(2, codeSetAccess.allCodes().size());
+        assertEquals(7, codeSetAccess.allCodes().size());
 
         assertTrue(codeSetAccess.hasCode(
                 new CodePhrase(new TerminologyId("openehr_integrity_check_algorithms"), "SHA-1")));
