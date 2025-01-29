@@ -26,11 +26,11 @@ import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyResourceException;
  */
 public class TerminologySourceFactory {
 
-    private static final String OPENEHR_TERMINOLOGY_EN = "openehr/en/openehr_terminology.xml";
-    private static final String OPENEHR_TERMINOLOGY_JA = "openehr/ja/openehr_terminology.xml";
-    private static final String OPENEHR_TERMINOLOGY_PT = "openehr/pt/openehr_terminology.xml";
-    private static final String OPENEHR_TERMINOLOGY_ES = "openehr/es/openehr_terminology.xml";
-    private static final String EXTERNAL_TERMINOLOGIES = "openehr/openehr_external_terminologies.xml";
+    private static final String OPENEHR_TERMINOLOGY_EN = "openEHR_RM/en/openehr_terminology.xml";
+    private static final String OPENEHR_TERMINOLOGY_JA = "openEHR_RM/ja/openehr_terminology.xml";
+    private static final String OPENEHR_TERMINOLOGY_PT = "openEHR_RM/pt/openehr_terminology.xml";
+    private static final String OPENEHR_TERMINOLOGY_ES = "openEHR_RM/es/openehr_terminology.xml";
+    private static final String EXTERNAL_TERMINOLOGIES = "openEHR_RM/openehr_external_terminologies.xml";
 
     /**
      * Gets an instance of openEHR terminology source
