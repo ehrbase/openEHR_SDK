@@ -17,6 +17,7 @@ updates:
     groups:
       all-minor-patch:
         patterns: ["*"]
+        exclude-patterns: ["com.nedap.healthcare.archie:*"]	
         update-types: ["minor", "patch"]
   - package-ecosystem: "github-actions"
     directory: "/"
