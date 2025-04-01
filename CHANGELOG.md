@@ -2,6 +2,13 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.22.0]
+ ### Changed
+ - Removed string constructor for TemporalPrimitive ([#670](https://github.com/ehrbase/openEHR_SDK/pull/670))
+ ### Added 
+ ### Fixed 
+ - Allow AQL parsing for strings that represent invalid date(-time)s ([#670](https://github.com/ehrbase/openEHR_SDK/pull/670))
+
 ## [2.21.0]
  ### Changed
  - Updated openehr terminologies to spec version 2.4.0 ([#660](https://github.com/ehrbase/openEHR_SDK/pull/660))
@@ -470,3 +477,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.19.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.18.0...v2.19.0
 [2.20.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.19.0...v2.20.0
 [2.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.20.0...v2.21.0
+[2.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.21.0...v2.22.0
