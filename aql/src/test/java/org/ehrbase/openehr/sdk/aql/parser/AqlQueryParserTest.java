@@ -429,11 +429,8 @@ class AqlQueryParserTest {
             sb.append("(")
                     .append(setOp.getValues().stream()
                             .map(this::render)
-                            .collect(Collectors.joining((StringUtils.wrap(
-                                    ((ContainmentSetOperator) containmentExpresion)
-                                            .getSymbol()
-                                            .toString(),
-                                    " ")))))
+                            .collect(Collectors.joining(
+                                    (StringUtils.wrap(setOp.getSymbol().toString(), " ")))))
                     .append(")");
             return sb.toString();
 
@@ -490,6 +487,18 @@ class AqlQueryParserTest {
     @Test
     void testCountAsterisk() {
         String aql = "SELECT COUNT(*) FROM EHR d";
+        testAql(aql, aql);
+    }
+
+    @Test
+    void testParseInvalidDateAsStringPrimitive() {
+        String aql = "SELECT '60000431' FROM EHR d";
+        testAql(aql, aql);
+    }
+
+    @Test
+    void testParseInvalidDateTimeAsStringPrimitive() {
+        String aql = "SELECT '60000431T654123' FROM EHR d";
         testAql(aql, aql);
     }
 

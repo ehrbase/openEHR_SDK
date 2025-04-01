@@ -34,8 +34,18 @@ public final class TemporalPrimitive extends StringPrimitive {
 
     public TemporalPrimitive() {}
 
-    public TemporalPrimitive(String value) {
-        setValue(value);
+    public static StringPrimitive fromString(String value) {
+        TemporalAccessor temporal;
+        try {
+            temporal = parseTemporal(value);
+        } catch (IllegalArgumentException e) {
+            return new StringPrimitive(value);
+        }
+
+        TemporalPrimitive temporalPrimitive = new TemporalPrimitive();
+        temporalPrimitive.setTemporal(temporal);
+
+        return temporalPrimitive;
     }
 
     @JsonProperty
