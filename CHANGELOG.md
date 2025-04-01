@@ -3,8 +3,11 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
+ ### Changed
+ - Removed string constructor for TemporalPrimitive ([#670](https://github.com/ehrbase/openEHR_SDK/pull/670))
  ### Added 
  ### Fixed 
+ - Allow AQL parsing for strings that represent invalid date(-time)s ([#670](https://github.com/ehrbase/openEHR_SDK/pull/670))
 
 ## [2.21.0]
  ### Changed

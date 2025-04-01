@@ -244,7 +244,7 @@ class AqlQueryVisitor extends AqlParserBaseVisitor<Object> {
         if (ctx.BOOLEAN() != null) {
             selectPrimitiveDto = new BooleanPrimitive(Boolean.parseBoolean(ctx.getText()));
         } else if (ctx.DATE() != null || ctx.DATETIME() != null || ctx.TIME() != null) {
-            selectPrimitiveDto = new TemporalPrimitive(unescapeText(ctx));
+            selectPrimitiveDto = TemporalPrimitive.fromString(unescapeText(ctx));
         } else if (ctx.numericPrimitive() != null) {
             NumericPrimitiveContext numericPrimitiveContext = ctx.numericPrimitive();
             selectPrimitiveDto = visitNumericPrimitive(numericPrimitiveContext);
