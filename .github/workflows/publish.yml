@@ -32,7 +32,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
-          server-id: ossrh
+          server-id: central
           server-username: CENTRAL_SONATYPE_USERNAME
           server-password: CENTRAL_SONATYPE_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
