@@ -41,8 +41,8 @@ jobs:
       - name: Publish to Maven Central
         run: mvn -B deploy -P release -DskipTests
         env:
-          OSSRH_USERNAME: ${{ secrets.CENTRAL_SONATYPE_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.CENTRAL_SONATYPE_TOKEN }}
+          CENTRAL_SONATYPE_USERNAME: ${{ secrets.CENTRAL_SONATYPE_USERNAME }}
+          CENTRAL_SONATYPE_TOKEN: ${{ secrets.CENTRAL_SONATYPE_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: 'Trigger ehrbase build'
