@@ -32,17 +32,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
-          server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_TOKEN
+          server-id: central
+          server-username: CENTRAL_SONATYPE_USERNAME
+          server-password: CENTRAL_SONATYPE_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
       - name: Publish to Maven Central
         run: mvn -B deploy -P release -DskipTests
         env:
-          OSSRH_USERNAME: ${{ secrets.S01_OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.S01_OSSRH_TOKEN }}
+          CENTRAL_SONATYPE_USERNAME: ${{ secrets.CENTRAL_SONATYPE_USERNAME }}
+          CENTRAL_SONATYPE_TOKEN: ${{ secrets.CENTRAL_SONATYPE_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: 'Trigger ehrbase build'
