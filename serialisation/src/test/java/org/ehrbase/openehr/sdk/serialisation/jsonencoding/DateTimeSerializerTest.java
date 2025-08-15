@@ -46,6 +46,7 @@ class DateTimeSerializerTest {
         generator.setCodec(CanonicalJson.MARSHAL_OM);
         DateTimeSerializer cut = new DateTimeSerializer();
         if (data.shouldThrowException) {
+            Assertions.assertNotNull(data.expectedExceptionType);
             Assertions.assertEquals(
                     data.expectedExceptionMessage,
                     Assertions.assertThrows(
@@ -68,6 +69,7 @@ class DateTimeSerializerTest {
         generator.setCodec(CanonicalJson.MARSHAL_OM);
         DateTimeSerializer cut = new DateTimeSerializer();
         if (data.shouldThrowException) {
+            Assertions.assertNotNull(data.expectedExceptionType);
             Assertions.assertEquals(
                     data.expectedExceptionMessage,
                     Assertions.assertThrows(

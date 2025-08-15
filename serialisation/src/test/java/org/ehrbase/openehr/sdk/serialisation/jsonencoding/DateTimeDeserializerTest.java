@@ -50,6 +50,7 @@ class DateTimeDeserializerTest {
         om.registerModule(module);
 
         if (data.shouldThrowException) {
+            Assertions.assertNotNull(data.expectedExceptionType);
             Exception exception = Assertions.assertThrows(
                     data.expectedExceptionType, () -> om.readValue(data.json, DvDateTime.class));
             if (data.expectedExceptionMessage != null) {

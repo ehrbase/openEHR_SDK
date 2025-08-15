@@ -61,7 +61,6 @@ class FlatJsonMarshallerTest {
         String expected = compositionJson(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS_2);
 
         List<FlatTestHelper.Error> errors = FlatTestHelper.compere(actual, expected);
-        System.out.println(errors);
         FlatTestHelper.assertErrors(
                 errors,
                 List.of(

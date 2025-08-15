@@ -26,6 +26,8 @@ import com.nedap.archie.xml.adapters.DateXmlAdapter;
 import com.nedap.archie.xml.adapters.TimeXmlAdapter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -45,6 +47,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.io.IOUtils;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
 import org.ehrbase.openehr.sdk.serialisation.exception.UnmarshalException;
@@ -59,30 +62,32 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.XMLFilterImpl;
 
+/**
+ *  Reference-Model Data format <code>XML</code> marshaller/unmarshaller
+ *
+ * @link <a href="https://specifications.openehr.org/releases/ITS-XML/development">ITS-XML</a>
+ */
 public class CanonicalXML implements RMDataFormat {
 
     // should be http://schemas.openehr.org/v1 but this does not work with archie.
     private static final String NAMESPACE = "";
 
-    @Override
-    public String marshal(RMObject rmObject) {
-
-        return marshal(rmObject, true);
+    public String marshal(RMObject rmObject, boolean withHeader) {
+        return marshalWithOptions(
+                rmObject, withHeader ? Set.of(MarshalOption.PRETTY_PRINT, MarshalOption.XML_HEADERS) : Set.of());
     }
 
-    public String marshal(RMObject rmObject, Boolean withHeader) {
+    public String marshalWithOptions(@Nonnull RMObject rmObject, @Nonnull Set<MarshalOption> options) {
 
         StringWriter stringWriter = new StringWriter();
         try {
-            Marshaller marshaller = createMarshaller();
+            Marshaller marshaller = createMarshaller(options);
 
-            marshaller.setProperty("jaxb.fragment", !withHeader);
             if (rmObject.getClass().getAnnotation(XmlRootElement.class) == null) {
                 QName qName = new QName(null, new SnakeCase(rmObject.getClass().getSimpleName()).camelToSnake());
                 JAXBElement<RMObject> root = new JAXBElement<>(qName, RMObject.class, rmObject);
                 marshaller.marshal(root, stringWriter);
             } else {
-
                 marshaller.marshal(rmObject, stringWriter);
             }
         } catch (JAXBException e) {
@@ -98,7 +103,7 @@ public class CanonicalXML implements RMDataFormat {
             DOMResult res = new DOMResult();
             JAXBElement<RMObject> root = new JAXBElement<>(qName, RMObject.class, rmObject);
 
-            Marshaller marshaller = createMarshaller();
+            Marshaller marshaller = createMarshaller(Set.of(MarshalOption.XML_HEADERS));
             marshaller.marshal(root, res);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -122,8 +127,8 @@ public class CanonicalXML implements RMDataFormat {
     }
 
     @Override
-    public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
-        T composition;
+    public <T extends RMObject> T unmarshal(@Nonnull String value, @Nonnull Class<T> clazz) {
+
         try {
             Unmarshaller unmarshaller = createUnmarshaller();
 
@@ -142,18 +147,24 @@ public class CanonicalXML implements RMDataFormat {
             UnmarshallerHandler unmarshallerHandler = unmarshaller.getUnmarshallerHandler();
             filter.setContentHandler(unmarshallerHandler);
             filter.parse(new InputSource(IOUtils.toInputStream(value, UTF_8)));
-            composition = (T) unmarshallerHandler.getResult();
+            //noinspection unchecked
+            return (T) unmarshallerHandler.getResult();
         } catch (JAXBException | ParserConfigurationException | SAXException | IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }
-        return composition;
     }
 
-    private Marshaller createMarshaller() throws JAXBException {
+    private Marshaller createMarshaller(@Nonnull Set<MarshalOption> options) throws JAXBException {
+
         Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
+
         marshaller.setAdapter(DateTimeXmlAdapter.class, new SdkDateTimeXmlAdapter());
         marshaller.setAdapter(DateXmlAdapter.class, new SdkDateXmlAdapter());
         marshaller.setAdapter(TimeXmlAdapter.class, new SdkTimeXmlAdapter());
+
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, !options.contains(MarshalOption.XML_HEADERS));
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, options.contains(MarshalOption.PRETTY_PRINT));
+
         return marshaller;
     }
 

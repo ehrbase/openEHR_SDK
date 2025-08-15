@@ -121,7 +121,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(11);
-        result.forEach(System.out::println);
     }
 
     @Test
@@ -149,7 +148,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(4);
-        result.forEach(System.out::println);
     }
 
     @Test
@@ -219,7 +217,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(1);
-        result.forEach(System.out::println);
     }
 
     @Test
@@ -229,7 +226,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(1);
-        result.forEach(System.out::println);
     }
 
     @Test

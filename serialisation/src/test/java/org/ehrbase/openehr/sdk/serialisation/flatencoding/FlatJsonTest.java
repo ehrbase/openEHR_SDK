@@ -17,6 +17,9 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.flatencoding;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessageType;
@@ -25,10 +28,11 @@ import com.nedap.archie.rmobjectvalidator.ValidationConfiguration;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
-import org.ehrbase.openehr.sdk.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.jupiter.api.Test;
@@ -36,6 +40,85 @@ import org.junit.jupiter.api.Test;
 class FlatJsonTest {
 
     private static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
+
+    private static RMDataFormat rmDataFormat(String templateId) {
+        return RMDataFormat.sdtFlatJSON(templateProvider, templateId);
+    }
+
+    private static Composition unmarshall(CompositionTestDataSimSDTJson structuredJson, String templateId) {
+
+        String value = null;
+        try {
+            value = IOUtils.toString(structuredJson.getStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            fail(e);
+        }
+        assertThat(value).isNotNull();
+        return rmDataFormat(templateId).unmarshal(value);
+    }
+
+    @Test
+    void marshallDefaultPrettyPrint() {
+
+        CompositionTestDataSimSDTJson testDataSimSDTJson =
+                CompositionTestDataSimSDTJson.CORONA_WITH_OTHER_PARTICIPATION;
+        String templateId = OperationalTemplateTestData.CORONA_ANAMNESE.getTemplateId();
+
+        Composition composition = unmarshall(testDataSimSDTJson, templateId);
+        String value = rmDataFormat(templateId).marshal(composition);
+
+        assertThat(value)
+                .startsWith(
+                        """
+                {
+                  "bericht/category|code" : "433",
+                  "bericht/category|value" : "event",
+                  "bericht/category|terminology" : "openehr",
+                  "bericht/context/start_time" : "2020-05-11T22:53:12.039139+02:00",
+                  "bericht/context/setting|terminology" : "openehr",
+                  "bericht/context/setting|code" : "238",
+                  "bericht/context/setting|value" : "other care",""");
+    }
+
+    @Test
+    void marshallWithOptionsNoPrettyPrint() {
+
+        CompositionTestDataSimSDTJson testDataSimSDTJson =
+                CompositionTestDataSimSDTJson.CORONA_WITH_OTHER_PARTICIPATION;
+        String templateId = OperationalTemplateTestData.CORONA_ANAMNESE.getTemplateId();
+
+        Composition composition = unmarshall(testDataSimSDTJson, templateId);
+        String value = rmDataFormat(templateId).marshalWithOptions(composition, Set.of());
+
+        assertThat(value)
+                .startsWith(
+                        """
+                {"bericht/category|code":"433","bericht/category|value":"event","bericht/category|terminology":""");
+    }
+
+    @Test
+    void marshallWithOptionsPrettyPrint() {
+
+        CompositionTestDataSimSDTJson testDataSimSDTJson = CompositionTestDataSimSDTJson.MULTI_LIST;
+        String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
+
+        Composition composition = unmarshall(testDataSimSDTJson, templateId);
+        String value = rmDataFormat(templateId).marshalWithOptions(composition, MarshalOption.PRETTY_PRINT);
+
+        assertThat(value)
+                .startsWith(
+                        """
+                {
+                  "multi_list/category|code" : "433",
+                  "multi_list/category|value" : "event",
+                  "multi_list/category|terminology" : "openehr",
+                  "multi_list/context/report_id" : "Report ID 43",
+                  "multi_list/context/status" : "Status 1",
+                  "multi_list/context/start_time" : "2021-10-12T15:21:54.236793+02:00",
+                  "multi_list/context/setting|code" : "238",
+                  "multi_list/context/setting|terminology" : "openehr",
+                  "multi_list/context/setting|value" : "other care",""");
+    }
 
     @Test
     void roundTrip() throws IOException {
@@ -355,10 +438,7 @@ class FlatJsonTest {
             List<String> expectedExtra)
             throws IOException {
 
-        RMDataFormat cut = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, templateId);
-
-        String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
-        Composition unmarshal = cut.unmarshal(flat);
+        Composition unmarshal = unmarshall(testData, templateId);
 
         SoftAssertions softAssertions = new SoftAssertions();
 
@@ -366,7 +446,7 @@ class FlatJsonTest {
 
         ValidationConfiguration cfg = new ValidationConfiguration.Builder()
                 .validateInvariants(true)
-                .failOnUnknownTerminologyId(!true)
+                .failOnUnknownTerminologyId(false)
                 .build();
 
         RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null, cfg);
@@ -378,7 +458,7 @@ class FlatJsonTest {
 
         softAssertions.assertAll();
 
-        String actual = cut.marshal(unmarshal);
+        String actual = rmDataFormat(templateId).marshal(unmarshal);
 
         String expected = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
 

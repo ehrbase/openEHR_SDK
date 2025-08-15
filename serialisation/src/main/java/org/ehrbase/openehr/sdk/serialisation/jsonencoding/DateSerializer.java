@@ -25,7 +25,7 @@ import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 /**
  * custom serializer using a fixed formatter
  */
-public class DateSerializer extends AbstractDvTemporalSerializer<Temporal, DvDate> {
+class DateSerializer extends AbstractDvTemporalSerializer<Temporal, DvDate> {
 
     @Override
     protected String typeName() {

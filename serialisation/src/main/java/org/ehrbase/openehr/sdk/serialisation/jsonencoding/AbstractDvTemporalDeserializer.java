@@ -41,7 +41,7 @@ import java.util.Map;
  * @param <V> type of /value attribute
  * @param <T> DV_TEMPORAL subtype that is parsed
  */
-public abstract class AbstractDvTemporalDeserializer<V, T extends DvTemporal<T, ?> & SingleValuedDataValue<V>>
+abstract class AbstractDvTemporalDeserializer<V, T extends DvTemporal<T, ?> & SingleValuedDataValue<V>>
         extends JsonDeserializer<T> {
 
     abstract T createInstance();

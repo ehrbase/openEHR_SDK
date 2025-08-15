@@ -36,8 +36,8 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.testalltypesenv1c
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
-import org.ehrbase.openehr.sdk.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.junit.Test;
 

@@ -60,8 +60,8 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.episodeofcarecomp
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.korpergrossecomposition.KorpergrosseComposition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.korpergrossecomposition.definition.GrosseLangeObservation;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.testalltypesenv1composition.TestAllTypesEnV1Composition;
+import org.ehrbase.openehr.sdk.serialisation.flatencoding.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.openehr.sdk.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.jupiter.api.Test;
 

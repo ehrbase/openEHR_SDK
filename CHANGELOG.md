@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- An option to disable pretty printing in serialization [#677](https://github.com/ehrbase/openEHR_SDK/pull/677)
  ### Changed
 - Publishing artifacts directly to central.sonatype.com [#675](https://github.com/ehrbase/openEHR_SDK/pull/675)
  ### Fixed 

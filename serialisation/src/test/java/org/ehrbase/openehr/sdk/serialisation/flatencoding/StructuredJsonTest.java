@@ -17,15 +17,19 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.flatencoding;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
+import com.nedap.archie.rmobjectvalidator.ValidationConfiguration;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
-import org.ehrbase.openehr.sdk.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataStructuredJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.jupiter.api.Test;
@@ -36,40 +40,112 @@ class StructuredJsonTest {
 
     private static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
 
+    private static RMDataFormat rmDataFormat(OperationalTemplateTestData operationalTemplateTestData) {
+        return RMDataFormat.sdtStructuredJSON(templateProvider, operationalTemplateTestData.getTemplateId());
+    }
+
+    private static Composition unmarshall(
+            CompositionTestDataStructuredJson structuredJson, OperationalTemplateTestData operationalTemplateTestData) {
+
+        String value = null;
+        try {
+            value = IOUtils.toString(structuredJson.getStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            fail(e);
+        }
+        assertThat(value).isNotNull();
+        return rmDataFormat(operationalTemplateTestData).unmarshal(value);
+    }
+
+    @Test
+    void marshallDefaultPrettyPrint() {
+
+        OperationalTemplateTestData operationalTemplateTestData = OperationalTemplateTestData.MULTI_LIST;
+        Composition composition = unmarshall(CompositionTestDataStructuredJson.MULTI_LIST, operationalTemplateTestData);
+        String value = rmDataFormat(operationalTemplateTestData).marshal(composition);
+
+        assertThat(value)
+                .startsWith(
+                        """
+                {
+                  "multi_list" : {
+                    "category" : [ {
+                      "|code" : "433",
+                      "|value" : "event",
+                      "|terminology" : "openehr"
+                    } ],
+                    "context" :""");
+    }
+
+    @Test
+    void marshallWithOptionsNoPrettyPrint() {
+
+        OperationalTemplateTestData operationalTemplateTestData = OperationalTemplateTestData.CORONA_ANAMNESE;
+        Composition composition = unmarshall(CompositionTestDataStructuredJson.CORONA, operationalTemplateTestData);
+        String value = rmDataFormat(operationalTemplateTestData).marshalWithOptions(composition);
+
+        assertThat(value)
+                .startsWith(
+                        """
+                {"bericht":{"category":[{"|code":"433","|value":"event","|terminology":"openehr"}],"context":""");
+    }
+
+    @Test
+    void marshallWithOptionsPrettyPrint() {
+
+        OperationalTemplateTestData operationalTemplateTestData = OperationalTemplateTestData.CORONA_ANAMNESE;
+        Composition composition = unmarshall(CompositionTestDataStructuredJson.CORONA, operationalTemplateTestData);
+        String value =
+                rmDataFormat(operationalTemplateTestData).marshalWithOptions(composition, MarshalOption.PRETTY_PRINT);
+
+        assertThat(value)
+                .startsWith(
+                        """
+                {
+                  "bericht" : {
+                    "category" : [ {
+                      "|code" : "433",
+                      "|value" : "event",
+                      "|terminology" : "openehr"
+                    } ],
+                    "context" :""");
+    }
+
     @Test
     void testRoundTrip() throws IOException {
-        CompositionTestDataStructuredJson testData = CompositionTestDataStructuredJson.MULTI_LIST;
-        String templateId = OperationalTemplateTestData.MULTI_LIST.getTemplateId();
 
-        test(testData, templateId);
+        test(CompositionTestDataStructuredJson.MULTI_LIST, OperationalTemplateTestData.MULTI_LIST);
     }
 
     @Test
     void testRoundTripCorona() throws IOException {
-        CompositionTestDataStructuredJson testData = CompositionTestDataStructuredJson.CORONA;
-        String templateId = OperationalTemplateTestData.CORONA_ANAMNESE.getTemplateId();
 
-        test(testData, templateId);
+        test(CompositionTestDataStructuredJson.CORONA, OperationalTemplateTestData.CORONA_ANAMNESE);
     }
 
-    private void test(CompositionTestDataStructuredJson testData, String templateId) throws IOException {
-        RMDataFormat cut = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.STRUCTURED, templateId);
+    private void test(
+            CompositionTestDataStructuredJson testData, OperationalTemplateTestData operationalTemplateTestData)
+            throws IOException {
 
-        String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
-        Composition unmarshal = cut.unmarshal(flat);
+        Composition unmarshal = unmarshall(testData, operationalTemplateTestData);
 
         SoftAssertions softAssertions = new SoftAssertions();
 
         softAssertions.assertThat(unmarshal).isNotNull();
 
-        RMObjectValidator rmObjectValidator = new RMObjectValidator(ArchieRMInfoLookup.getInstance(), s -> null);
+        RMObjectValidator rmObjectValidator = new RMObjectValidator(
+                ArchieRMInfoLookup.getInstance(),
+                s -> null,
+                new ValidationConfiguration.Builder()
+                        .failOnUnknownTerminologyId(false)
+                        .build());
 
         softAssertions
                 .assertThat(rmObjectValidator.validate(unmarshal))
                 .filteredOn(m -> !m.getMessage().contains("Inv_null_flavour_indicated"))
                 .containsExactlyInAnyOrder();
 
-        String actual = cut.marshal(unmarshal);
+        String actual = rmDataFormat(operationalTemplateTestData).marshal(unmarshal);
 
         String expected = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2025 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,19 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.response.dto.ehrscape;
+package org.ehrbase.openehr.sdk.serialisation;
+
+import com.nedap.archie.rm.RMObject;
+import java.util.Set;
 
 /**
- * Enum containing the available serialization formats compatible with {@link StructuredString}
+ * Options used when invoking {@link RMDataFormat#marshal(RMObject)}
  */
-public enum StructuredStringFormat {
-    XML,
-    JSON;
+public enum MarshalOption {
 
-    public static StructuredStringFormat fromCompositionFormat(CompositionFormat format) {
-        return switch (format) {
-            case XML -> XML;
-            case JSON, RAW, FLAT, ECISFLAT, EXPANDED, STRUCTURED -> JSON;
-        };
-    }
+    /**
+     * Controls pretty printing of the json/xml output
+     */
+    PRETTY_PRINT,
+
+    /**
+     * Only used for XML marshalling, defines to use XML namespace header.
+     */
+    XML_HEADERS;
+
+    /**
+     * Default options can be defined here
+     */
+    public static final Set<MarshalOption> DEFAULT_OPTIONS = Set.of();
 }

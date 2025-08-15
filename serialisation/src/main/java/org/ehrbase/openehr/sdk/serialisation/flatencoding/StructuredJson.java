@@ -19,6 +19,9 @@ package org.ehrbase.openehr.sdk.serialisation.flatencoding;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.util.Set;
+import javax.annotation.Nonnull;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
@@ -42,10 +45,10 @@ public class StructuredJson implements RMDataFormat {
     }
 
     @Override
-    public String marshal(RMObject rmObject) {
-        if (rmObject instanceof Composition) {
-            String flatJson = flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect);
-            return StructuredHelper.convertFlatToStructured(flatJson);
+    public String marshalWithOptions(@Nonnull RMObject rmObject, @Nonnull Set<MarshalOption> options) {
+        if (rmObject instanceof Composition composition) {
+            String flatJson = flatJsonMarshaller.toFlatJson(composition, templateIntrospect);
+            return StructuredHelper.convertFlatToStructured(flatJson, options);
         } else {
             throw new MarshalException(String.format(
                     "Class %s not supported in Structured format",
@@ -54,7 +57,7 @@ public class StructuredJson implements RMDataFormat {
     }
 
     @Override
-    public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
+    public <T extends RMObject> T unmarshal(@Nonnull String value, @Nonnull Class<T> clazz) {
         if (clazz.isAssignableFrom(Composition.class)) {
             return (T) unmarshal(value);
         } else {
@@ -63,7 +66,7 @@ public class StructuredJson implements RMDataFormat {
     }
 
     @Override
-    public Composition unmarshal(String value) {
+    public Composition unmarshal(@Nonnull String value) {
 
         return new FlatJsonUnmarshaller()
                 .unmarshal(StructuredHelper.convertStructuredToFlat(value), templateIntrospect);
