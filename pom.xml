@@ -189,7 +189,7 @@
                   <skipTests>${skipTests}</skipTests>
                     <!-- SETS THE VM ARGUMENT LINE USED WHEN UNIT TESTS ARE RUN. -->
                     <dependenciesToScan>com.github.better-care:web-template-tests</dependenciesToScan>
-                    <argLine>${surefireArgLine}</argLine>
+                    <argLine>@{surefireArgLine}</argLine>
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
@@ -201,7 +201,7 @@
                 <configuration>
                   <skipITs>${skipITs}</skipITs>
                     <!-- SETS THE VM ARGUMENT LINE USED WHEN INTEGRATION TESTS ARE RUN. -->
-                    <argLine>${failsafeArgLine}</argLine>
+                    <argLine>@{failsafeArgLine}</argLine>
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>

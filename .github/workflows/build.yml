@@ -26,14 +26,10 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: Jacoco - Unit Tests
-        run: mvn --batch-mode jacoco:prepare-agent clean test jacoco:report
-
-      - name: Jacoco - Integration Tests
-        run: mvn --batch-mode -DskipTests jacoco:prepare-agent-integration verify jacoco:report-integration
+      - name: Build + Unit / Integration Tests
+        run: mvn --batch-mode clean verify jacoco:report jacoco:report-integration
 
       - name: Upload - Jacoco Overall Coverage
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-coverage-overall
