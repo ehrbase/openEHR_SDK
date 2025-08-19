@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Stefan Spiska
  */
-class DefaultDirectoryCrudEndpointTestIT extends SdkClientTestIT {
+class DefaultDirectoryCrudEndpointIT extends SdkClientTestIT {
 
     @Test
     void testCreate() {
