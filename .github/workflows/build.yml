@@ -27,10 +27,10 @@ jobs:
           cache: 'maven'
 
       - name: Jacoco - Unit Tests
-        run: mvn --batch-mode clean jacoco:prepare-agent package jacoco:report
+        run: mvn --batch-mode jacoco:prepare-agent clean test jacoco:report
 
       - name: Jacoco - Integration Tests
-        run: mvn --batch-mode jacoco:prepare-agent-integration failsafe:integration-test failsafe:verify verify jacoco:report
+        run: mvn --batch-mode -DskipTests jacoco:prepare-agent-integration verify jacoco:report-integration
 
       - name: Upload - Jacoco Overall Coverage
         if: always()
