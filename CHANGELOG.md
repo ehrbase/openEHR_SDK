@@ -4,6 +4,8 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+ ### Changed
+ - Removed unused libraries, bumped versions for some [#680](https://github.com/ehrbase/openEHR_SDK/pull/680)
  ### Fixed 
 
 ## [2.24.0]
