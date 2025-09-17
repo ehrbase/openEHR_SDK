@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.Nullable;
 
 public interface VersionedCompositionEndpoint {
 
@@ -70,5 +69,5 @@ public interface VersionedCompositionEndpoint {
      * @return the version of the versioned composition, or an empty {@link Optional}
      */
     <T> Optional<OriginalVersion<T>> findVersionAtTime(
-            UUID versionedObjectUid, @Nullable LocalDateTime versionAtTime, Class<T> clazz);
+            UUID versionedObjectUid, LocalDateTime versionAtTime, Class<T> clazz);
 }
