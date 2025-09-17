@@ -30,6 +30,7 @@
     </parent>
 
     <artifactId>terminology</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <properties>
         <license-header.dir>../</license-header.dir>

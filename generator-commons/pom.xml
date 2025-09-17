@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>generator-commons</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

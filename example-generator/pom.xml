@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>example-generator</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <properties>
         <license-header.dir>../</license-header.dir>

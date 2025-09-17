@@ -30,6 +30,7 @@
     </parent>
 
     <artifactId>opt-1.4</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <properties>
         <license-header.dir>../</license-header.dir>
