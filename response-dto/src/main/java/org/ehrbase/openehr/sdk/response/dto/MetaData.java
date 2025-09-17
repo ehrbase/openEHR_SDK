@@ -21,9 +21,11 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.QueryResultDto;
 
 /**
@@ -245,7 +247,7 @@ public class MetaData {
      * @param <T> of the {@link AdditionalProperty}
      */
     @Deprecated(forRemoval = true)
-    public <T> void setAdditionalProperty(AdditionalProperty<T> property, @Nullable T value) {
+    public <T> void setAdditionalProperty(AdditionalProperty<T> property, T value) {
         setAdditionalProperty(property.getName(), value);
     }
 
@@ -255,7 +257,7 @@ public class MetaData {
      * @see #setAdditionalProperty(AdditionalProperty, Object)
      */
     @Deprecated(forRemoval = true)
-    public <T> @Nullable T getAdditionalProperty(AdditionalProperty<T> property) {
+    public <T> T getAdditionalProperty(AdditionalProperty<T> property) {
         Object prop = additionalProperties().get(property.getName());
         return prop != null ? property.apply(prop) : null;
     }

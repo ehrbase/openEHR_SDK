@@ -19,30 +19,29 @@ package org.ehrbase.openehr.sdk.webtemplate.templateprovider;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
 import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.spi.CachingProvider;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 public class CachedTemplateProviderTest {
 
     @Test
     public void find() {
+        OPERATIONALTEMPLATE template = Mockito.mock(OPERATIONALTEMPLATE.class);
+        Cache<String, OPERATIONALTEMPLATE> cache = Mockito.mock(Cache.class);
+        TemplateProvider templateProvider = Mockito.mock(TemplateProvider.class);
 
-        CachingProvider provider = Caching.getCachingProvider();
-        CacheManager cacheManager = provider.getCacheManager();
-        MutableConfiguration<String, OPERATIONALTEMPLATE> configuration = new MutableConfiguration<
-                        String, OPERATIONALTEMPLATE>()
-                .setTypes(String.class, OPERATIONALTEMPLATE.class)
-                .setStoreByValue(false);
-        Cache<String, OPERATIONALTEMPLATE> cache = cacheManager.createCache("jCache", configuration);
-
-        CachedTemplateProvider cut = new CachedTemplateProvider(new TestDataTemplateProvider(), cache);
+        Mockito.when(templateProvider.find(ArgumentMatchers.anyString()))
+                .thenReturn(Optional.of(template), Optional.empty());
+        CachedTemplateProvider cut = new CachedTemplateProvider(templateProvider, cache);
         assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
+        Mockito.verify(templateProvider).find(ArgumentMatchers.anyString());
+        Mockito.verify(cache).put(ArgumentMatchers.anyString(), ArgumentMatchers.eq(template));
         // read from Cache
+        Mockito.when(cache.get(ArgumentMatchers.anyString())).thenReturn(template);
         assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
     }
 }

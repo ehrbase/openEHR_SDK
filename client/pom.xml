@@ -90,10 +90,6 @@
             <artifactId>classgraph</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -119,11 +115,6 @@
         <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>validation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
