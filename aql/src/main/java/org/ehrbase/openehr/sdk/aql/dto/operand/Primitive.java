@@ -52,6 +52,15 @@ public abstract sealed class Primitive<T extends Constable, O extends Primitive<
     }
 
     @Override
+    public void render(final StringBuilder sb) {
+        if (getValue() == null) {
+            sb.append("NULL");
+        } else {
+            sb.append(getValue().toString());
+        }
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

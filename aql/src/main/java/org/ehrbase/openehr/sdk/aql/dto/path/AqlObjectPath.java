@@ -143,7 +143,22 @@ public final class AqlObjectPath implements PathPredicateOperand<AqlObjectPath> 
     }
 
     public String render() {
-        return AqlRenderer.render(this);
+        StringBuilder sb = new StringBuilder();
+        render(sb);
+        return sb.toString();
+    }
+
+    @Override
+    public void render(final StringBuilder sb) {
+        if (getPathNodes().isEmpty()) {
+            throw new UnsupportedOperationException("Found empty AqlObjectPath");
+        }
+        AqlRenderer.join(sb, "/", "", "", getPathNodes().stream().map(a -> (s -> renderPathNode(s, a))));
+    }
+
+    private static void renderPathNode(StringBuilder sb, PathNode n) {
+        sb.append(n.getAttribute());
+        AqlRenderer.renderPredicate(sb, n.getPredicateOrOperands());
     }
 
     @Override

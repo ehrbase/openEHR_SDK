@@ -44,7 +44,6 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.AggregateFunction.AggregateFuncti
 import org.ehrbase.openehr.sdk.aql.dto.operand.ColumnExpression;
 import org.ehrbase.openehr.sdk.aql.dto.operand.ComparisonLeftOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.CountDistinctAggregateFunction;
-import org.ehrbase.openehr.sdk.aql.dto.operand.DoublePrimitive;
 import org.ehrbase.openehr.sdk.aql.dto.operand.IdentifiedPath;
 import org.ehrbase.openehr.sdk.aql.dto.operand.LikeOperand;
 import org.ehrbase.openehr.sdk.aql.dto.operand.MatchesOperand;
@@ -58,7 +57,6 @@ import org.ehrbase.openehr.sdk.aql.dto.operand.TerminologyFunction;
 import org.ehrbase.openehr.sdk.aql.dto.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.aql.dto.path.AndOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath;
-import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPath.PathNode;
 import org.ehrbase.openehr.sdk.aql.dto.path.AqlObjectPathUtil;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate;
 import org.ehrbase.openehr.sdk.aql.dto.path.ComparisonOperatorPredicate.PredicateComparisonOperator;
@@ -85,7 +83,6 @@ public final class AqlRenderer {
         }
 
         if (CollectionUtils.isNotEmpty(dto.getOrderBy())) {
-
             renderOrderByClause(sb, dto.getOrderBy());
         }
 
@@ -102,12 +99,6 @@ public final class AqlRenderer {
     public static String render(IdentifiedPath ip) {
         StringBuilder sb = new StringBuilder();
         renderIdentifiedPath(sb, ip);
-        return sb.toString();
-    }
-
-    public static String render(AqlObjectPath p) {
-        StringBuilder sb = new StringBuilder();
-        renderPath(sb, p);
         return sb.toString();
     }
 
@@ -163,9 +154,9 @@ public final class AqlRenderer {
     private static void renderMatchesOperand(StringBuilder sb, MatchesOperand next) {
 
         if (next instanceof QueryParameter queryParameter) {
-            renderParameterDto(sb, queryParameter);
+            queryParameter.render(sb);
         } else if (next instanceof Primitive primitive) {
-            sb.append(renderPrimitive(primitive));
+            primitive.render(sb);
         } else if (next instanceof TerminologyFunction terminologyFunction) {
             renderTerminologyFunction(sb, terminologyFunction);
         } else {
@@ -188,15 +179,11 @@ public final class AqlRenderer {
     private static void renderLike(StringBuilder sb, LikeCondition likeCondition) {
         renderIdentifiedPath(sb, likeCondition.getStatement());
         sb.append(" LIKE ");
-        renderLikeOperand(sb, likeCondition.getValue());
-    }
-
-    private static void renderLikeOperand(StringBuilder sb, LikeOperand value) {
-
+        LikeOperand value = likeCondition.getValue();
         if (value instanceof QueryParameter queryParameter) {
-            renderParameterDto(sb, queryParameter);
+            queryParameter.render(sb);
         } else {
-            sb.append(renderPrimitive((StringPrimitive) value));
+            ((StringPrimitive) value).render(sb);
         }
     }
 
@@ -324,19 +311,14 @@ public final class AqlRenderer {
         } else if (operand instanceof IdentifiedPath identifiedPath) {
             renderIdentifiedPath(sb, identifiedPath);
         } else if (operand instanceof Primitive primitive) {
-            sb.append(renderPrimitive(primitive));
+            primitive.render(sb);
         } else if (operand instanceof QueryParameter queryParameter) {
-            renderParameterDto(sb, queryParameter);
+            queryParameter.render(sb);
         } else {
             throw new UnsupportedOperationException(
                     "Cannot handle %s".formatted(operand.getClass().getName()));
         }
         return sb.toString();
-    }
-
-    private static void renderParameterDto(StringBuilder sb, QueryParameter queryParameter) {
-
-        sb.append("$").append(queryParameter.getName());
     }
 
     private static void renderIdentifiedPath(StringBuilder sb, IdentifiedPath dto) {
@@ -352,7 +334,7 @@ public final class AqlRenderer {
 
         Optional.of(dto).map(IdentifiedPath::getPath).ifPresent(p -> {
             sb.append('/');
-            renderPath(sb, p);
+            p.render(sb);
         });
     }
 
@@ -363,7 +345,7 @@ public final class AqlRenderer {
         return sb.toString();
     }
 
-    private static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or) {
+    public static void renderPredicate(StringBuilder sb, List<AndOperatorPredicate> or) {
         if (or.isEmpty() || or.size() == 1 && or.get(0).isEmpty()) {
             return;
         }
@@ -451,7 +433,7 @@ public final class AqlRenderer {
         return op.getValue() instanceof QueryParameter;
     }
 
-    private static void join(
+    public static void join(
             StringBuilder sb, String delimiter, String prefix, String suffix, Stream<Consumer<StringBuilder>> stream) {
         Iterator<Consumer<StringBuilder>> it = stream.iterator();
         if (!it.hasNext()) {
@@ -468,7 +450,7 @@ public final class AqlRenderer {
     }
 
     private static void renderComparisonPredicate(StringBuilder sb, ComparisonOperatorPredicate predicate) {
-        renderPath(sb, predicate.getPath());
+        predicate.getPath().render(sb);
 
         boolean comparingPaths = predicate.getValue() instanceof AqlObjectPath;
         if (comparingPaths) {
@@ -486,45 +468,11 @@ public final class AqlRenderer {
     }
 
     private static void renderPathPredicateOperand(StringBuilder sb, PathPredicateOperand operand) {
-
-        if (operand instanceof QueryParameter o) {
-            renderParameterDto(sb, o);
-        } else if (operand instanceof Primitive o) {
-            sb.append(renderPrimitive(o));
-        } else if (operand instanceof AqlObjectPath o) {
-            renderPath(sb, o);
-        } else {
-            throw new UnsupportedOperationException("Unsupported operand type %s".formatted(operand.getClass()));
-        }
-    }
-
-    private static void renderPath(StringBuilder sb, AqlObjectPath p) {
-        if (p.getPathNodes().isEmpty()) {
-            throw new UnsupportedOperationException("Found empty AqlObjectPath");
-        }
-        join(sb, "/", "", "", p.getPathNodes().stream().map(a -> (s -> renderPathNode(s, a))));
-    }
-
-    private static void renderPathNode(StringBuilder sb, PathNode n) {
-        sb.append(n.getAttribute());
-        renderPredicate(sb, n.getPredicateOrOperands());
+        operand.render(sb);
     }
 
     private static void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
-        sb.append(renderPrimitive(dto));
-    }
-
-    private static String renderPrimitive(Primitive primitive) {
-
-        if (primitive.getValue() == null) {
-            return "NULL";
-        } else if (primitive instanceof DoublePrimitive d) {
-            return d.getStringRepresentation();
-        } else if (primitive instanceof StringPrimitive s) {
-            return encodeString(s.getValue());
-        } else {
-            return primitive.getValue().toString();
-        }
+        dto.render(sb);
     }
 
     /**
@@ -533,7 +481,7 @@ public final class AqlRenderer {
      * @param value
      * @return
      */
-    static String encodeString(String value) {
+    public static String encodeString(String value) {
         if (value == null) {
             return null;
         }

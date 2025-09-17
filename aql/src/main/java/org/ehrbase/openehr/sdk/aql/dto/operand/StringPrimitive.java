@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.aql.dto.operand;
 
+import org.ehrbase.openehr.sdk.aql.render.AqlRenderer;
+
 /**
  * @author Stefan Spiska
  */
@@ -27,5 +29,10 @@ public sealed class StringPrimitive extends Primitive<String, StringPrimitive> i
 
     public StringPrimitive(String newValue) {
         super(newValue);
+    }
+
+    @Override
+    public void render(final StringBuilder sb) {
+        sb.append(AqlRenderer.encodeString(getValue()));
     }
 }
