@@ -17,7 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.dto;
 
-import com.google.common.reflect.TypeToken;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.support.identification.ObjectId;
@@ -126,8 +126,7 @@ public class DtoFromCompositionWalker extends FromCompositionWalker<DtoWithMatch
             AqlPath path = subValues.keySet().stream().findAny().orElseThrow();
             Class<?> type = field.getType();
             if (List.class.isAssignableFrom(type)) {
-                type = TypeToken.of(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0])
-                        .getRawType();
+                type = TypeFactory.rawClass(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]);
             }
             if (isChoice.getAsBoolean()) {
                 type = findActual(type, child.getRmType()).orElseThrow();
