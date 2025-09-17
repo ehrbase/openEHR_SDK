@@ -259,7 +259,7 @@ public final class AqlRenderer {
         if (columnExpression instanceof IdentifiedPath) {
             renderIdentifiedPath(sb, (IdentifiedPath) columnExpression);
         } else if (columnExpression instanceof Primitive) {
-            renderSelectPrimitiveDto(sb, (Primitive) columnExpression);
+            ((Primitive) columnExpression).render(sb);
         } else if (columnExpression instanceof AggregateFunction) {
             renderAggregateFunctionDto(sb, (AggregateFunction) columnExpression);
         } else if (columnExpression instanceof SingleRowFunction singleRowFunktion) {
@@ -369,7 +369,7 @@ public final class AqlRenderer {
                 if (nameValue != null) {
                     appendPlainValue(sb, archetypeNodeId);
                     sb.append(", ");
-                    renderPathPredicateOperand(sb, nameValue.getValue());
+                    nameValue.getValue().render(sb);
                     return;
                 }
 
@@ -463,16 +463,8 @@ public final class AqlRenderer {
         if (predicate.getOperator() == PredicateComparisonOperator.MATCHES) {
             sb.append(predicate.getMatchesOperand().getEscapedRegex());
         } else {
-            renderPathPredicateOperand(sb, predicate.getValue());
+            predicate.getValue().render(sb);
         }
-    }
-
-    private static void renderPathPredicateOperand(StringBuilder sb, PathPredicateOperand operand) {
-        operand.render(sb);
-    }
-
-    private static void renderSelectPrimitiveDto(StringBuilder sb, Primitive dto) {
-        dto.render(sb);
     }
 
     /**
