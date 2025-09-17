@@ -2,6 +2,12 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.24.0]
+ ### Added 
+ ### Changed
+- Publishing artifacts directly to central.sonatype.com [#675](https://github.com/ehrbase/openEHR_SDK/pull/675)
+ ### Fixed 
+
 ## [2.23.0]
  ### Added 
  ### Fixed 
@@ -483,3 +489,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.21.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.20.0...v2.21.0
 [2.22.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.21.0...v2.22.0
 [2.23.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.22.0...v2.23.0
+[2.24.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.23.0...v2.24.0
