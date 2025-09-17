@@ -28,6 +28,7 @@
     </parent>
 
     <artifactId>validation</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <properties>
         <license-header.dir>../</license-header.dir>
@@ -111,7 +112,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
           <plugin>
@@ -127,5 +128,5 @@
             </executions>
           </plugin>
         </plugins>
-      </build>    
+      </build>
 </project>
