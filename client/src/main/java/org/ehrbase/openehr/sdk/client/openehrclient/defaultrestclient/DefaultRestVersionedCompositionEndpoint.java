@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
@@ -102,7 +101,7 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
 
     @Override
     public <T> Optional<OriginalVersion<T>> findVersionAtTime(
-            UUID versionedObjectUid, @Nullable LocalDateTime versionAtTime, Class<T> clazz) {
+            UUID versionedObjectUid, LocalDateTime versionAtTime, Class<T> clazz) {
         try {
             URIBuilder uriBuilder = new URIBuilder(defaultRestClient
                     .getConfig()

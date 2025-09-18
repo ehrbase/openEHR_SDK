@@ -30,7 +30,6 @@ import com.nedap.archie.rm.generic.AuditDetails;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import com.nedap.archie.rm.support.identification.UIDBasedId;
-import javax.annotation.Nullable;
 import org.ehrbase.openehr.sdk.client.openehrclient.ContributionChangeType;
 import org.ehrbase.openehr.sdk.response.dto.ContributionCreateDto;
 
@@ -161,15 +160,14 @@ public class ContributionBuilder {
         return this;
     }
 
-    private void updateContribution(
-            Locatable composition, ContributionChangeType type, @Nullable String precedingVersionUid) {
+    private void updateContribution(Locatable composition, ContributionChangeType type, String precedingVersionUid) {
         updateContribution(composition, type, precedingVersionUid, new OriginalVersion<>());
     }
 
     private void updateContribution(
-            @Nullable Locatable composition,
+            Locatable composition,
             ContributionChangeType type,
-            @Nullable String precedingVersionUid,
+            String precedingVersionUid,
             OriginalVersion<Locatable> originalVersion) {
 
         if (originalVersion == null) {
