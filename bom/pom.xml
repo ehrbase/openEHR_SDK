@@ -71,10 +71,19 @@
         <jaxb-runtime.version>2.3.9</jaxb-runtime.version>
         <sonar.scanner.version>3.11.0.3922</sonar.scanner.version>
         <maven-central-publishing-plugin.version>0.8.0</maven-central-publishing-plugin.version>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- some libs include slf4j 1.x, this is outdated and causes issues with spring apps using the SDK -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-bom</artifactId>
+                <version>${slf4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.ehrbase.openehr.sdk</groupId>
                 <artifactId>client</artifactId>
