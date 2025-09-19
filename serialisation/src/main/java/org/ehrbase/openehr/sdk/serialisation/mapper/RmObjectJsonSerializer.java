@@ -26,8 +26,7 @@ import java.io.IOException;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.openehr.sdk.serialisation.xmlencoding.CanonicalXML;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 
 public class RmObjectJsonSerializer extends JsonSerializer<RMObject> {
 
@@ -55,9 +54,9 @@ public class RmObjectJsonSerializer extends JsonSerializer<RMObject> {
             } else {
                 qName = new QName(null, gen.getOutputContext().getParent().getCurrentName());
             }
-            gen.writeRawValue(new CanonicalXML().marshalInline(value, qName));
+            gen.writeRawValue(RMDataFormat.canonicalXML().marshalInline(value, qName));
         } else {
-            gen.writeRawValue(new CanonicalJson().marshalWithOptions(value, marshalOptions));
+            gen.writeRawValue(RMDataFormat.canonicalJSON().marshalWithOptions(value, marshalOptions));
         }
     }
 }

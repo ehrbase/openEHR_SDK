@@ -67,6 +67,8 @@ import org.ehrbase.openehr.sdk.serialisation.exception.UnmarshalException;
  */
 public class CanonicalJson implements RMDataFormat {
 
+    public static final CanonicalJson DEFAULT_INSTANCE = new CanonicalJson();
+
     public static final ObjectMapper MARSHAL_OM =
             ArchieObjectMapperProvider.getObjectMapper().copy();
 
@@ -127,6 +129,12 @@ public class CanonicalJson implements RMDataFormat {
             return false;
         }
     }
+
+    /**
+     * @deprecated Use RMDataFormat.canonicalJson()
+     */
+    @Deprecated
+    public CanonicalJson() {}
 
     @Override
     public String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options) {

@@ -71,8 +71,8 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.errortestcomposit
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.errortestcomposition.definition.SpecimenCollectionDateTimeDvIntervalDvDateTime;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.korpergrossecomposition.KorpergrosseComposition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.korpergrossecomposition.definition.GrosseLangeObservation;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.TestDataTemplateProvider;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Test;
 
@@ -297,7 +297,7 @@ public class RmToGeneratedDtoConverterTest {
 
     @Test
     public void testFlattenCorona() throws IOException {
-        Composition composition = new CanonicalJson()
+        Composition composition = RMDataFormat.canonicalJSON()
                 .unmarshal(
                         IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
                         Composition.class);

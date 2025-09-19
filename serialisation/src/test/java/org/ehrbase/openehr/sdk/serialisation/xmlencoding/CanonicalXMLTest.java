@@ -132,7 +132,7 @@ class CanonicalXMLTest {
         folder.setName(new DvText("folder name"));
         folder.addItem(new PartyRef());
 
-        String inline = new CanonicalXML().marshalInline(folder, new QName(null, "folder"));
+        String inline = RMDataFormat.canonicalXML().marshalInline(folder, new QName(null, "folder"));
         assertThat(inline)
                 .isEqualTo(
                         """

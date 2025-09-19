@@ -68,8 +68,16 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public class CanonicalXML implements RMDataFormat {
 
+    public static final CanonicalXML DEFAULT_INSTANCE = new CanonicalXML();
+
     // should be http://schemas.openehr.org/v1 but this does not work with archie.
     private static final String NAMESPACE = "";
+
+    /**
+     * @deprecated Use RMDataFormat.canonicalXML()
+     */
+    @Deprecated(forRemoval = true)
+    public CanonicalXML() {}
 
     public String marshal(RMObject rmObject, boolean withHeader) {
         return marshalWithOptions(

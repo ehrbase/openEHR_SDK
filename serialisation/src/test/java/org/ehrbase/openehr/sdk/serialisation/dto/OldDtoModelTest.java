@@ -42,7 +42,6 @@ import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.junit.Test;
@@ -117,7 +116,7 @@ public class OldDtoModelTest {
 
     @Test
     public void testFlattenCorona() throws IOException {
-        Composition composition = new CanonicalJson()
+        Composition composition = RMDataFormat.canonicalJSON()
                 .unmarshal(
                         IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
                         Composition.class);
@@ -132,7 +131,7 @@ public class OldDtoModelTest {
 
     @Test
     public void testUnflattenCorona() throws IOException {
-        Composition expected = new CanonicalJson()
+        Composition expected = RMDataFormat.canonicalJSON()
                 .unmarshal(
                         IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(), StandardCharsets.UTF_8),
                         Composition.class);

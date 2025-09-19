@@ -36,8 +36,8 @@ public interface RMDataFormat {
      *
      * @link <a href="https://specifications.openehr.org/releases/ITS-XML/development">ITS-XML</a>
      */
-    static RMDataFormat canonicalXML() {
-        return new CanonicalXML();
+    static CanonicalXML canonicalXML() {
+        return CanonicalXML.DEFAULT_INSTANCE;
     }
 
     /**
@@ -45,8 +45,8 @@ public interface RMDataFormat {
      *
      * @link <a href="https://specifications.openehr.org/releases/ITS-JSON/development">ITS-JSON</a>
      */
-    static RMDataFormat canonicalJSON() {
-        return new CanonicalJson();
+    static CanonicalJson canonicalJSON() {
+        return CanonicalJson.DEFAULT_INSTANCE;
     }
 
     /**

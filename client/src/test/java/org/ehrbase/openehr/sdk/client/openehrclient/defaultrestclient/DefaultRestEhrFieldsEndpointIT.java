@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.junit.jupiter.api.Test;
 
@@ -82,7 +82,7 @@ class DefaultRestEhrFieldsEndpointIT extends SdkClientTestIT {
         ehrStatus.setSubject(new PartySelf(new PartyRef(subjectId, "default", "PERSON")));
 
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
-        ehrStatus.setOtherDetails(new CanonicalJson().unmarshal(value, ItemTree.class));
+        ehrStatus.setOtherDetails(RMDataFormat.canonicalJSON().unmarshal(value, ItemTree.class));
         ehrStatus.getOtherDetails().setArchetypeNodeId("openEHR-EHR-EHR_STATUS.generic.v1");
         ehrStatus.getOtherDetails().setName(new DvText("test"));
 
