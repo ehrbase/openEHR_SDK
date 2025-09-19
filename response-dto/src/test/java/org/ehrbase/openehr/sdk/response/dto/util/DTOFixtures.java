@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.response.dto.util;
 
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.QueryResultDto;
 
 public class DTOFixtures {
@@ -27,7 +26,7 @@ public class DTOFixtures {
         return fixtureQueryResultResultDto(null);
     }
 
-    public static QueryResultDto fixtureQueryResultResultDto(@Nullable Consumer<QueryResultDto> customize) {
+    public static QueryResultDto fixtureQueryResultResultDto(Consumer<QueryResultDto> customize) {
 
         QueryResultDto queryResultDto = new QueryResultDto();
         queryResultDto.setExecutedAQL("SELECT e/ehr_id/value FROM EHR e LIMIT 100 OFFSET 1");

@@ -18,8 +18,12 @@
 package org.ehrbase.openehr.sdk.response.dto.ehrscape;
 
 import java.time.OffsetDateTime;
-import java.util.*;
-import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.query.ResultHolder;
 
 public class QueryResultDto {
@@ -64,7 +68,7 @@ public class QueryResultDto {
         this.executedAQL = executedAQL;
     }
 
-    public @Nullable Integer getLimit() {
+    public Integer getLimit() {
         return limit;
     }
 
@@ -72,7 +76,7 @@ public class QueryResultDto {
         this.limit = limit;
     }
 
-    public @Nullable Integer getOffset() {
+    public Integer getOffset() {
         return offset;
     }
 
@@ -108,7 +112,7 @@ public class QueryResultDto {
         return getVariables().get(columnId);
     }
 
-    public Iterator<Map.Entry<String, String>> variablesIterator() {
+    public Iterator<Entry<String, String>> variablesIterator() {
         return getVariables().entrySet().iterator();
     }
 }

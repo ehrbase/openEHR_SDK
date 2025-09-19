@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -26,6 +27,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.temporal.TemporalAccessor;
@@ -57,7 +59,6 @@ import org.ehrbase.openehr.sdk.serialisation.dto.RmToGeneratedDtoConverter;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
-import org.json.JSONObject;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
@@ -250,9 +251,12 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("q", query.buildAql());
-
+        String body;
+        try {
+            body = AQL_OBJECT_MAPPER.writeValueAsString(Map.of("q", query.buildAql()));
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + STORE_AQL_QUERY_PATH
@@ -264,7 +268,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             defaultRestClient.internalPut(
                     uriBuilder.build(),
                     Collections.emptyMap(),
-                    requestBody.toString(),
+                    body,
                     ContentType.APPLICATION_JSON,
                     ContentType.APPLICATION_JSON.getMimeType());
 

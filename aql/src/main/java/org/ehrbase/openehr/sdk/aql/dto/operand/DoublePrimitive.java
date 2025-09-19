@@ -75,4 +75,9 @@ public final class DoublePrimitive extends Primitive<Double, DoublePrimitive> {
         setValue(checkValue(parse(stringRepresentation)));
         this.stringRepresentation = stringRepresentation;
     }
+
+    @Override
+    public void render(final StringBuilder sb) {
+        sb.append(getStringRepresentation());
+    }
 }

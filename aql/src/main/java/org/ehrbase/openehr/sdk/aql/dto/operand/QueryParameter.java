@@ -87,4 +87,9 @@ public final class QueryParameter
     public QueryParameter thawed() {
         return new QueryParameter(getName());
     }
+
+    @Override
+    public void render(final StringBuilder sb) {
+        sb.append("$").append(getName());
+    }
 }
