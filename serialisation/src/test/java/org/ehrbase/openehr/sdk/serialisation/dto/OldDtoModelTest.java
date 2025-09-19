@@ -40,7 +40,7 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.old.testalltypese
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.TestDataTemplateProvider;
+import org.ehrbase.openehr.sdk.serialisation.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;

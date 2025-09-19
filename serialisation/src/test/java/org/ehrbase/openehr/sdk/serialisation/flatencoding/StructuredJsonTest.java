@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
+import org.ehrbase.openehr.sdk.serialisation.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataStructuredJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.junit.jupiter.api.Test;

@@ -72,7 +72,7 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.errortestcomposit
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.korpergrossecomposition.KorpergrosseComposition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.korpergrossecomposition.definition.GrosseLangeObservation;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
-import org.ehrbase.openehr.sdk.serialisation.flatencoding.TestDataTemplateProvider;
+import org.ehrbase.openehr.sdk.serialisation.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.junit.Test;
 
