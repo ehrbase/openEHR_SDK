@@ -67,9 +67,9 @@ class FlatJsonTest {
         Composition composition = unmarshall(testDataSimSDTJson, templateId);
         String value = rmDataFormat(templateId).marshal(composition);
 
-        assertThat(value)
-                .startsWith(
-                        """
+        assertStartsWith(
+                value,
+                """
                 {
                   "bericht/category|code" : "433",
                   "bericht/category|value" : "event",
@@ -105,9 +105,9 @@ class FlatJsonTest {
         Composition composition = unmarshall(testDataSimSDTJson, templateId);
         String value = rmDataFormat(templateId).marshalWithOptions(composition, MarshalOption.PRETTY_PRINT);
 
-        assertThat(value)
-                .startsWith(
-                        """
+        assertStartsWith(
+                value,
+                """
                 {
                   "multi_list/category|code" : "433",
                   "multi_list/category|value" : "event",
@@ -118,6 +118,15 @@ class FlatJsonTest {
                   "multi_list/context/setting|code" : "238",
                   "multi_list/context/setting|terminology" : "openehr",
                   "multi_list/context/setting|value" : "other care",""");
+    }
+
+    /**
+     * Line separators of prefix are converted to system default for comparison
+     * @param actual
+     * @param prefix
+     */
+    private static void assertStartsWith(String actual, String prefix) {
+        assertThat(actual).startsWith(prefix.replaceAll("\\R", System.lineSeparator()));
     }
 
     @Test

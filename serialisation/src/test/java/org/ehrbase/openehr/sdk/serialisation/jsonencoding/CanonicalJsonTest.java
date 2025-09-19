@@ -128,7 +128,8 @@ class CanonicalJsonTest {
         Element element = new Element("at0042", new DvText("pretty print"), null);
         assertThat(rmDataFormat().marshal(element))
                 .isEqualTo(
-                        """
+                        systemEol(
+                                """
                        {
                          "_type" : "ELEMENT",
                          "name" : {
@@ -136,7 +137,7 @@ class CanonicalJsonTest {
                            "value" : "pretty print"
                          },
                          "archetype_node_id" : "at0042"
-                       }""");
+                       }"""));
     }
 
     @Test
@@ -155,7 +156,8 @@ class CanonicalJsonTest {
         Element element = new Element("at0042", new DvText("pretty print"), null);
         assertThat(rmDataFormat().marshalWithOptions(element, MarshalOption.PRETTY_PRINT))
                 .isEqualTo(
-                        """
+                        systemEol(
+                                """
                        {
                          "_type" : "ELEMENT",
                          "name" : {
@@ -163,12 +165,15 @@ class CanonicalJsonTest {
                            "value" : "pretty print"
                          },
                          "archetype_node_id" : "at0042"
-                       }""");
+                       }"""));
+    }
+
+    private static String systemEol(String str) {
+        return str.replaceAll("\\R", System.lineSeparator());
     }
 
     @Test
     void marshalDuration() {
-
         JSONAssert.assertEquals(
                 rmDataFormat().marshal(new DvDuration(Duration.ofDays(30L))),
                 """
@@ -242,7 +247,7 @@ class CanonicalJsonTest {
         expected.setUid(new HierObjectId("bbf60d27-9200-4995-a950-279f889d1050"));
         expected.setVersions(versions);
 
-        CanonicalJson cut = new CanonicalJson();
+        CanonicalJson cut = RMDataFormat.canonicalJSON();
         String json = cut.marshal(expected);
 
         Contribution actual = cut.unmarshal(json, Contribution.class);
@@ -273,7 +278,7 @@ class CanonicalJsonTest {
         expected.setContributions(contributions);
         expected.setFolders(folders);
 
-        CanonicalJson cut = new CanonicalJson();
+        CanonicalJson cut = RMDataFormat.canonicalJSON();
         String json = cut.marshal(expected);
 
         Ehr actual = cut.unmarshal(json, Ehr.class);

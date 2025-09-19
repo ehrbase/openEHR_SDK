@@ -62,14 +62,19 @@ class RmObjectJsonSerializerTest {
 
         Assertions.assertThat(serialize(new RmObjectJsonSerializer(), composition))
                 .isEqualTo(
-                        """
+                        systemEol(
+                                """
                 {
                   "_type" : "COMPOSITION",
                   "name" : {
                     "_type" : "DV_TEXT",
                     "value" : "default pretty print test"
                   }
-                }""");
+                }"""));
+    }
+
+    private static String systemEol(String str) {
+        return str.replaceAll("\\R", System.lineSeparator());
     }
 
     @Test
@@ -80,14 +85,15 @@ class RmObjectJsonSerializerTest {
 
         Assertions.assertThat(serialize(new RmObjectJsonSerializer(MarshalOption.PRETTY_PRINT), composition))
                 .isEqualTo(
-                        """
+                        systemEol(
+                                """
                 {
                   "_type" : "COMPOSITION",
                   "name" : {
                     "_type" : "DV_TEXT",
                     "value" : "explicit pretty print test"
                   }
-                }""");
+                }"""));
     }
 
     @Test

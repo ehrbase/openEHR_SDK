@@ -82,7 +82,7 @@ class StructuredJsonTest {
      * @param actual
      * @param prefix
      */
-    private void assertStartsWith(String actual, String prefix) {
+    private static void assertStartsWith(String actual, String prefix) {
         assertThat(actual).startsWith(prefix.replaceAll("\\R", System.lineSeparator()));
     }
 
