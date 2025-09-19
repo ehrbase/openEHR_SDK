@@ -64,9 +64,9 @@ class StructuredJsonTest {
         Composition composition = unmarshall(CompositionTestDataStructuredJson.MULTI_LIST, operationalTemplateTestData);
         String value = rmDataFormat(operationalTemplateTestData).marshal(composition);
 
-        assertThat(value)
-                .startsWith(
-                        """
+        assertStartsWith(
+                value,
+                """
                 {
                   "multi_list" : {
                     "category" : [ {
@@ -75,6 +75,15 @@ class StructuredJsonTest {
                       "|terminology" : "openehr"
                     } ],
                     "context" :""");
+    }
+
+    /**
+     * Line separators of prefix are converted to system default for comparison
+     * @param actual
+     * @param prefix
+     */
+    private void assertStartsWith(String actual, String prefix) {
+        assertThat(actual).startsWith(prefix.replaceAll("\\R", System.lineSeparator()));
     }
 
     @Test
@@ -98,17 +107,17 @@ class StructuredJsonTest {
         String value =
                 rmDataFormat(operationalTemplateTestData).marshalWithOptions(composition, MarshalOption.PRETTY_PRINT);
 
-        assertThat(value)
-                .startsWith(
-                        """
-                {
-                  "bericht" : {
-                    "category" : [ {
-                      "|code" : "433",
-                      "|value" : "event",
-                      "|terminology" : "openehr"
-                    } ],
-                    "context" :""");
+        assertStartsWith(
+                value,
+                """
+                        {
+                          "bericht" : {
+                            "category" : [ {
+                              "|code" : "433",
+                              "|value" : "event",
+                              "|terminology" : "openehr"
+                            } ],
+                            "context" :""");
     }
 
     @Test
