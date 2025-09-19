@@ -24,8 +24,8 @@ import com.nedap.archie.rm.composition.Composition;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatTestHelper;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -61,7 +61,6 @@ class FlatJsonMarshallerTest {
         String expected = compositionJson(CompositionTestDataSimSDTJson.ALTERNATIVE_EVENTS_2);
 
         List<FlatTestHelper.Error> errors = FlatTestHelper.compere(actual, expected);
-        System.out.println(errors);
         FlatTestHelper.assertErrors(
                 errors,
                 List.of(
@@ -201,7 +200,7 @@ class FlatJsonMarshallerTest {
     }
 
     private static Composition composition(CompositionTestDataCanonicalJson data) throws Exception {
-        return new CanonicalJson().unmarshal(IOUtils.toString(data.getStream(), StandardCharsets.UTF_8));
+        return RMDataFormat.canonicalJSON().unmarshal(IOUtils.toString(data.getStream(), StandardCharsets.UTF_8));
     }
 
     private static String compositionJson(CompositionTestDataSimSDTJson data) throws Exception {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2025 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.serialisation.templateprovider;
+package org.ehrbase.openehr.sdk.serialisation;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
@@ -58,6 +57,6 @@ public class TestDataTemplateProvider implements TemplateProvider {
     public List<String> listTemplateIds() {
         return Arrays.stream(OperationalTemplateTestData.values())
                 .map(OperationalTemplateTestData::getTemplateId)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

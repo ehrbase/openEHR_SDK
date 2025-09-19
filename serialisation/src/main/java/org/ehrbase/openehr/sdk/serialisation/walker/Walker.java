@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
@@ -391,8 +391,8 @@ public abstract class Walker<T> {
         if (rmObject == null) {
             return null;
         }
-        CanonicalJson canonicalXML = new CanonicalJson();
-        return canonicalXML.unmarshal(canonicalXML.marshal(rmObject), rmObject.getClass());
+        return RMDataFormat.canonicalJSON()
+                .unmarshal(RMDataFormat.canonicalJSON().marshal(rmObject), rmObject.getClass());
     }
 
     public static class EventHelper {

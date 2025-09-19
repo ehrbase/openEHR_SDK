@@ -37,7 +37,6 @@ import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.Territory;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -138,7 +137,7 @@ class ExampleGeneratorToCompositionWalkerTest {
 
         cut.walk(composition, object, webTemplate, defaultValues, templateId);
 
-        appendToFile(outPath, new CanonicalJson().marshal(composition));
+        appendToFile(outPath, RMDataFormat.canonicalJSON().marshal(composition));
 
         CompositionValidator compositionValidator = new CompositionValidator();
         int expectedConstraintValidations = EXPECTED_CONSTRAINT_VIOLATIONS.getOrDefault(template, 0);

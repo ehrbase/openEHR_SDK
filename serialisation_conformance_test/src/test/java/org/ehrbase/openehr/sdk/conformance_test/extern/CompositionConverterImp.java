@@ -27,7 +27,6 @@ import java.util.Map;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 
 public class CompositionConverterImp implements CompositionConverter {
 
@@ -35,8 +34,8 @@ public class CompositionConverterImp implements CompositionConverter {
 
     @Override
     public String convertRawToFlat(String template, String defaultLanguage, String rawComposition) throws Exception {
-        Composition unmarshal =
-                new CanonicalJson().unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
+        Composition unmarshal = RMDataFormat.canonicalJSON()
+                .unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
 
         return Helper.getFlatJson(template, FlatFormat.SIM_SDT)
                 .marshal(unmarshal)
@@ -53,8 +52,8 @@ public class CompositionConverterImp implements CompositionConverter {
     public String convertRawToStructured(String template, String defaultLanguage, String rawComposition)
             throws Exception {
 
-        Composition unmarshal =
-                new CanonicalJson().unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
+        Composition unmarshal = RMDataFormat.canonicalJSON()
+                .unmarshal(rawComposition.replace("\"@class\"", "\"_type\""), Composition.class);
         return Helper.getFlatJson(template, FlatFormat.STRUCTURED).marshal(unmarshal);
     }
 
@@ -303,7 +302,7 @@ public class CompositionConverterImp implements CompositionConverter {
                 "multidisciplinary_individualised_falls_care_plan/context/xds_metadata:0/author_specialty");
 
         Composition composition = flatJson.unmarshal(OBJECT_MAPPER.writeValueAsString(currentValues));
-        String raw = new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
+        String raw = RMDataFormat.canonicalJSON().marshal(composition).replace("\"_type\"", "\"@class\"");
 
         if (composition.getArchetypeDetails().getTemplateId().getValue().equals("ISPEK - MED - Medication Order")) {
             // Changing the DVCodedText depending on the asked language is not supported right now
@@ -367,7 +366,7 @@ public class CompositionConverterImp implements CompositionConverter {
 
         Composition composition =
                 Helper.getFlatJson(template, FlatFormat.STRUCTURED).unmarshal(fixed);
-        return new CanonicalJson().marshal(composition).replace("\"_type\"", "\"@class\"");
+        return RMDataFormat.canonicalJSON().marshal(composition).replace("\"_type\"", "\"@class\"");
     }
 
     @Override

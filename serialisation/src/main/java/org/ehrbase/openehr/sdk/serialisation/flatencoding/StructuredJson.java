@@ -19,6 +19,8 @@ package org.ehrbase.openehr.sdk.serialisation.flatencoding;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.util.Set;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
@@ -42,10 +44,10 @@ public class StructuredJson implements RMDataFormat {
     }
 
     @Override
-    public String marshal(RMObject rmObject) {
-        if (rmObject instanceof Composition) {
-            String flatJson = flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect);
-            return StructuredHelper.convertFlatToStructured(flatJson);
+    public String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options) {
+        if (rmObject instanceof Composition composition) {
+            String flatJson = flatJsonMarshaller.toFlatJson(composition, templateIntrospect);
+            return StructuredHelper.convertFlatToStructured(flatJson, options);
         } else {
             throw new MarshalException(String.format(
                     "Class %s not supported in Structured format",

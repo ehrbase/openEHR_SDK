@@ -45,9 +45,9 @@ import org.ehrbase.openehr.sdk.client.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ProxyEhrbaseBloodPressureSimpleDeV0Composition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.minimalevaluationenv1composition.MinimalEvaluationEnV1Composition;
 import org.ehrbase.openehr.sdk.response.dto.ContributionCreateDto;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.dto.GeneratedDtoToRmConverter;
 import org.ehrbase.openehr.sdk.serialisation.dto.RmToGeneratedDtoConverter;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.folder.FolderTestDataCanonicalJson;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
 
         String contribution = IOUtils.toString(ONE_ENTRY_COMPOSITION_LATEST.getStream(), StandardCharsets.UTF_8);
         ContributionCreateDto contributionDto =
-                new CanonicalJson().unmarshal(contribution, ContributionCreateDto.class);
+                RMDataFormat.canonicalJSON().unmarshal(contribution, ContributionCreateDto.class);
 
         contributionDto.setUid(null);
         contributionDto.getAudit().setTimeCommitted(null);
@@ -370,7 +370,7 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
         String contributionJson =
                 IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
         ContributionCreateDto contributionDto =
-                new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
+                RMDataFormat.canonicalJSON().unmarshal(contributionJson, ContributionCreateDto.class);
 
         ContributionCreateDto contribution = ContributionBuilder.builder(contributionDto.getAudit())
                 .addCompositionCreation(proxyComposition)
@@ -398,13 +398,12 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
         ehr = openEhrClient.ehrEndpoint().createEhr();
 
         String value = IOUtils.toString(FolderTestDataCanonicalJson.SIMPLE_EMPTY_FOLDER.getStream(), UTF_8);
-        CanonicalJson canonicalJson = new CanonicalJson();
-        Folder folder = canonicalJson.unmarshal(value, Folder.class);
+        Folder folder = RMDataFormat.canonicalJSON().unmarshal(value, Folder.class);
 
         String contributionJson =
                 IOUtils.toString(ONE_ENTRY_COMPOSITION_MODIFICATION_LATEST.getStream(), StandardCharsets.UTF_8);
         ContributionCreateDto contributionDto =
-                new CanonicalJson().unmarshal(contributionJson, ContributionCreateDto.class);
+                RMDataFormat.canonicalJSON().unmarshal(contributionJson, ContributionCreateDto.class);
 
         ContributionCreateDto contribution = ContributionBuilder.builder(contributionDto.getAudit())
                 .addFolderCreation(folder)
@@ -541,7 +540,7 @@ public class DefaultRestContributionEndpointIT extends SdkClientTestIT {
     }
 
     private MinimalEvaluationEnV1Composition mergeMinimalEvaluationEnV1Composition() throws IOException {
-        var aComposition = new CanonicalJson()
+        var aComposition = RMDataFormat.canonicalJSON()
                 .unmarshal(
                         IOUtils.toString(
                                 CompositionTestDataCanonicalJson.MINIMAL_EVAL.getStream(), StandardCharsets.UTF_8),

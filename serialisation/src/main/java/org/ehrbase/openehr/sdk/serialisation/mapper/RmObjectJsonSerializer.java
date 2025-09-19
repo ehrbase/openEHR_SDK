@@ -23,11 +23,28 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.nedap.archie.rm.RMObject;
 import java.io.IOException;
+import java.util.Set;
 import javax.xml.namespace.QName;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.openehr.sdk.serialisation.xmlencoding.CanonicalXML;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 
 public class RmObjectJsonSerializer extends JsonSerializer<RMObject> {
+
+    private final Set<MarshalOption> marshalOptions;
+
+    public RmObjectJsonSerializer() {
+        // use PRETTY_PRINT to have the same behavior same as versions <= 2.24.0
+        this(Set.of(MarshalOption.PRETTY_PRINT));
+    }
+
+    public RmObjectJsonSerializer(MarshalOption... marshalOptions) {
+        this(Set.of(marshalOptions));
+    }
+
+    public RmObjectJsonSerializer(Set<MarshalOption> marshalOptions) {
+        this.marshalOptions = marshalOptions;
+    }
+
     @Override
     public void serialize(RMObject value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         if (gen instanceof ToXmlGenerator) {
@@ -37,9 +54,9 @@ public class RmObjectJsonSerializer extends JsonSerializer<RMObject> {
             } else {
                 qName = new QName(null, gen.getOutputContext().getParent().getCurrentName());
             }
-            gen.writeRawValue(new CanonicalXML().marshalInline(value, qName));
+            gen.writeRawValue(RMDataFormat.canonicalXML().marshalInline(value, qName));
         } else {
-            gen.writeRawValue(new CanonicalJson().marshal(value));
+            gen.writeRawValue(RMDataFormat.canonicalJSON().marshalWithOptions(value, marshalOptions));
         }
     }
 }
