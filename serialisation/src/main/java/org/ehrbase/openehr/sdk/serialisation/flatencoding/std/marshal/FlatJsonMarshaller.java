@@ -24,7 +24,6 @@ import com.nedap.archie.rm.composition.Composition;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
@@ -34,20 +33,17 @@ public class FlatJsonMarshaller {
 
     private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
-    public FlatJsonMarshaller() {}
-
     /**
      * Marshal the composition to flat json
      *
      * @param composition to marshal
      * @return compositionFlatJsonValue
      */
-    public String toFlatJson(@Nonnull Composition composition, @Nonnull WebTemplate webTemplate) {
+    public String toFlatJson(Composition composition, WebTemplate webTemplate) {
         return toFlatJson(composition, webTemplate, Set.of());
     }
 
-    public String toFlatJson(
-            @Nonnull Composition composition, @Nonnull WebTemplate webTemplate, @Nonnull Set<MarshalOption> options) {
+    public String toFlatJson(Composition composition, WebTemplate webTemplate, Set<MarshalOption> options) {
         Map<String, Object> result = new LinkedHashMap<>();
 
         String templateId = webTemplate.getTemplateId();

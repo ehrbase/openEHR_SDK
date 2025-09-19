@@ -20,7 +20,6 @@ package org.ehrbase.openehr.sdk.serialisation.flatencoding;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
@@ -44,7 +43,7 @@ public class FlatJson implements RMDataFormat {
     }
 
     @Override
-    public String marshalWithOptions(@Nonnull RMObject rmObject, @Nonnull Set<MarshalOption> options) {
+    public String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options) {
         if (rmObject instanceof Composition) {
             return flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect, options);
         } else {
@@ -54,7 +53,7 @@ public class FlatJson implements RMDataFormat {
     }
 
     @Override
-    public <T extends RMObject> T unmarshal(@Nonnull String value, @Nonnull Class<T> clazz) {
+    public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
         if (clazz.isAssignableFrom(Composition.class)) {
             //noinspection unchecked
             return (T) unmarshal(value);
@@ -64,7 +63,7 @@ public class FlatJson implements RMDataFormat {
     }
 
     @Override
-    public Composition unmarshal(@Nonnull String value) {
+    public Composition unmarshal(String value) {
         return new FlatJsonUnmarshaller().unmarshal(value, templateIntrospect);
     }
 }

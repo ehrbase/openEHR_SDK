@@ -27,7 +27,6 @@ import com.nedap.archie.xml.adapters.TimeXmlAdapter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -77,7 +76,7 @@ public class CanonicalXML implements RMDataFormat {
                 rmObject, withHeader ? Set.of(MarshalOption.PRETTY_PRINT, MarshalOption.XML_HEADERS) : Set.of());
     }
 
-    public String marshalWithOptions(@Nonnull RMObject rmObject, @Nonnull Set<MarshalOption> options) {
+    public String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options) {
 
         StringWriter stringWriter = new StringWriter();
         try {
@@ -127,7 +126,7 @@ public class CanonicalXML implements RMDataFormat {
     }
 
     @Override
-    public <T extends RMObject> T unmarshal(@Nonnull String value, @Nonnull Class<T> clazz) {
+    public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
 
         try {
             Unmarshaller unmarshaller = createUnmarshaller();
@@ -154,7 +153,7 @@ public class CanonicalXML implements RMDataFormat {
         }
     }
 
-    private Marshaller createMarshaller(@Nonnull Set<MarshalOption> options) throws JAXBException {
+    private Marshaller createMarshaller(Set<MarshalOption> options) throws JAXBException {
 
         Marshaller marshaller = JAXBUtil.getArchieJAXBContext().createMarshaller();
 

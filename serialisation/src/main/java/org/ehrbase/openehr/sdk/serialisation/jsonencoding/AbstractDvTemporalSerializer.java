@@ -27,7 +27,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvTemporal;
 import java.io.IOException;
 import org.apache.commons.collections4.CollectionUtils;
 
-abstract class AbstractDvTemporalSerializer<V, T extends DvTemporal<T, ?> & SingleValuedDataValue<V>>
+public abstract class AbstractDvTemporalSerializer<V, T extends DvTemporal<T, ?> & SingleValuedDataValue<V>>
         extends JsonSerializer<T> {
 
     protected abstract String typeName();

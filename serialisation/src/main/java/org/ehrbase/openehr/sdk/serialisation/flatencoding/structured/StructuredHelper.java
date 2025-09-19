@@ -39,7 +39,6 @@ import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
@@ -79,7 +78,7 @@ public class StructuredHelper {
      * @param flatString
      * @return
      */
-    public static String convertFlatToStructured(String flatString, @Nonnull Set<MarshalOption> options) {
+    public static String convertFlatToStructured(String flatString, Set<MarshalOption> options) {
 
         try {
 

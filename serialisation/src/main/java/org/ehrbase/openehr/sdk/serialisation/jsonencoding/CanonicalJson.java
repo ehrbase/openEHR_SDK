@@ -54,7 +54,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
@@ -130,7 +129,7 @@ public class CanonicalJson implements RMDataFormat {
     }
 
     @Override
-    public String marshalWithOptions(@Nonnull RMObject rmObject, @Nonnull Set<MarshalOption> options) {
+    public String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options) {
         StringWriter stringWriter = new StringWriter();
 
         try {
@@ -147,7 +146,7 @@ public class CanonicalJson implements RMDataFormat {
     }
 
     @Override
-    public <T extends RMObject> T unmarshal(@Nonnull String value, @Nonnull Class<T> clazz) {
+    public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
         try {
             return MARSHAL_OM.readValue(value, clazz);
         } catch (IOException e) {

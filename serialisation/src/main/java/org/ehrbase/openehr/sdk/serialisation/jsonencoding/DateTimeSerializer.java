@@ -25,7 +25,7 @@ import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 /**
  * custom serializer delegating to a custom date-time formatter using '.' as decimal separator and supporting all partial resolutions properly
  */
-class DateTimeSerializer extends AbstractDvTemporalSerializer<TemporalAccessor, DvDateTime> {
+public class DateTimeSerializer extends AbstractDvTemporalSerializer<TemporalAccessor, DvDateTime> {
 
     @Override
     protected String typeName() {

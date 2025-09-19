@@ -20,7 +20,6 @@ package org.ehrbase.openehr.sdk.serialisation;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
@@ -74,7 +73,7 @@ public interface RMDataFormat {
      * @param rmObject to marshal
      * @return rmObjectStringValue
      */
-    default String marshal(@Nonnull RMObject rmObject) {
+    default String marshal(RMObject rmObject) {
         // use PRETTY_PRINT to have the same behavior same as versions <= 2.24.0
         return marshalWithOptions(rmObject, MarshalOption.PRETTY_PRINT);
     }
@@ -84,7 +83,7 @@ public interface RMDataFormat {
      *
      * @see #marshalWithOptions(RMObject, Set)
      */
-    default String marshalWithOptions(@Nonnull RMObject rmObject, MarshalOption... options) {
+    default String marshalWithOptions(RMObject rmObject, MarshalOption... options) {
         return marshalWithOptions(rmObject, Set.of(options));
     }
 
@@ -95,7 +94,7 @@ public interface RMDataFormat {
      * @param options to use while marshalling
      * @return rmObjectStringValue
      */
-    String marshalWithOptions(@Nonnull RMObject rmObject, @Nonnull Set<MarshalOption> options);
+    String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options);
 
     /**
      * Unmarshalls the given {@link RMObject} string value
@@ -105,7 +104,7 @@ public interface RMDataFormat {
      * @return rmObject
      * @param <T> of the {@link RMObject} to unmarshall into
      */
-    <T extends RMObject> T unmarshal(@Nonnull String value, @Nonnull Class<T> clazz);
+    <T extends RMObject> T unmarshal(String value, Class<T> clazz);
 
     /**
      * Convenient usage of {@link #unmarshal(String, Class)} that unmarshall into a {@link Composition}.
@@ -113,7 +112,7 @@ public interface RMDataFormat {
      * @param value marshalled {@link Composition}
      * @return composition unmarshalled {@link Composition} of the given value
      */
-    default Composition unmarshal(@Nonnull String value) {
+    default Composition unmarshal(String value) {
         return unmarshal(value, Composition.class);
     }
 }

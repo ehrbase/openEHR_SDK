@@ -24,7 +24,7 @@ import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 /**
  * Workaround for archie date-time parsing issues
  */
-class TimeDeserializer extends AbstractDvTemporalDeserializer<TemporalAccessor, DvTime> {
+public class TimeDeserializer extends AbstractDvTemporalDeserializer<TemporalAccessor, DvTime> {
 
     @Override
     DvTime createInstance() {
