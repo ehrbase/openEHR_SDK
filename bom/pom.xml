@@ -39,7 +39,7 @@
 
     <properties>
         <antlr4.version>4.13.2</antlr4.version>
-        <archie.version>3.13.0</archie.version>
+        <archie.version>3.15.0</archie.version>
         <assertj.version>3.27.4</assertj.version>
         <classgraph.version>4.8.181</classgraph.version>
         <commons-cli.version>1.10.0</commons-cli.version>
