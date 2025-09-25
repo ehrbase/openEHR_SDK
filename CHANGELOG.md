@@ -39,6 +39,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
  - Updated openehr terminologies to spec version 2.4.0 ([#660](https://github.com/ehrbase/openEHR_SDK/pull/660))
  ### Added 
  ### Fixed 
+* Deprecate the outdated QueryDefinitionListResponseData class ([#661](https://github.com/ehrbase/openEHR_SDK/pull/661))
 
 ## [2.20.0]
  ### Changed
