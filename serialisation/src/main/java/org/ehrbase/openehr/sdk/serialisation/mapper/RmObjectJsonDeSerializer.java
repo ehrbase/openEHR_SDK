@@ -24,8 +24,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.nedap.archie.rm.RMObject;
 import java.io.IOException;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
-import org.ehrbase.openehr.sdk.serialisation.xmlencoding.CanonicalXML;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 
 public class RmObjectJsonDeSerializer extends StdDeserializer {
 
@@ -41,9 +40,9 @@ public class RmObjectJsonDeSerializer extends StdDeserializer {
     public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         String value = p.readValueAsTree().toString();
         if (p instanceof FromXmlParser) {
-            return new CanonicalXML().unmarshal(value, RMObject.class);
+            return RMDataFormat.canonicalXML().unmarshal(value, RMObject.class);
         } else {
-            return new CanonicalJson().unmarshal(value, RMObject.class);
+            return RMDataFormat.canonicalJSON().unmarshal(value, RMObject.class);
         }
     }
 }

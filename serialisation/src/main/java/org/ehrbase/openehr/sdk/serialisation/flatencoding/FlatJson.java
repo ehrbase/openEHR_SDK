@@ -19,6 +19,8 @@ package org.ehrbase.openehr.sdk.serialisation.flatencoding;
 
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
+import java.util.Set;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal.FlatJsonMarshaller;
@@ -41,9 +43,9 @@ public class FlatJson implements RMDataFormat {
     }
 
     @Override
-    public String marshal(RMObject rmObject) {
+    public String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options) {
         if (rmObject instanceof Composition) {
-            return flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect);
+            return flatJsonMarshaller.toFlatJson((Composition) rmObject, templateIntrospect, options);
         } else {
             throw new MarshalException(String.format(
                     "Class %s not supported in flat format", rmObject.getClass().getSimpleName()));
@@ -53,6 +55,7 @@ public class FlatJson implements RMDataFormat {
     @Override
     public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
         if (clazz.isAssignableFrom(Composition.class)) {
+            //noinspection unchecked
             return (T) unmarshal(value);
         } else {
             throw new SdkException(String.format("Class %s not supported in flat format", clazz.getSimpleName()));

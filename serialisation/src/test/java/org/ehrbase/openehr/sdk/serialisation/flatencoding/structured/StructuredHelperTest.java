@@ -20,12 +20,13 @@ package org.ehrbase.openehr.sdk.serialisation.flatencoding.structured;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
+import org.ehrbase.openehr.sdk.serialisation.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatTestHelper;
-import org.ehrbase.openehr.sdk.serialisation.templateprovider.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataStructuredJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -59,7 +60,7 @@ class StructuredHelperTest {
             throws IOException {
         String flat = IOUtils.toString(simSDTJson.getStream(), StandardCharsets.UTF_8);
 
-        String actual = StructuredHelper.convertFlatToStructured(flat);
+        String actual = StructuredHelper.convertFlatToStructured(flat, Set.of());
 
         String expected = IOUtils.toString(structuredJson.getStream(), StandardCharsets.UTF_8);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.NON_EXTENSIBLE);

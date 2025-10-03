@@ -28,7 +28,6 @@ import org.ehrbase.openehr.sdk.conformance_test.extern.CompositionValidatorImp;
 import org.ehrbase.openehr.sdk.conformance_test.extern.Helper;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -60,8 +59,8 @@ public class FeederAuditTestOverwritten extends FeederAuditTest {
         RMDataFormat flatJson = Helper.getFlatJson(template, FlatFormat.SIM_SDT);
         Composition composition = flatJson.unmarshal(flatComposition);
 
-        Assertions.assertThat(
-                        new CompositionValidatorImp().validate(template, new CanonicalJson().marshal(composition)))
+        Assertions.assertThat(new CompositionValidatorImp()
+                        .validate(template, RMDataFormat.canonicalJSON().marshal(composition)))
                 .isEmpty();
 
         FeederAudit feederAudit = composition.getContent().get(0).getFeederAudit();

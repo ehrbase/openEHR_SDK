@@ -29,8 +29,8 @@ import com.nedap.archie.rm.datavalues.TermMapping;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import java.util.List;
 import org.assertj.core.groups.Tuple;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.junit.jupiter.api.Test;
 
 public class TermMappingTestOverwritten extends TermMappingTest {
@@ -48,7 +48,7 @@ public class TermMappingTestOverwritten extends TermMappingTest {
         String rawJson = this.getFileContent("/res/TmComposition.json");
 
         Composition unmarshal =
-                new CanonicalJson().unmarshal(rawJson.replace("\"@class\"", "\"_type\""), Composition.class);
+                RMDataFormat.canonicalJSON().unmarshal(rawJson.replace("\"@class\"", "\"_type\""), Composition.class);
 
         String structuredJson = getFlatJson(template, FlatFormat.STRUCTURED).marshal(unmarshal);
 
@@ -95,7 +95,7 @@ public class TermMappingTestOverwritten extends TermMappingTest {
         String rawJson = this.getFileContent("/res/TmComposition.json");
 
         Composition unmarshal =
-                new CanonicalJson().unmarshal(rawJson.replace("\"@class\"", "\"_type\""), Composition.class);
+                RMDataFormat.canonicalJSON().unmarshal(rawJson.replace("\"@class\"", "\"_type\""), Composition.class);
 
         String flatJson = getFlatJson(template, FlatFormat.SIM_SDT).marshal(unmarshal);
 

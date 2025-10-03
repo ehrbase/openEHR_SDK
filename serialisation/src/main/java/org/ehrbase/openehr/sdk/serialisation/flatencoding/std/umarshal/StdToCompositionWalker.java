@@ -51,12 +51,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.UnmarshalException;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.postprocessor.UnmarshalPostprocessor;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.rmunmarshaller.DefaultRMUnmarshaller;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.rmunmarshaller.RMUnmarshaller;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper;
 import org.ehrbase.openehr.sdk.serialisation.walker.NodeId;
@@ -251,7 +251,7 @@ public class StdToCompositionWalker extends ToCompositionWalker<Map<FlatPathDto,
                     .findAny()
                     .orElseThrow();
 
-            RMObject newRmObject = new CanonicalJson()
+            RMObject newRmObject = RMDataFormat.canonicalJSON()
                     .unmarshal(
                             om.readValue(current.getValue(), String.class)
                                     // In case better RAW encoding is used instead of canonical

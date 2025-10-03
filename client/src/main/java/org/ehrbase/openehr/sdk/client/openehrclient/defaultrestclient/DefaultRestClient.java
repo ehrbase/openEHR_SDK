@@ -64,8 +64,8 @@ import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.openehr.sdk.client.openehrclient.TemplateEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.VersionedCompositionEndpoint;
 import org.ehrbase.openehr.sdk.client.templateprovider.ClientTemplateProvider;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.dto.DefaultValuesProvider;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.serialisation.mapper.RmObjectJsonDeSerializer;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.util.exception.ClientException;
@@ -137,7 +137,7 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     protected ObjectVersionId httpPost(URI uri, RMObject body, Map<String, String> headers) {
-        String bodyString = new CanonicalJson().marshal(body);
+        String bodyString = RMDataFormat.canonicalJSON().marshal(body);
         HttpResponse response = internalPost(
                 uri, headers, bodyString, ContentType.APPLICATION_JSON, ContentType.APPLICATION_JSON.getMimeType());
         Header eTag = response.getFirstHeader(HttpHeaders.ETAG);
@@ -194,7 +194,7 @@ public class DefaultRestClient implements OpenEhrClient {
             Request request = Request.Put(uri)
                     .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
                     .addHeader(HttpHeaders.IF_MATCH, versionUid.getValue())
-                    .bodyString(new CanonicalJson().marshal(body), ContentType.APPLICATION_JSON);
+                    .bodyString(RMDataFormat.canonicalJSON().marshal(body), ContentType.APPLICATION_JSON);
             if (headers != null) {
                 headers.forEach(request::addHeader);
             }

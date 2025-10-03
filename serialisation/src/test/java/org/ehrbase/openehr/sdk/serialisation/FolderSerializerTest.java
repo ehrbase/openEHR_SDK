@@ -36,7 +36,7 @@ class FolderSerializerTest {
     void marshalBasicJsonFolder() throws IOException {
 
         String value = IOUtils.toString(FolderTestDataCanonicalJson.SIMPLE_EMPTY_FOLDER.getStream(), UTF_8);
-        CanonicalJson canonicalJson = new CanonicalJson();
+        CanonicalJson canonicalJson = RMDataFormat.canonicalJSON();
         Folder folder = canonicalJson.unmarshal(value, Folder.class);
 
         String marshalled = canonicalJson.marshal(folder);
@@ -53,7 +53,7 @@ class FolderSerializerTest {
 
         String value = IOUtils.toString(FolderTestDataCanonicalJson.SIMPLE_EMPTY_FOLDER.getStream(), UTF_8);
 
-        CanonicalJson canonicalJson = new CanonicalJson();
+        CanonicalJson canonicalJson = RMDataFormat.canonicalJSON();
         Folder folder = canonicalJson.unmarshal(value, Folder.class);
 
         assertThat(folder.getNameAsString()).isEqualTo("Simple empty folder");
@@ -65,7 +65,7 @@ class FolderSerializerTest {
 
         String value = IOUtils.toString(FolderTestDataCanonicalXML.SIMPLE_EMPTY_FOLDER.getStrean(), UTF_8);
 
-        CanonicalXML canonicalXML = new CanonicalXML();
+        CanonicalXML canonicalXML = RMDataFormat.canonicalXML();
         Folder folder = canonicalXML.unmarshal(value, Folder.class);
 
         String marshalled = canonicalXML.marshal(folder);

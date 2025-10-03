@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,13 +53,21 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
 import org.ehrbase.openehr.sdk.serialisation.exception.UnmarshalException;
 
 // test CJOpenEHRTypeNaming
-
+/**
+ *  Reference-Model Data format <code>XML</code> marshaller/unmarshaller
+ *
+ * @link <a href="https://specifications.openehr.org/releases/ITS-XML/development">ITS-XML</a>
+ */
 public class CanonicalJson implements RMDataFormat {
+
+    public static final CanonicalJson DEFAULT_INSTANCE = new CanonicalJson();
 
     public static final ObjectMapper MARSHAL_OM =
             ArchieObjectMapperProvider.getObjectMapper().copy();
@@ -90,7 +99,7 @@ public class CanonicalJson implements RMDataFormat {
                 ExcludeEmptyCollectionsFilter.class));
 
         // Avoid _type for final classes / concrete attributes with known type
-        TypeResolverBuilder typeResolverBuilder = new CJArchieTypeResolverBuilder()
+        TypeResolverBuilder<?> typeResolverBuilder = new CJArchieTypeResolverBuilder()
                 .init(JsonTypeInfo.Id.NAME, new CJOpenEHRTypeNaming())
                 .typeProperty("_type")
                 .typeIdVisibility(true)
@@ -107,29 +116,36 @@ public class CanonicalJson implements RMDataFormat {
             if (o == null) {
                 return true;
             }
-
-            if (o instanceof Map) {
-                return ((Map) o).size() == 0;
+            if (o instanceof Map<?, ?> map) {
+                return map.isEmpty();
             }
-            if (o instanceof Collection) {
-                return ((Collection) o).isEmpty();
+            if (o instanceof Collection<?> collection) {
+                return collection.isEmpty();
             }
-
-            if (o instanceof Object[]) {
-                return ((Object[]) o).length == 0;
+            if (o instanceof Object[] objects) {
+                return objects.length == 0;
             }
-
             // Include everything else
             return false;
         }
     }
 
+    /**
+     * @deprecated Use RMDataFormat.canonicalJson()
+     */
+    @Deprecated
+    public CanonicalJson() {}
+
     @Override
-    public String marshal(RMObject rmObject) {
+    public String marshalWithOptions(RMObject rmObject, Set<MarshalOption> options) {
         StringWriter stringWriter = new StringWriter();
 
         try {
-            MARSHAL_OM.writeValue(stringWriter, rmObject);
+            final PrettyPrinter prettyPrinter = options.contains(MarshalOption.PRETTY_PRINT)
+                    ? MARSHAL_OM.getSerializationConfig().constructDefaultPrettyPrinter()
+                    : null;
+
+            MARSHAL_OM.writer(prettyPrinter).writeValue(stringWriter, rmObject);
         } catch (IOException e) {
             throw new MarshalException(e.getMessage(), e);
         }
@@ -141,22 +157,6 @@ public class CanonicalJson implements RMDataFormat {
     public <T extends RMObject> T unmarshal(String value, Class<T> clazz) {
         try {
             return MARSHAL_OM.readValue(value, clazz);
-        } catch (IOException e) {
-            throw new UnmarshalException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * TODO: pull into interface and therefore into XML and other formats too, since this should work
-     * regardless of format?! Helper function to unmarshal to a general map, where RMObjects can't be
-     * expected or need to be preprocessed.
-     *
-     * @param value
-     * @return
-     */
-    public Map<String, Object> unmarshalToMap(String value) {
-        try {
-            return MARSHAL_OM.readValue(value, Map.class);
         } catch (IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }

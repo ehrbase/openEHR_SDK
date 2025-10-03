@@ -30,7 +30,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.ehrbase.openehr.sdk.client.openehrclient.ContributionEndpoint;
 import org.ehrbase.openehr.sdk.response.dto.ContributionCreateDto;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.util.exception.ClientException;
 
 /**
@@ -75,7 +75,7 @@ public class DefaultRestContributionEndpoint implements ContributionEndpoint {
         try {
             String body = IOUtils.toString(response.getEntity().getContent(), UTF_8);
 
-            return Optional.of(new CanonicalJson().unmarshal(body, Contribution.class));
+            return Optional.of(RMDataFormat.canonicalJSON().unmarshal(body, Contribution.class));
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }

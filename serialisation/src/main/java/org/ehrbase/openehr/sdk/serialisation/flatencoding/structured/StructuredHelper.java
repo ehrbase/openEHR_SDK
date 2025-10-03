@@ -20,6 +20,7 @@ package org.ehrbase.openehr.sdk.serialisation.flatencoding.structured;
 import static org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -32,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
@@ -39,6 +41,7 @@ import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.webtemplate.path.flat.FlatPathDto;
@@ -75,7 +78,7 @@ public class StructuredHelper {
      * @param flatString
      * @return
      */
-    public static String convertFlatToStructured(String flatString) {
+    public static String convertFlatToStructured(String flatString, Set<MarshalOption> options) {
 
         try {
 
@@ -95,9 +98,12 @@ public class StructuredHelper {
             // the first List is removed
             Map.Entry<String, Object> root =
                     structuredMap.entrySet().stream().findAny().orElseThrow();
-            structuredMap.replace(root.getKey(), ((List) root.getValue()).get(0));
+            structuredMap.replace(root.getKey(), ((List<?>) root.getValue()).get(0));
 
-            return OBJECT_MAPPER.writeValueAsString(structuredMap);
+            final PrettyPrinter prettyPrinter = options.contains(MarshalOption.PRETTY_PRINT)
+                    ? OBJECT_MAPPER.getSerializationConfig().constructDefaultPrettyPrinter()
+                    : null;
+            return OBJECT_MAPPER.writer(prettyPrinter).writeValueAsString(structuredMap);
         } catch (JsonProcessingException e) {
 
             throw new SdkException(e.getMessage(), e);
@@ -108,11 +114,8 @@ public class StructuredHelper {
 
         Map<FlatPathDto, Map<FlatPathDto, JsonNode>> sharedStartMap = flatMap.entrySet().stream()
                 .collect(Collectors.groupingBy(
-                        e -> {
-                            FlatPathDto startFlatPathDto = new FlatPathDto(
-                                    e.getKey().getName(), null, e.getKey().getCount(), null);
-                            return startFlatPathDto;
-                        },
+                        e -> new FlatPathDto(
+                                e.getKey().getName(), null, e.getKey().getCount(), null),
                         LinkedHashMap::new,
                         Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (u, v) -> u, LinkedHashMap::new)));
 

@@ -31,9 +31,9 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
@@ -121,7 +121,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(11);
-        result.forEach(System.out::println);
     }
 
     @Test
@@ -149,7 +148,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(4);
-        result.forEach(System.out::println);
     }
 
     @Test
@@ -219,7 +217,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(1);
-        result.forEach(System.out::println);
     }
 
     @Test
@@ -229,7 +226,6 @@ class CompositionValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(1);
-        result.forEach(System.out::println);
     }
 
     @Test
@@ -352,7 +348,7 @@ class CompositionValidatorTest {
     }
 
     private Composition getComposition(CompositionTestDataCanonicalJson composition) throws IOException {
-        return new CanonicalJson()
+        return RMDataFormat.canonicalJSON()
                 .unmarshal(IOUtils.toString(composition.getStream(), StandardCharsets.UTF_8), Composition.class);
     }
 
@@ -364,13 +360,15 @@ class CompositionValidatorTest {
 
     private Composition getComposition(String name) throws IOException, JAXBException {
         var unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        return (Composition) unmarshaller.unmarshal(new FileInputStream("./src/test/resources/composition/" + name));
+        try (FileInputStream in = new FileInputStream("./src/test/resources/composition/" + name)) {
+            return (Composition) unmarshaller.unmarshal(in);
+        }
     }
 
     private Composition getCompositionJson(String name) throws IOException {
-        var unmarshaller = new CanonicalJson();
-        return unmarshaller.unmarshal(IOUtils.toString(
-                new FileInputStream("./src/test/resources/composition/" + name), StandardCharsets.UTF_8));
+        try (var in = new FileInputStream("./src/test/resources/composition/" + name)) {
+            return RMDataFormat.canonicalJSON().unmarshal(IOUtils.toString(in, StandardCharsets.UTF_8));
+        }
     }
 
     private OPERATIONALTEMPLATE getOperationalTemplate(OperationalTemplateTestData template)
@@ -379,7 +377,8 @@ class CompositionValidatorTest {
     }
 
     private OPERATIONALTEMPLATE getOperationalTemplate(String name) throws IOException, XmlException {
-        return TemplateDocument.Factory.parse(new FileInputStream("./src/test/resources/operational_templates/" + name))
-                .getTemplate();
+        try (var in = new FileInputStream("./src/test/resources/operational_templates/" + name)) {
+            return TemplateDocument.Factory.parse(in).getTemplate();
+        }
     }
 }

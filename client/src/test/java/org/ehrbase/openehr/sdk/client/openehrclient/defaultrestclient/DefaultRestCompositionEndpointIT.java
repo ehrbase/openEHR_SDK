@@ -68,8 +68,8 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.geccoserologische
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.geccoserologischerbefundcomposition.definition.VirusnachweistestDefiningCode;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.virologischerbefundcomposition.VirologischerBefundComposition;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.virologischerbefundcomposition.definition.ProVirusCluster;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.dto.RmToGeneratedDtoConverter;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
@@ -517,7 +517,7 @@ class DefaultRestCompositionEndpointIT extends SdkClientTestIT {
 
     @Test
     void testVirologischerBefund() throws IOException {
-        Composition composition = new CanonicalJson()
+        Composition composition = RMDataFormat.canonicalJSON()
                 .unmarshal(
                         IOUtils.toString(
                                 CompositionTestDataCanonicalJson.VIROLOGY_FINDING_WITH_SPECIMEN.getStream(),

@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
-import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class CompositionValidatorImp implements CompositionValidator {
         TemplateDocument templateDocument =
                 TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
         Composition composition =
-                new CanonicalJson().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
+                RMDataFormat.canonicalJSON().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
 
         org.ehrbase.openehr.sdk.validation.CompositionValidator validator =
                 new org.ehrbase.openehr.sdk.validation.CompositionValidator();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -17,1512 +17,271 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.jsonencoding;
 
-// JSON Schema Validation
-// The JsonSchemaValidator is on the tests of archie/tools so can't be included directly
-// import com.nedap.archie.creation.JsonSchemaValidator;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-public class CanonicalJsonTest {
+import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.changecontrol.Contribution;
+import com.nedap.archie.rm.datastructures.Cluster;
+import com.nedap.archie.rm.datastructures.Element;
+import com.nedap.archie.rm.datastructures.ItemTree;
+import com.nedap.archie.rm.datavalues.DataValue;
+import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
+import com.nedap.archie.rm.ehr.Ehr;
+import com.nedap.archie.rm.support.identification.HierObjectId;
+import com.nedap.archie.rm.support.identification.ObjectId;
+import com.nedap.archie.rm.support.identification.ObjectRef;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
+import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
+import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
-    //    @Test
-    //    public void marshal_lab() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.LABORATORY_REPORT.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String json_string = cut.marshal(composition);
-    //
-    //        //System.out.println(json_string);
-    //
-    //        assertThat(json_string).isNotEmpty();
-    //
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", json_string);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.LABORATORY_REPORT + " JSON is
-    // valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.LABORATORY_REPORT + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void marshal_lab_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.LABORATORY_REPORT.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.LABORATORY_REPORT + " JSON is
-    // valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.LABORATORY_REPORT + " JSON is
-    // invalid ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void marshal_minimal_admin() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_ADMIN.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        //System.out.println(marshal);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_ADMIN + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.MINIMAL_ADMIN + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void marshal_minimal_admin_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_ADMIN.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_ADMIN + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.MINIMAL_ADMIN + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void marshal_minimal_evaluation() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_EVAL.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        //System.out.println(marshal);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void marshal_DvDuration() throws IOException {
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.CORONA.getStream(),
-    // UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        //System.out.println(marshal);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //        assertThat(marshal).contains("PT0S");
-    //
-    //
-    //    }
-    //
-    //
-    //    @Test
-    //    public void marshal_minimal_evaluation_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_EVAL.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void marshal_minimal_instruction() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_INST.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        //System.out.println(marshal);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void marshal_minimal_instruction_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_INST.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_INST + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_INST + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void marshal_minimal_observation() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_OBS.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        //System.out.println(marshal);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.MINIMAL_EVAL + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void marshal_minimal_observation_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_OBS.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_OBS + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_OBS + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void all_types() throws IOException {
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.ALL_TYPES.getStream(),
-    // UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        //System.out.println(marshal);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.ALL_TYPES + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.ALL_TYPES + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void all_types_new() throws IOException {
-    //
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.ALL_TYPES.getStream(),
-    // UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.ALL_TYPES + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.ALL_TYPES + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void alternative_types() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.ALTERNATIVE_TYPES.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.ALTERNATIVE_TYPES + " JSON is
-    // valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.ALTERNATIVE_TYPES + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void alternative_types_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.ALTERNATIVE_TYPES.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.ALTERNATIVE_TYPES + " JSON is
-    // valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.ALTERNATIVE_TYPES + " JSON is
-    // invalid ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void obs_admin() throws IOException {
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.OBS_ADMIN.getStream(),
-    // UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_ADMIN + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.OBS_ADMIN + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void obs_admin_new() throws IOException {
-    //
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.OBS_ADMIN.getStream(),
-    // UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_ADMIN + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_ADMIN + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void obs_admin_null_flavour() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.OBS_ADMIN_NULL.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_ADMIN_NULL + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.OBS_ADMIN_NULL + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void obs_admin_null_flavour_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.OBS_ADMIN_NULL.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_ADMIN_NULL + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_ADMIN_NULL + " JSON is
-    // invalid ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void obs_eva() throws IOException {
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.OBS_EVA.getStream(),
-    // UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_EVA + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.OBS_EVA + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void obs_eva_new() throws IOException {
-    //
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.OBS_EVA.getStream(),
-    // UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_EVA + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.OBS_EVA + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    /* This test shows a bug on Archie should be skipped for now:
-    // https://github.com/openEHR/archie/issues/113
-    //    @Test
-    //    public void obs_inst() throws IOException {
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.OBS_INST.getStream(),
-    // UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = null;
-    //        try {
-    //          composition = cut.unmarshal(value, Composition.class);
-    //        } catch (Exception e) {
-    //          fail("Can't parse the "+ CompositionTestDataCanonicalJson.OBS_INST +" JSON
-    // composition, there is a problem in Archie: "+ e.getMessage());
-    //        }
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //          BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try
-    //        {
-    //          jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //          System.out.println(CompositionTestDataCanonicalJson.OBS_INST +" JSON is valid
-    // \\(^-^)/");
-    //        }
-    //        catch (ValidationException ve)
-    //        {
-    //          fail(CompositionTestDataCanonicalJson.OBS_INST +" JSON is invalid ¯\\_(ツ)_/¯");
-    //        }
-    //        catch (Exception e)
-    //        {
-    //          e.printStackTrace();
-    //          e.getCause().printStackTrace();
-    //          fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //    */
-    //
-    //    @Test
-    //    public void minimal_persistent() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_PERSISTENT.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_PERSISTENT + " JSON is
-    // valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.MINIMAL_PERSISTENT + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void minimal_persistent_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.MINIMAL_PERSISTENT.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_PERSISTENT + " JSON is
-    // valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.MINIMAL_PERSISTENT + " JSON is
-    // invalid ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void nested() throws IOException {
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.NESTED.getStream(),
-    // UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.NESTED + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.NESTED + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void nested_new() throws IOException {
-    //
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.NESTED.getStream(),
-    // UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.NESTED + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.NESTED + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void time_series() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.TIME_SERIES.getStream(), UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition.getUid().getValue()).isNotEmpty();
-    //        assertThat(composition.getArchetypeNodeId()).isNotEmpty();
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", marshal);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.TIME_SERIES + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            fail(CompositionTestDataCanonicalJson.TIME_SERIES + " JSON is invalid ¯\\_(ツ)_/¯");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void time_series_new() throws IOException {
-    //
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.TIME_SERIES.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //        String json = cut.marshal(composition);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            System.out.println(CompositionTestDataCanonicalJson.TIME_SERIES + " JSON is valid
-    // \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.TIME_SERIES + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void validate_invalid() throws IOException {
-    //
-    //        String value = IOUtils.toString(CompositionTestDataCanonicalJson.INVALID.getStream(),
-    // UTF_8);
-    //
-    //        // Validation of the JSON against the schema
-    //        JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator(
-    //
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel()
-    //        );
-    //
-    //        try {
-    //            jsonSchemaValidator.validate("COMPOSITION", value);
-    //            fail(CompositionTestDataCanonicalJson.INVALID + " JSON is valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.INVALID + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //
-    //    @Test
-    //    public void validate_invalid_new() throws IOException {
-    //
-    //        String json = IOUtils.toString(CompositionTestDataCanonicalJson.INVALID.getStream(),
-    // UTF_8);
-    //
-    //        NewJsonSchemaValidator firstValidator = new NewJsonSchemaValidator(true);
-    //
-    //        try {
-    //            firstValidator.validate("COMPOSITION", json);
-    //
-    //            fail(CompositionTestDataCanonicalJson.INVALID + " JSON is valid \\(^-^)/");
-    //        } catch (ValidationException ve) {
-    //            System.out.println(CompositionTestDataCanonicalJson.INVALID + " JSON is invalid
-    // ¯\\_(ツ)_/¯");
-    //
-    //            for (String message : ve.getAllMessages()) {
-    //                System.out.println(" - " + message);
-    //            }
-    //
-    //            // Issue in the BMM: DV_QUANTITY has a declared attribute property
-    //            // that shouldn't be there, that makes the validation fail here
-    //            //fail("");
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            e.getCause().printStackTrace();
-    //            fail("We got an exception on the validator!");
-    //        }
-    //    }
-    //
-    //    @Test
-    //    public void testMarshalItemStructure() throws IOException {
-    //        String value =
-    // IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(),
-    // UTF_8);
-    //
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        ItemTree composition = cut.unmarshal(value, ItemTree.class);
-    //
-    //        String marshal = cut.marshal(composition);
-    //
-    //        assertThat(marshal).isNotEmpty();
-    //    }
-    //
-    //    @Test
-    //    public void unmarshal() throws IOException {
-    //        String value =
-    // IOUtils.toString(CompositionTestDataCanonicalJson.LABORATORY_REPORT.getStream(), UTF_8);
-    //        CanonicalJson cut = new CanonicalJson();
-    //
-    //        Composition composition = cut.unmarshal(value, Composition.class);
-    //
-    //        assertThat(composition).isNotNull();
-    //
-    // assertThat(composition.getArchetypeDetails().getTemplateId().getValue()).isEqualTo("Laboratory
-    // Report");
-    //    }
-    //
-    //    // validates using current schemas from Sebastian
-    //    class JsonSchemaValidator {
-    //
-    //        private static final String ITS_JSON_NAMESPACE =
-    // "https://specifications.openehr.org/releases/ITS-JSON/latest/components";
-    //
-    //        Map<String, String> hardcodedLocations = new HashMap();
-    //
-    //        {
-    //            hardcodedLocations.put("COMPOSITION", "Composition");
-    //            hardcodedLocations.put("EVENT_CONTEXT", "Composition");
-    //
-    //            hardcodedLocations.put("SECTION", "Composition");
-    //
-    //            hardcodedLocations.put("OBSERVATION", "Composition");
-    //
-    //            hardcodedLocations.put("EVALUATION", "Composition");
-    //
-    //            hardcodedLocations.put("INSTRUCTION", "Composition");
-    //            hardcodedLocations.put("ACTIVITY", "Composition");
-    //
-    //            hardcodedLocations.put("ACTION", "Composition");
-    //            hardcodedLocations.put("INSTRUCTION_DETAILS", "Composition");
-    //            hardcodedLocations.put("ISM_TRANSITION", "Composition");
-    //
-    //            hardcodedLocations.put("ADMIN_ENTRY", "Composition");
-    //
-    //            hardcodedLocations.put("CAPABILITY", "Demographic");
-    //            hardcodedLocations.put("PERSON", "Demographic");
-    //            hardcodedLocations.put("ADDRESS", "Demographic");
-    //            hardcodedLocations.put("ROLE", "Demographic");
-    //            hardcodedLocations.put("ORGANISATION", "Demographic");
-    //            hardcodedLocations.put("PARTY_IDENTITY", "Demographic");
-    //
-    //            hardcodedLocations.put("HISTORY", "Data_structures");
-    //            hardcodedLocations.put("POINT_EVENT", "Data_structures");
-    //            hardcodedLocations.put("INTERVAL_EVENT", "Data_structures");
-    //            hardcodedLocations.put("ITEM_TREE", "Data_structures");
-    //            hardcodedLocations.put("ITEM_TABLE", "Data_structures");
-    //            hardcodedLocations.put("ITEM_SINGLE", "Data_structures");
-    //            hardcodedLocations.put("ITEM_LIST", "Data_structures");
-    //            hardcodedLocations.put("CLUSTER", "Data_structures");
-    //            hardcodedLocations.put("ELEMENT", "Data_structures");
-    //
-    //        }
-    //
-    //        private final SchemaClient schemaClient = new SchemaClient() {
-    //
-    //            @Override
-    //            public InputStream get(String url) {
-    //                if (url.startsWith(ITS_JSON_NAMESPACE)) {
-    //                    return getClass().getResourceAsStream("/jsonschema/" +
-    // url.substring(ITS_JSON_NAMESPACE.length()));
-    //                } else {
-    //                    throw new RuntimeException("could not find schema " + url);
-    //                }
-    //            }
-    //        };
-    //
-    //        private final LoadingCache<String, Schema> schemaCache =
-    // CacheBuilder.newBuilder().build(new CacheLoader<String, Schema>() {
-    //            @Override
-    //            public Schema load(String type) throws Exception {
-    //                String packageName = null;
-    //                if (hardcodedLocations.containsKey(type.toUpperCase(Locale.ENGLISH))) {
-    //                    packageName = hardcodedLocations.get(type.toUpperCase(Locale.ENGLISH));
-    //                } else {
-    //                    BmmClass classDefinition =
-    // bmm.getClassDefinition(BmmDefinitions.typeNameToClassKey(type));
-    //                    String test = getPackagePath(classDefinition.getPackage());
-    //                    packageName = test.substring(0, 1).toUpperCase() + test.substring(1);
-    //                }
-    //                try (InputStream inputStream =
-    // getClass().getResourceAsStream("/jsonschema/RM/Release-1.0.4/" + packageName + "/" + type +
-    // ".json")) {
-    //                    JSONObject schemaJson = new JSONObject(new JSONTokener(inputStream));
-    //                    return SchemaLoader.load(schemaJson, schemaClient);
-    //                }
-    //            }
-    //        });
-    //
-    //        private String getPackagePath(BmmPackage bmmPackage) {
-    //            BmmPackage currentPackage = bmmPackage;
-    //            BmmPackage parentPackage = bmmPackage.getParent();
-    //
-    //            while (currentPackage != null && parentPackage != null &&
-    // !parentPackage.getName().equalsIgnoreCase("rm")) {
-    //                currentPackage = parentPackage;
-    //                parentPackage = parentPackage.getParent();
-    //            }
-    //
-    //            return currentPackage.getName();
-    //
-    //        }
-    //
-    //        private final BmmModel bmm;
-    //
-    //        public JsonSchemaValidator(BmmModel bmm) {
-    //            this.bmm = bmm;
-    //        }
-    //
-    //        public void validate(String type, String json) throws Exception {
-    //
-    //            // We want the exception to be thrown, if validation fails we get
-    // ValidationException
-    //            //try {
-    //            Schema schema = schemaCache.get(type);
-    //            schema.validate(new JSONObject(json));
-    //            //System.out.println("validation ok!");
-    //            //} catch (ExecutionException e) {
-    //            //    throw new RuntimeException(e);
-    //            //}
-    //
-    //        }
-    //    }
-    //
-    //    // validates using new json schema from Pieter
-    //    class NewJsonSchemaValidator {
-    //
-    //        Schema schema;
-    //
-    //        public NewJsonSchemaValidator(boolean allowAdditionalProperties) {
-    //            BmmModel model =
-    // BuiltinReferenceModels.getBmmRepository().getModel("openehr_rm_1.0.4").getModel();
-    //            JSONObject schemaJson = new JSONSchemaCreator().create(model);
-    //            schema = SchemaLoader.load(schemaJson);
-    //
-    //            if (!allowAdditionalProperties) {
-    //                //addAdditionalProperties(schemaJson);
-    //                if (schemaJson.has("definitions")) {
-    //                    JSONObject definitions = schemaJson.getJSONObject("definitions");
-    //                    for (Object key : definitions.keySet()) {
-    //                        JSONObject jsonObject = definitions.getJSONObject((String) key);
-    //                        addAdditionalProperties(jsonObject);
-    //                    }
-    //                }
-    //            }
-    //        }
-    //
-    //        private void addAdditionalProperties(JSONObject schemaJson) {
-    //            if (schemaJson.has("type")) {
-    //                String jsonType = schemaJson.getString("type");
-    //                if (jsonType.equalsIgnoreCase("object")) {
-    //                    schemaJson.put("additionalProperties", false);
-    //                }
-    //            }
-    //        }
-    //
-    //        public void validate(String type, String json) throws IOException {
-    //            schema.validate(new JSONObject(json));
-    //        }
-    //    }
-    //
-    //    // this class if for using the schemas from Pieter, in NewJsonSchemaValidator
-    //    class JSONSchemaCreator {
-    //
-    //        private Map<String, String> primitiveTypeMapping;
-    //        private List<String> rootTypes;
-    //        private BmmModel bmmModel;
-    //
-    //        public JSONSchemaCreator() {
-    //            primitiveTypeMapping = new HashMap<>();
-    //            primitiveTypeMapping.put("integer", "integer");
-    //            primitiveTypeMapping.put("integer64", "integer");
-    //            primitiveTypeMapping.put("boolean", "boolean");
-    //            primitiveTypeMapping.put("real", "number");
-    //            primitiveTypeMapping.put("double", "number");
-    //            primitiveTypeMapping.put("octet", "string");
-    //            primitiveTypeMapping.put("byte", "string");
-    //            primitiveTypeMapping.put("character", "string");
-    //            primitiveTypeMapping.put("hash", "object");
-    //            primitiveTypeMapping.put("string", "string");
-    //            primitiveTypeMapping.put("iso8601_date", "string");
-    //            primitiveTypeMapping.put("iso8601_date_time", "string");
-    //            primitiveTypeMapping.put("iso8601_time", "string");
-    //            primitiveTypeMapping.put("iso8601_duration", "string");
-    //            primitiveTypeMapping.put("proportion_kind", "integer");//TODO: proper enum support
-    //
-    //            rootTypes = new ArrayList<>();
-    //            rootTypes.add("COMPOSITION");
-    //            rootTypes.add("OBSERVATION");
-    //            rootTypes.add("EVALUATION");
-    //            rootTypes.add("ACTIVITY");
-    //            rootTypes.add("ACTION");
-    //            rootTypes.add("SECTION");
-    //            rootTypes.add("INSTRUCTION");
-    //            rootTypes.add("INSTRUCTION_DETAILS");
-    //            rootTypes.add("ADMIN_ENTRY");
-    //            rootTypes.add("CLUSTER");
-    //            rootTypes.add("CAPABILITY");
-    //            rootTypes.add("PERSON");
-    //            rootTypes.add("ADDRESS");
-    //            rootTypes.add("ROLE");
-    //            rootTypes.add("ORGANISATION");
-    //            rootTypes.add("PARTY_IDENTITY");
-    //            rootTypes.add("ITEM_TREE");
-    //        }
-    //
-    //        public JSONObject create(BmmModel bmm) {
-    //            this.bmmModel = bmm;
-    //
-    //            //create the definitions and the root if/else base
-    //
-    //            JSONArray allOfArray = new JSONArray();
-    //            JSONObject definitions = new JSONObject();
-    //            JSONObject schemaRoot = new JSONObject()
-    //                    .put("definitions", definitions)
-    //                    .put("allOf", allOfArray)
-    //                    .put("$schema", "http://json-schema.org/draft-07/schema");
-    //
-    //
-    //            //at the root level, require the type
-    //            JSONObject typeRequired = createRequiredArray("_type");
-    //            allOfArray.put(typeRequired);
-    //
-    //            //for every root type, if the type is right, check that type
-    //            //anyof does more or less the same, but this is faster plus it gives MUCH less
-    // errors!
-    //            for (String rootType : rootTypes) {
-    //
-    //                JSONObject typePropertyCheck = createConstType(rootType);
-    //                JSONObject typeCheck = new JSONObject().put("properties", typePropertyCheck);
-    //
-    //                JSONObject typeReference = createReference(rootType);
-    //                //IF the type matches
-    //                //THEN check the correct type from the definitions
-    //                JSONObject ifObject = new JSONObject()
-    //                        .put("if", typeCheck)
-    //                        .put("then", typeReference);
-    //                allOfArray.put(ifObject);
-    //            }
-    //            for (BmmClass bmmClass : bmm.getClassDefinitions().values()) {
-    //                if (!bmmClass.isAbstract() &&
-    // !primitiveTypeMapping.containsKey(bmmClass.getTypeName().toLowerCase())) {
-    //                    addClass(definitions, bmmClass);
-    //                }
-    //            }
-    //            return schemaRoot;
-    //        }
-    //
-    //        private void addClass(JSONObject definitions, BmmClass bmmClass) {
-    //            String typeName = BmmDefinitions.typeNameToClassKey(bmmClass.getTypeName());
-    //
-    //            JSONObject definition = new JSONObject();
-    //            definition.put("type", "object");
-    //            BmmClass flatBmmClass = bmmClass.flattenBmmClass();
-    //            JSONArray required = new JSONArray();
-    //            JSONObject properties = new JSONObject();
-    //            for (String propertyName : flatBmmClass.getProperties().keySet()) {
-    //                BmmProperty bmmProperty = flatBmmClass.getProperties().get(propertyName);
-    //                if ((bmmClass.getTypeName().startsWith("POINT_EVENT") ||
-    // bmmClass.getTypeName().startsWith("INTERVAL_EVENT")) &&
-    //                        propertyName.equalsIgnoreCase("data")) {
-    //                    //we don't handle generics yet, and it's very tricky with the current BMM
-    // indeed. So, just manually hack this
-    //                    JSONObject propertyDef =
-    // createPolymorphicReference(bmmModel.getClassDefinition("ITEM_STRUCTURE"));
-    //                    extendPropertyDef(propertyDef, bmmProperty);
-    //                    properties.put(propertyName, propertyDef);
-    //
-    //                    if (bmmProperty.getMandatory()) {
-    //                        required.put(propertyName);
-    //                    }
-    //                } else {
-    //
-    //                    JSONObject propertyDef = createPropertyDef(bmmProperty.getType());
-    //                    extendPropertyDef(propertyDef, bmmProperty);
-    //                    properties.put(propertyName, propertyDef);
-    //
-    //                    if (bmmProperty.getMandatory()) {
-    //                        required.put(propertyName);
-    //                    }
-    //                }
-    //            }
-    //            properties.put("_type", new JSONObject().put("const", typeName));
-    //            definition.put("required", required);
-    //            definition.put("properties", properties);
-    //            definitions.put(typeName, definition);
-    //        }
-    //
-    //        private void extendPropertyDef(JSONObject propertyDef, BmmProperty bmmProperty) {
-    //            if (bmmProperty instanceof BmmContainerProperty) {
-    //                BmmContainerProperty containerProperty = (BmmContainerProperty) bmmProperty;
-    //                if (containerProperty.getCardinality() != null &&
-    // containerProperty.getCardinality().getLower() > 0) {
-    //                    propertyDef.put("minItems", containerProperty.getCardinality().getLower());
-    //                }
-    //            }
-    //        }
-    //
-    //        private JSONObject createPropertyDef(BmmType type) {
-    //
-    //            if (type instanceof BmmOpenType) {
-    //                return createType("object");
-    //                //nothing more to be done
-    //            } else if (type instanceof BmmSimpleType) {
-    //                if (isJSPrimitive(type)) {
-    //                    return createType(getJSPrimitive(type));
-    //                } else {
-    //                    return createPolymorphicReference(type.getBaseClass());
-    //                }
-    //            } else if (type instanceof BmmContainerType) {
-    //                BmmContainerType containerType = (BmmContainerType) type;
-    //                return new JSONObject()
-    //                        .put("type", "array")
-    //                        .put("items", createPropertyDef(containerType.getBaseType()));
-    //            } else if (type instanceof BmmGenericType) {
-    //                return createPolymorphicReference(type.getBaseClass());
-    //            }
-    //            throw new IllegalArgumentException("type must be a BmmType, but was " +
-    // type.getClass().getSimpleName());
-    //        }
-    //
-    //        private JSONObject createPolymorphicReference(BmmClass type) {
-    //
-    //            if (BmmDefinitions.typeNameToClassKey(type.getTypeName()).equalsIgnoreCase("hash"))
-    // {
-    //                return createType("object");
-    //            }
-    //
-    //            List<String> descendants = getAllNonAbstractDescendants(type);
-    //            if (!type.isAbstract()) {
-    //                descendants.add(BmmDefinitions.typeNameToClassKey(type.getTypeName()));
-    //            }
-    //
-    //            if (descendants.isEmpty()) {
-    //                //this is an object of which only an abstract class exists.
-    //                //it cannot be represented as standard json, one would think. this is mainly
-    // access control and authored
-    //                //resource in the RM
-    //                return createType("object");
-    //            } else if (descendants.size() > 1) {
-    //                JSONObject def = new JSONObject();
-    //                JSONArray array = new JSONArray();
-    //                for (String descendant : descendants) {
-    //                    JSONObject typePropertyCheck = createConstType(descendant);
-    //                    JSONObject typeCheck = new JSONObject().put("properties",
-    // typePropertyCheck);
-    //
-    //                    JSONObject typeReference = createReference(descendant);
-    //                    //IF the type matches
-    //                    //THEN check the correct type from the definitions
-    //                    JSONObject ifObject = new JSONObject()
-    //                            .put("if", typeCheck)
-    //                            .put("then", typeReference);
-    //                    array.put(ifObject);
-    //                }
-    //                array.put(createRequiredArray("_type"));
-    //                def.put("allOf", array);
-    //                return def;
-    //            } else {
-    //                return createReference(BmmDefinitions.typeNameToClassKey(type.getTypeName()));
-    //            }
-    //        }
-    //
-    //        private List<String> getAllNonAbstractDescendants(BmmClass bmmClass) {
-    //            List<String> result = new ArrayList<>();
-    //            List<String> descs = bmmClass.getImmediateDescendants();
-    //            for (String desc : descs) {
-    //                if (!bmmClass.getTypeName().equalsIgnoreCase(desc)) {//TODO: fix
-    // getImmediateDescendants in BMM so this check is not required
-    //                    BmmClass classDefinition = bmmModel.getClassDefinition(desc);
-    //                    if (!classDefinition.isAbstract()) {
-    //
-    // result.add(BmmDefinitions.typeNameToClassKey(classDefinition.getTypeName()));
-    //                    }
-    //                    result.addAll(getAllNonAbstractDescendants(classDefinition));
-    //                }
-    //            }
-    //            return result;
-    //        }
-    //
-    //        private boolean isJSPrimitive(BmmType bmmType) {
-    //            return primitiveTypeMapping.containsKey(bmmType.getTypeName().toLowerCase());
-    //        }
-    //
-    //        private String getJSPrimitive(BmmType bmmType) {
-    //            return primitiveTypeMapping.get(bmmType.getTypeName().toLowerCase());
-    //        }
-    //
-    //        private JSONObject createConstType(String rootType) {
-    //            JSONObject constTypeObject = new JSONObject().put("const", rootType);
-    //            return new JSONObject().put("_type", constTypeObject);
-    //        }
-    //
-    //        private JSONObject createRequiredArray(String... requiredFields) {
-    //            JSONObject requiredType = new JSONObject();
-    //            JSONArray requiredArray = new JSONArray();
-    //            for (String requiredProperty : requiredFields) {
-    //                requiredArray.put(requiredProperty);
-    //            }
-    //            requiredType.put("required", requiredArray);
-    //            return requiredType;
-    //        }
-    //
-    //
-    //        private JSONObject createType(String jsPrimitive) {
-    //            return new JSONObject().put("type", jsPrimitive);
-    //        }
-    //
-    //        private JSONObject createReference(String rootType) {
-    //            return new JSONObject().put("$ref", "#/definitions/" + rootType);
-    //        }
-    //    }
+class CanonicalJsonTest {
+
+    private static RMDataFormat rmDataFormat() {
+        return RMDataFormat.canonicalJSON();
+    }
+
+    private static <T extends RMObject> T unmarshal(String path, Class<T> rmObjectClass) {
+        String value = null;
+        try {
+            value = new String(Files.readAllBytes(Paths.get(path)));
+        } catch (IOException e) {
+            fail(e);
+        }
+        assertThat(value).isNotNull();
+        return RMDataFormat.canonicalJSON().unmarshal(value, rmObjectClass);
+    }
+
+    @Test
+    void unmarshalMultimedia() {
+
+        assertThat(unmarshal("src/test/resources/sample_data/multimedia.json", DvMultimedia.class))
+                .satisfies(this::assertDvMultimedia);
+    }
+
+    @Test
+    void unmarshalMultimediaElement() {
+
+        assertThat(unmarshal("src/test/resources/sample_data/element_multimedia.json", Element.class))
+                .satisfies(element -> assertDvMultimedia(element.getValue()));
+    }
+
+    @Test
+    void unmarshalMultimediaItemTree() {
+
+        assertThat(unmarshal("src/test/resources/sample_data/item_tree_with_multimedia.json", ItemTree.class))
+                .satisfies(itemTree -> assertThat(itemTree.getItems().get(0))
+                        .isInstanceOf(Cluster.class)
+                        .satisfies(clusterValue -> {
+                            Cluster cluster = (Cluster) clusterValue;
+                            assertThat(cluster.getItems().get(0))
+                                    .isInstanceOf(Element.class)
+                                    .satisfies(itemValue -> assertDvMultimedia(((Element) itemValue).getValue()));
+                        }));
+    }
+
+    @Test
+    void unmarshalPartialDateTime() {
+
+        assertThat(unmarshal("src/test/resources/sample_data/partialdvdatetime.json", DvDateTime.class))
+                .satisfies(dvDateTime1 ->
+                        // NB. partial time (e.g. '10') is defaulted to '10:00' due to Java API handling of time values
+                        assertThat(dvDateTime1.getValue()).hasToString("2020-08-01T10:00"));
+    }
+
+    private void assertDvMultimedia(DataValue dataValue) {
+
+        assertThat(dataValue).isInstanceOf(DvMultimedia.class).satisfies(elementValue -> {
+            var dvMultimedia = (DvMultimedia) elementValue;
+            assertThat(dvMultimedia.getMediaType()).satisfies(mediaType -> {
+                assertThat(mediaType.getTerminologyId().getValue()).isEqualTo("IANA_media-types");
+                assertThat(mediaType.getCodeString()).isEqualTo("text/plain");
+            });
+            assertThat(dvMultimedia.getSize()).isEqualTo(23);
+            assertThat(dvMultimedia.getData())
+                    .satisfies(bytes -> assertThat(new String(bytes)).isEqualTo("Shall Be Base64 encoded"));
+        });
+    }
+
+    @Test
+    void unmarshalPartialDate() {
+
+        assertThat(unmarshal("src/test/resources/sample_data/partialdvdate.json", DvDate.class))
+                .satisfies(dvDate -> assertThat(dvDate.getValue()).hasToString("2020-08"));
+    }
+
+    @Test
+    void marshalDefaultPrettyPrint() {
+
+        Element element = new Element("at0042", new DvText("pretty print"), null);
+        assertThat(rmDataFormat().marshal(element))
+                .isEqualTo(
+                        systemEol(
+                                """
+                       {
+                         "_type" : "ELEMENT",
+                         "name" : {
+                           "_type" : "DV_TEXT",
+                           "value" : "pretty print"
+                         },
+                         "archetype_node_id" : "at0042"
+                       }"""));
+    }
+
+    @Test
+    void marshalWithOptionsNoPrettyPrint() {
+
+        Element element = new Element("at0042", new DvText("default no pretty print"), null);
+        assertThat(rmDataFormat().marshalWithOptions(element))
+                .isEqualTo(
+                        """
+                       {"_type":"ELEMENT","name":{"_type":"DV_TEXT","value":"default no pretty print"},"archetype_node_id":"at0042"}""");
+    }
+
+    @Test
+    void marshalWithOptionsPrettyPrint() {
+
+        Element element = new Element("at0042", new DvText("pretty print"), null);
+        assertThat(rmDataFormat().marshalWithOptions(element, MarshalOption.PRETTY_PRINT))
+                .isEqualTo(
+                        systemEol(
+                                """
+                       {
+                         "_type" : "ELEMENT",
+                         "name" : {
+                           "_type" : "DV_TEXT",
+                           "value" : "pretty print"
+                         },
+                         "archetype_node_id" : "at0042"
+                       }"""));
+    }
+
+    private static String systemEol(String str) {
+        return str.replaceAll("\\R", System.lineSeparator());
+    }
+
+    @Test
+    void marshalDuration() {
+        JSONAssert.assertEquals(
+                rmDataFormat().marshal(new DvDuration(Duration.ofDays(30L))),
+                """
+                        {"_type":"DV_DURATION","value":"PT720H"}""",
+                true);
+    }
+
+    @Test
+    void marshalEmptyDvText() {
+
+        JSONAssert.assertEquals(
+                rmDataFormat().marshal(new DvText("")),
+                """
+                        {"_type":"DV_TEXT","value":""}""",
+                true);
+    }
+
+    // check that dot is not converted into a comma!
+    @Test
+    void marshalDvDateTime() {
+
+        JSONAssert.assertEquals(
+                rmDataFormat().marshal(new DvDateTime("2021-10-01T10:32:51.543+07:00")),
+                """
+                        {"_type":"DV_DATE_TIME","value":"2021-10-01T10:32:51.543+07:00"}""",
+                true);
+    }
+
+    @Test
+    void marshalDvDateTimeWithZero() {
+
+        JSONAssert.assertEquals(
+                rmDataFormat().marshal(new DvDateTime("2022-02-25T10:55:41.400Z")),
+                """
+                        {"_type":"DV_DATE_TIME","value":"2022-02-25T10:55:41.4Z"}""",
+                true);
+    }
+
+    @Test
+    void marshalDvTimeWithZero() {
+
+        JSONAssert.assertEquals(
+                rmDataFormat().marshal(new DvTime("10:55:41.400Z")),
+                """
+                        {"_type":"DV_TIME","value":"10:55:41.4Z"}""",
+                true);
+    }
+
+    @Test
+    void marshalEmptyContent() {
+
+        ItemTree itemTree = new ItemTree();
+        itemTree.setNameAsString("test");
+        JSONAssert.assertEquals(
+                rmDataFormat().marshal(itemTree),
+                """
+                        {"_type":"ITEM_TREE","name":{"_type":"DV_TEXT","value":"test"}}""",
+                true);
+    }
+
+    @Test
+    void marshallContribution() {
+
+        List<ObjectRef<? extends ObjectId>> versions = new ArrayList<>();
+        versions.add(new ObjectRef<>(
+                new HierObjectId("COMPOSITION"),
+                "local",
+                "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
+
+        Contribution expected = new Contribution();
+        expected.setUid(new HierObjectId("bbf60d27-9200-4995-a950-279f889d1050"));
+        expected.setVersions(versions);
+
+        CanonicalJson cut = RMDataFormat.canonicalJSON();
+        String json = cut.marshal(expected);
+
+        Contribution actual = cut.unmarshal(json, Contribution.class);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void marshallEhr() {
+
+        List<ObjectRef<? extends ObjectId>> compositions = new ArrayList<>();
+        compositions.add(new ObjectRef<>(
+                new HierObjectId("COMPOSITION"),
+                "local",
+                "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
+        List<ObjectRef<? extends ObjectId>> contributions = new ArrayList<>();
+        contributions.add(new ObjectRef<>(
+                new HierObjectId("COMPOSITION"),
+                "local",
+                "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
+        List<ObjectRef<? extends ObjectId>> folders = new ArrayList<>();
+        folders.add(new ObjectRef<>(
+                new HierObjectId("COMPOSITION"),
+                "local",
+                "b5c4aaed-2adc-4c56-9005-e21ff3cca62a::local.ehrbase.org::2"));
+
+        Ehr expected = new Ehr();
+        expected.setCompositions(compositions);
+        expected.setContributions(contributions);
+        expected.setFolders(folders);
+
+        CanonicalJson cut = RMDataFormat.canonicalJSON();
+        String json = cut.marshal(expected);
+
+        Ehr actual = cut.unmarshal(json, Ehr.class);
+        assertThat(actual).isEqualTo(expected);
+    }
 }

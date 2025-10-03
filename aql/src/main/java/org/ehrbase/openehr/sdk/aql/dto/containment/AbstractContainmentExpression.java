@@ -61,12 +61,12 @@ public abstract sealed class AbstractContainmentExpression implements Containmen
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractContainmentExpression that = (AbstractContainmentExpression) o;
-        return Objects.equals(contains, that.contains) && Objects.equals(identifier, that.identifier);
+        return Objects.equals(identifier, that.identifier) && Objects.equals(contains, that.contains);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contains, identifier);
+        return Objects.hash(identifier == null ? contains : identifier);
     }
 
     @Override

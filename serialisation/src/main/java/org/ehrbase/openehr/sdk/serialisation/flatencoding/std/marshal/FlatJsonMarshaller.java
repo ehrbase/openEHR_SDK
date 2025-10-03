@@ -18,10 +18,13 @@
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import org.ehrbase.openehr.sdk.serialisation.MarshalOption;
 import org.ehrbase.openehr.sdk.serialisation.exception.MarshalException;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
@@ -30,23 +33,27 @@ public class FlatJsonMarshaller {
 
     private static final ObjectMapper OBJECT_MAPPER = ArchieObjectMapperProvider.getObjectMapper();
 
-    public FlatJsonMarshaller() {}
-
     /**
      * Marshal the composition to flat json
      *
-     * @param composition
-     * @return
+     * @param composition to marshal
+     * @return compositionFlatJsonValue
      */
     public String toFlatJson(Composition composition, WebTemplate webTemplate) {
+        return toFlatJson(composition, webTemplate, Set.of());
+    }
 
+    public String toFlatJson(Composition composition, WebTemplate webTemplate, Set<MarshalOption> options) {
         Map<String, Object> result = new LinkedHashMap<>();
 
         String templateId = webTemplate.getTemplateId();
         new StdFromCompositionWalker().walk(composition, result, webTemplate, null, templateId);
 
         try {
-            return OBJECT_MAPPER.writeValueAsString(result);
+            final PrettyPrinter prettyPrinter = options.contains(MarshalOption.PRETTY_PRINT)
+                    ? OBJECT_MAPPER.getSerializationConfig().constructDefaultPrettyPrinter()
+                    : null;
+            return OBJECT_MAPPER.writer(prettyPrinter).writeValueAsString(result);
         } catch (JsonProcessingException e) {
             throw new MarshalException(e.getMessage(), e);
         }
