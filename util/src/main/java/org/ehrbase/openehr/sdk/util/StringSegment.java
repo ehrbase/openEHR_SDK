@@ -113,12 +113,14 @@ public final class StringSegment implements CharSequence {
             if (closed) throw new IOException("Stream closed");
         }
 
+        @Override
         public int read() throws IOException {
             ensureOpen();
             if (next >= end) return -1;
             return str.charAt(next++);
         }
 
+        @Override
         public int read(char[] cbuf, int off, int len) throws IOException {
             ensureOpen();
             Objects.checkFromIndexSize(off, len, cbuf.length);
@@ -132,25 +134,29 @@ public final class StringSegment implements CharSequence {
             return n;
         }
 
+        @Override
         public long skip(long n) throws IOException {
             ensureOpen();
             if (next >= end) return 0;
             // Bound skip by beginning and end of the source
-            long r = Math.min(end - next, n);
+            long r = Math.min((long) end - next, n);
             r = Math.max(-next, r);
             next += (int) r;
             return r;
         }
 
+        @Override
         public boolean ready() throws IOException {
             ensureOpen();
             return true;
         }
 
+        @Override
         public boolean markSupported() {
             return true;
         }
 
+        @Override
         public void mark(int readAheadLimit) throws IOException {
             if (readAheadLimit < 0) {
                 throw new IllegalArgumentException("Read-ahead limit < 0");
@@ -159,11 +165,13 @@ public final class StringSegment implements CharSequence {
             mark = next;
         }
 
+        @Override
         public void reset() throws IOException {
             ensureOpen();
             next = mark;
         }
 
+        @Override
         public void close() {
             closed = true;
         }
