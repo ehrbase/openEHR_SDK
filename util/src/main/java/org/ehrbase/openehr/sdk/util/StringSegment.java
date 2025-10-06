@@ -62,6 +62,34 @@ public final class StringSegment implements CharSequence {
     }
 
     @Override
+    public int hashCode() {
+        int h = 1;
+        for (int i = start; i < end; i++) {
+            h = 31 * h + (int) str.charAt(i);
+        }
+        return h;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof StringSegment seg) || length() != seg.length()) {
+            return false;
+        }
+        if (start == seg.start && str == seg.str) {
+            return true;
+        }
+        for (int i = 0; i < length(); i++) {
+            if (charAt(i) != seg.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
         return str.substring(start, end);
     }
