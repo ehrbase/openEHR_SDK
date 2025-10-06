@@ -74,14 +74,13 @@ public final class IdentifiedPath implements ColumnExpression, Operand, Comparis
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IdentifiedPath that = (IdentifiedPath) o;
-        return Objects.equals(root, that.root)
-                && Objects.equals(rootPredicate, that.rootPredicate)
-                && Objects.equals(path, that.path);
+        return root.equals(that.root) && Objects.equals(rootPredicate, that.rootPredicate) && path.equals(that.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(root, rootPredicate, path);
+        return 31 * (31 * (31 + root.hashCode()) + (rootPredicate == null ? 0 : rootPredicate.hashCode()))
+                + path.hashCode();
     }
 
     @Override
