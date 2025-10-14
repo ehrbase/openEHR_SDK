@@ -17,7 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.util;
 
-import java.nio.CharBuffer;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -39,9 +38,9 @@ public class CharSequenceHelper {
         } else if (beginIndex == 0 && endIndex == str.length()) {
             return str;
         } else if (str.getClass() == String.class) {
-            return CharBuffer.wrap(str, beginIndex, endIndex);
+            return StringSegment.subSequence((String) str, beginIndex, endIndex);
         } else {
-            // CharBuffer does not have to be wrapped
+            // StringSegment does not have to be wrapped
             return str.subSequence(beginIndex, endIndex);
         }
     }

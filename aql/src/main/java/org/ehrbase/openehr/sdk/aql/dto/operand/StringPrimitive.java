@@ -33,6 +33,6 @@ public sealed class StringPrimitive extends Primitive<String, StringPrimitive> i
 
     @Override
     public void render(final StringBuilder sb) {
-        sb.append(AqlRenderer.encodeString(getValue()));
+        AqlRenderer.appendEncodedString(sb, getValue());
     }
 }
