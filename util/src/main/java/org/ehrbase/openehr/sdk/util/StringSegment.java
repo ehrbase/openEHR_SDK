@@ -36,11 +36,11 @@ public final class StringSegment implements CharSequence {
         this.end = end;
     }
 
-    public static CharSequence subSequence(String str, int start, int end) {
+    public static StringSegment subSequence(String str, int start, int end) {
         return new StringSegment(str, start, end);
     }
 
-    public static CharSequence wrap(String str) {
+    public static StringSegment wrap(String str) {
         return new StringSegment(str, 0, str.length());
     }
 
