@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.aql.render;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -165,15 +167,13 @@ public final class AqlRenderer {
     }
 
     private static void renderTerminologyFunction(StringBuilder sb, TerminologyFunction terminologyFunction) {
-
-        sb.append("TERMINOLOGY")
-                .append("(")
-                .append(encodeString(terminologyFunction.getOperation()))
-                .append(",")
-                .append(encodeString(terminologyFunction.getServiceApi()))
-                .append(",")
-                .append(encodeString(terminologyFunction.getUriParameters()))
-                .append(")");
+        sb.append("TERMINOLOGY(");
+        appendEncodedString(sb, terminologyFunction.getOperation());
+        sb.append(',');
+        appendEncodedString(sb, terminologyFunction.getServiceApi());
+        sb.append(',');
+        appendEncodedString(sb, terminologyFunction.getUriParameters());
+        sb.append(')');
     }
 
     private static void renderLike(StringBuilder sb, LikeCondition likeCondition) {
@@ -477,50 +477,62 @@ public final class AqlRenderer {
         if (value == null) {
             return null;
         }
-
         StringBuilder sb = new StringBuilder(value.length() + 5);
-        sb.append("'");
-
-        // ' \ abfnrtv
-
-        for (int i = 0, l = value.length(); i < l; i++) {
-            char ch = value.charAt(i);
-            switch (ch) {
-                case '\'':
-                case '\\':
-                    sb.append('\\').append(ch);
-                    break;
-
-                case 0x00007:
-                    sb.append('\\').append('a');
-                    break;
-                case 0x00008:
-                    sb.append('\\').append('b');
-                    break;
-                case 0x0000c:
-                    sb.append('\\').append('f');
-                    break;
-                case 0x0000a:
-                    sb.append('\\').append('n');
-                    break;
-                case 0x0000d:
-                    sb.append('\\').append('r');
-                    break;
-                case 0x00009:
-                    sb.append('\\').append('t');
-                    break;
-                case 0x0000b:
-                    sb.append('\\').append('v');
-                    break;
-
-                default:
-                    sb.append(ch);
-            }
-        }
-
-        sb.append("'");
-
+        appendEncodedString(sb, value);
         return sb.toString();
+    }
+
+    /**
+     * @see org.ehrbase.openehr.sdk.aql.parser.AqlQueryVisitor::unwrapText
+     *
+     * @param value
+     * @return
+     */
+    public static void appendEncodedString(Appendable sb, CharSequence value) {
+        try {
+            sb.append("'");
+
+            // ' \ abfnrtv
+
+            for (int i = 0, l = value.length(); i < l; i++) {
+                char ch = value.charAt(i);
+                switch (ch) {
+                    case '\'':
+                    case '\\':
+                        sb.append('\\').append(ch);
+                        break;
+
+                    case 0x00007:
+                        sb.append('\\').append('a');
+                        break;
+                    case 0x00008:
+                        sb.append('\\').append('b');
+                        break;
+                    case 0x0000c:
+                        sb.append('\\').append('f');
+                        break;
+                    case 0x0000a:
+                        sb.append('\\').append('n');
+                        break;
+                    case 0x0000d:
+                        sb.append('\\').append('r');
+                        break;
+                    case 0x00009:
+                        sb.append('\\').append('t');
+                        break;
+                    case 0x0000b:
+                        sb.append('\\').append('v');
+                        break;
+
+                    default:
+                        sb.append(ch);
+                }
+            }
+
+            sb.append("'");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private static void renderFromClause(StringBuilder sb, Containment from) {
