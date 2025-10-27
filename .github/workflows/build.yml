@@ -30,7 +30,7 @@ jobs:
         run: mvn --batch-mode clean verify jacoco:report jacoco:report-integration
 
       - name: Upload - Jacoco Overall Coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco-coverage-overall
           path: ${{ github.workspace }}/test-coverage/target/site/jacoco-overall-coverage/jacoco.xml
