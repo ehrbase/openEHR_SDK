@@ -150,7 +150,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>6.2.12</version>
+            <version>6.2.14</version>
             <scope>test</scope>
         </dependency>
         <dependency>
