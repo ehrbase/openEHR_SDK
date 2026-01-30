@@ -471,7 +471,7 @@ public class InputHandler {
             char c = constrain.charAt(i);
             if (c == 'T') {
                 isDatePath = false;
-            } else if (CharUtils.isAsciiNumeric(c)) {
+            } else if (CharUtils.isAsciiNumeric(c) || c == '-') {
                 sb.append(c);
             } else if (c != 'P') {
                 String key = String.valueOf(c);
