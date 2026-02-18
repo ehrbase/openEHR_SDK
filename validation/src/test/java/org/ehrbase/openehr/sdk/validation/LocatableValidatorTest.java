@@ -47,9 +47,9 @@ import org.openehr.schemas.v1.TemplateDocument;
  *
  */
 @SuppressWarnings("java:S5976")
-class CompositionValidatorTest {
+class LocatableValidatorTest {
 
-    private final CompositionValidator validator = new CompositionValidator(null, true, true, null);
+    private final LocatableValidator validator = new LocatableValidator(null, true, true, null);
 
     @Test
     void validateEpisodicComposition() throws Exception {

@@ -35,7 +35,7 @@ import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataConformanceSDTJson;
-import org.ehrbase.openehr.sdk.validation.CompositionValidator;
+import org.ehrbase.openehr.sdk.validation.LocatableValidator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -84,7 +84,7 @@ class FlatConformanceTest {
 
         softAssertions.assertThat(unmarshal).isNotNull();
 
-        CompositionValidator rmObjectValidator = new CompositionValidator();
+        LocatableValidator rmObjectValidator = new LocatableValidator();
 
         softAssertions
                 .assertThat(rmObjectValidator.validate(
