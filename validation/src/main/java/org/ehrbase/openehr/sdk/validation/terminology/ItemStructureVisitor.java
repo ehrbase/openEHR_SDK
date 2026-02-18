@@ -41,7 +41,6 @@ import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.integration.GenericEntry;
-import java.util.Map;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyService;
 import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
@@ -229,13 +228,11 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
      */
     private void traverse(ContentItem item) throws IllegalArgumentException, InternalError {
 
-        Map<String, Object> retmap = null;
-
         if (item == null) {
             return;
         }
 
-        log.debug("traverse element of class:" + item.getClass() + ", nodeid:" + item.getArchetypeNodeId());
+        log.trace("traverse element of class: {}, nodeid: {}", item.getClass(), item.getArchetypeNodeId());
 
         if (item instanceof Observation) {
             Observation observation = (Observation) item;
@@ -330,14 +327,14 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
             traverse(genericEntry.getData());
 
         } else {
-            log.warn("This item is not handled!" + item.getName());
+            log.warn("This item is not handled: {}!", item.getName());
         }
     }
 
     private void traverse(Activity activity) throws IllegalArgumentException, InternalError {
         if (activity == null) return;
 
-        log.debug("traverse activity:" + activity);
+        log.trace("traverse activity: {}", activity);
 
         traverse(activity.getDescription()); // don't add a /data in path for description (don't ask me why...)
     }
@@ -353,7 +350,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
             return;
         }
 
-        log.debug("traverse history:" + item);
+        log.trace("traverse history: {}", item);
 
         // CHC: 160531 add explicit name
 
@@ -384,7 +381,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
      */
     private void traverse(ItemStructure item) throws IllegalArgumentException, InternalError {
 
-        log.debug("traverse itemstructure:" + item);
+        log.trace("traverse itemstructure: {}", item);
 
         if (item == null) {
             return;
@@ -425,7 +422,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
     }
 
     private void validateElement(Element element) throws IllegalArgumentException, InternalError {
-        log.debug("should validate this element:" + element);
+        log.trace("should validate this element: {}", element);
         elementOccurrences += 1;
 
         if (element.getNullFlavour() != null && itemValidator.isValidatedRmObjectType(element.getNullFlavour())) {
@@ -446,7 +443,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
                     itemStructureLanguage);
         }
 
-        if (element.getName() != null && element.getName() instanceof DvCodedText) {
+        if (element.getName() instanceof DvCodedText) {
             itemValidator.validate(
                     localizedTerminologies.locale(itemStructureLanguage),
                     codesetMapping,
@@ -463,7 +460,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
      * @throws IllegalArgumentException, InternalError
      */
     private void traverse(Item item) throws IllegalArgumentException, InternalError {
-        log.debug("traverse item:" + item);
+        log.trace("traverse item: {}", item);
 
         if (item == null) {
             return;
