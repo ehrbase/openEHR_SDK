@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
+import org.ehrbase.openehr.sdk.validation.LocatableValidator;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +49,7 @@ public class CompositionValidatorImp implements CompositionValidator {
         Composition composition =
                 RMDataFormat.canonicalJSON().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
 
-        org.ehrbase.openehr.sdk.validation.CompositionValidator validator =
-                new org.ehrbase.openehr.sdk.validation.CompositionValidator();
+        LocatableValidator validator = new LocatableValidator();
 
         List<ValidationErrorDto> errorDtoList = validator.validate(composition, templateDocument.getTemplate()).stream()
                 .filter(e -> !List.of(

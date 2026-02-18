@@ -35,7 +35,7 @@ class StructuredJsonValidationTest {
 
     private static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
 
-    private final CompositionValidator validator = new CompositionValidator();
+    private final LocatableValidator validator = new LocatableValidator();
 
     @Test
     void testRoundTrip() throws IOException {

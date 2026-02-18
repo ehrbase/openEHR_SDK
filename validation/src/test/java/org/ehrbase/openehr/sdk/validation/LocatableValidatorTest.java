@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.xml.JAXBUtil;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,9 +48,30 @@ import org.openehr.schemas.v1.TemplateDocument;
  *
  */
 @SuppressWarnings("java:S5976")
-class CompositionValidatorTest {
+class LocatableValidatorTest {
 
-    private final CompositionValidator validator = new CompositionValidator(null, true, true, null);
+    private final LocatableValidator validator = new LocatableValidator(null, true, true, null);
+
+    @Test
+    void invalidFolder() {
+        Folder folder = new Folder();
+        List<ConstraintViolation> validate = validator.validate(folder);
+        assertThat(validate)
+                .hasSize(2)
+                .extracting(ConstraintViolation::getAqlPath, ConstraintViolation::getMessage)
+                .containsExactly(
+                        new Tuple(
+                                "/archetype_node_id",
+                                "Attribute archetype_node_id of class FOLDER does not match existence 1..1"),
+                        new Tuple("/name", "Attribute name of class FOLDER does not match existence 1..1"));
+    }
+
+    @Test
+    void validFolder() {
+        Folder folder = new Folder("openEHR-EHR-FOLDER.test.v0", new DvText("name"), null, null, null);
+        List<ConstraintViolation> validate = validator.validate(folder);
+        assertThat(validate).isEmpty();
+    }
 
     @Test
     void validateEpisodicComposition() throws Exception {
