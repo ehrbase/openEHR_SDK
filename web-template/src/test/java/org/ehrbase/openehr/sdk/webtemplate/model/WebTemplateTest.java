@@ -17,9 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.webtemplate.model;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -28,14 +26,12 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.parser.NodeId;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.junit.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
 
 public class WebTemplateTest {
 
@@ -44,93 +40,62 @@ public class WebTemplateTest {
         ObjectMapper objectMapper = new ObjectMapper();
         WebTemplate actual = objectMapper.readValue(
                 IOUtils.toString(WebTemplateTestData.CORONA.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
-        assertThat(actual).isNotNull();
+        AssertionsForClassTypes.assertThat(actual).isNotNull();
     }
 
     @Test
     public void testFindByAqlPath() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
+        WebTemplate actual = OPTParser.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
 
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
-
-        Assertions.assertThat(actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']")
-                        .isPresent())
-                .isTrue();
-        Assertions.assertThat(actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]")
-                        .isPresent())
-                .isTrue();
+        assertThat(actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']"))
+                .isPresent();
+        assertThat(actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]"))
+                .isPresent();
     }
 
     @Test
     public void isRelativePathNameDependent() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = OPTParser.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
 
         WebTemplateNode node =
                 actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1]").get();
 
         //
-        Assertions.assertThat(actual.getTree().isRelativePathNameDependent(node))
-                .isTrue();
+        assertThat(actual.getTree().isRelativePathNameDependent(node)).isTrue();
 
-        Assertions.assertThat(node.isRelativePathNameDependent(
-                        node.findChildById("uid").get()))
+        assertThat(node.isRelativePathNameDependent(node.findChildById("uid").get()))
                 .isFalse();
     }
 
     @Test
     public void testQueryUpperUnbounded() throws IOException, XmlException {
-        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.IDCR_PROBLEM_LIST.getStream())
-                .getTemplate();
-        List<WebTemplateNode> result =
-                new OPTParser(operationaltemplate).parse().upperNotBounded();
+        List<WebTemplateNode> result = OPTParser.parse(OperationalTemplateTestData.IDCR_PROBLEM_LIST.getStream())
+                .upperNotBounded();
 
-        assertNotNull(result);
-
-        assertEquals(20, result.size());
+        assertThat(result).hasSize(20);
     }
 
     @Test
     public void testQueryUpperUnbounded2() throws IOException, XmlException {
-        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.IDCR_LABORATORY_TEST.getStream())
-                .getTemplate();
-        List<WebTemplateNode> result =
-                new OPTParser(operationaltemplate).parse().upperNotBounded();
+        List<WebTemplateNode> result = OPTParser.parse(OperationalTemplateTestData.IDCR_LABORATORY_TEST.getStream())
+                .upperNotBounded();
 
-        assertNotNull(result);
-
-        assertEquals(45, result.size());
+        assertThat(result).hasSize(45);
     }
 
     @Test
     public void testMultiValued() throws IOException, XmlException {
-        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
-        List<WebTemplateNode> result =
-                new OPTParser(operationaltemplate).parse().multiValued();
+        List<WebTemplateNode> result = OPTParser.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
+                .multiValued();
 
-        assertNotNull(result);
-
-        assertEquals(262, result.size());
+        assertThat(result).hasSize(262);
     }
 
     @Test
     public void findAllContainmentCombinations() throws IOException, XmlException {
-        OPERATIONALTEMPLATE operationaltemplate = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
-                .getTemplate();
-        Set<Set<NodeId>> actual = new OPTParser(operationaltemplate).parse().findAllContainmentCombinations();
+        Set<Set<NodeId>> actual = OPTParser.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
+                .findAllContainmentCombinations();
 
-        Assertions.assertThat(actual).size().isEqualTo(5);
+        assertThat(actual).hasSize(5);
     }
 }

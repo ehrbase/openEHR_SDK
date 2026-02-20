@@ -28,18 +28,12 @@ import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplate
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.junit.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 public class WebTemplateSkeletonBuilderTest {
 
     @Test
     public void build() throws XmlException, IOException {
-
-        org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(
-                OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream());
-        OPERATIONALTEMPLATE operationaltemplate = document.getTemplate();
-
-        WebTemplate webTemplate = new OPTParser(operationaltemplate).parse();
+        WebTemplate webTemplate = OPTParser.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream());
 
         Composition generate = WebTemplateSkeletonBuilder.build(webTemplate, true);
         assertThat(generate).isNotNull();

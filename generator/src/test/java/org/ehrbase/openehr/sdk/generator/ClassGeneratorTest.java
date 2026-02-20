@@ -32,15 +32,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.groups.Tuple;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.junit.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
 
 public class ClassGeneratorTest {
 
@@ -50,16 +48,13 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerate() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setAddNullFlavor(true);
         ClassGenerator cut = new ClassGenerator(config);
         ClassGeneratorResult generate = null;
 
-        generate = cut.generate(PACKAGE_NAME, webTemplate);
+        generate = cut.generate(
+                PACKAGE_NAME, OPTParser.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream()));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -215,13 +210,10 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateAltEvents() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.ALT_EVENTS.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
 
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, webTemplate);
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.ALT_EVENTS));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -317,10 +309,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateDiagnose() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.DIAGNOSE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.DIAGNOSE));
 
         Set<String> derDiagnoseDefiningCode =
                 generate
@@ -329,7 +320,7 @@ public class ClassGeneratorTest {
                         .stream()
                         .filter(t -> t.name.equals("NameDesProblemsDerDiagnoseDefiningCode"))
                         .findAny()
-                        .get()
+                        .orElseThrow()
                         .enumConstants
                         .keySet();
 
@@ -345,11 +336,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateEpisode() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.EPISODE_OF_CARE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.EPISODE_OF_CARE));
         List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
@@ -401,11 +390,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateSmICS() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.SM_I_C_S_BEFUND.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.SM_I_C_S_BEFUND));
         List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
@@ -515,11 +502,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateD4LQuestionnaire() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.D4L_QUESTIONNAIRE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.D4L_QUESTIONNAIRE));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -528,16 +513,14 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(294);
+        assertThat(fieldSpecs).hasSize(294);
     }
 
     @Test
     public void testGenerateGECCODiagnose() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.GECCO_DIAGNOSE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.GECCO_DIAGNOSE));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -546,9 +529,9 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(49);
+        assertThat(fieldSpecs).hasSize(49);
         assertThat(generate.getClasses().entrySet().stream()
-                        .filter(e -> StringUtils.endsWith(e.getKey(), "definition"))
+                        .filter(e -> Strings.CS.endsWith(e.getKey(), "definition"))
                         .findFirst()
                         .map(Map.Entry::getValue)
                         .stream()
@@ -570,13 +553,11 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateAny() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.GECCO_SEROLOGISCHER_BEFUND.getStream())
-                .getTemplate();
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.ALL);
         ClassGenerator cut = new ClassGenerator(config);
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.GECCO_SEROLOGISCHER_BEFUND));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -585,19 +566,17 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(97);
+        assertThat(fieldSpecs).hasSize(97);
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateErrorTest() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.ERROR_TEST.getStream())
-                .getTemplate();
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.SECTION);
         ClassGenerator cut = new ClassGenerator(config);
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.ERROR_TEST));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -605,17 +584,15 @@ public class ClassGeneratorTest {
                 .map(t -> t.fieldSpecs)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        assertThat(fieldSpecs).size().isEqualTo(69);
+        assertThat(fieldSpecs).hasSize(69);
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateSingleEvent() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.SINGLE_EVENT.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.SINGLE_EVENT));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -624,19 +601,17 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(26);
+        assertThat(fieldSpecs).hasSize(26);
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateSingleEventWithOption() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.SINGLE_EVENT.getStream())
-                .getTemplate();
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setGenerateChoicesForSingleEvent(true);
         ClassGenerator cut = new ClassGenerator(config);
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.SINGLE_EVENT));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -645,17 +620,15 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(36);
+        assertThat(fieldSpecs).hasSize(36);
         writeFiles(generate);
     }
 
     @Test
     public void testGeneratePatientenaufenthalt() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.PATIENTEN_AUFENTHALT.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.PATIENTEN_AUFENTHALT));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -664,17 +637,15 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(47);
+        assertThat(fieldSpecs).hasSize(47);
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateStationaererVersorgungsfall() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.EPISODE_SUMMARY.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.EPISODE_SUMMARY));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -683,17 +654,15 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(35);
+        assertThat(fieldSpecs).hasSize(35);
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateBefundDerBlutgasanalyse() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE));
         List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
@@ -767,11 +736,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateMultiOccurrence() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.MULTI_OCCURRENCE));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -863,10 +830,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateAllTypes() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.ALL_TYPES));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -875,18 +841,21 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(88L);
+        assertThat(fieldSpecs).hasSize(88);
 
         writeFiles(generate);
     }
 
+    private static WebTemplate getWebTemplate(OperationalTemplateTestData templateTestData)
+            throws XmlException, IOException {
+        return OPTParser.parse(templateTestData.getStream());
+    }
+
     @Test
     public void testGenerateVirologyFinding() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.VIROLOGY_FINDING.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.VIROLOGY_FINDING));
 
         List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -987,11 +956,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateCorona() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.CORONA_ANAMNESE));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -1000,16 +967,13 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(348);
+        assertThat(fieldSpecs).hasSize(348);
 
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateCoronaOptimizerSettingSection() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.SECTION);
         Map<Character, String> characterStringMap = Map.of(
@@ -1022,7 +986,8 @@ public class ClassGeneratorTest {
         config.getReplaceChars().putAll(characterStringMap);
         ClassGenerator cut = new ClassGenerator(config);
         ClassGeneratorResult generate = cut.generate(
-                PACKAGE_NAME.replace("example", "exampleoptimizersettingsection"), new OPTParser(template).parse());
+                PACKAGE_NAME.replace("example", "exampleoptimizersettingsection"),
+                getWebTemplate(OperationalTemplateTestData.CORONA_ANAMNESE));
 
         List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -1032,23 +997,19 @@ public class ClassGeneratorTest {
                 .map(f -> f.name)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).contains("beschaeftigung");
-
-        assertThat(fieldSpecs).size().isEqualTo(340);
+        assertThat(fieldSpecs).contains("beschaeftigung").hasSize(340);
 
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateCoronaOptimizerSettingAll() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.ALL);
         ClassGenerator cut = new ClassGenerator(config);
         ClassGeneratorResult generate = cut.generate(
-                PACKAGE_NAME.replace("example", "exampleoptimizersettingall"), new OPTParser(template).parse());
+                PACKAGE_NAME.replace("example", "exampleoptimizersettingall"),
+                getWebTemplate(OperationalTemplateTestData.CORONA_ANAMNESE));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -1057,18 +1018,16 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(304);
+        assertThat(fieldSpecs).hasSize(304);
 
         writeFiles(generate);
     }
 
     @Test
     public void testGenerateSchwangerschaftsstatus() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.SCHWANGERSCHAFTSSTATUS.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.SCHWANGERSCHAFTSSTATUS));
 
         List<String> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -1125,11 +1084,9 @@ public class ClassGeneratorTest {
 
     @Test
     public void testGenerateReactCare() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.OPEN_E_REACT_CARE.getStream())
-                .getTemplate();
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
-        ClassGeneratorResult generate = cut.generate(PACKAGE_NAME, new OPTParser(template).parse());
+        ClassGeneratorResult generate =
+                cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.OPEN_E_REACT_CARE));
 
         List<FieldSpec> fieldSpecs = generate.getClasses().values().stream()
                 .flatMap(Collection::stream)
@@ -1138,7 +1095,7 @@ public class ClassGeneratorTest {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        assertThat(fieldSpecs).size().isEqualTo(410);
+        assertThat(fieldSpecs).hasSize(410);
 
         writeFiles(generate);
     }
