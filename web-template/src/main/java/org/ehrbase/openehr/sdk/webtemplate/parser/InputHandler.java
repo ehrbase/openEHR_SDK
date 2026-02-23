@@ -76,7 +76,7 @@ public class InputHandler {
         WebTemplateInterval<?> range = null;
         WebTemplateValidation validation = new WebTemplateValidation();
 
-        Arrays.stream(extractChildren(item, "assumed_value"))
+        extractChildren(item, "assumed_value")
                 .findAny()
                 .map(a -> a.newCursor().getTextValue())
                 .ifPresent(input::setDefaultValue);

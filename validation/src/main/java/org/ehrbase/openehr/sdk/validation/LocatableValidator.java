@@ -90,7 +90,7 @@ public class LocatableValidator {
      */
     @Deprecated(forRemoval = true)
     public List<ConstraintViolation> validate(Composition composition, OPERATIONALTEMPLATE template) {
-        return validate(composition, new OPTParser(template).parse());
+        return validate(composition, OPTParser.parse(template));
     }
 
     /**

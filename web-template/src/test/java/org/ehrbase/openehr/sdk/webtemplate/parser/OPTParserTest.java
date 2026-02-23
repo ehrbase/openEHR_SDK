@@ -57,19 +57,16 @@ import org.openehr.schemas.v1.TemplateDocument;
  */
 class OPTParserTest {
 
+    static final ObjectMapper OM = new ObjectMapper();
+
     @Test
     void parsingSkipsInvalidNodeIds() throws XmlException, IOException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        OperationalTemplateTestData optTestData = OperationalTemplateTestData.SKIPPED_INVALID_NODE_IDS;
+        WebTemplate actual = getWebTemplate(optTestData);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.SKIPPED_INVALID_NODE_IDS.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -78,19 +75,18 @@ class OPTParserTest {
         checkErrors(errors);
     }
 
+    private static WebTemplate getWebTemplate(OperationalTemplateTestData optTestData)
+            throws XmlException, IOException {
+        return OPTParser.parse(optTestData.getStream());
+    }
+
     @Test
     void parseCoronaAnamnese() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.CORONA_ANAMNESE);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.CORONA.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
 
         List<String> errors = compareWebTemplate(actual, expected);
@@ -104,12 +100,7 @@ class OPTParserTest {
 
     @Test
     void parseAQLExample() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.AQL_EXAMPLE.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.AQL_EXAMPLE);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
     }
@@ -117,17 +108,11 @@ class OPTParserTest {
     @Test
     void parseTestingTemplateN() throws IOException, XmlException {
 
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.TESTING_TEMPLATE_N.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.TESTING_TEMPLATE_N);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.TESTING_TEMPLATE_N.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -146,16 +131,10 @@ class OPTParserTest {
 
     @Test
     void parseGECCODiagnose() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.GECCO_DIAGNOSE.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.GECCO_DIAGNOSE);
         actual = new Filter().filter(actual);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.GECCO_DIAGNOSE.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -174,17 +153,11 @@ class OPTParserTest {
 
     @Test
     void parseAltEvents() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.ALT_EVENTS.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.ALT_EVENTS);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.ALTERNATIVE_EVENTS.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -204,17 +177,11 @@ class OPTParserTest {
 
     @Test
     void parseMultiOccurrence() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.MULTI_OCCURRENCE.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.MULTI_OCCURRENCE);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.MULTI_OCCURRENCE.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -227,17 +194,11 @@ class OPTParserTest {
 
     @Test
     void parseAny() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.GECCO_SEROLOGISCHER_BEFUND.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.GECCO_SEROLOGISCHER_BEFUND);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.GECCO_SEROLOGISCHER_BEFUND.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -261,8 +222,8 @@ class OPTParserTest {
                                 "/" + OPERATIONALTEMPLATE_PATH_SEGMENT + "/unsupported_data_type_dv_scale.opt"))
                 .getTemplate();
 
-        OPTParser cut = new OPTParser(template);
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, cut::parse);
+        IllegalArgumentException exception =
+                Assertions.assertThrows(IllegalArgumentException.class, () -> OPTParser.parse(template));
 
         Assertions.assertEquals(
                 "The supplied template is not supported: Unsupported type DV_SCALE.", exception.getMessage());
@@ -270,17 +231,11 @@ class OPTParserTest {
 
     @Test
     void parseInitialAssessment() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.INITIAL_ASSESSMENT.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.INITIAL_ASSESSMENT);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.INITIAL_ASSESSMENT.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -290,37 +245,26 @@ class OPTParserTest {
 
     @Test
     void parseAddiction() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ADDICTION.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.ADDICTION);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.ADDICTION.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
 
         List<String> errors = compareWebTemplate(actual, expected);
-        checkErrors(errors, new String[] {
-            "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category"
-        });
+        checkErrors(
+                errors,
+                "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category");
     }
 
     @Test
     void parseConstrainTest() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CONSTRAIN_TEST.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.CONSTRAIN_TEST);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.CONSTRAIN_TEST.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -332,17 +276,11 @@ class OPTParserTest {
 
     @Test
     void parseLanguageTest() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.LANGUAGE_TEST.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.LANGUAGE_TEST);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.LANGUAGE_TEST.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
@@ -356,16 +294,11 @@ class OPTParserTest {
 
     @Test
     void parseAllTypes() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.ALL_TYPES.getStream())
-                .getTemplate();
-
-        OPTParser cut = new OPTParser(template);
-        WebTemplate actual = cut.parse();
+        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.ALL_TYPES);
         actual = new Filter().filter(actual);
         assertThat(actual).isNotNull();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplate expected = objectMapper.readValue(
+        WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.ALL_TYPES.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
 
         List<WebTemplateNode> dvOrdinalList =
@@ -418,11 +351,7 @@ class OPTParserTest {
 
     @Test
     void parseMultimediaTest() throws Exception {
-        var optTemplate = TemplateDocument.Factory.parse(OperationalTemplateTestData.MULTIMEDIA_TEST.getStream())
-                .getTemplate();
-        var parser = new OPTParser(optTemplate);
-
-        var webTemplate = parser.parse();
+        var webTemplate = getWebTemplate(OperationalTemplateTestData.MULTIMEDIA_TEST);
         assertThat(webTemplate).isNotNull();
 
         var nodes = webTemplate.getTree().findMatching(node -> node.getRmType().equals("PARTICIPATION"));
@@ -755,23 +684,13 @@ class OPTParserTest {
 
     @Test
     void testReadWrite() throws IOException, XmlException {
-        var template = TemplateDocument.Factory.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
-
-        var parser = new OPTParser(template);
-        var webTemplate = parser.parse();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        assertThatNoException().isThrownBy(() -> objectMapper.writeValueAsString(webTemplate));
+        var webTemplate = getWebTemplate(OperationalTemplateTestData.CORONA_ANAMNESE);
+        assertThatNoException().isThrownBy(() -> OM.writeValueAsString(webTemplate));
     }
 
     @Test
     void missingNodeIdAndAnnotationsTest() throws IOException, XmlException {
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(OperationalTemplateTestData.NULLID.getStream())
-                .getTemplate();
-
-        WebTemplate webTemplate = new OPTParser(template).parse();
+        WebTemplate webTemplate = getWebTemplate(OperationalTemplateTestData.NULLID);
         assertThat(webTemplate).isNotNull();
         List<WebTemplateNode> nodes = webTemplate.findAllByAqlPath(
                 "[openEHR-EHR-COMPOSITION.encounter.v1]/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]",
