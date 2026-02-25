@@ -25,12 +25,12 @@
     <parent>
         <groupId>org.ehrbase.openehr.sdk</groupId>
         <artifactId>bom</artifactId>
-        <version>2.28.0</version>
+        <version>2.29.0</version>
         <relativePath>./bom/pom.xml</relativePath>
     </parent>
 
     <artifactId>sdk-parent</artifactId>
-    <version>2.28.0</version>
+    <version>2.29.0</version>
     <packaging>pom</packaging>
     <name>openEHR SDK</name>
 

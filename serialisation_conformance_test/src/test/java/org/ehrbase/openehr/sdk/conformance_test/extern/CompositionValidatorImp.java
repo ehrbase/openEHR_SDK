@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
-import org.openehr.schemas.v1.TemplateDocument;
+import org.ehrbase.openehr.sdk.validation.LocatableValidator;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,15 +45,13 @@ public class CompositionValidatorImp implements CompositionValidator {
     public List<ValidationErrorDto> validateWithParams(
             String template, String rawComposition, boolean strictTextValidation, boolean relaxedNameMatching)
             throws Exception {
-        TemplateDocument templateDocument =
-                TemplateDocument.Factory.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
+        WebTemplate webTemplate = OPTParser.parse(IOUtils.toInputStream(template, StandardCharsets.UTF_8));
         Composition composition =
                 RMDataFormat.canonicalJSON().unmarshal(rawComposition.replace("@class", "_type"), Composition.class);
 
-        org.ehrbase.openehr.sdk.validation.CompositionValidator validator =
-                new org.ehrbase.openehr.sdk.validation.CompositionValidator();
+        LocatableValidator validator = new LocatableValidator();
 
-        List<ValidationErrorDto> errorDtoList = validator.validate(composition, templateDocument.getTemplate()).stream()
+        return validator.validate(composition, webTemplate).stream()
                 .filter(e -> !List.of(
                                 "/content[openEHR-EHR-SECTION.ispek_dialog.v1 and name/value='Restraint medication']/items[openEHR-EHR-INSTRUCTION.medication_order.v1]/activities[at0001]/description[at0002]/items[at0070]",
                                 "/context/other_context[at0001]/items[at0.0.81]")
@@ -59,6 +59,5 @@ public class CompositionValidatorImp implements CompositionValidator {
                 .peek(e -> logger.info(e.getMessage() + "|" + e.getAqlPath()))
                 .map(e -> new ValidationErrorDto(e.getMessage(), new String[0], 0))
                 .collect(Collectors.toList());
-        return errorDtoList;
     }
 }

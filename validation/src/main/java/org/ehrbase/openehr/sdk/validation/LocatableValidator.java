@@ -19,6 +19,7 @@ package org.ehrbase.openehr.sdk.validation;
 
 import com.nedap.archie.flattener.OperationalTemplateProvider;
 import com.nedap.archie.rm.composition.Composition;
+import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidationMessage;
 import com.nedap.archie.rmobjectvalidator.RMObjectValidator;
@@ -31,6 +32,7 @@ import org.ehrbase.openehr.sdk.validation.webtemplate.FastRMObjectValidator;
 import org.ehrbase.openehr.sdk.validation.webtemplate.ValidationWalker;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
+import org.jspecify.annotations.NonNull;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 /**
@@ -38,7 +40,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
  * Web Template.
  * This class is NOT thread-safe!
  */
-public class CompositionValidator {
+public class LocatableValidator {
 
     private final boolean checkForChildrenNotInTemplate;
 
@@ -46,7 +48,7 @@ public class CompositionValidator {
 
     private ExternalTerminologyValidation externalTerminologyValidation;
 
-    public CompositionValidator() {
+    public LocatableValidator() {
         this(null, false, true, null);
     }
 
@@ -57,7 +59,7 @@ public class CompositionValidator {
      * @param validateInvariants perform invariant checks in archie library
      * @param archetypeProvider
      */
-    public CompositionValidator(
+    public LocatableValidator(
             ExternalTerminologyValidation externalTerminologyValidation,
             boolean checkForChildrenNotInTemplate,
             boolean validateInvariants,
@@ -86,8 +88,9 @@ public class CompositionValidator {
      * @param template    the operational template used to validate the composition
      * @return the list of constraint violations
      */
+    @Deprecated(forRemoval = true)
     public List<ConstraintViolation> validate(Composition composition, OPERATIONALTEMPLATE template) {
-        return validate(composition, new OPTParser(template).parse());
+        return validate(composition, OPTParser.parse(template));
     }
 
     /**
@@ -105,11 +108,19 @@ public class CompositionValidator {
                     .walk(composition, result, template.getTree(), template.getTemplateId());
             return result;
         } else {
-            return messages.stream()
-                    .map(validationMessage ->
-                            new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
-                    .collect(Collectors.toList());
+            return getConstraintViolations(messages);
         }
+    }
+
+    private @NonNull List<ConstraintViolation> getConstraintViolations(final List<RMObjectValidationMessage> messages) {
+        return messages.stream()
+                .map(validationMessage ->
+                        new ConstraintViolation(validationMessage.getPath(), validationMessage.getMessage()))
+                .collect(Collectors.toList());
+    }
+
+    public List<ConstraintViolation> validate(Folder folder) {
+        return getConstraintViolations(rmObjectValidator.validate(folder));
     }
 
     public RMObjectValidator getRmObjectValidator() {

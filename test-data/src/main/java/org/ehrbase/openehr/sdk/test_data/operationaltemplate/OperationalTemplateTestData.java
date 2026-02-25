@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.test_data.operationaltemplate;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
@@ -125,7 +126,8 @@ public enum OperationalTemplateTestData {
     }
 
     public InputStream getStream() {
-        return getClass().getResourceAsStream("/" + OPERATIONALTEMPLATE_PATH_SEGMENT + "/" + filename);
+        String resourceName = "/" + OPERATIONALTEMPLATE_PATH_SEGMENT + "/" + filename;
+        return new BufferedInputStream(getClass().getResourceAsStream(resourceName));
     }
 
     public static OperationalTemplateTestData findByTemplateId(String templateId) {

@@ -40,8 +40,8 @@ import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValuePath;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.openehr.sdk.validation.CompositionValidator;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
+import org.ehrbase.openehr.sdk.validation.LocatableValidator;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.ehrbase.openehr.sdk.webtemplate.webtemplateskeletonbuilder.WebTemplateSkeletonBuilder;
@@ -139,11 +139,11 @@ class ExampleGeneratorToCompositionWalkerTest {
 
         appendToFile(outPath, RMDataFormat.canonicalJSON().marshal(composition));
 
-        CompositionValidator compositionValidator = new CompositionValidator();
+        LocatableValidator locatableValidator = new LocatableValidator();
         int expectedConstraintValidations = EXPECTED_CONSTRAINT_VIOLATIONS.getOrDefault(template, 0);
 
         {
-            List<ConstraintViolation> violations = compositionValidator.validate(composition, webTemplate);
+            List<ConstraintViolation> violations = locatableValidator.validate(composition, webTemplate);
 
             violations.stream().collect(Collectors.groupingBy(v -> v.getMessage())).entrySet().stream()
                     .sorted(Comparator.comparing(e -> e.getKey()))
@@ -163,7 +163,7 @@ class ExampleGeneratorToCompositionWalkerTest {
             RMDataFormat format = new FlatJasonProvider(templateProvider).buildFlatJson(FlatFormat.SIM_SDT, templateId);
             Composition reloadedComposition = format.unmarshal(format.marshal(composition));
 
-            List<ConstraintViolation> violations = compositionValidator.validate(reloadedComposition, webTemplate);
+            List<ConstraintViolation> violations = locatableValidator.validate(reloadedComposition, webTemplate);
             violations.stream().collect(Collectors.groupingBy(v -> v.getMessage())).entrySet().stream()
                     .sorted(Comparator.comparing(e -> e.getKey()))
                     .forEach(e -> {
