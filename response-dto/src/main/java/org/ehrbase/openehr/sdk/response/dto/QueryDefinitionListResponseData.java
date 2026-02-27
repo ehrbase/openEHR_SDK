@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.Map;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.QueryDefinitionResultDto;
 
+/**
+ * @deprecated to be deleted as it will not be used by EHRbase anymore.
+ */
+@Deprecated(since = "2.21.0", forRemoval = true)
 @JacksonXmlRootElement
 public class QueryDefinitionListResponseData {
 
