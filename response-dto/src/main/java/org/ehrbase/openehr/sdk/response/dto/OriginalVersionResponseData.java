@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.ehrbase.openehr.sdk.response.dto.ehrscape.ContributionDto;
 
+@Deprecated(forRemoval = true)
 @JacksonXmlRootElement(localName = "original_version")
 public class OriginalVersionResponseData<T> {
 
