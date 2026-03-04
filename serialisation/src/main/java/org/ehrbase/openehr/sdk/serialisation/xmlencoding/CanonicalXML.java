@@ -157,14 +157,22 @@ public class CanonicalXML implements RMDataFormat {
             filter.parse(new InputSource(IOUtils.toInputStream(value, UTF_8)));
             Object unmarshalled = unmarshallerHandler.getResult();
             RMObject result;
-            if(unmarshalled instanceof RMObject rmObject){
+            if (unmarshalled instanceof RMObject rmObject) {
                 result = rmObject;
-            }else if(unmarshalled instanceof JAXBElement element && element.getValue() instanceof RMObject rmObject){
+            } else if (unmarshalled instanceof JAXBElement element && element.getValue() instanceof RMObject rmObject) {
                 result = rmObject;
-            }else{
-                throw new UnmarshalException("Unmarshalled object type not supported: " + Optional.ofNullable(unmarshalled).map(Object::getClass).orElse(null));
+            } else {
+                throw new UnmarshalException("Unmarshalled object type not supported: "
+                        + Optional.ofNullable(unmarshalled)
+                                .map(Object::getClass)
+                                .orElse(null));
             }
-            return Optional.of(result).filter(clazz::isInstance).map(clazz::cast).orElseThrow(()-> new UnmarshalException("Unmarshalled object type does not match. Expected: %s, Actual: %s".formatted(clazz, result.getClass())));
+            return Optional.of(result)
+                    .filter(clazz::isInstance)
+                    .map(clazz::cast)
+                    .orElseThrow(() ->
+                            new UnmarshalException("Unmarshalled object type does not match. Expected: %s, Actual: %s"
+                                    .formatted(clazz, result.getClass())));
         } catch (JAXBException | ParserConfigurationException | SAXException | IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }

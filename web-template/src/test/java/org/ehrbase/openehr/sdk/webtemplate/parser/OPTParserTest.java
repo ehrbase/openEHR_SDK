@@ -328,9 +328,11 @@ class OPTParserTest {
                 actual.getTree().findMatching(n -> n.getRmType().equals("DV_CODED_TEXT"));
         assertThat(dvCodedTextList)
                 .flatExtracting(WebTemplateNode::getInputs)
-                .extracting(WebTemplateInput::getTerminology, i -> i.getList().stream()
-                        .map(v -> v.getValue() + ":" + v.getLabel())
-                        .collect(Collectors.joining(";")))
+                .extracting(
+                        WebTemplateInput::getTerminology,
+                        i -> i.getList().stream()
+                                .map(v -> v.getValue() + ":" + v.getLabel())
+                                .collect(Collectors.joining(";")))
                 .containsExactlyInAnyOrder(
                         new Tuple("openehr", "433:event"),
                         new Tuple("local", "at0006:value1;at0007:value2;at0008:value3"),

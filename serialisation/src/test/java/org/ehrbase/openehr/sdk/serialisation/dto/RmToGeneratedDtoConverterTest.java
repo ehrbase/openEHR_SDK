@@ -240,8 +240,9 @@ public class RmToGeneratedDtoConverterTest {
         PartyIdentified composer = (PartyIdentified) actual.getComposer();
         assertThat(composer.getName()).isEqualTo("Test");
         Assertions.assertThat(actual.getParticipations())
-                .extracting(p -> ((PartyIdentified) p.getPerformer()).getName(), p -> p.getFunction()
-                        .getValue())
+                .extracting(
+                        p -> ((PartyIdentified) p.getPerformer()).getName(),
+                        p -> p.getFunction().getValue())
                 .containsExactlyInAnyOrder(new Tuple("Test", "Pos1"), new Tuple("Test2", "Pos2"));
 
         Assertions.assertThat(actual.getBloodPressureTrainingSample()).size().isEqualTo(1);
