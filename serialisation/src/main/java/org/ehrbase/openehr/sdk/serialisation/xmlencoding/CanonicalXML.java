@@ -26,6 +26,7 @@ import com.nedap.archie.xml.adapters.DateXmlAdapter;
 import com.nedap.archie.xml.adapters.TimeXmlAdapter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Optional;
 import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -154,8 +155,16 @@ public class CanonicalXML implements RMDataFormat {
             UnmarshallerHandler unmarshallerHandler = unmarshaller.getUnmarshallerHandler();
             filter.setContentHandler(unmarshallerHandler);
             filter.parse(new InputSource(IOUtils.toInputStream(value, UTF_8)));
-            //noinspection unchecked
-            return (T) unmarshallerHandler.getResult();
+            Object unmarshalled = unmarshallerHandler.getResult();
+            RMObject result;
+            if(unmarshalled instanceof RMObject rmObject){
+                result = rmObject;
+            }else if(unmarshalled instanceof JAXBElement element && element.getValue() instanceof RMObject rmObject){
+                result = rmObject;
+            }else{
+                throw new UnmarshalException("Unmarshalled object type not supported: " + Optional.ofNullable(unmarshalled).map(Object::getClass).orElse(null));
+            }
+            return Optional.of(result).filter(clazz::isInstance).map(clazz::cast).orElseThrow(()-> new UnmarshalException("Unmarshalled object type does not match. Expected: %s, Actual: %s".formatted(clazz, result.getClass())));
         } catch (JAXBException | ParserConfigurationException | SAXException | IOException e) {
             throw new UnmarshalException(e.getMessage(), e);
         }
