@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+- Client adjustments to match openEHR specification [#726](https://github.com/ehrbase/openEHR_SDK/pull/726)
 
 ## [2.29.0]
  ### Added 

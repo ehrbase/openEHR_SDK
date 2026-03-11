@@ -326,7 +326,7 @@ public class DefaultRestClient implements OpenEhrClient {
 
     @Override
     public DirectoryCrudEndpoint directoryCrudEndpoint(UUID ehrId) {
-        return new DefaultCrudEndpoint(this, ehrId);
+        return new DefaultRestDirectoryEndpoint(this, ehrId);
     }
 
     @Override
