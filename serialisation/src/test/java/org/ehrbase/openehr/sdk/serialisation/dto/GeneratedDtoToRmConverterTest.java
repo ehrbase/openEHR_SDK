@@ -167,8 +167,9 @@ public class GeneratedDtoToRmConverterTest {
 
         assertThat(rmObject).isNotNull();
         assertThat(rmObject.getContext().getParticipations())
-                .extracting(p -> ((PartyIdentified) p.getPerformer()).getName(), p -> p.getFunction()
-                        .getValue())
+                .extracting(
+                        p -> ((PartyIdentified) p.getPerformer()).getName(),
+                        p -> p.getFunction().getValue())
                 .containsExactlyInAnyOrder(new Tuple("Test", "Pos1"), new Tuple("Test2", "Pos2"));
 
         assertThat(rmObject.getLanguage())

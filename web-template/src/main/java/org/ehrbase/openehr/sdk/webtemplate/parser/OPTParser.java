@@ -1048,11 +1048,13 @@ public class OPTParser {
                     value.setLabel(t.getValue());
                     value.getLocalizedLabels()
                             .putAll(collect.entrySet().stream()
-                                    .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getTherms().stream()
-                                            .filter(x -> x.getCode().equals(t.getCode()))
-                                            .findAny()
-                                            .map(TermDefinition::getValue)
-                                            .orElse(""))));
+                                    .collect(Collectors.toMap(
+                                            Map.Entry::getKey,
+                                            e -> e.getValue().getTherms().stream()
+                                                    .filter(x -> x.getCode().equals(t.getCode()))
+                                                    .findAny()
+                                                    .map(TermDefinition::getValue)
+                                                    .orElse(""))));
                     code.getList().add(value);
                 });
 
@@ -1084,8 +1086,10 @@ public class OPTParser {
                                                         .getOrDefault(o, Collections.emptyMap())
                                                         .entrySet()
                                                         .stream()
-                                                        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
-                                                                .getValue())));
+                                                        .collect(Collectors.toMap(
+                                                                Map.Entry::getKey,
+                                                                e -> e.getValue()
+                                                                        .getValue())));
                                 value.getLocalizedDescriptions()
                                         .putAll(
                                                 termDefinitionMap
@@ -1094,8 +1098,10 @@ public class OPTParser {
                                                         .stream()
                                                         .filter(e -> StringUtils.isNotBlank(
                                                                 e.getValue().getDescription()))
-                                                        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
-                                                                .getDescription())));
+                                                        .collect(Collectors.toMap(
+                                                                Map.Entry::getKey,
+                                                                e -> e.getValue()
+                                                                        .getDescription())));
                                 if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
                                     value.getLocalizedDescriptions().put(defaultLanguage, "");
                                 }
@@ -1156,9 +1162,10 @@ public class OPTParser {
 
             node.getLocalizedDescriptions()
                     .putAll(termDefinitionMap.get(nodeId).entrySet().stream()
-                            .collect(Collectors.toMap(Map.Entry::getKey, e -> Optional.ofNullable(
-                                            e.getValue().getDescription())
-                                    .orElse(e.getValue().getValue()))));
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    e -> Optional.ofNullable(e.getValue().getDescription())
+                                            .orElse(e.getValue().getValue()))));
 
             Optional.of(termDefinitionMap.get(nodeId))
                     .map(m -> m.get(defaultLanguage))

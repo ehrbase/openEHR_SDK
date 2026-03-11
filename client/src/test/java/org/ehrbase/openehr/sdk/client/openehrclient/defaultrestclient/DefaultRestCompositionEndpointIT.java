@@ -401,8 +401,9 @@ class DefaultRestCompositionEndpointIT extends SdkClientTestIT {
         assertThat(bloodPressureSimpleDeV0.getEndTimeValue())
                 .isEqualTo(OffsetDateTime.of(2019, 05, 03, 22, 00, 00, 00, ZoneOffset.UTC));
         assertThat(bloodPressureSimpleDeV0.getParticipations())
-                .extracting(p -> ((PartyIdentified) p.getPerformer()).getName(), p -> p.getMode()
-                        .getValue())
+                .extracting(
+                        p -> ((PartyIdentified) p.getPerformer()).getName(),
+                        p -> p.getMode().getValue())
                 .containsExactlyInAnyOrder(new Tuple("Dr. Peter", "physically present"));
     }
 
@@ -491,8 +492,9 @@ class DefaultRestCompositionEndpointIT extends SdkClientTestIT {
                 UUID.fromString(version1.getVersionUid().getObjectId().getValue()), EpisodeOfCareComposition.class);
         assertTrue(actual.isPresent());
         assertThat(actual.get().getVersionUid())
-                .extracting(v -> v.getObjectId().getValue(), v -> v.getVersionTreeId()
-                        .getValue())
+                .extracting(
+                        v -> v.getObjectId().getValue(),
+                        v -> v.getVersionTreeId().getValue())
                 .containsExactly(version1.getVersionUid().getObjectId().getValue(), "1");
         assertThat(actual.get().getFeederAudit())
                 .isNotNull()
