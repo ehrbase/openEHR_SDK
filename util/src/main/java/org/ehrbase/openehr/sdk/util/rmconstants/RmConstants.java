@@ -38,6 +38,7 @@ public class RmConstants {
 
     public static final String ORIGINAL_VERSION = "ORIGINAL_VERSION";
     public static final String AUDIT_DETAILS = "AUDIT_DETAILS";
+    public static final String CONTRIBUTION = "CONTRIBUTION";
 
     public static final String EHR = "EHR";
     public static final String EHR_STATUS = "EHR_STATUS";

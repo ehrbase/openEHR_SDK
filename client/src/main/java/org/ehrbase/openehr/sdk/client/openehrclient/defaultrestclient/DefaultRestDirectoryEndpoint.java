@@ -22,23 +22,30 @@ import static org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.Def
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.rm.support.identification.ObjectId;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.ehrbase.openehr.sdk.client.openehrclient.DirectoryCrudEndpoint;
-import org.ehrbase.openehr.sdk.response.dto.DirectoryResponseData;
+import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
+import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 
 /**
  * @author Stefan Spiska
  */
-public class DefaultCrudEndpoint implements DirectoryCrudEndpoint {
+public class DefaultRestDirectoryEndpoint implements DirectoryCrudEndpoint {
 
     static final String DIRECTORY_PATH = "/directory/";
     private final DefaultRestClient defaultRestClient;
 
     private final UUID ehrId;
 
-    public DefaultCrudEndpoint(DefaultRestClient restClient, UUID ehrId) {
+    public DefaultRestDirectoryEndpoint(DefaultRestClient restClient, UUID ehrId) {
         this.defaultRestClient = restClient;
         this.ehrId = ehrId;
     }
@@ -66,23 +73,21 @@ public class DefaultCrudEndpoint implements DirectoryCrudEndpoint {
     @Override
     public Optional<Folder> getDirectory() {
 
-        Optional<DirectoryResponseData> directoryResponseData = defaultRestClient.httpGet(
+        HttpResponse response = defaultRestClient.internalGet(
                 defaultRestClient.getConfig().getBaseUri().resolve(EHR_PATH + ehrId.toString() + DIRECTORY_PATH),
-                DirectoryResponseData.class);
-
-        if (directoryResponseData.isEmpty()) {
+                null,
+                ContentType.APPLICATION_JSON.getMimeType());
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
             return Optional.empty();
         }
-
-        Folder folder = new Folder();
-        DirectoryResponseData responseData = directoryResponseData.get();
-        folder.setUid(responseData.getUid());
-        folder.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
-        folder.setName(responseData.getName());
-        folder.setFolders(responseData.getFolders());
-        folder.setItems(responseData.getItems());
-        folder.setDetails(responseData.getDetails());
-
-        return Optional.of(folder);
+        try (InputStream in = response.getEntity().getContent()) {
+            Folder folder = CanonicalJson.MARSHAL_OM.readValue(in, Folder.class);
+            if (StringUtils.isEmpty(folder.getArchetypeNodeId())) {
+                folder.setArchetypeNodeId("openEHR-EHR-FOLDER.generic.v1");
+            }
+            return Optional.of(folder);
+        } catch (IOException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
     }
 }

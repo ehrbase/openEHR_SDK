@@ -35,8 +35,7 @@ class AqlQueryObjectMapperProviderTest {
     void to() throws JsonProcessingException {
         ObjectMapper cut = AqlQueryObjectMapperProvider.getObjectMapper();
 
-        String aql =
-                """
+        String aql = """
             SELECT
               o0/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic__magnitude,
               e/ehr_id/value AS ehr_id
@@ -55,9 +54,7 @@ class AqlQueryObjectMapperProviderTest {
 
         String value = cut.writerWithDefaultPrettyPrinter().writeValueAsString(parse);
 
-        assertThat(value)
-                .isEqualToIgnoringNewLines(
-                        """
+        assertThat(value).isEqualToIgnoringNewLines("""
                {
                  "select" : {
                    "distinct" : false,

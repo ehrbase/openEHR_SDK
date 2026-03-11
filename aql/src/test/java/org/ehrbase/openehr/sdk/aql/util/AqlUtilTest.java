@@ -29,8 +29,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameter() {
-        String aql =
-                """
+        String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
                 contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -44,8 +43,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithOr() {
-        String aql =
-                """
+        String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
                 contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -60,8 +58,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithTripleOr() {
-        String aql =
-                """
+        String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
                 contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -77,8 +74,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterMultiple() {
-        String aql =
-                """
+        String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
                 contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -94,8 +90,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithMixedOrAnd() {
-        String aql =
-                """
+        String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
                 contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -115,8 +110,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterWithMixedAndOr() {
-        String aql =
-                """
+        String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
                 contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -156,8 +150,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterInNotConditionInsideAndCondition() {
-        String aql =
-                """
+        String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
                 CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -174,8 +167,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterInNotCondition() {
-        String aql =
-                """
+        String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
                 CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -192,8 +184,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterInLikeCondition() {
-        String aql =
-                """
+        String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
                 CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -209,8 +200,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterInMatchesConditionMatchesIsKept() {
-        String aql =
-                """
+        String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
                 CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -226,8 +216,7 @@ public class AqlUtilTest {
 
     @Test
     public void removeParameterInMatchesConditionMatchesIsRemoved() {
-        String aql =
-                """
+        String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
                 CONTAINS COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]
@@ -243,8 +232,7 @@ public class AqlUtilTest {
 
     @Test
     public void containmentExpressionsByIdentifier() {
-        AqlQuery aqlQuery = AqlQueryParser.parse(
-                """
+        AqlQuery aqlQuery = AqlQueryParser.parse("""
         SELECT o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic
         FROM EHR e
         CONTAINS (

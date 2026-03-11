@@ -86,7 +86,7 @@ public abstract class AbstractDvTemporalDeserializer<V, T extends DvTemporal<T, 
                                 result.setValue(parseValue(nodeEntry.getValue().textValue()));
                                 break;
                             case "magnitude":
-                                // is a calculated property
+                            // is a calculated property
                             case "_type":
                                 // not part of RM, specific to openEHR JSON
                                 break;

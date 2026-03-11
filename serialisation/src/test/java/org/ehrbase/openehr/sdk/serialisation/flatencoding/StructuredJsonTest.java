@@ -65,9 +65,7 @@ class StructuredJsonTest {
         Composition composition = unmarshall(CompositionTestDataStructuredJson.MULTI_LIST, operationalTemplateTestData);
         String value = rmDataFormat(operationalTemplateTestData).marshal(composition);
 
-        assertStartsWith(
-                value,
-                """
+        assertStartsWith(value, """
                 {
                   "multi_list" : {
                     "category" : [ {
@@ -94,9 +92,7 @@ class StructuredJsonTest {
         Composition composition = unmarshall(CompositionTestDataStructuredJson.CORONA, operationalTemplateTestData);
         String value = rmDataFormat(operationalTemplateTestData).marshalWithOptions(composition);
 
-        assertThat(value)
-                .startsWith(
-                        """
+        assertThat(value).startsWith("""
                 {"bericht":{"category":[{"|code":"433","|value":"event","|terminology":"openehr"}],"context":""");
     }
 
@@ -108,9 +104,7 @@ class StructuredJsonTest {
         String value =
                 rmDataFormat(operationalTemplateTestData).marshalWithOptions(composition, MarshalOption.PRETTY_PRINT);
 
-        assertStartsWith(
-                value,
-                """
+        assertStartsWith(value, """
                         {
                           "bericht" : {
                             "category" : [ {
