@@ -469,12 +469,12 @@ public class OPTParser {
                 }
             }
 
-            WebTemplateNode[] ismTransitionList = newChildren.stream()
+            WebTemplateNode[] ismTransitions = newChildren.stream()
                     .flatMap(Arrays::stream)
                     .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
                     .toArray(WebTemplateNode[]::new);
-            if (ismTransitionList.length > 0) {
-                WebTemplateNode firstChild = ismTransitionList[0];
+            if (ismTransitions.length > 0) {
+                WebTemplateNode firstChild = ismTransitions[0];
                 WebTemplateNode ismTransition = new WebTemplateNode();
                 ismTransition.setName(cattribute.getRmAttributeName());
                 ismTransition.setId(buildId(cattribute.getRmAttributeName()));
@@ -500,7 +500,7 @@ public class OPTParser {
                 code.setType(CODED_TEXT);
                 code.setTerminology("local");
 
-                for (WebTemplateNode i : ismTransitionList) {
+                for (WebTemplateNode i : ismTransitions) {
                     WebTemplateInputValue value = i.findChildById(CAREFLOW_STEP)
                             .orElseThrow()
                             .getInputs()
@@ -531,7 +531,7 @@ public class OPTParser {
                 code2.setType(CODED_TEXT);
                 code2.setTerminology(OPENEHR);
 
-                Arrays.stream(ismTransitionList)
+                Arrays.stream(ismTransitions)
                         .flatMap(n -> n.findChildById(CURRENT_STATE).stream())
                         .map(WebTemplateNode::getInputs)
                         .flatMap(List::stream)

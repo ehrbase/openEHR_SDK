@@ -293,6 +293,11 @@ public class WebTemplateNode implements Serializable {
     }
 
     public Stream<WebTemplateNode> streamMatching(Predicate<WebTemplateNode> filter) {
+        Stream<WebTemplateNode> stream = streamMatchingInternal(filter);
+        return stream == null ? Stream.empty() : stream;
+    }
+
+    private Stream<WebTemplateNode> streamMatchingInternal(Predicate<WebTemplateNode> filter) {
 
         boolean selfMatch = filter.test(this);
 
@@ -301,10 +306,10 @@ public class WebTemplateNode implements Serializable {
             if (selfMatch) {
                 return Stream.of(this);
             } else {
-                return Stream.empty();
+                return null;
             }
         } else {
-            matching = children.stream().flatMap(c -> c.streamMatching(filter));
+            matching = children.stream().map(c -> c.streamMatchingInternal(filter)).filter(Objects::nonNull).flatMap(s -> s);
             if (selfMatch) {
                 matching = Stream.concat(matching, Stream.of(this));
             }
