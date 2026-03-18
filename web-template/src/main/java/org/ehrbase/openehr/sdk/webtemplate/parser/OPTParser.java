@@ -47,10 +47,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
@@ -107,6 +109,8 @@ import org.w3c.dom.NodeList;
 
 public class OPTParser {
 
+    private record Name(String label, Map<String, String> localizedLabels) {}
+
     public static final String PATH_DIVIDER = "/";
     public static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
     public static final String CAREFLOW_STEP = "careflow_step";
@@ -119,10 +123,11 @@ public class OPTParser {
                     .map(RMTypeInfo::getRmName)
                     .collect(Collectors.toSet());
 
+    public static final Pattern NON_ALNUM = Pattern.compile("[^\\p{IsAlphabetic}0-9._\\-]");
+
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
-    private final Map<String, String> defaultValues = new HashMap<>();
-    private final InputHandler inputHandler = new InputHandler(defaultValues);
+    private final InputHandler inputHandler;
     private final Map<String, Map<String, String>> annotationMap = new HashMap<>();
     private List<String> languages;
 
@@ -141,11 +146,13 @@ public class OPTParser {
     public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
         this.operationaltemplate = operationaltemplate;
         defaultLanguage = operationaltemplate.getLanguage().getCodeString();
-        Optional.ofNullable(operationaltemplate.getConstraints()).map(TCONSTRAINT::getAttributesArray).stream()
-                .flatMap(Arrays::stream)
-                .map(this::extractDefault)
-                .flatMap(List::stream)
-                .forEach(p -> defaultValues.put(p.getKey(), p.getValue()));
+
+        Map<String, String> defaultValues =
+                Optional.ofNullable(operationaltemplate.getConstraints()).map(TCONSTRAINT::getAttributesArray).stream()
+                        .flatMap(Arrays::stream)
+                        .flatMap(this::extractDefault)
+                        .collect(Collectors.toMap(Pair::getKey, Pair::getValue, (a, b) -> b));
+        inputHandler = new InputHandler(defaultValues);
     }
 
     public static WebTemplate parse(OPERATIONALTEMPLATE operationaltemplate) {
@@ -164,14 +171,11 @@ public class OPTParser {
         webTemplate.setTemplateId(operationaltemplate.getTemplateId().getValue());
         webTemplate.setDefaultLanguage(defaultLanguage);
         webTemplate.setVersion("2.3");
-        webTemplate
-                .getLanguages()
-                .addAll(Arrays.stream(operationaltemplate.getDescription().getDetailsArray())
-                        .map(RESOURCEDESCRIPTIONITEM::getLanguage)
-                        .map(CODEPHRASE::getCodeString)
-                        .collect(Collectors.toSet()));
-
         languages = webTemplate.getLanguages();
+        languages.addAll(Arrays.stream(operationaltemplate.getDescription().getDetailsArray())
+                .map(RESOURCEDESCRIPTIONITEM::getLanguage)
+                .map(CODEPHRASE::getCodeString)
+                .collect(Collectors.toSet()));
 
         for (ANNOTATION annotation : operationaltemplate.getAnnotationsArray()) {
             Map<String, String> items = new HashMap<>();
@@ -182,8 +186,7 @@ public class OPTParser {
             annotationMap.put(annotation.getPath().replaceAll("^[^/]+", ""), items);
         }
 
-        webTemplate.setTree(parseCARCHETYPEROOT(operationaltemplate.getDefinition(), AqlPath.EMPTY_PATH)
-                .get(0));
+        webTemplate.setTree(parseCARCHETYPEROOT(operationaltemplate.getDefinition(), AqlPath.EMPTY_PATH)[0]);
         return webTemplate;
     }
 
@@ -191,9 +194,7 @@ public class OPTParser {
         return Arrays.stream(c.selectChildren("http://schemas.openehr.org/v1", attributes));
     }
 
-    private List<Pair<String, String>> extractDefault(TATTRIBUTE xmlObject) {
-        // XXX performance List<Pair<AqlPath, String>>
-        List<Pair<String, String>> defaults = new ArrayList<>();
+    private Stream<Pair<String, String>> extractDefault(TATTRIBUTE xmlObject) {
 
         String differentialPath = StringUtils.substringAfter(xmlObject.getDifferentialPath(), "/");
         String rmAttributeName = xmlObject.getRmAttributeName();
@@ -201,37 +202,37 @@ public class OPTParser {
 
         // Instead of handling each subtype of DATAVALUE ist handheld generic since each child is an
         // attribute of the DATAVALUE
-        Arrays.stream(xmlObject.getChildrenArray())
+        return Arrays.stream(xmlObject.getChildrenArray())
                 .map(TCOMPLEXOBJECT::getDefaultValue)
                 .map(XmlTokenSource::newDomNode)
                 .map(Node::getFirstChild)
                 .map(Node::getChildNodes)
                 .flatMap(OPTParser::elementNodes)
                 .map(Node::getNodeName)
-                .forEach(nodeName -> addDefault(xmlObject, nodeName, aqlPath, defaults));
-        return defaults;
+                .map(nodeName -> getDefault(xmlObject, nodeName, aqlPath))
+                .filter(Objects::nonNull);
     }
 
-    private static void addDefault(
-            TATTRIBUTE xmlObject, String nodeName, AqlPath aqlPath, List<Pair<String, String>> defaults) {
-        childByName(xmlObject, nodeName).ifPresent(any -> {
-            String key;
-            String defaultValue;
-            if (any.newDomNode().getFirstChild().getChildNodes().getLength() == 1) {
-                defaultValue = any.newCursor().getTextValue();
-                key = aqlPath + "|" + nodeName;
-            } else {
-                defaultValue = extractChildren(any, "defining_code")
-                        .flatMap(x -> extractChildren(x, "code_string"))
-                        .map(XmlTokenSource::newCursor)
-                        .map(XmlCursor::getTextValue)
-                        .findAny()
-                        .orElse("");
-                key = aqlPath + "|" + "defining_code";
-            }
-            Pair<String, String> defaultPair = Pair.of(key, defaultValue);
-            defaults.add(defaultPair);
-        });
+    private static Pair<String, String> getDefault(TATTRIBUTE xmlObject, String nodeName, AqlPath aqlPath) {
+        return childByName(xmlObject, nodeName)
+                .map(any -> {
+                    String key;
+                    String defaultValue;
+                    if (any.newDomNode().getFirstChild().getChildNodes().getLength() == 1) {
+                        defaultValue = any.newCursor().getTextValue();
+                        key = aqlPath + "|" + nodeName;
+                    } else {
+                        defaultValue = extractChildren(any, "defining_code")
+                                .flatMap(x -> extractChildren(x, "code_string"))
+                                .map(XmlTokenSource::newCursor)
+                                .map(XmlCursor::getTextValue)
+                                .findAny()
+                                .orElse("");
+                        key = aqlPath + "|" + "defining_code";
+                    }
+                    return Pair.of(key, defaultValue);
+                })
+                .orElse(null);
     }
 
     private static Optional<XmlObject> childByName(TATTRIBUTE xmlObject, String nodeName) {
@@ -247,7 +248,7 @@ public class OPTParser {
                 .filter(item -> item.getNodeType() == Node.ELEMENT_NODE);
     }
 
-    private List<WebTemplateNode> parseCARCHETYPEROOT(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
+    private WebTemplateNode[] parseCARCHETYPEROOT(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
 
         // extract local Terminologies
         Map<String, Map<String, TermDefinition>> termDefinitionMap = new HashMap<>();
@@ -275,11 +276,11 @@ public class OPTParser {
         otherTermDefinitionMap.forEach((key, value) ->
                 termDefinitionMap.computeIfAbsent(key, c -> new HashMap<>()).putAll(value));
 
-        List<WebTemplateNode> nodes = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
-        nodes.forEach(node -> {
+        WebTemplateNode[] nodes = parseCCOMPLEXOBJECT(carchetyperoot, aqlPath, termDefinitionMap, null);
+        for (WebTemplateNode node : nodes) {
             node.setNodeId(carchetyperoot.getArchetypeId().getValue());
             addRMAttributes(node, aqlPath, termDefinitionMap);
-        });
+        }
 
         return nodes;
     }
@@ -323,9 +324,7 @@ public class OPTParser {
         return new TermDefinition(items.getCode(), text, description);
     }
 
-    private record Name(String label, Map<String, String> localizedLabels) {}
-
-    private List<WebTemplateNode> parseCCOMPLEXOBJECT(
+    private WebTemplateNode[] parseCCOMPLEXOBJECT(
             CCOMPLEXOBJECT ccomplexobject,
             AqlPath aqlPath,
             Map<String, Map<String, TermDefinition>> termDefinitionMap,
@@ -333,17 +332,17 @@ public class OPTParser {
 
         Optional<WebTemplateNode> nameNode = buildNameNode(aqlPath, termDefinitionMap, ccomplexobject);
 
-        List<Name> nameValues = nameNode.map(WebTemplateNode::getInputs).stream()
+        Name[] nameValues = nameNode.map(WebTemplateNode::getInputs).stream()
                 .flatMap(List::stream)
                 .filter(i -> i.getSuffix() == null || i.getSuffix().equals("code"))
                 .map(WebTemplateInput::getList)
                 .flatMap(List::stream)
                 .map(webTemplateInputValue ->
                         new Name(webTemplateInputValue.getLabel(), webTemplateInputValue.getLocalizedLabels()))
-                .toList();
+                .toArray(Name[]::new);
 
-        if (nameValues.size() > 1) {
-            return nameValues.stream()
+        if (nameValues.length > 1) {
+            return Arrays.stream(nameValues)
                     .map(e -> {
                         WebTemplateNode node =
                                 buildNodeWithName(ccomplexobject, aqlPath, termDefinitionMap, rmAttributeName, e);
@@ -354,18 +353,18 @@ public class OPTParser {
                                 ccomplexobject, node.getAqlPathDto(), termDefinitionMap, localNameNode, node);
                         return node;
                     })
-                    .toList();
+                    .toArray(WebTemplateNode[]::new);
 
         } else {
-            Optional<Name> explicitName = nameValues.stream().findAny();
+            Name explicitName = nameValues.length == 0 ? null : nameValues[0];
 
-            WebTemplateNode node = buildNodeWithName(
-                    ccomplexobject, aqlPath, termDefinitionMap, rmAttributeName, explicitName.orElse(null));
+            WebTemplateNode node =
+                    buildNodeWithName(ccomplexobject, aqlPath, termDefinitionMap, rmAttributeName, explicitName);
 
-            nameNode.ifPresent(n -> setExplicitName(explicitName.orElse(null), node, n));
+            nameNode.ifPresent(n -> setExplicitName(explicitName, node, n));
             addAnnotations(node, aqlPath.toString(), annotationMap);
             parseComplexObjectSingle(ccomplexobject, node.getAqlPathDto(), termDefinitionMap, nameNode, node);
-            return Collections.singletonList(node);
+            return new WebTemplateNode[] {node};
         }
     }
 
@@ -436,19 +435,21 @@ public class OPTParser {
                 continue;
             }
 
-            List<WebTemplateNode> newChildren = new ArrayList<>();
+            List<WebTemplateNode[]> newChildren = new ArrayList<>();
             for (COBJECT cobject : cattribute.getChildrenArray()) {
 
                 if (cobject instanceof CPRIMITIVEOBJECT cprimitiveobject) {
                     inputMap.put(cattribute.getRmAttributeName(), inputHandler.extractInput(cprimitiveobject));
                 } else {
-                    List<WebTemplateNode> childNode =
+                    WebTemplateNode[] childNode =
                             parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());
 
                     if (cobject instanceof ARCHETYPESLOT) {
-                        childNode.forEach(c -> c.setArchetypeSlot(true));
+                        for (WebTemplateNode c : childNode) {
+                            c.setArchetypeSlot(true);
+                        }
                     }
-                    newChildren.addAll(childNode);
+                    newChildren.add(childNode);
                 }
 
                 if (cattribute instanceof CSINGLEATTRIBUTE
@@ -458,17 +459,22 @@ public class OPTParser {
                     cardinality.setMax(cattribute.getExistence().getUpper());
                     cardinality.setExcludeFromWebTemplate(Boolean.TRUE);
 
-                    newChildren.forEach(c -> cardinality.getIds().add(c.getId()));
+                    newChildren.forEach(cs -> {
+                        for (WebTemplateNode c : cs) {
+                            cardinality.getIds().add(c.getId());
+                        }
+                    });
 
                     node.getCardinalities().add(cardinality);
                 }
             }
 
-            List<WebTemplateNode> ismTransitionList = newChildren.stream()
+            WebTemplateNode[] ismTransitions = newChildren.stream()
+                    .flatMap(Arrays::stream)
                     .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
-                    .toList();
-            if (!ismTransitionList.isEmpty()) {
-                WebTemplateNode firstChild = ismTransitionList.get(0);
+                    .toArray(WebTemplateNode[]::new);
+            if (ismTransitions.length > 0) {
+                WebTemplateNode firstChild = ismTransitions[0];
                 WebTemplateNode ismTransition = new WebTemplateNode();
                 ismTransition.setName(cattribute.getRmAttributeName());
                 ismTransition.setId(buildId(cattribute.getRmAttributeName()));
@@ -494,19 +500,19 @@ public class OPTParser {
                 code.setType(CODED_TEXT);
                 code.setTerminology("local");
 
-                ismTransitionList.forEach(i -> {
+                for (WebTemplateNode i : ismTransitions) {
                     WebTemplateInputValue value = i.findChildById(CAREFLOW_STEP)
-                            .get()
+                            .orElseThrow()
                             .getInputs()
                             .get(0)
                             .getList()
                             .get(0);
                     value.getCurrentStates()
-                            .addAll(i.findChildById(CURRENT_STATE).get().getInputs().get(0).getList().stream()
+                            .addAll(i.findChildById(CURRENT_STATE).orElseThrow().getInputs().get(0).getList().stream()
                                     .map(WebTemplateInputValue::getValue)
                                     .toList());
                     code.getList().add(value);
-                });
+                }
                 careflowStep.getInputs().add(code);
                 ismTransition.getChildren().add(careflowStep);
 
@@ -524,14 +530,15 @@ public class OPTParser {
                 code2.setSuffix("code");
                 code2.setType(CODED_TEXT);
                 code2.setTerminology(OPENEHR);
-                code2.getList()
-                        .addAll(ismTransitionList.stream()
-                                .flatMap(n -> n.findChildById(CURRENT_STATE).stream())
-                                .map(WebTemplateNode::getInputs)
-                                .flatMap(List::stream)
-                                .map(WebTemplateInput::getList)
-                                .flatMap(List::stream)
-                                .toList());
+
+                Arrays.stream(ismTransitions)
+                        .flatMap(n -> n.findChildById(CURRENT_STATE).stream())
+                        .map(WebTemplateNode::getInputs)
+                        .flatMap(List::stream)
+                        .map(WebTemplateInput::getList)
+                        .flatMap(List::stream)
+                        .forEach(code2.getList()::add);
+
                 currentState.getInputs().add(code2);
                 ismTransition.getChildren().add(currentState);
                 WebTemplateNode transition =
@@ -549,6 +556,7 @@ public class OPTParser {
                     .map(this::buildCardinality)
                     .map(webtemplateCardinality -> {
                         List<AqlPath> paths = newChildren.stream()
+                                .flatMap(Arrays::stream)
                                 .map(WebTemplateNode::getAqlPathDto)
                                 .collect(Collectors.toList());
                         return Pair.of(webtemplateCardinality, paths);
@@ -557,10 +565,12 @@ public class OPTParser {
 
             // Add missing names to aqlPath if needed
             newChildren.stream()
+                    .flatMap(Arrays::stream)
                     // node does not already have name in aql
                     .filter(c -> !node.isRelativePathNameDependent(c))
                     // there  exist a node which matches the aql without name but not with name
                     .filter(c -> newChildren.stream()
+                            .flatMap(Arrays::stream)
                             .filter(n -> !n.getAqlPathDto().equals(c.getAqlPathDto()))
                             .anyMatch(n -> n.getAqlPathDto().equals(c.getAqlPathDto(), false)))
                     .forEach(c -> {
@@ -570,7 +580,7 @@ public class OPTParser {
                         c.setAqlPath(path);
                     });
 
-            node.getChildren().addAll(newChildren);
+            newChildren.forEach(cs -> node.getChildren().addAll(Arrays.asList(cs)));
         }
 
         // Handle choice children
@@ -620,14 +630,15 @@ public class OPTParser {
 
         // Push inputs for DV_CODED_TEXT up
         if (node.getRmType().equals(RmConstants.DV_CODED_TEXT)) {
-            List<WebTemplateNode> matching =
-                    node.findMatching(n -> n.getRmType().equals(RmConstants.CODE_PHRASE));
+            Optional<WebTemplateNode> matching = node.streamMatching(
+                            n -> n.getRmType().equals(RmConstants.CODE_PHRASE))
+                    .findFirst();
             List<WebTemplateInput> inputs = node.getInputs();
             if (matching.isEmpty()) {
                 inputs.add(InputHandler.buildWebTemplateInput("value", "TEXT"));
                 inputs.add(InputHandler.buildWebTemplateInput("code", "TEXT"));
             } else {
-                inputs.addAll(matching.get(0).getInputs());
+                inputs.addAll(matching.get().getInputs());
             }
         }
 
@@ -642,18 +653,16 @@ public class OPTParser {
         makeIdUnique(node);
 
         cardinaltyList.forEach(p -> {
-            List<String> nodeIds = p.getValue().stream()
-                    .map(s -> node.findMatching(n -> n.getAqlPathDto().equals(s)))
-                    .flatMap(List::stream)
+            String[] nodeIds = p.getValue().stream()
+                    .flatMap(s -> node.streamMatching(n -> n.getAqlPathDto().equals(s)))
                     .map(WebTemplateNode::getId)
-                    .toList();
+                    .toArray(String[]::new);
             // only add non-trivial cardinalities.
-            if ((p.getKey().getMax() != null
-                            && p.getKey().getMax() != -1
-                            && p.getKey().getMax() < nodeIds.size())
-                    || (p.getKey().getMin() != null && p.getKey().getMin() > 1)) {
-                p.getKey().getIds().addAll(nodeIds);
-                node.getCardinalities().add(p.getKey());
+            WebtemplateCardinality key = p.getKey();
+            Integer max = key.getMax();
+            if ((max != null && max != -1 && max < nodeIds.length) || (key.getMin() != null && key.getMin() > 1)) {
+                key.getIds().addAll(Arrays.asList(nodeIds));
+                node.getCardinalities().add(key);
             }
         });
 
@@ -679,7 +688,7 @@ public class OPTParser {
                 .filter(c -> c.getRmAttributeName().equals("name"))
                 .filter(c -> c.getChildrenArray().length == 1)
                 .map(c -> parseCOBJECT(c.getChildrenArray(0), aqlPath, termDefinitionMap, c.getRmAttributeName()))
-                .flatMap(List::stream)
+                .flatMap(Arrays::stream)
                 .findAny();
     }
 
@@ -799,24 +808,21 @@ public class OPTParser {
         Class<?> javaClass = typeInfo.getJavaClass();
         if (Pathable.class.isAssignableFrom(javaClass) || DvInterval.class.isAssignableFrom(javaClass)) {
 
-            node.getChildren()
-                    .addAll(typeInfo.getAttributes().values().stream()
-                            .filter(s -> !s.isComputed())
-                            // EVENT.offset is not marked computed in archie
-                            .filter(s -> !(Event.class.isAssignableFrom(javaClass) && "offset".equals(s.getRmName())))
-                            .filter(s -> !(Element.class.isAssignableFrom(javaClass)
-                                    && !List.of("name", "feeder_audit", "null_flavour")
-                                            .contains(s.getRmName())))
-                            .filter(s -> !"value".equals(s.getRmName()))
-                            .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
-                            .filter(s ->
-                                    !(DvInterval.class.isAssignableFrom(javaClass) && "interval".equals(s.getRmName())))
-                            .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
-                            // only add if not already there
-                            .filter(n -> node.getChildren().stream()
-                                    .map(WebTemplateNode::getId)
-                                    .noneMatch(s -> s.equals(n.getId())))
-                            .toList());
+            typeInfo.getAttributes().values().stream()
+                    .filter(s -> !s.isComputed())
+                    .filter(s -> !"value".equals(s.getRmName()))
+                    // EVENT.offset is not marked computed in archie
+                    .filter(s -> !(Event.class.isAssignableFrom(javaClass) && "offset".equals(s.getRmName())))
+                    .filter(s -> !(Element.class.isAssignableFrom(javaClass)
+                            && !Set.of("name", "feeder_audit", "null_flavour").contains(s.getRmName())))
+                    .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
+                    .filter(s -> !(DvInterval.class.isAssignableFrom(javaClass) && "interval".equals(s.getRmName())))
+                    .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
+                    // only add if not already there
+                    .filter(n -> node.getChildren().stream()
+                            .map(WebTemplateNode::getId)
+                            .noneMatch(s -> s.equals(n.getId())))
+                    .forEach(node.getChildren()::add);
         }
     }
 
@@ -831,7 +837,8 @@ public class OPTParser {
         node.setRmType(attributeInfo.getTypeNameInCollection());
         node.setMax(attributeInfo.isMultipleValued() ? -1 : 1);
         node.setMin(attributeInfo.isNullable() ? 0 : 1);
-        if (List.of("action_archetype_id", "math_function").contains(attributeInfo.getRmName())) {
+        if ("action_archetype_id".equals(attributeInfo.getRmName())
+                || "math_function".equals(attributeInfo.getRmName())) {
             node.setMin(1);
         }
 
@@ -841,7 +848,7 @@ public class OPTParser {
         return node;
     }
 
-    private List<WebTemplateNode> parseCOBJECT(
+    private WebTemplateNode[] parseCOBJECT(
             COBJECT cobject,
             AqlPath aqlPath,
             Map<String, Map<String, TermDefinition>> termDefinitionMap,
@@ -875,8 +882,7 @@ public class OPTParser {
             } else {
                 pathLoop = aqlPath;
             }
-            return Collections.singletonList(
-                    parseCDOMAINTYPE(cdomaintype, pathLoop, termDefinitionMap, rmAttributeName));
+            return new WebTemplateNode[] {parseCDOMAINTYPE(cdomaintype, pathLoop, termDefinitionMap, rmAttributeName)};
         } else if (cobject instanceof ARCHETYPESLOT archetypeslot) {
             String nodeId = archetypeslot.getNodeId();
             final AqlPath pathLoop;
@@ -885,8 +891,9 @@ public class OPTParser {
             } else {
                 pathLoop = aqlPath;
             }
-            return Collections.singletonList(
-                    parseARCHETYPESLOT(archetypeslot, pathLoop, termDefinitionMap, rmAttributeName));
+            return new WebTemplateNode[] {
+                parseARCHETYPESLOT(archetypeslot, pathLoop, termDefinitionMap, rmAttributeName)
+            };
         }
 
         // this validation must be removed after xsd will be updated and DV_SCALE will be implemented
@@ -895,7 +902,7 @@ public class OPTParser {
                     MessageFormat.format("The supplied template is not supported: Unsupported type {0}.", "DV_SCALE"));
         }
 
-        return List.of();
+        return new WebTemplateNode[] {};
     }
 
     /**
@@ -1023,7 +1030,7 @@ public class OPTParser {
             if (ccodephrase instanceof CCODEREFERENCE ccodereference) {
                 code.setTerminology(Optional.of(ccodereference)
                         .map(CCODEREFERENCE::getReferenceSetUri)
-                        .map(s -> StringUtils.removeStart(s, "terminology:"))
+                        .map(s -> Strings.CS.removeStart(s, "terminology:"))
                         .orElse(null));
             } else {
                 code.setTerminology(Optional.of(ccodephrase)
@@ -1140,11 +1147,11 @@ public class OPTParser {
         String nodeId = isLocatableNode(cobject) ? cobject.getNodeId() : null;
         if (StringUtils.isNotBlank(nodeId)) {
 
-            Optional<String> expliziteName =
-                    Optional.ofNullable(nameFromTemplate).map(n -> n.label);
+            String name = Optional.ofNullable(nameFromTemplate)
+                    .map(Name::label)
+                    .orElseGet(() ->
+                            termDefinitionMap.get(nodeId).get(defaultLanguage).getValue());
 
-            String name = expliziteName.orElse(
-                    termDefinitionMap.get(nodeId).get(defaultLanguage).getValue());
             node.setName(name);
             node.setId(buildId(name));
             node.setNodeId(nodeId);
@@ -1194,14 +1201,14 @@ public class OPTParser {
 
     public static String buildId(String term) {
 
-        String normalTerm = StringUtils.normalizeSpace(term.toLowerCase()
-                        .replaceAll("[^\\p{IsAlphabetic}0-9._\\-]", " ")
-                        .trim())
-                .replace(" ", "_");
-        if (StringUtils.isNumeric(normalTerm.substring(0, 1))) {
-            normalTerm = "a" + normalTerm;
-        }
+        String alnumsCleaned = NON_ALNUM.matcher(term).replaceAll(" ");
+        String normalTerm =
+                StringUtils.normalizeSpace(alnumsCleaned).replace(" ", "_").toLowerCase();
 
-        return normalTerm;
+        if (Character.isDigit(normalTerm.charAt(0))) {
+            return "a" + normalTerm;
+        } else {
+            return normalTerm;
+        }
     }
 }
