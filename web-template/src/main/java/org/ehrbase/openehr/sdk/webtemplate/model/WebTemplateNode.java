@@ -309,7 +309,10 @@ public class WebTemplateNode implements Serializable {
                 return null;
             }
         } else {
-            matching = children.stream().map(c -> c.streamMatchingInternal(filter)).filter(Objects::nonNull).flatMap(s -> s);
+            matching = children.stream()
+                    .map(c -> c.streamMatchingInternal(filter))
+                    .filter(Objects::nonNull)
+                    .flatMap(s -> s);
             if (selfMatch) {
                 matching = Stream.concat(matching, Stream.of(this));
             }
