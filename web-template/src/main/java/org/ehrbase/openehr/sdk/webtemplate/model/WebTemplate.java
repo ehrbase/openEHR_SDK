@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.webtemplate.parser.NodeId;
 
@@ -97,12 +98,16 @@ public class WebTemplate implements Serializable {
     }
 
     public Optional<WebTemplateNode> findByAqlPath(String aql) {
-        return findAllByAqlPath(aql, true).stream().findFirst();
+        return streamAllByAqlPath(aql, true).findFirst();
+    }
+
+    public Stream<WebTemplateNode> streamAllByAqlPath(String aql, boolean ignoreName) {
+        AqlPath aqlPath = AqlPath.parse(aql);
+        return tree.streamMatching(c -> aqlPath.equals(c.getAqlPathDto(), !ignoreName));
     }
 
     public List<WebTemplateNode> findAllByAqlPath(String aql, boolean ignoreName) {
-        AqlPath aqlPath = AqlPath.parse(aql);
-        return tree.findMatching(c -> aqlPath.equals(c.getAqlPathDto(), !ignoreName));
+        return streamAllByAqlPath(aql, ignoreName).collect(Collectors.toList());
     }
 
     public Set<Set<NodeId>> findAllContainmentCombinations() {

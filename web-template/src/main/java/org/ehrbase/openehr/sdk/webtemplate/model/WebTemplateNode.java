@@ -293,12 +293,23 @@ public class WebTemplateNode implements Serializable {
     }
 
     public Stream<WebTemplateNode> streamMatching(Predicate<WebTemplateNode> filter) {
-        Stream<WebTemplateNode> matching = children.stream().flatMap(c -> c.streamMatching(filter));
 
-        if (filter.test(this)) {
-            matching = Stream.concat(matching, Stream.of(this));
+        boolean selfMatch = filter.test(this);
+
+        Stream<WebTemplateNode> matching;
+        if (children.isEmpty()) {
+            if (selfMatch) {
+                return Stream.of(this);
+            } else {
+                return Stream.empty();
+            }
+        } else {
+            matching = children.stream().flatMap(c -> c.streamMatching(filter));
+            if (selfMatch) {
+                matching = Stream.concat(matching, Stream.of(this));
+            }
+            return matching;
         }
-        return matching;
     }
 
     public static Stream<WebTemplateNode> streamSubtree(WebTemplateNode node, boolean depthFirst) {
