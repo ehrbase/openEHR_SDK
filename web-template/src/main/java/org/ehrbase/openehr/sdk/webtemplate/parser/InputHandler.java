@@ -330,43 +330,27 @@ public class InputHandler {
                 break;
 
             case RmConstants.DV_DURATION:
-                String pattern = Optional.ofNullable(templateInputMap.get("value"))
-                        .map(WebTemplateInput::getValidation)
-                        .map(WebTemplateValidation::getPattern)
-                        .orElse(null);
-                Map<String, Integer> minConstrains =
-                        buildDurationConstrains(Optional.ofNullable(templateInputMap.get("value"))
-                                .map(WebTemplateInput::getValidation)
-                                .map(WebTemplateValidation::getRange)
-                                .map(WebTemplateInterval::getMin)
-                                .map(Object::toString)
-                                .orElse(null));
-                WebTemplateComparisonSymbol minOperator = Optional.ofNullable(templateInputMap.get("value"))
-                        .map(WebTemplateInput::getValidation)
-                        .map(WebTemplateValidation::getRange)
-                        .map(WebTemplateInterval::getMinOp)
-                        .orElse(null);
+                Optional<WebTemplateValidation> validation =
+                        Optional.ofNullable(templateInputMap.get("value")).map(WebTemplateInput::getValidation);
+                String pattern =
+                        validation.map(WebTemplateValidation::getPattern).orElse(null);
+                var range = validation.map(WebTemplateValidation::getRange);
+                Map<String, Integer> minConstrains = buildDurationConstrains(range.map(WebTemplateInterval::getMin)
+                        .map(Object::toString)
+                        .orElse(null));
+                WebTemplateComparisonSymbol minOperator =
+                        range.map(WebTemplateInterval::getMinOp).orElse(null);
 
-                Map<String, Integer> maxConstrains =
-                        buildDurationConstrains(Optional.ofNullable(templateInputMap.get("value"))
-                                .map(WebTemplateInput::getValidation)
-                                .map(WebTemplateValidation::getRange)
-                                .map(WebTemplateInterval::getMax)
-                                .map(Object::toString)
-                                .orElse(null));
+                Map<String, Integer> maxConstrains = buildDurationConstrains(range.map(WebTemplateInterval::getMax)
+                        .map(Object::toString)
+                        .orElse(null));
 
                 Map<String, Integer> defaults =
                         buildDurationConstrains(findDefaultValue(node, "value").orElse(null));
-                Integer df = 0;
-                if (defaults.isEmpty()) {
-                    df = null;
-                }
+                Integer df = defaults.isEmpty() ? null : 0;
 
-                WebTemplateComparisonSymbol maxOperator = Optional.ofNullable(templateInputMap.get("value"))
-                        .map(WebTemplateInput::getValidation)
-                        .map(WebTemplateValidation::getRange)
-                        .map(WebTemplateInterval::getMaxOp)
-                        .orElse(null);
+                WebTemplateComparisonSymbol maxOperator =
+                        range.map(WebTemplateInterval::getMaxOp).orElse(null);
 
                 boolean blank = StringUtils.isBlank(pattern);
                 buildDurationInput(
