@@ -50,9 +50,7 @@ class QueryResponseDataTest {
 
         String json = objectMapper.writeValueAsString(queryResponseData);
 
-        assertThat(json)
-                .isEqualToIgnoringWhitespace(
-                        """
+        assertThat(json).isEqualToIgnoringWhitespace("""
                         {
                           "q" : "SELECT e/ehr_id/value FROM EHR e",
                           "columns" : [ ],
@@ -80,9 +78,7 @@ class QueryResponseDataTest {
 
         String json = objectMapper.writeValueAsString(queryResponseData);
 
-        assertThat(json)
-                .isEqualToIgnoringWhitespace(
-                        """
+        assertThat(json).isEqualToIgnoringWhitespace("""
                         {
                           "meta" : {
                             "_type" : "RESULTSET",
@@ -103,14 +99,12 @@ class QueryResponseDataTest {
     @Test
     void deserializedJSONMinimal() throws JsonProcessingException {
 
-        QueryResponseData queryResponseData = objectMapper.readValue(
-                """
+        QueryResponseData queryResponseData = objectMapper.readValue("""
                         {
                           "q" : "SELECT e/ehr_id/value FROM EHR e",
                           "columns" : [ ],
                           "rows" : [ ]
-                        }""",
-                QueryResponseData.class);
+                        }""", QueryResponseData.class);
 
         assertNull(queryResponseData.getMeta());
         assertNull(queryResponseData.getName());
@@ -122,8 +116,7 @@ class QueryResponseDataTest {
     @Test
     void deserializeJSON() throws JsonProcessingException {
 
-        QueryResponseData queryResponseData = objectMapper.readValue(
-                """
+        QueryResponseData queryResponseData = objectMapper.readValue("""
                         {
                           "meta" : {
                             "_type" : "RESULTSET",
@@ -138,8 +131,7 @@ class QueryResponseDataTest {
                             "path" : "e/ehr_id/value"
                           } ],
                           "rows" : [ [ "c631b8d4-c2b7-4908-812f-83403b4c866d" ] ]
-                        }""",
-                QueryResponseData.class);
+                        }""", QueryResponseData.class);
 
         assertNotNull(queryResponseData.getMeta());
         assertEquals("all.ehr.ids::query", queryResponseData.getName());

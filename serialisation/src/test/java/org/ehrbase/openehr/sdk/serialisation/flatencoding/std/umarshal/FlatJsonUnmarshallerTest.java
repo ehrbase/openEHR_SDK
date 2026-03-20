@@ -171,16 +171,13 @@ class FlatJsonUnmarshallerTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
                         2022-11-01|2022-11-01
                         2022-11|2022-11
                         2022|2022
                         2022-11-01T13|2022-11-01T13:00
                         2022-11-01T13+02:00|2022-11-01T13:00+02:00
-                    """,
-            delimiterString = "|")
+                    """, delimiterString = "|")
     void validDvDateTime(String input, String expected) throws Exception {
 
         WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
@@ -221,15 +218,12 @@ class FlatJsonUnmarshallerTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
                 13:12:11|13:12:11
                 13:12|13:12
                 13|13:00
                 13+02:00|13:00+02:00
-            """,
-            delimiterString = "|")
+            """, delimiterString = "|")
     void validDvTimeTest(String input, String expected) throws Exception {
 
         WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
@@ -268,14 +262,11 @@ class FlatJsonUnmarshallerTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
                 2022-11-01|2022-11-01
                 2022-11|2022-11
                 2022|2022
-            """,
-            delimiterString = "|")
+            """, delimiterString = "|")
     void validDvDateTest(String input, String expected) throws Exception {
 
         WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
@@ -305,8 +296,9 @@ class FlatJsonUnmarshallerTest {
                 "/content[openEHR-EHR-ADMIN_ENTRY.document_attachment.v0]/data[at0003]/items[openEHR-EHR-CLUSTER.media_file.v1]/items[at0001]/value");
         assertThat(object).isInstanceOf(DvMultimedia.class).satisfies(obj -> {
             var dvMultimedia = (DvMultimedia) obj;
-            assertThat(dvMultimedia.getData()).isNotNull().satisfies(bytes -> assertThat(new String(bytes))
-                    .isEqualTo("Shall Be Base64 encoded"));
+            assertThat(dvMultimedia.getData())
+                    .isNotNull()
+                    .satisfies(bytes -> assertThat(new String(bytes)).isEqualTo("Shall Be Base64 encoded"));
         });
     }
 
