@@ -465,7 +465,7 @@ public class PredicateHelper {
             Object[] boolList, ToIntFunction<S> precedenceFunction) {
 
         S currentSymbol = (S) boolList[1];
-        OperatorStructure<S> currentOperator = new OperatorStructure(currentSymbol, boolList[0]);
+        OperatorStructure<S> currentOperator = new OperatorStructure<>(currentSymbol, boolList[0]);
 
         OperatorStructure<S> lowestOperator = currentOperator;
         for (int i = 2, l = boolList.length; i < l; i += 2) {
