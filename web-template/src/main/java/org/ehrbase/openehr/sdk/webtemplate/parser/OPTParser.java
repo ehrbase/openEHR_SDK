@@ -653,16 +653,20 @@ public class OPTParser {
         makeIdUnique(node);
 
         cardinaltyList.forEach(p -> {
-            String[] nodeIds = p.getValue().stream()
-                    .flatMap(s -> node.streamMatching(n -> n.getAqlPathDto().equals(s)))
-                    .map(WebTemplateNode::getId)
-                    .toArray(String[]::new);
-            // only add non-trivial cardinalities.
             WebtemplateCardinality key = p.getKey();
-            Integer max = key.getMax();
-            if ((max != null && max != -1 && max < nodeIds.length) || (key.getMin() != null && key.getMin() > 1)) {
-                key.getIds().addAll(Arrays.asList(nodeIds));
-                node.getCardinalities().add(key);
+            boolean nonTrivialMin = (key.getMin() != null && key.getMin() > 1);
+            int max = key.getMax() == null ? -1 : key.getMax();
+
+            if (nonTrivialMin || max != -1) {
+                String[] nodeIds = p.getValue().stream()
+                        .flatMap(s -> node.streamMatching(n -> n.getAqlPathDto().equals(s)))
+                        .map(WebTemplateNode::getId)
+                        .toArray(String[]::new);
+                // only add non-trivial cardinalities
+                if (nonTrivialMin || max < nodeIds.length) {
+                    key.getIds().addAll(Arrays.asList(nodeIds));
+                    node.getCardinalities().add(key);
+                }
             }
         });
 
@@ -779,17 +783,15 @@ public class OPTParser {
                 .values()
                 .forEach(l -> {
                     if (l.size() > 1) {
-                        for (int i = 0; i < l.size(); i++) {
-                            if (i > 0) {
-                                WebTemplateNode n = l.get(i);
-                                int optionalIdNumber = i + 1;
-                                n.setOptionalIdNumber(optionalIdNumber);
+                        for (int i = 1; i < l.size(); i++) {
+                            WebTemplateNode n = l.get(i);
+                            int optionalIdNumber = i + 1;
+                            n.setOptionalIdNumber(optionalIdNumber);
 
-                                if (RmConstants.ELEMENT.equals(n.getRmType())) {
-                                    n.getChildren().stream()
-                                            .filter(c -> c.getId().equals(n.getId(false)))
-                                            .forEach(c -> c.setOptionalIdNumber(optionalIdNumber));
-                                }
+                            if (RmConstants.ELEMENT.equals(n.getRmType())) {
+                                n.getChildren().stream()
+                                        .filter(c -> c.getId().equals(n.getId(false)))
+                                        .forEach(c -> c.setOptionalIdNumber(optionalIdNumber));
                             }
                         }
                     } else {
@@ -808,37 +810,52 @@ public class OPTParser {
         Class<?> javaClass = typeInfo.getJavaClass();
         if (Pathable.class.isAssignableFrom(javaClass) || DvInterval.class.isAssignableFrom(javaClass)) {
 
+            List<WebTemplateNode> children = node.getChildren();
             typeInfo.getAttributes().values().stream()
-                    .filter(s -> !s.isComputed())
-                    .filter(s -> !"value".equals(s.getRmName()))
-                    // EVENT.offset is not marked computed in archie
-                    .filter(s -> !(Event.class.isAssignableFrom(javaClass) && "offset".equals(s.getRmName())))
-                    .filter(s -> !(Element.class.isAssignableFrom(javaClass)
-                            && !Set.of("name", "feeder_audit", "null_flavour").contains(s.getRmName())))
-                    .filter(s -> !Locatable.class.isAssignableFrom(s.getTypeInCollection()))
-                    .filter(s -> !(DvInterval.class.isAssignableFrom(javaClass) && "interval".equals(s.getRmName())))
-                    .map(i -> buildNodeForAttribute(i, aqlPath, termDefinitionMap))
-                    // only add if not already there
-                    .filter(n -> node.getChildren().stream()
-                            .map(WebTemplateNode::getId)
-                            .noneMatch(s -> s.equals(n.getId())))
-                    .forEach(node.getChildren()::add);
+                    .filter(s -> {
+                        String rmName = s.getRmName();
+                        return !(s.isComputed()
+                                || "value".equals(rmName)
+                                // EVENT.offset is not marked computed in archie
+                                || (Event.class.isAssignableFrom(javaClass) && "offset".equals(rmName))
+                                || (Element.class.isAssignableFrom(javaClass)
+                                        && switch (rmName) {
+                                            case "name", "feeder_audit", "null_flavour" -> false;
+                                            default -> true;
+                                        })
+                                || Locatable.class.isAssignableFrom(s.getTypeInCollection())
+                                || (DvInterval.class.isAssignableFrom(javaClass) && "interval".equals(rmName)));
+                    })
+                    .map(i -> {
+                        String rmName = i.getRmName();
+                        String id = buildId(rmName);
+                        // only add if not already there
+                        for (WebTemplateNode child : children) {
+                            if (child.getId().equals(id)) {
+                                return null;
+                            }
+                        }
+                        return buildNodeForAttribute(i, aqlPath, rmName, id, termDefinitionMap);
+                    })
+                    .filter(Objects::nonNull)
+                    .forEach(children::add);
         }
     }
 
     private WebTemplateNode buildNodeForAttribute(
             RMAttributeInfo attributeInfo,
             AqlPath aqlPath,
+            String rmName,
+            String id,
             Map<String, Map<String, TermDefinition>> termDefinitionMap) {
         WebTemplateNode node = new WebTemplateNode();
-        node.setAqlPath(aqlPath.addEnd(attributeInfo.getRmName()));
-        node.setName(attributeInfo.getRmName());
-        node.setId(buildId(attributeInfo.getRmName()));
+        node.setAqlPath(aqlPath.addEnd(rmName));
+        node.setName(rmName);
+        node.setId(id);
         node.setRmType(attributeInfo.getTypeNameInCollection());
         node.setMax(attributeInfo.isMultipleValued() ? -1 : 1);
         node.setMin(attributeInfo.isNullable() ? 0 : 1);
-        if ("action_archetype_id".equals(attributeInfo.getRmName())
-                || "math_function".equals(attributeInfo.getRmName())) {
+        if ("action_archetype_id".equals(rmName) || "math_function".equals(rmName)) {
             node.setMin(1);
         }
 
