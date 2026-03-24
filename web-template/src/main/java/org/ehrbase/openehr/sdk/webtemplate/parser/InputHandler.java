@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
@@ -237,29 +236,35 @@ public class InputHandler {
         return date;
     }
 
+    private static WebTemplateInput createInput(
+            Map<String, WebTemplateInput> templateInputMap, String key, String suffix, String type) {
+        return Objects.requireNonNullElseGet(templateInputMap.get(key), () -> buildWebTemplateInput(suffix, type));
+    }
+
     void addInputs(WebTemplateNode node, Map<String, WebTemplateInput> templateInputMap) {
+        List<WebTemplateInput> inputs = node.getInputs();
         switch (node.getRmType()) {
             case RmConstants.DV_DATE:
-                node.getInputs().add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "DATE")));
+                inputs.add(createInput(templateInputMap, "value", null, "DATE"));
                 break;
             case RmConstants.DV_DATE_TIME:
-                node.getInputs().add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "DATETIME")));
+                inputs.add(createInput(templateInputMap, "value", null, "DATETIME"));
                 break;
             case RmConstants.DV_TIME:
-                node.getInputs().add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "TIME")));
+                inputs.add(createInput(templateInputMap, "value", null, "TIME"));
                 break;
             case RmConstants.DV_ORDINAL:
-                node.getInputs().add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "CODED_TEXT")));
+                inputs.add(createInput(templateInputMap, "value", null, "CODED_TEXT"));
                 break;
             case RmConstants.PARTY_PROXY:
-                node.getInputs().add(buildWebTemplateInput("id", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("id_scheme", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("id_namespace", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("name", "TEXT"));
+                inputs.add(buildWebTemplateInput("id", "TEXT"));
+                inputs.add(buildWebTemplateInput("id_scheme", "TEXT"));
+                inputs.add(buildWebTemplateInput("id_namespace", "TEXT"));
+                inputs.add(buildWebTemplateInput("name", "TEXT"));
                 break;
             case RmConstants.DV_PARSABLE:
-                node.getInputs().add(buildWebTemplateInput("value", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("formalism", "TEXT"));
+                inputs.add(buildWebTemplateInput("value", "TEXT"));
+                inputs.add(buildWebTemplateInput("formalism", "TEXT"));
                 break;
             case RmConstants.DV_TEXT:
             case RmConstants.DV_EHR_URI:
@@ -267,105 +272,85 @@ public class InputHandler {
             case RmConstants.DV_MULTIMEDIA:
             case RmConstants.UID_BASED_ID:
             case "STRING":
-                node.getInputs().add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "TEXT")));
+                inputs.add(createInput(templateInputMap, "value", null, "TEXT"));
                 break;
             case RmConstants.DV_COUNT:
                 {
-                    WebTemplateInput magnitude =
-                            templateInputMap.getOrDefault("magnitude", buildWebTemplateInput(null, "INTEGER"));
+                    WebTemplateInput magnitude = createInput(templateInputMap, "magnitude", null, "INTEGER");
                     findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
 
-                    node.getInputs().add(magnitude);
+                    inputs.add(magnitude);
                 }
                 break;
             case RmConstants.DV_QUANTITY:
                 {
-                    WebTemplateInput magnitude =
-                            templateInputMap.getOrDefault("magnitude", buildWebTemplateInput("magnitude", "DECIMAL"));
+                    WebTemplateInput magnitude = createInput(templateInputMap, "magnitude", "magnitude", "DECIMAL");
                     findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
 
-                    node.getInputs().add(magnitude);
+                    inputs.add(magnitude);
 
-                    node.getInputs().add(buildWebTemplateInput("unit", "TEXT"));
+                    inputs.add(buildWebTemplateInput("unit", "TEXT"));
                 }
                 break;
             case RmConstants.DV_BOOLEAN:
-                node.getInputs().add(templateInputMap.getOrDefault("value", buildWebTemplateInput(null, "BOOLEAN")));
+                inputs.add(createInput(templateInputMap, "value", null, "BOOLEAN"));
                 break;
             case RmConstants.DV_STATE:
             case RmConstants.DV_CODED_TEXT:
-                node.getInputs().add(buildWebTemplateInput("code", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("value", "TEXT"));
+                inputs.add(buildWebTemplateInput("code", "TEXT"));
+                inputs.add(buildWebTemplateInput("value", "TEXT"));
                 break;
             case RmConstants.DV_PROPORTION:
-                WebTemplateInput numerator =
-                        templateInputMap.getOrDefault("numerator", buildWebTemplateInput("numerator", "DECIMAL"));
+                WebTemplateInput numerator = createInput(templateInputMap, "numerator", "numerator", "DECIMAL");
                 numerator.setSuffix("numerator");
-                node.getInputs().add(numerator);
-                WebTemplateInput denominator =
-                        templateInputMap.getOrDefault("denominator", buildWebTemplateInput("denominator", "DECIMAL"));
+                inputs.add(numerator);
+                WebTemplateInput denominator = createInput(templateInputMap, "denominator", "denominator", "DECIMAL");
                 denominator.setSuffix("denominator");
 
-                List<ProportionType> proportionTypes =
+                ProportionType[] proportionTypes =
                         Optional.ofNullable(templateInputMap.get("type")).map(WebTemplateInput::getList).stream()
                                 .flatMap(List::stream)
                                 .map(WebTemplateInputValue::getValue)
                                 .map(Integer::valueOf)
                                 .map(ProportionType::findById)
-                                .collect(Collectors.toList());
-                if (proportionTypes.isEmpty()) {
-                    proportionTypes = Arrays.asList(ProportionType.values());
-                } else if (proportionTypes.size() == 1) {
-                    proportionTypes.get(0).getDenominatorValidator().ifPresent(denominator::setValidation);
+                                .toArray(ProportionType[]::new);
+                if (proportionTypes.length == 0) {
+                    proportionTypes = ProportionType.values();
+                } else if (proportionTypes.length == 1) {
+                    proportionTypes[0].getDenominatorValidator().ifPresent(denominator::setValidation);
                 }
-                node.getProportionTypes().addAll(proportionTypes);
-                node.getInputs().add(denominator);
+                node.getProportionTypes().addAll(Arrays.asList(proportionTypes));
+                inputs.add(denominator);
                 break;
             case RmConstants.DV_IDENTIFIER:
-                node.getInputs().add(buildWebTemplateInput("id", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("type", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("issuer", "TEXT"));
-                node.getInputs().add(buildWebTemplateInput("assigner", "TEXT"));
+                inputs.add(buildWebTemplateInput("id", "TEXT"));
+                inputs.add(buildWebTemplateInput("type", "TEXT"));
+                inputs.add(buildWebTemplateInput("issuer", "TEXT"));
+                inputs.add(buildWebTemplateInput("assigner", "TEXT"));
                 break;
 
             case RmConstants.DV_DURATION:
-                String pattern = Optional.ofNullable(templateInputMap.get("value"))
-                        .map(WebTemplateInput::getValidation)
-                        .map(WebTemplateValidation::getPattern)
-                        .orElse(null);
-                Map<String, Integer> minConstrains =
-                        buildDurationConstrains(Optional.ofNullable(templateInputMap.get("value"))
-                                .map(WebTemplateInput::getValidation)
-                                .map(WebTemplateValidation::getRange)
-                                .map(WebTemplateInterval::getMin)
-                                .map(Object::toString)
-                                .orElse(null));
-                WebTemplateComparisonSymbol minOperator = Optional.ofNullable(templateInputMap.get("value"))
-                        .map(WebTemplateInput::getValidation)
-                        .map(WebTemplateValidation::getRange)
-                        .map(WebTemplateInterval::getMinOp)
-                        .orElse(null);
+                Optional<WebTemplateValidation> validation =
+                        Optional.ofNullable(templateInputMap.get("value")).map(WebTemplateInput::getValidation);
+                String pattern =
+                        validation.map(WebTemplateValidation::getPattern).orElse(null);
+                var range = validation.map(WebTemplateValidation::getRange);
+                Map<String, Integer> minConstrains = buildDurationConstrains(range.map(WebTemplateInterval::getMin)
+                        .map(Object::toString)
+                        .orElse(null));
+                WebTemplateComparisonSymbol minOperator =
+                        range.map(WebTemplateInterval::getMinOp).orElse(null);
 
-                Map<String, Integer> maxConstrains =
-                        buildDurationConstrains(Optional.ofNullable(templateInputMap.get("value"))
-                                .map(WebTemplateInput::getValidation)
-                                .map(WebTemplateValidation::getRange)
-                                .map(WebTemplateInterval::getMax)
-                                .map(Object::toString)
-                                .orElse(null));
+                Map<String, Integer> maxConstrains = buildDurationConstrains(range.map(WebTemplateInterval::getMax)
+                        .map(Object::toString)
+                        .orElse(null));
 
                 Map<String, Integer> defaults =
                         buildDurationConstrains(findDefaultValue(node, "value").orElse(null));
-                Integer df = 0;
-                if (defaults.isEmpty()) {
-                    df = null;
-                }
+                Integer df = defaults.isEmpty() ? null : 0;
 
-                WebTemplateComparisonSymbol maxOperator = Optional.ofNullable(templateInputMap.get("value"))
-                        .map(WebTemplateInput::getValidation)
-                        .map(WebTemplateValidation::getRange)
-                        .map(WebTemplateInterval::getMaxOp)
-                        .orElse(null);
+                WebTemplateComparisonSymbol maxOperator =
+                        range.map(WebTemplateInterval::getMaxOp).orElse(null);
 
                 boolean blank = StringUtils.isBlank(pattern);
                 buildDurationInput(
@@ -447,7 +432,7 @@ public class InputHandler {
                         defaults.getOrDefault("S", df));
                 break;
         }
-        node.getInputs().forEach(i -> {
+        inputs.forEach(i -> {
             Optional.ofNullable(defaultValues.get(node.getAqlPath(false)
                             + "|"
                             + ((StringUtils.isBlank(i.getSuffix())) ? "value" : i.getSuffix())))

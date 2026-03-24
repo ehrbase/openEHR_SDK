@@ -242,16 +242,18 @@ public class CanonicalJson implements RMDataFormat {
 
         @Override
         public boolean useForType(JavaType t) {
-            return (OpenEHRBase.class.isAssignableFrom(t.getRawClass())
-                    && !ArchetypeID.class.equals(t.getRawClass())
-                    && !TemplateId.class.equals(t.getRawClass())
-                    && !Archetyped.class.equals(t.getRawClass())
-                    && !Link.class.equals(t.getRawClass())
-                    &&
-                    //                            !CodePhrase.class.equals(t.getRawClass()) &&
-                    !History.class.equals(t.getRawClass())
-            //                            !TerminologyId.class.equals(t.getRawClass())
-            );
+            return super.useForType(t)
+                    && ((OpenEHRBase.class.isAssignableFrom(t.getRawClass())
+                                    && !ArchetypeID.class.equals(t.getRawClass())
+                                    && !TemplateId.class.equals(t.getRawClass())
+                                    && !Archetyped.class.equals(t.getRawClass())
+                                    && !Link.class.equals(t.getRawClass())
+                                    &&
+                                    //                            !CodePhrase.class.equals(t.getRawClass()) &&
+                                    !History.class.equals(t.getRawClass())
+                            //                            !TerminologyId.class.equals(t.getRawClass())
+                            )
+                            || t.isJavaLangObject());
         }
     }
 
