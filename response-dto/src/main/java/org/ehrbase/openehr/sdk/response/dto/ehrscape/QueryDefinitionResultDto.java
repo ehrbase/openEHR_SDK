@@ -24,7 +24,7 @@ public class QueryDefinitionResultDto {
     private String qualifiedName;
     private String version;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.[SSS][SS]XXX")
     private ZonedDateTime saved;
 
     private String queryText;
