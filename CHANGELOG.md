@@ -3,8 +3,9 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
- ### Fixed 
+ ### Added
+ ### Fixed
+- Fixed terminology fallback to English when using localized terminology interfaces
 
 ## [2.31.0]
  ### Added 

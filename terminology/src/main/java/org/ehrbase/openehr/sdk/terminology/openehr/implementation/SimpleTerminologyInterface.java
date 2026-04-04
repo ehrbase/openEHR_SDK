@@ -86,14 +86,25 @@ public class SimpleTerminologyInterface implements TerminologyInterface {
         codeSets = new HashMap<>();
         codeSetInternalIdToExternalName = new HashMap<>();
 
+        // load both the requested language and english to have fallback values
         try {
-            TerminologySource terminologySource = TerminologySourceFactory.getOpenEHRTerminology(language);
-            loadTerminologies(terminologySource, language);
-            loadCodeSets(terminologySource);
+            TerminologySource englishTerminologySource = TerminologySourceFactory.getOpenEHRTerminology("en");
+            loadTerminologies(englishTerminologySource, "en");
+            loadCodeSets(englishTerminologySource);
 
-            terminologySource = TerminologySourceFactory.getExternalTerminologies(language);
-            loadTerminologies(terminologySource, language);
-            loadCodeSets(terminologySource);
+            TerminologySource englishExternalSource = TerminologySourceFactory.getExternalTerminologies("en");
+            loadTerminologies(englishExternalSource, "en");
+            loadCodeSets(englishExternalSource);
+
+            if (!"en".equals(language)) {
+                TerminologySource terminologySource = TerminologySourceFactory.getOpenEHRTerminology(language);
+                loadTerminologies(terminologySource, language);
+                loadCodeSets(terminologySource);
+
+                terminologySource = TerminologySourceFactory.getExternalTerminologies(language);
+                loadTerminologies(terminologySource, language);
+                loadCodeSets(terminologySource);
+            }
 
         } catch (Exception e) {
             throw new TerminologyResourceException(e.getMessage());

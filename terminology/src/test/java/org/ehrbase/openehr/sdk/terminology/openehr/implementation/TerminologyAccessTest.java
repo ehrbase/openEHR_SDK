@@ -62,4 +62,28 @@ public class TerminologyAccessTest {
     public void labelForCodeTest() {
         assertEquals("nursing home care", terminologyAccess.rubricForCode("237", "en"));
     }
+
+    @Test
+    public void testRubricForCodeFallsBackToEnglish() {
+        TerminologyInterface localizedTerminology = new SimpleTerminologyInterface("es");
+        TerminologyAccess localizedAccess = localizedTerminology.terminology("openehr");
+
+        assertEquals("evento", localizedAccess.rubricForCode("433", "es"));
+        assertEquals("event", localizedAccess.rubricForCode("433", "fr"));
+        assertEquals("event", localizedAccess.rubricForCode("433", "en"));
+    }
+
+    @Test
+    public void testRubricForCodeFallsBackToEnglishForUnsupportedLanguage() {
+        assertEquals("event", terminologyAccess.rubricForCode("433", "xyz"));
+    }
+
+    @Test
+    public void testCodesForGroupNameFallsBackToEnglish() {
+        TerminologyInterface localizedTerminology = new SimpleTerminologyInterface("es");
+        TerminologyAccess localizedAccess = localizedTerminology.terminology("openehr");
+
+        Set<CodePhrase> codes = localizedAccess.codesForGroupName("setting", "fr");
+        assertTrue(codes != null && !codes.isEmpty());
+    }
 }

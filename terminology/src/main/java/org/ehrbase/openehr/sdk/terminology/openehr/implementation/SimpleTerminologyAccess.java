@@ -113,10 +113,9 @@ public class SimpleTerminologyAccess implements TerminologyAccess {
     }
 
     public Set<CodePhrase> codesForGroupName(String name, String language) {
-        Map<String, String> map = groupLangNameToId.get(language);
+        Map<String, String> map = groupLangNameToId.getOrDefault(language, groupLangNameToId.get("en"));
         if (map == null) {
-            // default to English
-            map = codeRubrics.get("en");
+            return null;
         }
         String groupId = map.get(name);
         return groups.get(groupId);
@@ -127,6 +126,9 @@ public class SimpleTerminologyAccess implements TerminologyAccess {
         if (map == null) {
             // default to English
             map = codeRubrics.get("en");
+        }
+        if (map == null) {
+            return null;
         }
         return map.get(code);
     }
