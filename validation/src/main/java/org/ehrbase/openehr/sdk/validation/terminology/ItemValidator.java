@@ -30,7 +30,7 @@ import org.ehrbase.openehr.sdk.validation.terminology.validator.I_TerminologyChe
 
 public class ItemValidator {
 
-    private Map<String, ValidationHandler> validationRegistryList;
+    private final Map<String, ValidationHandler> validationRegistryList;
 
     ItemValidator() {
         validationRegistryList = new HashMap<>();
@@ -122,11 +122,10 @@ public class ItemValidator {
             }
             MethodHandle methodHandle = validationHandler.check();
             methodHandle.invoke(terminologyInterface, codesetMapping, fieldName, rmObject, language);
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException | Error e) {
             throw e;
         } catch (Throwable throwable) {
-
-            throw new IllegalStateException(throwable.getMessage());
+            throw new IllegalStateException(throwable.getMessage(), throwable);
         }
     }
 }
