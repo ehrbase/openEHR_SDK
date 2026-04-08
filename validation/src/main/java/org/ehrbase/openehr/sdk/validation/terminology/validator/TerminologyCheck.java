@@ -19,6 +19,7 @@ package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyAccess;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
 import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.openehr.sdk.terminology.openehr.implementation.ContainerType;
@@ -88,28 +89,31 @@ public class TerminologyCheck implements I_TerminologyCheck {
             DvCodedText dvCodedText,
             String language)
             throws IllegalArgumentException {
-        validate(terminologyInterface, codesetMapping, context, dvCodedText.getDefiningCode(), language);
+        CodePhrase definingCode = dvCodedText.getDefiningCode();
+        validate(terminologyInterface, codesetMapping, context, definingCode, language);
 
-        if (terminologyInterface.terminology(
-                        dvCodedText.getDefiningCode().getTerminologyId().getValue())
-                == null) // terminology is NOT defined
-        return;
+        String terminologyId = definingCode.getTerminologyId().getValue();
 
-        if (!codesetMapping.isLocalizedAttribute(
-                dvCodedText.getDefiningCode().getTerminologyId().getValue(), context, language))
+        TerminologyAccess terminology = terminologyInterface.terminology(terminologyId);
+        if (terminology == null) {
+            // terminology is NOT defined
+            return;
+        }
+
+        if (!codesetMapping.isLocalizedAttribute(terminologyId, context, language)) {
             language = "en"; // default to English for the rest of the validation
+        }
 
-        String rubric = terminologyInterface
-                .terminology(dvCodedText.getDefiningCode().getTerminologyId().getValue())
-                .rubricForCode(dvCodedText.getDefiningCode().getCodeString(), language);
+        String rubric = terminology.rubricForCode(definingCode.getCodeString(), language);
+
         boolean valid = rubric.equals(dvCodedText.getValue());
         if (!valid) {
             throw new IllegalArgumentException("supplied value ["
                     + dvCodedText.getValue()
                     + "] doesn't match code string:"
-                    + dvCodedText.getDefiningCode().getCodeString()
+                    + definingCode.getCodeString()
                     + " (language:" + language + ", terminology:"
-                    + dvCodedText.getDefiningCode().getTerminologyId().getValue() + "), expected:" + rubric);
+                    + terminologyId + "), expected:" + rubric);
         }
     }
 

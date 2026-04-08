@@ -17,15 +17,10 @@
  */
 package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyResourceException;
 import org.ehrbase.openehr.sdk.util.SnakeCase;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -36,8 +31,9 @@ import org.w3c.dom.NodeList;
  */
 public class AttributeCodesetMapping {
 
-    private Map<String, Map<String, AttributeGroupMap>> groupMaps;
+    private final Map<String, Map<String, AttributeGroupMap>> groupMaps;
     private static final String ATTRIBUTE_MAP_DEFINITION = "attribute_to_openehr_codesets.xml";
+    private static final String OPENEHR_ID = "openehr";
     private static final String EXTERNAL_ID_PREFIX = "openehr_";
 
     /**
@@ -59,40 +55,37 @@ public class AttributeCodesetMapping {
      * Constructs an instance loaded with terminology content
      */
     private AttributeCodesetMapping(String filename) throws TerminologyResourceException {
-        groupMaps = new HashMap<>();
-        loadMappersFromXML(filename);
+        groupMaps = loadMappersFromXML(filename);
     }
 
-    private void loadMappersFromXML(String filename) throws TerminologyResourceException {
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(filename)) {
-
-            if (resourceAsStream == null)
-                throw new TerminologyResourceException("Could not access filename:" + filename);
-
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            final DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-            final Document document = documentBuilder.parse(resourceAsStream);
-            Element root = document.getDocumentElement();
+    private static Map<String, Map<String, AttributeGroupMap>> loadMappersFromXML(String filename)
+            throws TerminologyResourceException {
+        Map<String, Map<String, AttributeGroupMap>> groupMaps = new HashMap<>();
+        try {
+            Element root = XMLTerminologySource.parseXml(filename, resourceAsStream);
             NodeList mapList = root.getElementsByTagName("map");
 
             for (int idx = 0; idx < mapList.getLength(); idx++) {
                 Element element = (Element) mapList.item(idx);
-                if (element.getElementsByTagName("terminology") != null
-                        && element.getElementsByTagName("terminology").getLength() > 0) {
-                    String terminology =
-                            element.getElementsByTagName("terminology").item(0).getTextContent();
-                    if (terminology.startsWith(EXTERNAL_ID_PREFIX)) {
-                        terminology = "openehr";
-                    }
-                    if (!groupMaps.containsKey(terminology)) groupMaps.put(terminology, new HashMap<>());
-                    AttributeGroupMap attributeGroupMap = loadMap(element);
-                    groupMaps.get(terminology).put(attributeGroupMap.getAttribute(), attributeGroupMap);
-                } else {
+                NodeList terminologyNodes = element.getElementsByTagName("terminology");
+                if (terminologyNodes.getLength() == 0) {
                     throw new IllegalArgumentException("no terminology specified for entry:" + element.toString());
                 }
+                String terminology = terminologyNodes.item(0).getTextContent();
+                if (terminology.startsWith(EXTERNAL_ID_PREFIX)) {
+                    terminology = OPENEHR_ID;
+                }
+                Map<String, AttributeGroupMap> groupMap = groupMaps.get(terminology);
+                if (groupMap == null) {
+                    groupMap = new HashMap<>();
+                    groupMaps.put(terminology, groupMap);
+                }
+                AttributeGroupMap attributeGroupMap = loadMap(element);
+                groupMap.put(attributeGroupMap.getAttribute(), attributeGroupMap);
             }
+            return groupMaps;
+        } catch (TerminologyResourceException e) {
+            throw e;
         } catch (Exception e) {
             throw new TerminologyResourceException(e.getMessage());
         }
@@ -101,14 +94,18 @@ public class AttributeCodesetMapping {
     /*
      * Loads a code set from XML element
      */
-    private AttributeGroupMap loadMap(Element element) {
+    private static AttributeGroupMap loadMap(Element element) {
         String rmAttribute =
                 element.getElementsByTagName("rm_attribute").item(0).getTextContent();
-        String container = "";
-        if (element.getElementsByTagName("container").getLength() > 0)
-            container = element.getElementsByTagName("container").item(0).getTextContent();
+        NodeList containerNodes = element.getElementsByTagName("container");
+        String container;
+        if (containerNodes.getLength() > 0) {
+            container = containerNodes.item(0).getTextContent();
+        } else {
+            container = "";
+        }
         NodeList matcherList = element.getElementsByTagName("match");
-        Map<String, String> matcherMap = new HashMap<>();
+        Map<String, String> matcherMap = new HashMap.newHashMap(matcherList.getLength());
         for (int idx = 0; idx < matcherList.getLength(); idx++) {
             Element matcher = (Element) matcherList.item(idx);
             NodeList codeStringMaps = matcher.getElementsByTagName("codeset");
@@ -128,18 +125,19 @@ public class AttributeCodesetMapping {
             return null;
         }
 
-        String snakeAttribute = new SnakeCase(attribute).camelToSnake();
-
-        String fixTerminlogy = fixTerminlogy(terminology);
-
-        if (!getMappers().get(fixTerminlogy).containsKey(snakeAttribute))
+        AttributeGroupMap attributeGroupMap =
+                getMappers().get(fixTerminology(terminology)).get(new SnakeCase(attribute).camelToSnake());
+        if (attributeGroupMap == null) {
             throw new IllegalArgumentException(
                     "attribute:" + attribute + ", is not defined in terminology:" + terminology);
+        }
 
-        if (!getMappers().get(fixTerminlogy).get(snakeAttribute).getIdMap().containsKey(language))
-            language = "en"; // default to English
-
-        return getMappers().get(fixTerminlogy).get(snakeAttribute).getIdMap().get(language);
+        String attributeId = attributeGroupMap.getIdMap().get(language);
+        if (attributeId != null) {
+            return attributeId;
+        }
+        // fallback to English
+        return attributeGroupMap.getIdMap().get("en");
     }
 
     public boolean isLocalizedAttribute(String terminology, String attribute, String language) {
@@ -147,40 +145,40 @@ public class AttributeCodesetMapping {
             return false;
         }
 
-        String snakeAttribute = new SnakeCase(attribute).camelToSnake();
-
-        String fixTerminlogy = fixTerminlogy(terminology);
-
-        if (!getMappers().containsKey(fixTerminlogy))
+        Map<String, AttributeGroupMap> attributeGroupMapByAttribute =
+                getMappers().get(fixTerminology(terminology));
+        if (attributeGroupMapByAttribute == null) {
             throw new IllegalArgumentException("Invalid terminology id:" + terminology);
+        }
 
-        if (!getMappers().get(fixTerminlogy).containsKey(snakeAttribute))
+        AttributeGroupMap attributeGroupMap = attributeGroupMapByAttribute.get(new SnakeCase(attribute).camelToSnake());
+        if (attributeGroupMap == null) {
             throw new IllegalArgumentException(
                     "attribute:" + attribute + ", is not defined in terminology:" + terminology);
+        }
 
         // default to English
-        return getMappers().get(fixTerminlogy).get(snakeAttribute).getIdMap().containsKey(language);
+        return attributeGroupMap.getIdMap().containsKey(language);
     }
 
     // openehr_compression_algorithm, openehr_integrity_check_algorithm,openehr_normal_status
-    private String fixTerminlogy(String terminology) {
-        String fixTerminlogy;
-        if (terminology.contains("openehr")) {
-            fixTerminlogy = "openehr";
+    private String fixTerminology(String terminology) {
+        if (terminology.contains(OPENEHR_ID)) {
+            return OPENEHR_ID;
         } else {
-            fixTerminlogy = terminology;
+            return terminology;
         }
-        return fixTerminlogy;
     }
 
     public ContainerType containerType(String terminology, String attribute) {
-        if (!getMappers().containsKey(terminology)) return ContainerType.UNDEFINED;
-
-        if (!getMappers().get(terminology).containsKey(attribute)) {
-            if (terminology.equals("openehr")) return ContainerType.GROUP;
-            else return ContainerType.CODESET;
+        Map<String, AttributeGroupMap> termMap = getMappers().get(terminology);
+        if (termMap == null) {
+            return ContainerType.UNDEFINED;
         }
-
-        return getMappers().get(terminology).get(attribute).getContainer();
+        AttributeGroupMap attributeGroupMap = termMap.get(attribute);
+        if (attributeGroupMap != null) {
+            return attributeGroupMap.getContainer();
+        }
+        return OPENEHR_ID.equals(terminology) ? ContainerType.GROUP : ContainerType.CODESET;
     }
 }

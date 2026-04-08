@@ -17,16 +17,19 @@
  */
 package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyResourceException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * This class provides access to terminology content in XML format
@@ -59,19 +62,24 @@ public class XMLTerminologySource implements TerminologySource {
         loadTerminologyFromXML(filename);
     }
 
-    private void loadTerminologyFromXML(String filename) throws TerminologyResourceException {
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(filename)) {
-
-            if (resourceAsStream == null) {
+    static Element parseXml(String filename) throws ParserConfigurationException, SAXException, IOException {
+        try (InputStream resourceAsStream =
+                AttributeCodesetMapping.class.getClassLoader().getResourceAsStream(filename)) {
+            if (resourceAsStream == null)
                 throw new TerminologyResourceException("Could not access filename:" + filename);
-            }
 
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             final DocumentBuilder documentBuilder = factory.newDocumentBuilder();
             final Document document = documentBuilder.parse(resourceAsStream);
-            Element root = document.getDocumentElement();
+            return document.getDocumentElement();
+        }
+    }
+
+    private void loadTerminologyFromXML(String filename) throws TerminologyResourceException {
+        try {
+            Element root = parseXml(filename);
             NodeList codesets = root.getElementsByTagName("codeset");
             codeSetList.clear();
             groupList.clear();
@@ -86,6 +94,8 @@ public class XMLTerminologySource implements TerminologySource {
                 Element element = (Element) groups.item(idx);
                 groupList.add(loadGroup(element));
             }
+        } catch (TerminologyResourceException e) {
+            throw e;
         } catch (Exception e) {
             throw new TerminologyResourceException(e.getMessage());
         }
