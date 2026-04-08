@@ -105,7 +105,7 @@ public class AttributeCodesetMapping {
             container = "";
         }
         NodeList matcherList = element.getElementsByTagName("match");
-        Map<String, String> matcherMap = new HashMap.newHashMap(matcherList.getLength());
+        Map<String, String> matcherMap = new HashMap<>(matcherList.getLength());
         for (int idx = 0; idx < matcherList.getLength(); idx++) {
             Element matcher = (Element) matcherList.item(idx);
             NodeList codeStringMaps = matcher.getElementsByTagName("codeset");
