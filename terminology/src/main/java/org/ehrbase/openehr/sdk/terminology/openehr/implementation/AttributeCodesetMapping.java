@@ -62,7 +62,7 @@ public class AttributeCodesetMapping {
             throws TerminologyResourceException {
         Map<String, Map<String, AttributeGroupMap>> groupMaps = new HashMap<>();
         try {
-            Element root = XMLTerminologySource.parseXml(filename, resourceAsStream);
+            Element root = XMLTerminologySource.parseXml(filename);
             NodeList mapList = root.getElementsByTagName("map");
 
             for (int idx = 0; idx < mapList.getLength(); idx++) {
