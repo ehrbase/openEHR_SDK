@@ -36,9 +36,11 @@ import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
+import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.openehr.sdk.validation.terminology.ItemStructureVisitor;
 import org.ehrbase.openehr.sdk.validation.webtemplate.TestDataTemplateProvider;
 import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
@@ -402,5 +404,20 @@ class LocatableValidatorTest {
         try (var in = new FileInputStream("./src/test/resources/operational_templates/" + name)) {
             return TemplateDocument.Factory.parse(in).getTemplate();
         }
+    }
+
+    @Test
+    void validateSpanish() throws Exception {
+        var template = getOperationalTemplate(OperationalTemplateTestData.SPANISH_EXAMPLE);
+        var composition = getComposition(CompositionTestDataCanonicalJson.SPANISH_EXAMPLE);
+
+        var result = validator.validate(composition, template);
+
+        assertThat(result).isEmpty();
+
+        LocalizedTerminologies localizedTerminologies = new LocalizedTerminologies();
+
+        ItemStructureVisitor itemStructureVisitor = new ItemStructureVisitor(localizedTerminologies);
+        itemStructureVisitor.validate(composition);
     }
 }

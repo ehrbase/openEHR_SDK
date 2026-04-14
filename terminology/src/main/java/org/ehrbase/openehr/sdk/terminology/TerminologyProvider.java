@@ -92,7 +92,7 @@ public class TerminologyProvider {
         String value;
         try {
             value = LOCALIZED_TERMINOLOGIES
-                    .getDefault()
+                    .locale(language)
                     .terminology(id)
                     .rubricForCode(codePhrase.getCodeString(), language);
 

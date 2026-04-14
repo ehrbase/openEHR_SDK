@@ -1057,21 +1057,21 @@ public class OPTParser {
             }
 
             if (code.getTerminology().equals(OPENEHR)) {
-                ValueSet valueSet = TerminologyProvider.findOpenEhrValueSet(
+                ValueSet defaultValueset = TerminologyProvider.findOpenEhrValueSet(
                         code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage);
 
-                Map<String, ValueSet> collect = languages.stream()
+                Map<String, ValueSet> valuesetByLanguage = languages.stream()
                         .collect(Collectors.toMap(
                                 Function.identity(),
                                 l -> TerminologyProvider.findOpenEhrValueSet(
                                         code.getTerminology(), ccodephrase.getCodeListArray(), l)));
 
-                valueSet.getTherms().forEach(t -> {
+                defaultValueset.getTherms().forEach(t -> {
                     WebTemplateInputValue value = new WebTemplateInputValue();
                     value.setValue(t.getCode());
                     value.setLabel(t.getValue());
                     value.getLocalizedLabels()
-                            .putAll(collect.entrySet().stream()
+                            .putAll(valuesetByLanguage.entrySet().stream()
                                     .collect(Collectors.toMap(
                                             Map.Entry::getKey,
                                             e -> e.getValue().getTherms().stream()

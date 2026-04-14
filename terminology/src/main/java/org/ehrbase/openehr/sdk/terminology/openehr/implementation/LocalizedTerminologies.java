@@ -19,6 +19,7 @@ package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyResourceException;
 
@@ -37,9 +38,7 @@ public class LocalizedTerminologies {
     }
 
     public TerminologyInterface locale(String language) {
-        if (!terminologies.containsKey(language)) return getDefault();
-
-        return terminologies.get(language);
+        return Optional.of(language).map(terminologies::get).orElse(getDefault());
     }
 
     public TerminologyInterface getDefault() {
