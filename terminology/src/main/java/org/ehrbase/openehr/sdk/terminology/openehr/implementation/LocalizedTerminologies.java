@@ -26,15 +26,12 @@ import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyResourceException;
 public class LocalizedTerminologies {
 
     private final Map<String, TerminologyInterface> terminologies = new HashMap<>();
-    private final AttributeCodesetMapping codesetMapping;
 
     public LocalizedTerminologies() throws TerminologyResourceException {
         terminologies.put("en", new SimpleTerminologyInterface("en"));
         terminologies.put("ja", new SimpleTerminologyInterface("ja"));
         terminologies.put("pt", new SimpleTerminologyInterface("pt"));
         terminologies.put("es", new SimpleTerminologyInterface("es"));
-
-        codesetMapping = AttributeCodesetMapping.getInstance();
     }
 
     public TerminologyInterface locale(String language) {
@@ -43,9 +40,5 @@ public class LocalizedTerminologies {
 
     public TerminologyInterface getDefault() {
         return terminologies.get("en");
-    }
-
-    public AttributeCodesetMapping codesetMapping() {
-        return codesetMapping;
     }
 }

@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class IsmTransition extends TerminologyCheck {
 
@@ -28,7 +27,6 @@ public class IsmTransition extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.composition.IsmTransition ismTransition,
             String language)
@@ -36,7 +34,6 @@ public class IsmTransition extends TerminologyCheck {
         if (ismTransition.getCurrentState() != null)
             validate(
                     terminologyInterface,
-                    codesetMapping,
                     "current_state",
                     ismTransition.getCurrentState().getDefiningCode(),
                     language);
@@ -44,7 +41,6 @@ public class IsmTransition extends TerminologyCheck {
         if (ismTransition.getTransition() != null)
             validate(
                     terminologyInterface,
-                    codesetMapping,
                     "transition",
                     ismTransition.getTransition().getDefiningCode(),
                     language);
@@ -52,10 +48,9 @@ public class IsmTransition extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.composition.IsmTransition ismTransition)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, ismTransition, "en");
+        check(terminologyInterface, context, ismTransition, "en");
     }
 }

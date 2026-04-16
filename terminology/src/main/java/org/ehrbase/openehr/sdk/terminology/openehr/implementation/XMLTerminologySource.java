@@ -64,7 +64,7 @@ public class XMLTerminologySource implements TerminologySource {
 
     static Element parseXml(String filename) throws ParserConfigurationException, SAXException, IOException {
         try (InputStream resourceAsStream =
-                AttributeCodesetMapping.class.getClassLoader().getResourceAsStream(filename)) {
+                XMLTerminologySource.class.getClassLoader().getResourceAsStream(filename)) {
             if (resourceAsStream == null)
                 throw new TerminologyResourceException("Could not access filename:" + filename);
 

@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.terminology.openehr;
 
 import java.util.Map;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
 
 /**
@@ -117,13 +116,6 @@ public interface TerminologyService {
      * @return
      */
     String getLabelForCode(String code, String language);
-
-    /**
-     * return the mapping between RM attribute and entries in openehr terminology
-     *
-     * @return
-     */
-    AttributeCodesetMapping codesetMapping();
 
     /**
      * returns the set of openehr localized terminologies as defined in their respective XML sources

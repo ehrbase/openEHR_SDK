@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class Composition extends TerminologyCheck {
 
@@ -28,30 +27,23 @@ public class Composition extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.composition.Composition composition)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, composition, "en");
+        check(terminologyInterface, context, composition, "en");
     }
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.composition.Composition composition,
             String language)
             throws IllegalArgumentException {
         if (composition.getCategory() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "category",
-                    composition.getCategory().getDefiningCode(),
-                    language);
+            validate(terminologyInterface, "category", composition.getCategory().getDefiningCode(), language);
         if (composition.getLanguage() != null)
-            validate(terminologyInterface, codesetMapping, "language", composition.getLanguage(), language);
+            validate(terminologyInterface, "language", composition.getLanguage(), language);
         if (composition.getTerritory() != null)
-            validate(terminologyInterface, codesetMapping, "territory", composition.getTerritory(), language);
+            validate(terminologyInterface, "territory", composition.getTerritory(), language);
     }
 }

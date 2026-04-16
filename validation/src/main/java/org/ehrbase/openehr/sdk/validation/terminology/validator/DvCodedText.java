@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class DvCodedText extends TerminologyCheck {
 
@@ -28,20 +27,18 @@ public class DvCodedText extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.datavalues.DvCodedText dvCodedText)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, dvCodedText, "en");
+        check(terminologyInterface, context, dvCodedText, "en");
     }
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.datavalues.DvCodedText dvCodedText,
             String language)
             throws IllegalArgumentException {
-        validate(terminologyInterface, codesetMapping, context, dvCodedText, language);
+        validate(terminologyInterface, context, dvCodedText, language);
     }
 }

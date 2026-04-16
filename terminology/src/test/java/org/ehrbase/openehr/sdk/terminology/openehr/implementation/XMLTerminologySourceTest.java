@@ -36,13 +36,4 @@ public class XMLTerminologySourceTest {
 
         assertNotNull(terminologySource);
     }
-
-    @Test
-    public void testGetMapper() throws Exception {
-
-        AttributeCodesetMapping attributeCodesetMapping =
-                AttributeCodesetMapping.getInstance("attribute_to_openehr_codesets.xml");
-
-        assertNotNull(attributeCodesetMapping);
-    }
 }

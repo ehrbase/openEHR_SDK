@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class DvMultimedia extends TerminologyCheck {
 
@@ -28,16 +27,14 @@ public class DvMultimedia extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia dvMultimedia)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, dvMultimedia, "en");
+        check(terminologyInterface, context, dvMultimedia, "en");
     }
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia dvMultimedia,
             String language)
@@ -45,20 +42,14 @@ public class DvMultimedia extends TerminologyCheck {
         if (dvMultimedia.getIntegrityCheckAlgorithm() != null)
             validate(
                     terminologyInterface,
-                    codesetMapping,
                     "integrity_check_algorithm",
                     dvMultimedia.getIntegrityCheckAlgorithm(),
                     language);
 
         if (dvMultimedia.getCompressionAlgorithm() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "compression_algorithm",
-                    dvMultimedia.getCompressionAlgorithm(),
-                    language);
+            validate(terminologyInterface, "compression_algorithm", dvMultimedia.getCompressionAlgorithm(), language);
 
         if (dvMultimedia.getMediaType() != null)
-            validate(terminologyInterface, codesetMapping, "media_type", dvMultimedia.getMediaType(), language);
+            validate(terminologyInterface, "media_type", dvMultimedia.getMediaType(), language);
     }
 }

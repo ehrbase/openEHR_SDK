@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class OriginalVersion extends TerminologyCheck {
 
@@ -28,7 +27,6 @@ public class OriginalVersion extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion,
             String language)
@@ -36,7 +34,6 @@ public class OriginalVersion extends TerminologyCheck {
         if (originalVersion.getLifecycleState() != null)
             validate(
                     terminologyInterface,
-                    codesetMapping,
                     context,
                     originalVersion.getLifecycleState().getDefiningCode(),
                     language);
@@ -44,10 +41,9 @@ public class OriginalVersion extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, originalVersion, "en");
+        check(terminologyInterface, context, originalVersion, "en");
     }
 }

@@ -19,7 +19,6 @@ package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import com.nedap.archie.rm.datavalues.TermMapping;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class DvText extends TerminologyCheck {
 
@@ -29,7 +28,6 @@ public class DvText extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.datavalues.DvText dvText,
             String language)
@@ -39,23 +37,20 @@ public class DvText extends TerminologyCheck {
 
             for (TermMapping termMapping : dvText.getMappings()) {
                 org.ehrbase.openehr.sdk.validation.terminology.validator.TermMapping.check(
-                        terminologyInterface, codesetMapping, context, termMapping, language);
+                        terminologyInterface, context, termMapping, language);
             }
         }
     }
 
     public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.datavalues.DvText dvText)
+            TerminologyInterface terminologyInterface, String context, com.nedap.archie.rm.datavalues.DvText dvText)
             throws IllegalArgumentException {
 
         if (dvText.getMappings() != null && !dvText.getMappings().isEmpty()) {
 
             for (TermMapping termMapping : dvText.getMappings()) {
                 org.ehrbase.openehr.sdk.validation.terminology.validator.TermMapping.check(
-                        terminologyInterface, codesetMapping, context, termMapping, "en");
+                        terminologyInterface, context, termMapping, "en");
             }
         }
     }

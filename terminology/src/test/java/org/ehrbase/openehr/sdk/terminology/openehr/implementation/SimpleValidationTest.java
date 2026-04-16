@@ -21,6 +21,7 @@ import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
+import org.ehrbase.openehr.sdk.terminology.openehr.utils.AttributeCodesets;
 import org.junit.Test;
 
 public class SimpleValidationTest {
@@ -28,18 +29,16 @@ public class SimpleValidationTest {
     @Test
     public void testSimpleValidation() throws Exception {
         TerminologyInterface simpleTerminologyInterface = new SimpleTerminologyInterface("en");
-        AttributeCodesetMapping codesetMapping = AttributeCodesetMapping.getInstance();
 
         CodePhrase codePhrase = new CodePhrase(new TerminologyId("openehr"), "433");
         DvCodedText category = new DvCodedText("event", codePhrase);
 
         // get the actual attribute
-        String attribute = codesetMapping.actualAttributeId("openehr", "category", "en");
-        ContainerType containerType = codesetMapping.containerType("openehr", "category");
-        switch (containerType) {
+        AttributeCodesets.Entry entry = AttributeCodesets.get("category");
+        switch (entry.container()) {
             case GROUP: // a code string defined within a group of a codeset
                 boolean valid =
-                        simpleTerminologyInterface.terminology("openehr").hasCodeForGroupId(attribute, codePhrase);
+                        simpleTerminologyInterface.terminology("openehr").hasCodeForGroupId(entry.id(), codePhrase);
                 // check if the supplied value matches codephrase
                 String rubric = simpleTerminologyInterface
                         .terminology("openehr")
@@ -48,7 +47,7 @@ public class SimpleValidationTest {
                 break;
 
             case CODESET: // a codestring defined in a codeset
-                valid = simpleTerminologyInterface.codeSet(attribute).hasCode(codePhrase);
+                valid = simpleTerminologyInterface.codeSet(entry.id()).hasCode(codePhrase);
                 break;
 
             default:

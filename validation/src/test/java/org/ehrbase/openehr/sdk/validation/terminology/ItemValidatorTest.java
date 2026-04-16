@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
 import org.junit.Test;
 
@@ -42,12 +41,7 @@ public class ItemValidatorTest {
         assertTrue(itemValidator.isValidatedRmObjectType(dvCodedText));
 
         try {
-            itemValidator.validate(
-                    new LocalizedTerminologies().locale("en"),
-                    AttributeCodesetMapping.getInstance(),
-                    "setting",
-                    dvCodedText,
-                    "en");
+            itemValidator.validate(new LocalizedTerminologies().locale("en"), "setting", dvCodedText, "en");
         } catch (Throwable throwable) {
             fail();
         }

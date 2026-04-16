@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
 
 public class IntervalEvent extends TerminologyCheck {
 
@@ -28,7 +27,6 @@ public class IntervalEvent extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent,
             String language)
@@ -36,7 +34,6 @@ public class IntervalEvent extends TerminologyCheck {
         if (intervalEvent.getMathFunction() != null)
             validate(
                     terminologyInterface,
-                    codesetMapping,
                     "mathFunction",
                     intervalEvent.getMathFunction().getDefiningCode(),
                     language);
@@ -44,10 +41,9 @@ public class IntervalEvent extends TerminologyCheck {
 
     public static void check(
             TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
             String context,
             com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, intervalEvent, "en");
+        check(terminologyInterface, context, intervalEvent, "en");
     }
 }
