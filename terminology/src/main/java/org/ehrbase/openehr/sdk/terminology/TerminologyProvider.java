@@ -17,45 +17,41 @@
  */
 package org.ehrbase.openehr.sdk.terminology;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.support.identification.TerminologyId;
+import com.nedap.archie.terminology.TermCode;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
-import org.ehrbase.openehr.sdk.util.exception.SdkException;
+import org.ehrbase.openehr.sdk.terminology.openehr.implementation.OpenEHRTerminologyAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TerminologyProvider {
-    public static final String OPENEHR = "openehr";
-    private static final LocalizedTerminologies LOCALIZED_TERMINOLOGIES;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminologyProvider.class);
 
-    static {
-        try {
-            LOCALIZED_TERMINOLOGIES = new LocalizedTerminologies();
-        } catch (Exception e) {
-            throw new SdkException(e.getMessage(), e);
-        }
-    }
+    public static final String OPENEHR = "openehr";
+    private static final OpenEHRTerminologyAccess ARCHIE = OpenEHRTerminologyAccess.getInstance();
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminologyProvider.class);
 
     public static ValueSet findOpenEhrValueSet(String id, String group, String language) {
         try {
             if (StringUtils.isNotBlank(group)) {
+                List<TermCode> terms = ARCHIE.getTermsByOpenEHRGroup(group, language);
                 return new ValueSet(
                         id,
                         group,
-                        LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).codesForGroupId(group).stream()
-                                .map((CodePhrase cp) -> convert(id, cp, language))
+                        terms.stream()
+                                .map(tc -> new TermDefinition(
+                                        tc.getCodeString(), tc.getDescription(), tc.getDescription()))
                                 .collect(Collectors.toSet()));
             } else {
+                List<TermCode> terms = ARCHIE.getTerms(id, language);
                 return new ValueSet(
                         id,
                         "all",
-                        LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream()
-                                .map((CodePhrase cp) -> convert(id, cp, language))
+                        terms.stream()
+                                .map(tc -> new TermDefinition(
+                                        tc.getCodeString(), tc.getDescription(), tc.getDescription()))
                                 .collect(Collectors.toSet()));
             }
         } catch (RuntimeException e) {
@@ -70,16 +66,15 @@ public class TerminologyProvider {
                 return new ValueSet(
                         id,
                         "local",
-                        Arrays.stream(values)
-                                .map(v -> new CodePhrase(new TerminologyId(id), v))
-                                .map((CodePhrase cp) -> convert(id, cp, language))
-                                .collect(Collectors.toSet()));
+                        Arrays.stream(values).map(v -> convert(id, v, language)).collect(Collectors.toSet()));
             } else {
+                List<TermCode> terms = ARCHIE.getTerms(id, language);
                 return new ValueSet(
                         id,
                         "all",
-                        LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream()
-                                .map((CodePhrase cp) -> convert(id, cp, language))
+                        terms.stream()
+                                .map(tc -> new TermDefinition(
+                                        tc.getCodeString(), tc.getDescription(), tc.getDescription()))
                                 .collect(Collectors.toSet()));
             }
         } catch (RuntimeException e) {
@@ -88,17 +83,14 @@ public class TerminologyProvider {
         }
     }
 
-    private static TermDefinition convert(String id, CodePhrase codePhrase, String language) {
+    private static TermDefinition convert(String id, String code, String language) {
         String value;
         try {
-            value = LOCALIZED_TERMINOLOGIES
-                    .locale(language)
-                    .terminology(id)
-                    .rubricForCode(codePhrase.getCodeString(), language);
-
+            TermCode term = ARCHIE.getTermByOpenEhrId(id, code, language);
+            value = term != null ? term.getDescription() : code;
         } catch (RuntimeException e) {
-            value = codePhrase.getCodeString();
+            value = code;
         }
-        return new TermDefinition(codePhrase.getCodeString(), value, value);
+        return new TermDefinition(code, value, value);
     }
 }

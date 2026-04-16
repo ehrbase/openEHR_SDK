@@ -21,17 +21,14 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Pathable;
 import java.lang.reflect.Field;
 import java.util.List;
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
 import org.ehrbase.openehr.sdk.validation.terminology.validator.ItemField;
 
 public class Pathables {
 
     private ItemValidator itemValidator;
-    private TerminologyInterface terminologyInterface;
     private String language;
 
-    Pathables(TerminologyInterface terminologyInterface, ItemValidator itemValidator, String language) {
-        this.terminologyInterface = terminologyInterface;
+    Pathables(ItemValidator itemValidator, String language) {
         this.itemValidator = itemValidator;
         this.language = language;
     }
@@ -48,8 +45,7 @@ public class Pathables {
                         RMObject object = new ItemField<RMObject>(pathable).objectForField(field);
 
                         if (object instanceof Pathable) {
-                            new Pathables(terminologyInterface, itemValidator, language)
-                                    .traverse((Pathable) object, excludes);
+                            new Pathables(itemValidator, language).traverse((Pathable) object, excludes);
                         } else if (object != null)
                             throw new IllegalArgumentException(
                                     "Internal: couldn't handle object retrieved using getter");
@@ -58,7 +54,7 @@ public class Pathables {
                     // check if object is handled for validation
                     if (itemValidator.isValidatedRmObjectType(field.getType())) {
                         RMObject object = new ItemField<RMObject>(pathable).objectForField(field);
-                        itemValidator.validate(terminologyInterface, field.getName(), object, language);
+                        itemValidator.validate(field.getName(), object, language);
                     }
                 }
             } // continue
@@ -67,7 +63,7 @@ public class Pathables {
 
                 for (Object item : iterable) {
                     if (item instanceof RMObject) {
-                        itemValidator.validate(terminologyInterface, field.getName(), (RMObject) item, language);
+                        itemValidator.validate(field.getName(), (RMObject) item, language);
                     } else if (item instanceof Pathable) {
                         traverse((Pathable) item, excludes);
                     } else throw new IllegalStateException("Could not handle item in list:" + item);

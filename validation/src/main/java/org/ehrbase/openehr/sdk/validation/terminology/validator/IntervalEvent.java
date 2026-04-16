@@ -17,8 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class IntervalEvent extends TerminologyCheck {
 
     public IntervalEvent() {
@@ -26,24 +24,14 @@ public class IntervalEvent extends TerminologyCheck {
     }
 
     public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent,
-            String language)
+            String context, com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent, String language)
             throws IllegalArgumentException {
         if (intervalEvent.getMathFunction() != null)
-            validate(
-                    terminologyInterface,
-                    "mathFunction",
-                    intervalEvent.getMathFunction().getDefiningCode(),
-                    language);
+            validate("mathFunction", intervalEvent.getMathFunction().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent)
+    public static void check(String context, com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, intervalEvent, "en");
+        check(context, intervalEvent, "en");
     }
 }

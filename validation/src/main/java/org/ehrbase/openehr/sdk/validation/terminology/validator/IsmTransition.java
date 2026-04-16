@@ -17,8 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class IsmTransition extends TerminologyCheck {
 
     public IsmTransition() {
@@ -26,31 +24,17 @@ public class IsmTransition extends TerminologyCheck {
     }
 
     public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.composition.IsmTransition ismTransition,
-            String language)
+            String context, com.nedap.archie.rm.composition.IsmTransition ismTransition, String language)
             throws IllegalArgumentException {
         if (ismTransition.getCurrentState() != null)
-            validate(
-                    terminologyInterface,
-                    "current_state",
-                    ismTransition.getCurrentState().getDefiningCode(),
-                    language);
+            validate("current_state", ismTransition.getCurrentState().getDefiningCode(), language);
 
         if (ismTransition.getTransition() != null)
-            validate(
-                    terminologyInterface,
-                    "transition",
-                    ismTransition.getTransition().getDefiningCode(),
-                    language);
+            validate("transition", ismTransition.getTransition().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.composition.IsmTransition ismTransition)
+    public static void check(String context, com.nedap.archie.rm.composition.IsmTransition ismTransition)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, ismTransition, "en");
+        check(context, ismTransition, "en");
     }
 }

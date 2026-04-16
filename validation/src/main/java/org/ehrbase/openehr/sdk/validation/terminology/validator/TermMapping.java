@@ -17,29 +17,20 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class TermMapping extends TerminologyCheck {
 
     public TermMapping() {
         this.RM_CLASS = com.nedap.archie.rm.datavalues.TermMapping.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datavalues.TermMapping termMapping,
-            String language)
+    public static void check(String context, com.nedap.archie.rm.datavalues.TermMapping termMapping, String language)
             throws IllegalArgumentException {
         if (termMapping.getPurpose() != null)
-            validate(terminologyInterface, "purpose", termMapping.getPurpose().getDefiningCode(), language);
+            validate("purpose", termMapping.getPurpose().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datavalues.TermMapping termMapping)
+    public static void check(String context, com.nedap.archie.rm.datavalues.TermMapping termMapping)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, termMapping, "en");
+        check(context, termMapping, "en");
     }
 }

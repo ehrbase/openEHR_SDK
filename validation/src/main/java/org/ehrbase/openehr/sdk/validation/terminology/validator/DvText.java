@@ -17,40 +17,30 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import com.nedap.archie.rm.datavalues.TermMapping;
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class DvText extends TerminologyCheck {
 
     public DvText() {
         this.RM_CLASS = com.nedap.archie.rm.datavalues.DvText.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datavalues.DvText dvText,
-            String language)
+    public static void check(String context, com.nedap.archie.rm.datavalues.DvText dvText, String language)
             throws IllegalArgumentException {
 
         if (dvText.getMappings() != null && !dvText.getMappings().isEmpty()) {
 
-            for (TermMapping termMapping : dvText.getMappings()) {
-                org.ehrbase.openehr.sdk.validation.terminology.validator.TermMapping.check(
-                        terminologyInterface, context, termMapping, language);
+            for (com.nedap.archie.rm.datavalues.TermMapping termMapping : dvText.getMappings()) {
+                TermMapping.check(context, termMapping, language);
             }
         }
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface, String context, com.nedap.archie.rm.datavalues.DvText dvText)
+    public static void check(String context, com.nedap.archie.rm.datavalues.DvText dvText)
             throws IllegalArgumentException {
 
         if (dvText.getMappings() != null && !dvText.getMappings().isEmpty()) {
 
-            for (TermMapping termMapping : dvText.getMappings()) {
-                org.ehrbase.openehr.sdk.validation.terminology.validator.TermMapping.check(
-                        terminologyInterface, context, termMapping, "en");
+            for (com.nedap.archie.rm.datavalues.TermMapping termMapping : dvText.getMappings()) {
+                TermMapping.check(context, termMapping, "en");
             }
         }
     }

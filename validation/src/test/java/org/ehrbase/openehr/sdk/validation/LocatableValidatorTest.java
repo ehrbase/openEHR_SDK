@@ -36,7 +36,6 @@ import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
 import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
@@ -415,9 +414,7 @@ class LocatableValidatorTest {
 
         assertThat(result).isEmpty();
 
-        LocalizedTerminologies localizedTerminologies = new LocalizedTerminologies();
-
-        ItemStructureVisitor itemStructureVisitor = new ItemStructureVisitor(localizedTerminologies);
+        ItemStructureVisitor itemStructureVisitor = new ItemStructureVisitor();
         itemStructureVisitor.validate(composition);
     }
 }

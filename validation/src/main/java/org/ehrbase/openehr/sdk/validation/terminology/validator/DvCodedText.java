@@ -17,28 +17,19 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class DvCodedText extends TerminologyCheck {
 
     public DvCodedText() {
         this.RM_CLASS = com.nedap.archie.rm.datavalues.DvCodedText.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datavalues.DvCodedText dvCodedText)
+    public static void check(String context, com.nedap.archie.rm.datavalues.DvCodedText dvCodedText)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, dvCodedText, "en");
+        check(context, dvCodedText, "en");
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datavalues.DvCodedText dvCodedText,
-            String language)
+    public static void check(String context, com.nedap.archie.rm.datavalues.DvCodedText dvCodedText, String language)
             throws IllegalArgumentException {
-        validate(terminologyInterface, context, dvCodedText, language);
+        validate(context, dvCodedText, language);
     }
 }

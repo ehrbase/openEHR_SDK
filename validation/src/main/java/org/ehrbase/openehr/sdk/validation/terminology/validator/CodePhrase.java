@@ -17,28 +17,19 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class CodePhrase extends TerminologyCheck {
 
     public CodePhrase() {
         this.RM_CLASS = com.nedap.archie.rm.datatypes.CodePhrase.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datatypes.CodePhrase codePhrase)
+    public static void check(String context, com.nedap.archie.rm.datatypes.CodePhrase codePhrase)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, codePhrase, "en");
+        check(context, codePhrase, "en");
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datatypes.CodePhrase codePhrase,
-            String language)
+    public static void check(String context, com.nedap.archie.rm.datatypes.CodePhrase codePhrase, String language)
             throws IllegalArgumentException {
-        validate(terminologyInterface, context, codePhrase, language);
+        validate(context, codePhrase, language);
     }
 }

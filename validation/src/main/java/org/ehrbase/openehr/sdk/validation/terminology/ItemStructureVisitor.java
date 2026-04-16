@@ -41,8 +41,6 @@ import com.nedap.archie.rm.datastructures.ItemTree;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.integration.GenericEntry;
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyService;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,13 +54,9 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
     protected static Logger log = LoggerFactory.getLogger(ItemStructureVisitor.class);
     private int elementOccurrences = 0; // for statistics and testing
     private ItemValidator itemValidator = new ItemValidator();
-    private LocalizedTerminologies localizedTerminologies;
     private String itemStructureLanguage = "en"; // if a composition, the language can be found in the structure
 
-    public ItemStructureVisitor(LocalizedTerminologies localizedTerminologies)
-            throws NoSuchMethodException, IllegalAccessException {
-        this.localizedTerminologies = localizedTerminologies;
-
+    public ItemStructureVisitor() throws NoSuchMethodException, IllegalAccessException {
         itemValidator
                 .add(new org.ehrbase.openehr.sdk.validation.terminology.validator.Composition())
                 .add(new org.ehrbase.openehr.sdk.validation.terminology.validator.DvCodedText())
@@ -80,11 +74,6 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
                 .add(new org.ehrbase.openehr.sdk.validation.terminology.validator.DvOrdinal());
     }
 
-    public ItemStructureVisitor(TerminologyService terminologyService)
-            throws NoSuchMethodException, IllegalAccessException {
-        this(terminologyService.localizedTerminologies());
-    }
-
     /**
      * main entry method, validate a composition.
      *
@@ -100,14 +89,9 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
 
         itemStructureLanguage = composition.getLanguage().getCodeString();
 
-        itemValidator.validate(
-                localizedTerminologies.locale(itemStructureLanguage),
-                "composition",
-                composition,
-                itemStructureLanguage);
+        itemValidator.validate("composition", composition, itemStructureLanguage);
 
-        new Pathables(localizedTerminologies.locale(itemStructureLanguage), itemValidator, itemStructureLanguage)
-                .traverse(composition, "content");
+        new Pathables(itemValidator, itemStructureLanguage).traverse(composition, "content");
 
         for (ContentItem item : composition.getContent()) {
             traverse(item);
@@ -229,8 +213,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         if (item instanceof Observation) {
             Observation observation = (Observation) item;
 
-            new Pathables(localizedTerminologies.locale(itemStructureLanguage), itemValidator, itemStructureLanguage)
-                    .traverse(observation, "protocol", "data", "state");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(observation, "protocol", "data", "state");
 
             if (observation.getProtocol() != null) traverse(observation.getProtocol());
 
@@ -241,8 +224,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         } else if (item instanceof Evaluation) {
             Evaluation evaluation = (Evaluation) item;
 
-            new Pathables(localizedTerminologies.locale(itemStructureLanguage), itemValidator, itemStructureLanguage)
-                    .traverse(evaluation, "protocol", "data");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(evaluation, "protocol", "data");
 
             if (evaluation.getProtocol() != null) traverse(evaluation.getProtocol());
 
@@ -251,8 +233,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         } else if (item instanceof Instruction) {
             Instruction instruction = (Instruction) item;
 
-            new Pathables(localizedTerminologies.locale(itemStructureLanguage), itemValidator, itemStructureLanguage)
-                    .traverse(instruction, "protocol", "activities");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(instruction, "protocol", "activities");
 
             if (instruction.getProtocol() != null) traverse(instruction.getProtocol());
 
@@ -265,8 +246,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         } else if (item instanceof Action) {
             Action action = (Action) item;
 
-            new Pathables(localizedTerminologies.locale(itemStructureLanguage), itemValidator, itemStructureLanguage)
-                    .traverse(action, "protocol", "description");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(action, "protocol", "description");
 
             if (action.getProtocol() != null) traverse(action.getProtocol());
 
@@ -281,16 +261,14 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         } else if (item instanceof AdminEntry) {
             AdminEntry adminEntry = (AdminEntry) item;
 
-            new Pathables(localizedTerminologies.locale(itemStructureLanguage), itemValidator, itemStructureLanguage)
-                    .traverse(adminEntry, "data");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(adminEntry, "data");
 
             if (adminEntry.getData() != null) traverse(adminEntry.getData());
 
         } else if (item instanceof GenericEntry) {
             GenericEntry genericEntry = (GenericEntry) item;
 
-            new Pathables(localizedTerminologies.locale(itemStructureLanguage), itemValidator, itemStructureLanguage)
-                    .traverse(genericEntry, "data");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(genericEntry, "data");
 
             traverse(genericEntry.getData());
 
@@ -327,9 +305,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         if (item.getEvents() != null) {
 
             for (Event<?> event : item.getEvents()) {
-
-                itemValidator.validate(
-                        localizedTerminologies.locale(itemStructureLanguage), "event", event, itemStructureLanguage);
+                itemValidator.validate("event", event, itemStructureLanguage);
 
                 if (event.getData() != null) traverse(event.getData());
                 if (event.getState() != null) traverse(event.getState());
@@ -390,27 +366,15 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         elementOccurrences += 1;
 
         if (element.getNullFlavour() != null && itemValidator.isValidatedRmObjectType(element.getNullFlavour())) {
-            itemValidator.validate(
-                    localizedTerminologies.locale(itemStructureLanguage),
-                    "null_flavour",
-                    element.getNullFlavour(),
-                    itemStructureLanguage);
+            itemValidator.validate("null_flavour", element.getNullFlavour(), itemStructureLanguage);
         }
 
         if (element.getValue() != null && itemValidator.isValidatedRmObjectType(element.getValue())) {
-            itemValidator.validate(
-                    localizedTerminologies.locale(itemStructureLanguage),
-                    null,
-                    element.getValue(),
-                    itemStructureLanguage);
+            itemValidator.validate(null, element.getValue(), itemStructureLanguage);
         }
 
         if (element.getName() instanceof DvCodedText) {
-            itemValidator.validate(
-                    localizedTerminologies.locale(itemStructureLanguage),
-                    null,
-                    element.getName(),
-                    itemStructureLanguage);
+            itemValidator.validate(null, element.getName(), itemStructureLanguage);
         }
     }
 

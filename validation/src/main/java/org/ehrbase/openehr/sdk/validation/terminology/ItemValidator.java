@@ -24,7 +24,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.HashMap;
 import java.util.Map;
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
 import org.ehrbase.openehr.sdk.validation.terminology.validator.I_TerminologyCheck;
 
 public class ItemValidator {
@@ -45,7 +44,7 @@ public class ItemValidator {
         }
         MethodHandle methodHandle = MethodHandles.lookup()
                 .findStatic(validator.getClass(), "check", MethodType.methodType(void.class, new Class[] {
-                    TerminologyInterface.class, String.class, rmClass, String.class
+                    String.class, rmClass, String.class
                 }));
 
         validationRegistryList.put(rmClass.getCanonicalName(), new ValidationHandler(rmClass, methodHandle));
@@ -89,9 +88,7 @@ public class ItemValidator {
         return validationRegistryList.get(rmClass.getCanonicalName());
     }
 
-    public void validate(
-            TerminologyInterface terminologyInterface, String fieldName, RMObject rmObject, String language)
-            throws InternalError {
+    public void validate(String fieldName, RMObject rmObject, String language) throws InternalError {
         if (rmObject == null) {
             return;
         }
@@ -116,7 +113,7 @@ public class ItemValidator {
                         "No Validator for" + rmObject.getClass().getCanonicalName());
             }
             MethodHandle methodHandle = validationHandler.check();
-            methodHandle.invoke(terminologyInterface, fieldName, rmObject, language);
+            methodHandle.invoke(fieldName, rmObject, language);
         } catch (IllegalArgumentException | IllegalStateException | Error e) {
             throw e;
         } catch (Throwable throwable) {

@@ -17,8 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class DvOrdered extends TerminologyCheck {
 
     public DvOrdered() {
@@ -26,20 +24,13 @@ public class DvOrdered extends TerminologyCheck {
     }
 
     public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datavalues.quantity.DvOrdered dvOrdered,
-            String language)
+            String context, com.nedap.archie.rm.datavalues.quantity.DvOrdered dvOrdered, String language)
             throws IllegalArgumentException {
-        if (dvOrdered.getNormalStatus() != null)
-            validate(terminologyInterface, "normal_status", dvOrdered.getNormalStatus(), language);
+        if (dvOrdered.getNormalStatus() != null) validate("normal_status", dvOrdered.getNormalStatus(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.datavalues.quantity.DvOrdered dvOrdered)
+    public static void check(String context, com.nedap.archie.rm.datavalues.quantity.DvOrdered dvOrdered)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, dvOrdered, "en");
+        check(context, dvOrdered, "en");
     }
 }

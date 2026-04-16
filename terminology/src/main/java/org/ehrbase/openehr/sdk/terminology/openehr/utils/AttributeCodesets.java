@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.terminology.openehr.utils;
 
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.*;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.*;
 import static org.ehrbase.openehr.sdk.terminology.openehr.utils.AttributeCodesets.Entry.codesetEntry;
 import static org.ehrbase.openehr.sdk.terminology.openehr.utils.AttributeCodesets.Entry.groupEntry;
 
@@ -32,26 +34,26 @@ import org.ehrbase.openehr.sdk.util.SnakeCase;
 public class AttributeCodesets {
 
     private static final Map<String, Entry> MAPPINGS = Map.ofEntries(
-            Map.entry("lifecycle_state", groupEntry("openehr", "version lifecycle state")),
-            Map.entry("category", groupEntry("openehr", "composition category")),
-            Map.entry("setting", groupEntry("openehr", "setting")),
-            Map.entry("current_state", groupEntry("openehr", "instruction states")),
-            Map.entry("transition", groupEntry("openehr", "instruction transitions")),
-            Map.entry("null_flavour", groupEntry("openehr", "null flavours")),
-            Map.entry("mode", groupEntry("openehr", "participation mode")),
-            Map.entry("function", groupEntry("openehr", "participation function")),
-            Map.entry("relationship", groupEntry("openehr", "subject relationship")),
-            Map.entry("property", groupEntry("openehr", "property")),
-            Map.entry("math_function", groupEntry("openehr", "event math function")),
-            Map.entry("purpose", groupEntry("openehr", "term mapping purpose")),
-            Map.entry("normal_status", codesetEntry("openehr_normal_status", "normal statuses")),
-            Map.entry("language", codesetEntry("ISO_639-1", "languages")),
-            Map.entry("media_type", codesetEntry("IANA_media-types", "media types")),
-            Map.entry("character_set", codesetEntry("IANA_character-sets", "character sets")),
-            Map.entry("compression_algorithm", codesetEntry("openehr_compression_algorithm", "compression algorithms")),
+            Map.entry("lifecycle_state", groupEntry("openehr", VERSION_LIFECYCLE_STATE.getValue())),
+            Map.entry("category", groupEntry("openehr", COMPOSITION_CATEGORY.getValue())),
+            Map.entry("setting", groupEntry("openehr", SETTING.getValue())),
+            Map.entry("current_state", groupEntry("openehr", INSTRUCTION_STATES.getValue())),
+            Map.entry("transition", groupEntry("openehr", INSTRUCTION_TRANSITIONS.getValue())),
+            Map.entry("null_flavour", groupEntry("openehr", NULL_FLAVOURS.getValue())),
+            Map.entry("mode", groupEntry("openehr", PARTICIPATION_MODE.getValue())),
+            Map.entry("function", groupEntry("openehr", PARTICIPATION_FUNCTION.getValue())),
+            Map.entry("relationship", groupEntry("openehr", SUBJECT_RELATIONSHIP.getValue())),
+            Map.entry("property", groupEntry("openehr", PROPERTY.getValue())),
+            Map.entry("math_function", groupEntry("openehr", EVENT_MATH_FUNCTION.getValue())),
+            Map.entry("purpose", groupEntry("openehr", TERM_MAPPING_PURPOSE.getValue())),
+            Map.entry("normal_status", codesetEntry("openehr_normal_status", NORMAL_STATUSES.toString())),
+            Map.entry("language", codesetEntry("ISO_639-1", LANGUAGES.toString())),
+            Map.entry("media_type", codesetEntry("IANA_media-types", MEDIA_TYPES.toString())),
+            Map.entry("character_set", codesetEntry("IANA_character-sets", CHARACTER_SETS.toString())),
+            Map.entry("compression_algorithm", codesetEntry("openehr_compression_algorithm", COMPRESSION_ALGORITHMS.toString())),
             Map.entry(
-                    "integrity_check_algorithm", codesetEntry("openehr_integrity_check_algorithm", "integrity check")),
-            Map.entry("territory", codesetEntry("ISO_3166-1", "countries")));
+                    "integrity_check_algorithm", codesetEntry("openehr_integrity_check_algorithm", INTEGRITY_CHECK_ALGORITHMS.toString())),
+            Map.entry("territory", codesetEntry("ISO_3166-1", COUNTRIES.toString())));
 
     /**
      * Returns the mapping entry for the given RM attribute name (snake_case).

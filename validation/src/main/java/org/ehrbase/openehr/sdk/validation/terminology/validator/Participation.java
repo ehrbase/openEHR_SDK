@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
 
 public class Participation extends TerminologyCheck {
 
@@ -26,15 +25,10 @@ public class Participation extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.generic.Participation.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.generic.Participation participation,
-            String language) {
+    public static void check(String context, com.nedap.archie.rm.generic.Participation participation, String language) {
         if (participation.getMode() != null) {
             // validate mode as a DvCodedText
             validate(
-                    terminologyInterface,
                     "mode",
                     new DvCodedText(
                             participation.getMode().getValue(),
@@ -43,15 +37,12 @@ public class Participation extends TerminologyCheck {
         }
 
         if (participation.getFunction() != null && participation.getFunction() instanceof DvCodedText) {
-            validate(terminologyInterface, "mode", (DvCodedText) participation.getFunction(), language);
+            validate("mode", (DvCodedText) participation.getFunction(), language);
         }
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.generic.Participation participation)
+    public static void check(String context, com.nedap.archie.rm.generic.Participation participation)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, participation, "en");
+        check(context, participation, "en");
     }
 }

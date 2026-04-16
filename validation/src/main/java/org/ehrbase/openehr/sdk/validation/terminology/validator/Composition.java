@@ -17,33 +17,22 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-
 public class Composition extends TerminologyCheck {
 
     public Composition() {
         this.RM_CLASS = com.nedap.archie.rm.composition.Composition.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.composition.Composition composition)
+    public static void check(String context, com.nedap.archie.rm.composition.Composition composition)
             throws IllegalArgumentException {
-        check(terminologyInterface, context, composition, "en");
+        check(context, composition, "en");
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            String context,
-            com.nedap.archie.rm.composition.Composition composition,
-            String language)
+    public static void check(String context, com.nedap.archie.rm.composition.Composition composition, String language)
             throws IllegalArgumentException {
         if (composition.getCategory() != null)
-            validate(terminologyInterface, "category", composition.getCategory().getDefiningCode(), language);
-        if (composition.getLanguage() != null)
-            validate(terminologyInterface, "language", composition.getLanguage(), language);
-        if (composition.getTerritory() != null)
-            validate(terminologyInterface, "territory", composition.getTerritory(), language);
+            validate("category", composition.getCategory().getDefiningCode(), language);
+        if (composition.getLanguage() != null) validate("language", composition.getLanguage(), language);
+        if (composition.getTerritory() != null) validate("territory", composition.getTerritory(), language);
     }
 }
