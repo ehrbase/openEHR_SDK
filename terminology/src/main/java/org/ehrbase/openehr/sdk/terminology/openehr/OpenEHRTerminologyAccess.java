@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
+package org.ehrbase.openehr.sdk.terminology.openehr;
 
 import com.nedap.archie.terminology.TermCode;
 import com.nedap.archie.terminology.TermCodeImpl;
@@ -25,11 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * Wrapper for archie's {@link com.nedap.archie.terminology.OpenEHRTerminologyAccess}
- * that patches SPECPR-51 for group-aware methods.
- *
- * <p>Code 532 appears in both "version lifecycle state" (complete) and "instruction states"
- * (completed). Archie merges them keeping only the first rubric. This wrapper corrects
- * the rubric when the group is known. Remove after archie fixes this upstream.
+ * that patches SPECPR-51 for methods where the group is known.
  */
 public class OpenEHRTerminologyAccess {
 
@@ -83,7 +79,12 @@ public class OpenEHRTerminologyAccess {
         return delegate.getTermByTerminologyURI(uri, language);
     }
 
-    // --- Group-aware methods (patched for SPECPR-51) ---
+    public boolean supportsLanguage(String language) {
+        if (language == null) {
+            return false;
+        }
+        return !delegate.getTermsByOpenEHRGroup("setting", language).isEmpty();
+    }
 
     public TermCode getTermByOpenEHRGroup(String groupId, String language, String code) {
         TermCode term = delegate.getTermByOpenEHRGroup(groupId, language, code);
@@ -98,8 +99,10 @@ public class OpenEHRTerminologyAccess {
         return terms.stream().map(t -> patchedGroupRubric(t, groupId, language)).collect(Collectors.toList());
     }
 
-    // --- SPECPR-51 patch ---
-
+    /**
+     * <p>Code 532 appears in both "version lifecycle state" (complete) and "instruction states"
+     * (completed). Archie merges them keeping only the first rubric.
+     */
     private static TermCode patchedGroupRubric(TermCode term, String groupId, String language) {
         if (term == null || !INSTRUCTION_STATES.equals(groupId) || !CODE_532.equals(term.getCodeString())) {
             return term;

@@ -18,18 +18,20 @@
 package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.nedap.archie.terminology.TermCode;
 import java.util.List;
+import org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyAccess;
 import org.junit.Test;
 
 public class OpenEHRTerminologyAccessTest {
 
     private final OpenEHRTerminologyAccess archie = OpenEHRTerminologyAccess.getInstance();
-    
+
     @Test
     public void groupLookupReturnsTerms() {
         List<TermCode> terms = archie.getTermsByOpenEHRGroup("setting", "en");
@@ -49,7 +51,6 @@ public class OpenEHRTerminologyAccessTest {
         assertNull(term);
     }
 
-
     @Test
     public void codesetLookupReturnsTerms() {
         List<TermCode> terms = archie.getTerms("ISO_3166-1", "en");
@@ -67,7 +68,7 @@ public class OpenEHRTerminologyAccessTest {
         TermCode term = archie.getTerm("ISO_3166-1", "ZZ", "en");
         assertNull(term);
     }
-    
+
     @Test
     public void rubricInSpanish() {
         TermCode term = archie.getTermByOpenEHRGroup("composition category", "es", "433");
@@ -133,5 +134,17 @@ public class OpenEHRTerminologyAccessTest {
                 .orElse(null);
         assertNotNull(code532);
         assertEquals("completed", code532.getDescription());
+    }
+
+    @Test
+    public void supportedLanguages() {
+        assertTrue(archie.supportsLanguage("en"));
+        assertTrue(archie.supportsLanguage("es"));
+        assertTrue(archie.supportsLanguage("ja"));
+        assertTrue(archie.supportsLanguage("pt"));
+        assertFalse(archie.supportsLanguage("de"));
+        assertFalse(archie.supportsLanguage("fr"));
+        assertFalse(archie.supportsLanguage("ro"));
+        assertFalse(archie.supportsLanguage(null));
     }
 }

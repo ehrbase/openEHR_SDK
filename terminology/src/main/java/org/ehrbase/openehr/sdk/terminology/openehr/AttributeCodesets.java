@@ -15,15 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.terminology.openehr.utils;
+package org.ehrbase.openehr.sdk.terminology.openehr;
 
+import static org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets.Entry.codesetEntry;
+import static org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets.Entry.groupEntry;
 import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.*;
 import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.*;
-import static org.ehrbase.openehr.sdk.terminology.openehr.utils.AttributeCodesets.Entry.codesetEntry;
-import static org.ehrbase.openehr.sdk.terminology.openehr.utils.AttributeCodesets.Entry.groupEntry;
 
 import java.util.Map;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.ContainerType;
 import org.ehrbase.openehr.sdk.util.SnakeCase;
 
 /**
@@ -33,26 +32,31 @@ import org.ehrbase.openehr.sdk.util.SnakeCase;
  */
 public class AttributeCodesets {
 
+    private static final String OPENEHR = "openehr";
+
     private static final Map<String, Entry> MAPPINGS = Map.ofEntries(
-            Map.entry("lifecycle_state", groupEntry("openehr", VERSION_LIFECYCLE_STATE.getValue())),
-            Map.entry("category", groupEntry("openehr", COMPOSITION_CATEGORY.getValue())),
-            Map.entry("setting", groupEntry("openehr", SETTING.getValue())),
-            Map.entry("current_state", groupEntry("openehr", INSTRUCTION_STATES.getValue())),
-            Map.entry("transition", groupEntry("openehr", INSTRUCTION_TRANSITIONS.getValue())),
-            Map.entry("null_flavour", groupEntry("openehr", NULL_FLAVOURS.getValue())),
-            Map.entry("mode", groupEntry("openehr", PARTICIPATION_MODE.getValue())),
-            Map.entry("function", groupEntry("openehr", PARTICIPATION_FUNCTION.getValue())),
-            Map.entry("relationship", groupEntry("openehr", SUBJECT_RELATIONSHIP.getValue())),
-            Map.entry("property", groupEntry("openehr", PROPERTY.getValue())),
-            Map.entry("math_function", groupEntry("openehr", EVENT_MATH_FUNCTION.getValue())),
-            Map.entry("purpose", groupEntry("openehr", TERM_MAPPING_PURPOSE.getValue())),
+            Map.entry("lifecycle_state", groupEntry(OPENEHR, VERSION_LIFECYCLE_STATE.toString())),
+            Map.entry("category", groupEntry(OPENEHR, COMPOSITION_CATEGORY.toString())),
+            Map.entry("setting", groupEntry(OPENEHR, SETTING.toString())),
+            Map.entry("current_state", groupEntry(OPENEHR, INSTRUCTION_STATES.toString())),
+            Map.entry("transition", groupEntry(OPENEHR, INSTRUCTION_TRANSITIONS.toString())),
+            Map.entry("null_flavour", groupEntry(OPENEHR, NULL_FLAVOURS.toString())),
+            Map.entry("mode", groupEntry(OPENEHR, PARTICIPATION_MODE.toString())),
+            Map.entry("function", groupEntry(OPENEHR, PARTICIPATION_FUNCTION.toString())),
+            Map.entry("relationship", groupEntry(OPENEHR, SUBJECT_RELATIONSHIP.toString())),
+            Map.entry("property", groupEntry(OPENEHR, PROPERTY.toString())),
+            Map.entry("math_function", groupEntry(OPENEHR, EVENT_MATH_FUNCTION.toString())),
+            Map.entry("purpose", groupEntry(OPENEHR, TERM_MAPPING_PURPOSE.toString())),
             Map.entry("normal_status", codesetEntry("openehr_normal_status", NORMAL_STATUSES.toString())),
             Map.entry("language", codesetEntry("ISO_639-1", LANGUAGES.toString())),
             Map.entry("media_type", codesetEntry("IANA_media-types", MEDIA_TYPES.toString())),
             Map.entry("character_set", codesetEntry("IANA_character-sets", CHARACTER_SETS.toString())),
-            Map.entry("compression_algorithm", codesetEntry("openehr_compression_algorithm", COMPRESSION_ALGORITHMS.toString())),
             Map.entry(
-                    "integrity_check_algorithm", codesetEntry("openehr_integrity_check_algorithm", INTEGRITY_CHECK_ALGORITHMS.toString())),
+                    "compression_algorithm",
+                    codesetEntry("openehr_compression_algorithm", COMPRESSION_ALGORITHMS.toString())),
+            Map.entry(
+                    "integrity_check_algorithm",
+                    codesetEntry("openehr_integrity_check_algorithm", INTEGRITY_CHECK_ALGORITHMS.toString())),
             Map.entry("territory", codesetEntry("ISO_3166-1", COUNTRIES.toString())));
 
     /**

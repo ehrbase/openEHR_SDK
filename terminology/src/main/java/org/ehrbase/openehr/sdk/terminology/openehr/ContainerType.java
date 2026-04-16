@@ -15,25 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
+package org.ehrbase.openehr.sdk.terminology.openehr;
 
-import static org.junit.Assert.assertNotNull;
+public enum ContainerType {
+    GROUP("group"),
+    CODESET("codeset"),
+    UNDEFINED("undefined");
 
-import org.junit.Test;
+    private final String id;
 
-public class XMLTerminologySourceTest {
-
-    @Test
-    public void testGetOpenEHRInstance() throws Exception {
-        TerminologySource terminologySource = TerminologySourceFactory.getOpenEHRTerminology();
-
-        assertNotNull(terminologySource);
-    }
-
-    @Test
-    public void testGetExternalInstance() throws Exception {
-        TerminologySource terminologySource = TerminologySourceFactory.getExternalTerminologies("en");
-
-        assertNotNull(terminologySource);
+    ContainerType(String id) {
+        this.id = id;
     }
 }

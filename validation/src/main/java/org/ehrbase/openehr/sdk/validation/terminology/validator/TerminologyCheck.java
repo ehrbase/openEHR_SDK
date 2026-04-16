@@ -20,9 +20,9 @@ package org.ehrbase.openehr.sdk.validation.terminology.validator;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.terminology.TermCode;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.ContainerType;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.OpenEHRTerminologyAccess;
-import org.ehrbase.openehr.sdk.terminology.openehr.utils.AttributeCodesets;
+import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
+import org.ehrbase.openehr.sdk.terminology.openehr.ContainerType;
+import org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyAccess;
 
 public class TerminologyCheck implements I_TerminologyCheck {
 
@@ -44,18 +44,24 @@ public class TerminologyCheck implements I_TerminologyCheck {
         switch (entry.container()) {
             case GROUP -> {
                 TermCode term = ARCHIE.getTermByOpenEHRGroup(entry.id(), language, codePhrase.getCodeString());
+                if (term == null && !ARCHIE.supportsLanguage(language)) {
+                    term = ARCHIE.getTermByOpenEHRGroup(entry.id(), "en", codePhrase.getCodeString());
+                }
                 if (term == null) {
                     throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString()
                             + "] is not found in group:" + entry.id());
                 }
             }
             case CODESET -> {
-                TermCode term = ARCHIE.getTerm(entry.terminology(), codePhrase.getCodeString(), language);
+                // External codesets (ISO_639-1, ISO_3166-1...) are only loaded in en
+                TermCode term = ARCHIE.getTerm(entry.terminology(), codePhrase.getCodeString(), "en");
                 if (term == null) {
                     throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString()
                             + "] is not found in codeset:" + entry.id());
                 }
             }
+
+            default -> throw new IllegalArgumentException("undefined container type");
         }
     }
 
@@ -73,7 +79,6 @@ public class TerminologyCheck implements I_TerminologyCheck {
             return;
         }
 
-        // Group-aware rubric lookup — fixes SPECPR-51 for code 532
         TermCode term = entry.container() == ContainerType.GROUP
                 ? ARCHIE.getTermByOpenEHRGroup(entry.id(), language, definingCode.getCodeString())
                 : ARCHIE.getTerm(entry.terminology(), definingCode.getCodeString(), language);

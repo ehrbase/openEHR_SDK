@@ -62,6 +62,7 @@ import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.terminology.TermDefinition;
 import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.terminology.ValueSet;
+import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
@@ -1057,14 +1058,28 @@ public class OPTParser {
             }
 
             if (code.getTerminology().equals(OPENEHR)) {
+                // Resolve the terminology group for rubric lookups with the group.
+                // rmAttributeName may be the actual attribute or an intermediate (e.g. "defining_code"),
+                // in which case the aqlPath is used to find the relevant node.
+                String terminologyAttribute = rmAttributeName;
+                if (AttributeCodesets.get(terminologyAttribute) == null) {
+                    if (aqlPath.getNodeCount() >= 2) {
+                        terminologyAttribute =
+                                aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
+                    } else if (aqlPath.getNodeCount() == 1) {
+                        terminologyAttribute = aqlPath.getLastNode().getName();
+                    }
+                }
+
+                String attr = terminologyAttribute;
                 ValueSet defaultValueset = TerminologyProvider.findOpenEhrValueSet(
-                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage);
+                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage, attr);
 
                 Map<String, ValueSet> valuesetByLanguage = languages.stream()
                         .collect(Collectors.toMap(
                                 Function.identity(),
                                 l -> TerminologyProvider.findOpenEhrValueSet(
-                                        code.getTerminology(), ccodephrase.getCodeListArray(), l)));
+                                        code.getTerminology(), ccodephrase.getCodeListArray(), l, attr)));
 
                 defaultValueset.getTherms().forEach(t -> {
                     WebTemplateInputValue value = new WebTemplateInputValue();

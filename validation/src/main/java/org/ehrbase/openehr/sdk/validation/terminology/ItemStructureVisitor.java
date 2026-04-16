@@ -55,6 +55,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
     private int elementOccurrences = 0; // for statistics and testing
     private ItemValidator itemValidator = new ItemValidator();
     private String itemStructureLanguage = "en"; // if a composition, the language can be found in the structure
+    private static final String PROTOCOL = "protocol";
 
     public ItemStructureVisitor() throws NoSuchMethodException, IllegalAccessException {
         itemValidator
@@ -213,7 +214,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         if (item instanceof Observation) {
             Observation observation = (Observation) item;
 
-            new Pathables(itemValidator, itemStructureLanguage).traverse(observation, "protocol", "data", "state");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(observation, PROTOCOL, "data", "state");
 
             if (observation.getProtocol() != null) traverse(observation.getProtocol());
 
@@ -224,7 +225,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         } else if (item instanceof Evaluation) {
             Evaluation evaluation = (Evaluation) item;
 
-            new Pathables(itemValidator, itemStructureLanguage).traverse(evaluation, "protocol", "data");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(evaluation, PROTOCOL, "data");
 
             if (evaluation.getProtocol() != null) traverse(evaluation.getProtocol());
 
@@ -233,7 +234,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         } else if (item instanceof Instruction) {
             Instruction instruction = (Instruction) item;
 
-            new Pathables(itemValidator, itemStructureLanguage).traverse(instruction, "protocol", "activities");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(instruction, PROTOCOL, "activities");
 
             if (instruction.getProtocol() != null) traverse(instruction.getProtocol());
 
@@ -246,7 +247,7 @@ public class ItemStructureVisitor implements I_ItemStructureVisitor {
         } else if (item instanceof Action) {
             Action action = (Action) item;
 
-            new Pathables(itemValidator, itemStructureLanguage).traverse(action, "protocol", "description");
+            new Pathables(itemValidator, itemStructureLanguage).traverse(action, PROTOCOL, "description");
 
             if (action.getProtocol() != null) traverse(action.getProtocol());
 
