@@ -248,8 +248,7 @@ class LocatableValidatorTest {
         var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
-        // because the DvCodedTextValidator only checks by code
-        assertThat(result).hasSize(0);
+        assertThat(result).hasSize(1);
     }
 
     @Test
