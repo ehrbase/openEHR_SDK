@@ -38,6 +38,7 @@ public class OpenEHRTerminologyAccess {
             "ja", "完了",
             "pt", "concluído");
 
+    @SuppressWarnings("java:S3077")
     private static volatile OpenEHRTerminologyAccess instance;
 
     private final com.nedap.archie.terminology.OpenEHRTerminologyAccess delegate;

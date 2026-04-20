@@ -28,6 +28,7 @@ public class Composition extends TerminologyCheck {
         check(context, composition, "en");
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(String context, com.nedap.archie.rm.composition.Composition composition, String language)
             throws IllegalArgumentException {
         if (composition.getCategory() != null)

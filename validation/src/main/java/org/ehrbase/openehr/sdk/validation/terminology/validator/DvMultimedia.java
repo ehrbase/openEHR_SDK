@@ -28,6 +28,7 @@ public class DvMultimedia extends TerminologyCheck {
         check(context, dvMultimedia, "en");
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
             String context, com.nedap.archie.rm.datavalues.encapsulated.DvMultimedia dvMultimedia, String language)
             throws IllegalArgumentException {

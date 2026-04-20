@@ -23,6 +23,7 @@ public class EventContext extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.composition.EventContext.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(String context, com.nedap.archie.rm.composition.EventContext eventContext, String language)
             throws IllegalArgumentException {
         if (eventContext.getSetting() != null)

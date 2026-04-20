@@ -23,14 +23,15 @@ public class OriginalVersion extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.changecontrol.OriginalVersion.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
-            String context, com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion, String language)
+            String context, com.nedap.archie.rm.changecontrol.OriginalVersion<?> originalVersion, String language)
             throws IllegalArgumentException {
         if (originalVersion.getLifecycleState() != null)
             validate(context, originalVersion.getLifecycleState().getDefiningCode(), language);
     }
 
-    public static void check(String context, com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion)
+    public static void check(String context, com.nedap.archie.rm.changecontrol.OriginalVersion<?> originalVersion)
             throws IllegalArgumentException {
         check(context, originalVersion, "en");
     }

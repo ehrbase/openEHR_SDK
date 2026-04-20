@@ -23,6 +23,7 @@ public class IsmTransition extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.composition.IsmTransition.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
             String context, com.nedap.archie.rm.composition.IsmTransition ismTransition, String language)
             throws IllegalArgumentException {

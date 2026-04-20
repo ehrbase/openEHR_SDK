@@ -23,6 +23,7 @@ public class TermMapping extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.datavalues.TermMapping.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(String context, com.nedap.archie.rm.datavalues.TermMapping termMapping, String language)
             throws IllegalArgumentException {
         if (termMapping.getPurpose() != null)

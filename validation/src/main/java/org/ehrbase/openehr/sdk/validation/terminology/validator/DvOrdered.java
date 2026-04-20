@@ -23,13 +23,14 @@ public class DvOrdered extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.datavalues.quantity.DvOrdered.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
-            String context, com.nedap.archie.rm.datavalues.quantity.DvOrdered dvOrdered, String language)
+            String context, com.nedap.archie.rm.datavalues.quantity.DvOrdered<?> dvOrdered, String language)
             throws IllegalArgumentException {
         if (dvOrdered.getNormalStatus() != null) validate("normal_status", dvOrdered.getNormalStatus(), language);
     }
 
-    public static void check(String context, com.nedap.archie.rm.datavalues.quantity.DvOrdered dvOrdered)
+    public static void check(String context, com.nedap.archie.rm.datavalues.quantity.DvOrdered<?> dvOrdered)
             throws IllegalArgumentException {
         check(context, dvOrdered, "en");
     }

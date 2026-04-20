@@ -25,6 +25,7 @@ public class Participation extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.generic.Participation.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(String context, com.nedap.archie.rm.generic.Participation participation, String language) {
         if (participation.getMode() != null) {
             // validate mode as a DvCodedText

@@ -23,14 +23,15 @@ public class IntervalEvent extends TerminologyCheck {
         this.RM_CLASS = com.nedap.archie.rm.datastructures.IntervalEvent.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
-            String context, com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent, String language)
+            String context, com.nedap.archie.rm.datastructures.IntervalEvent<?> intervalEvent, String language)
             throws IllegalArgumentException {
         if (intervalEvent.getMathFunction() != null)
             validate("mathFunction", intervalEvent.getMathFunction().getDefiningCode(), language);
     }
 
-    public static void check(String context, com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent)
+    public static void check(String context, com.nedap.archie.rm.datastructures.IntervalEvent<?> intervalEvent)
             throws IllegalArgumentException {
         check(context, intervalEvent, "en");
     }
