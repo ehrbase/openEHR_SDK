@@ -77,20 +77,15 @@ public class TerminologyProvider {
                 rmAttributeName != null ? AttributeCodesets.get(rmAttributeName) : null;
         if (terminologyContainer != null && terminologyContainer.container() == ContainerType.GROUP) {
             // Resolves rubrics per group (fixes SPECPR-51 for code 532)
-            try {
-                if (ArrayUtils.isNotEmpty(values)) {
-                    return new ValueSet(
-                            id,
-                            terminologyContainer.id(),
-                            Arrays.stream(values)
-                                    .map(v -> convertWithGroup(terminologyContainer.id(), v, language))
-                                    .collect(Collectors.toSet()));
-                } else {
-                    return findOpenEhrValueSet(id, terminologyContainer.id(), language);
-                }
-            } catch (RuntimeException e) {
-                LOGGER.warn("Lookup with group failed for {} in {}, falling back", values, terminologyContainer.id());
-                return findOpenEhrValueSet(id, values, language);
+            if (ArrayUtils.isNotEmpty(values)) {
+                return new ValueSet(
+                        id,
+                        terminologyContainer.id(),
+                        Arrays.stream(values)
+                                .map(v -> convertWithGroup(terminologyContainer.id(), v, language))
+                                .collect(Collectors.toSet()));
+            } else {
+                return findOpenEhrValueSet(id, terminologyContainer.id(), language);
             }
         }
         return findOpenEhrValueSet(id, values, language);
