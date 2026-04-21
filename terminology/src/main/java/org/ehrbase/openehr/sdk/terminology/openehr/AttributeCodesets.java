@@ -64,7 +64,7 @@ public class AttributeCodesets {
             group("property", PROPERTY.toString()),
             group("math_function", EVENT_MATH_FUNCTION.toString()),
             group("purpose", TERM_MAPPING_PURPOSE.toString()),
-            codeset("language", LANGUAGES.toString(), "IOS_639-1"),
+            codeset("language", LANGUAGES.toString(), "ISO_639-1"),
             codeset("normal_status", NORMAL_STATUSES.toString(), "openehr_normal_status"),
             codeset("media_type", MEDIA_TYPES.toString(), "IANA_media-types"),
             codeset("character_set", CHARACTER_SETS.toString(), "IANA_character-sets"),

@@ -26,14 +26,13 @@ import static org.junit.Assert.assertTrue;
 import com.nedap.archie.terminology.TermCode;
 import java.util.List;
 import java.util.Map;
-
 import org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers;
 import org.ehrbase.openehr.sdk.terminology.openehr.SimpleTerminologyAccess;
 import org.junit.Test;
 
 public class SimpleTerminologyAccessTest {
 
-    private final SimpleTerminologyAccess TERMINOLOGY_ACCESS = SimpleTerminologyAccess.getInstance();
+    private static final SimpleTerminologyAccess TERMINOLOGY_ACCESS = SimpleTerminologyAccess.getInstance();
 
     @Test
     public void groupLookupReturnsTerms() {
@@ -95,61 +94,54 @@ public class SimpleTerminologyAccessTest {
 
     @Test
     public void code532VersionLifecycleStateIsSupported() {
-        List<String> unsupportedLanguages = List.of("de", "fr", "ro", "nl");
         Map<String, String> expectedValues = Map.of(
-            "en", "complete",
-            "es", "completo",
-            "pt", "completo",
-            "ja", "完了"
-        );
+                "en", "complete",
+                "es", "completo",
+                "pt", "completo",
+                "ja", "完了");
+        List<String> allLanguageCodes = TERMINOLOGY_ACCESS.getTerms("ISO_639-1", "en").stream()
+                .map(TermCode::getCodeString)
+                .toList();
 
-        expectedValues.forEach((lang, rubric) -> {
+        assertFalse(allLanguageCodes.isEmpty());
+        assertTrue(allLanguageCodes.containsAll(expectedValues.keySet()));
+
+        allLanguageCodes.forEach(lang -> {
             TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
-                OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(),
-                lang,
-                "532"
-            );
-            assertNotNull("Support for code is unavailable in language: " + lang, term);
-            assertEquals(rubric, term.getDescription());
-        });
-
-        unsupportedLanguages.forEach(lang -> {
-            TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
-                OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(),
-                lang,
-                "532");
-
-            assertNull("Support was added for language: " + lang, term);
+                    OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(), lang, "532");
+            if (expectedValues.containsKey(lang)) {
+                assertNotNull("Support for code is unavailable in language: " + lang, term);
+                assertEquals(expectedValues.get(lang), term.getDescription());
+            } else {
+                assertNull("Support was added for language: " + lang, term);
+            }
         });
     }
 
     @Test
     public void code532InstructionStatesIsSupported() {
-        List<String> unsupportedLanguages = List.of("de", "fr", "ro", "nl");
         Map<String, String> expectedValues = Map.of(
-            "en", "completed",
-            "es", "completado",
-            "pt", "concluído",
-            "ja", "完了"
-        );
+                "en", "completed",
+                "es", "completado",
+                "pt", "concluído",
+                "ja", "完了");
 
-        expectedValues.forEach((lang, rubric) -> {
+        List<String> allLanguageCodes = TERMINOLOGY_ACCESS.getTerms("ISO_639-1", "en").stream()
+                .map(TermCode::getCodeString)
+                .toList();
+
+        assertFalse(allLanguageCodes.isEmpty());
+        assertTrue(allLanguageCodes.containsAll(expectedValues.keySet()));
+
+        allLanguageCodes.forEach(lang -> {
             TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
-                OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(),
-                lang,
-                "532"
-            );
-            assertNotNull("Support for code is unavailable in language: " + lang, term);
-            assertEquals(rubric, term.getDescription());
-        });
-
-        unsupportedLanguages.forEach(lang -> {
-            TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
-                OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(),
-                lang,
-                "532");
-
-            assertNull("Support was added for language: " + lang, term);
+                    OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(), lang, "532");
+            if (expectedValues.containsKey(lang)) {
+                assertNotNull("Support for code is unavailable in language: " + lang, term);
+                assertEquals(expectedValues.get(lang), term.getDescription());
+            } else {
+                assertNull("Support was added for language: " + lang, term);
+            }
         });
     }
 

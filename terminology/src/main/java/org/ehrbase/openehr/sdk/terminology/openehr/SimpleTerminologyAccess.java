@@ -22,7 +22,6 @@ import com.nedap.archie.terminology.TermCode;
 import com.nedap.archie.terminology.TermCodeImpl;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Wrapper for archie's {@link OpenEHRTerminologyAccess}
@@ -94,7 +93,7 @@ public class SimpleTerminologyAccess {
         if (!INSTRUCTION_STATES.equals(groupId)) {
             return terms;
         }
-        return terms.stream().map(t -> patchedGroupRubric(t, groupId, language)).collect(Collectors.toList());
+        return terms.stream().map(t -> patchedGroupRubric(t, groupId, language)).toList();
     }
 
     /**

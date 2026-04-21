@@ -26,14 +26,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
 import org.ehrbase.openehr.sdk.terminology.openehr.ContainerType;
 import org.ehrbase.openehr.sdk.terminology.openehr.SimpleTerminologyAccess;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TerminologyProvider {
 
     public static final String OPENEHR = "openehr";
     private static final SimpleTerminologyAccess TERMINOLOGY_ACCESS = SimpleTerminologyAccess.getInstance();
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminologyProvider.class);
 
     public static ValueSet findOpenEhrValueSet(String id, String group, String language) {
         if (StringUtils.isNotBlank(group)) {
