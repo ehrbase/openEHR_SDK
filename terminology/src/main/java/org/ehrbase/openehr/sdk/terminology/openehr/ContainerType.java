@@ -20,5 +20,4 @@ package org.ehrbase.openehr.sdk.terminology.openehr;
 public enum ContainerType {
     GROUP,
     CODESET,
-    UNDEFINED;
 }

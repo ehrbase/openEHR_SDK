@@ -25,6 +25,9 @@ import static org.junit.Assert.assertTrue;
 
 import com.nedap.archie.terminology.TermCode;
 import java.util.List;
+import java.util.Map;
+
+import org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers;
 import org.ehrbase.openehr.sdk.terminology.openehr.SimpleTerminologyAccess;
 import org.junit.Test;
 
@@ -91,38 +94,63 @@ public class SimpleTerminologyAccessTest {
     }
 
     @Test
-    public void code532VersionLifecycleStateReturnsComplete() {
-        TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("version lifecycle state", "en", "532");
-        assertNotNull(term);
-        assertEquals("complete", term.getDescription());
+    public void code532VersionLifecycleStateIsSupported() {
+        List<String> unsupportedLanguages = List.of("de", "fr", "ro", "nl");
+        Map<String, String> expectedValues = Map.of(
+            "en", "complete",
+            "es", "completo",
+            "pt", "completo",
+            "ja", "完了"
+        );
+
+        expectedValues.forEach((lang, rubric) -> {
+            TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(),
+                lang,
+                "532"
+            );
+            assertNotNull("Support for code is unavailable in language: " + lang, term);
+            assertEquals(rubric, term.getDescription());
+        });
+
+        unsupportedLanguages.forEach(lang -> {
+            TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(),
+                lang,
+                "532");
+
+            assertNull("Support was added for language: " + lang, term);
+        });
     }
 
     @Test
-    public void code532InstructionStatesReturnsCompleted() {
-        TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("instruction states", "en", "532");
-        assertNotNull(term);
-        assertEquals("completed", term.getDescription());
-    }
+    public void code532InstructionStatesIsSupported() {
+        List<String> unsupportedLanguages = List.of("de", "fr", "ro", "nl");
+        Map<String, String> expectedValues = Map.of(
+            "en", "completed",
+            "es", "completado",
+            "pt", "concluído",
+            "ja", "完了"
+        );
 
-    @Test
-    public void code532InstructionStatesSpanish() {
-        TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("instruction states", "es", "532");
-        assertNotNull(term);
-        assertEquals("completado", term.getDescription());
-    }
+        expectedValues.forEach((lang, rubric) -> {
+            TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(),
+                lang,
+                "532"
+            );
+            assertNotNull("Support for code is unavailable in language: " + lang, term);
+            assertEquals(rubric, term.getDescription());
+        });
 
-    @Test
-    public void code532InstructionStatesPortuguese() {
-        TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("instruction states", "pt", "532");
-        assertNotNull(term);
-        assertEquals("concluído", term.getDescription());
-    }
+        unsupportedLanguages.forEach(lang -> {
+            TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(),
+                lang,
+                "532");
 
-    @Test
-    public void code532InstructionStatesJapanese() {
-        TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("instruction states", "ja", "532");
-        assertNotNull(term);
-        assertEquals("完了", term.getDescription());
+            assertNull("Support was added for language: " + lang, term);
+        });
     }
 
     @Test
