@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.terminology.openehr;
 
+import com.nedap.archie.terminology.OpenEHRTerminologyAccess;
 import com.nedap.archie.terminology.TermCode;
 import com.nedap.archie.terminology.TermCodeImpl;
 import java.util.List;
@@ -24,10 +25,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Wrapper for archie's {@link com.nedap.archie.terminology.OpenEHRTerminologyAccess}
+ * Wrapper for archie's {@link OpenEHRTerminologyAccess}
  * that patches SPECPR-51 for methods where the group is known.
  */
-public class OpenEHRTerminologyAccess {
+public class SimpleTerminologyAccess {
 
     private static final String INSTRUCTION_STATES = "instruction states";
     private static final String CODE_532 = "532";
@@ -39,22 +40,21 @@ public class OpenEHRTerminologyAccess {
             "pt", "concluído");
 
     @SuppressWarnings("java:S3077")
-    private static volatile OpenEHRTerminologyAccess instance;
+    private static volatile SimpleTerminologyAccess instance;
 
-    private final com.nedap.archie.terminology.OpenEHRTerminologyAccess delegate;
+    private final OpenEHRTerminologyAccess delegate;
 
-    private OpenEHRTerminologyAccess(com.nedap.archie.terminology.OpenEHRTerminologyAccess delegate) {
+    private SimpleTerminologyAccess(OpenEHRTerminologyAccess delegate) {
         this.delegate = delegate;
     }
 
-    public static OpenEHRTerminologyAccess getInstance() {
+    public static SimpleTerminologyAccess getInstance() {
         if (instance != null) {
             return instance;
         }
-        synchronized (OpenEHRTerminologyAccess.class) {
+        synchronized (SimpleTerminologyAccess.class) {
             if (instance == null) {
-                instance = new OpenEHRTerminologyAccess(
-                        com.nedap.archie.terminology.OpenEHRTerminologyAccess.getInstance());
+                instance = new SimpleTerminologyAccess(OpenEHRTerminologyAccess.getInstance());
             }
         }
         return instance;
@@ -81,10 +81,7 @@ public class OpenEHRTerminologyAccess {
     }
 
     public boolean supportsLanguage(String language) {
-        if (language == null) {
-            return false;
-        }
-        return !delegate.getTermsByOpenEHRGroup("setting", language).isEmpty();
+        return language != null && CODE_532_INSTRUCTION_RUBRICS.containsKey(language);
     }
 
     public TermCode getTermByOpenEHRGroup(String groupId, String language, String code) {

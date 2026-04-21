@@ -18,13 +18,7 @@
 package org.ehrbase.openehr.sdk.terminology.openehr;
 
 public enum ContainerType {
-    GROUP("group"),
-    CODESET("codeset"),
-    UNDEFINED("undefined");
-
-    private final String id;
-
-    ContainerType(String id) {
-        this.id = id;
-    }
+    GROUP,
+    CODESET,
+    UNDEFINED;
 }

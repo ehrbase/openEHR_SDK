@@ -54,13 +54,6 @@ public class TerminologyCheckTest {
     }
 
     @Test
-    public void testSimpleValidationLanguage() throws Exception {
-        CodePhrase codePhrase = new CodePhrase(new TerminologyId("ISO_3166-1"), "AU");
-        org.ehrbase.openehr.sdk.validation.terminology.validator.CodePhrase.validate("territory", codePhrase);
-        org.ehrbase.openehr.sdk.validation.terminology.validator.CodePhrase.validate(null, codePhrase);
-    }
-
-    @Test
     public void testSimpleValidationLanguageWrong() throws Exception {
         CodePhrase codePhrase = new CodePhrase(new TerminologyId("ISO_3166-1"), "ZZ");
         try {

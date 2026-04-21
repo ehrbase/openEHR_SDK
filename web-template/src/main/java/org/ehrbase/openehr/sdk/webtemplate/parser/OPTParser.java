@@ -1059,27 +1059,32 @@ public class OPTParser {
 
             if (code.getTerminology().equals(OPENEHR)) {
                 // Resolve the terminology group for rubric lookups with the group.
-                // rmAttributeName may be the actual attribute or an intermediate (e.g. "defining_code"),
-                // in which case the aqlPath is used to find the relevant node.
-                String terminologyAttribute = rmAttributeName;
-                if (AttributeCodesets.get(terminologyAttribute) == null) {
-                    if (aqlPath.getNodeCount() >= 2) {
-                        terminologyAttribute =
-                                aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
-                    } else if (aqlPath.getNodeCount() == 1) {
-                        terminologyAttribute = aqlPath.getLastNode().getName();
-                    }
+                String terminologyAttribute;
+
+                // rmAttributeName is the actual attribute
+                if (AttributeCodesets.get(rmAttributeName) != null) {
+                    terminologyAttribute = rmAttributeName;
+                    // use aqlPath as a fallback to determine the potentially nested attribute
+                } else if (aqlPath.getNodeCount() == 1) {
+                    terminologyAttribute = aqlPath.getLastNode().getName();
+                } else if (aqlPath.getNodeCount() >= 2) {
+                    terminologyAttribute =
+                            aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
+                } else {
+                    terminologyAttribute = null;
                 }
 
-                String attr = terminologyAttribute;
                 ValueSet defaultValueset = TerminologyProvider.findOpenEhrValueSet(
-                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage, attr);
+                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage, terminologyAttribute);
 
                 Map<String, ValueSet> valuesetByLanguage = languages.stream()
                         .collect(Collectors.toMap(
                                 Function.identity(),
                                 l -> TerminologyProvider.findOpenEhrValueSet(
-                                        code.getTerminology(), ccodephrase.getCodeListArray(), l, attr)));
+                                        code.getTerminology(),
+                                        ccodephrase.getCodeListArray(),
+                                        l,
+                                        terminologyAttribute)));
 
                 defaultValueset.getTherms().forEach(t -> {
                     WebTemplateInputValue value = new WebTemplateInputValue();

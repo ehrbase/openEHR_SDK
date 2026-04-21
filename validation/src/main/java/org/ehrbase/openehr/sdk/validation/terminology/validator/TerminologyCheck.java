@@ -22,12 +22,12 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.terminology.TermCode;
 import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
 import org.ehrbase.openehr.sdk.terminology.openehr.ContainerType;
-import org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyAccess;
+import org.ehrbase.openehr.sdk.terminology.openehr.SimpleTerminologyAccess;
 
 public class TerminologyCheck implements I_TerminologyCheck {
 
     protected Class RM_CLASS;
-    private static final OpenEHRTerminologyAccess ARCHIE = OpenEHRTerminologyAccess.getInstance();
+    private static final SimpleTerminologyAccess TERMINOLOGY_ACCESS = SimpleTerminologyAccess.getInstance();
 
     public static void validate(String context, CodePhrase codePhrase, String language) {
         String terminologyId = codePhrase.getTerminologyId().getValue();
@@ -36,28 +36,31 @@ public class TerminologyCheck implements I_TerminologyCheck {
             return;
         }
 
-        AttributeCodesets.Entry entry = AttributeCodesets.get(context);
-        if (entry == null || !entry.terminology().equals(terminologyId)) {
+        AttributeCodesets.TerminologyContainer terminologyContainer = AttributeCodesets.get(context);
+        if (terminologyContainer == null || !terminologyContainer.terminology().equals(terminologyId)) {
             return;
         }
 
-        switch (entry.container()) {
+        switch (terminologyContainer.container()) {
             case GROUP -> {
-                TermCode term = ARCHIE.getTermByOpenEHRGroup(entry.id(), language, codePhrase.getCodeString());
-                if (term == null && !ARCHIE.supportsLanguage(language)) {
-                    term = ARCHIE.getTermByOpenEHRGroup(entry.id(), "en", codePhrase.getCodeString());
+                TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                        terminologyContainer.id(), language, codePhrase.getCodeString());
+                if (term == null && !TERMINOLOGY_ACCESS.supportsLanguage(language)) {
+                    term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                            terminologyContainer.id(), "en", codePhrase.getCodeString());
                 }
                 if (term == null) {
                     throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString()
-                            + "] is not found in group:" + entry.id());
+                            + "] is not found in group:" + terminologyContainer.id());
                 }
             }
             case CODESET -> {
                 // External codesets (ISO_639-1, ISO_3166-1...) are only loaded in en
-                TermCode term = ARCHIE.getTerm(entry.terminology(), codePhrase.getCodeString(), "en");
+                TermCode term = TERMINOLOGY_ACCESS.getTerm(
+                        terminologyContainer.terminology(), codePhrase.getCodeString(), "en");
                 if (term == null) {
                     throw new IllegalArgumentException("supplied code string [" + codePhrase.getCodeString()
-                            + "] is not found in codeset:" + entry.id());
+                            + "] is not found in codeset:" + terminologyContainer.id());
                 }
             }
 
@@ -65,23 +68,21 @@ public class TerminologyCheck implements I_TerminologyCheck {
         }
     }
 
-    public static void validate(String context, CodePhrase codePhrase) throws IllegalArgumentException {
-        validate(context, codePhrase, "en");
-    }
-
     public static void validate(String context, DvCodedText dvCodedText, String language)
             throws IllegalArgumentException {
         CodePhrase definingCode = dvCodedText.getDefiningCode();
         validate(context, definingCode, language);
 
-        AttributeCodesets.Entry entry = AttributeCodesets.get(context);
-        if (entry == null) {
+        AttributeCodesets.TerminologyContainer terminologyContainer = AttributeCodesets.get(context);
+        if (terminologyContainer == null) {
             return;
         }
 
-        TermCode term = entry.container() == ContainerType.GROUP
-                ? ARCHIE.getTermByOpenEHRGroup(entry.id(), language, definingCode.getCodeString())
-                : ARCHIE.getTerm(entry.terminology(), definingCode.getCodeString(), language);
+        TermCode term = terminologyContainer.container() == ContainerType.GROUP
+                ? TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                        terminologyContainer.id(), language, definingCode.getCodeString())
+                : TERMINOLOGY_ACCESS.getTerm(
+                        terminologyContainer.terminology(), definingCode.getCodeString(), language);
         if (term == null) {
             return;
         }
@@ -89,9 +90,11 @@ public class TerminologyCheck implements I_TerminologyCheck {
         String rubric = term.getDescription();
         if (!rubric.equals(dvCodedText.getValue())) {
             // fallback: check if the value matches the English rubric
-            TermCode englishTerm = entry.container() == ContainerType.GROUP
-                    ? ARCHIE.getTermByOpenEHRGroup(entry.id(), "en", definingCode.getCodeString())
-                    : ARCHIE.getTerm(entry.terminology(), definingCode.getCodeString(), "en");
+            TermCode englishTerm = terminologyContainer.container() == ContainerType.GROUP
+                    ? TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
+                            terminologyContainer.id(), "en", definingCode.getCodeString())
+                    : TERMINOLOGY_ACCESS.getTerm(
+                            terminologyContainer.terminology(), definingCode.getCodeString(), "en");
             if (englishTerm == null || !englishTerm.getDescription().equals(dvCodedText.getValue())) {
                 throw new IllegalArgumentException("supplied value [" + dvCodedText.getValue()
                         + "] doesn't match code string:" + definingCode.getCodeString()
