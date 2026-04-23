@@ -86,7 +86,7 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
         Optional<ConstraintViolation> otherViolation = Optional.of(input)
                 .filter(WebTemplateValidationUtils::hasList)
                 .map(i -> {
-                    var matching = input.getList().stream()
+                    var matching = i.getList().stream()
                             .filter(inputValue -> Objects.equals(inputValue.getValue(), definingCode.getCodeString()))
                             .findFirst();
 

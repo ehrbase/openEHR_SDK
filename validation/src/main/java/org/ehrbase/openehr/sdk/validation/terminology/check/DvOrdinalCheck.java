@@ -15,25 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology.validator;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-public class DvOrdinal extends TerminologyCheck {
+import com.nedap.archie.rm.datavalues.quantity.DvOrdinal;
 
-    public DvOrdinal() {
-        this.RM_CLASS = com.nedap.archie.rm.datavalues.quantity.DvOrdinal.class;
+public class DvOrdinalCheck implements TerminologyCheck<DvOrdinal> {
+
+    @Override
+    public Class<DvOrdinal> rmClass() {
+        return DvOrdinal.class;
     }
 
-    @SuppressWarnings("java:S1172")
-    public static void check(
-            String context, com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal, String language)
-            throws IllegalArgumentException {
+    @Override
+    public void check(String context, DvOrdinal dvOrdinal, String language) {
         if (dvOrdinal.getSymbol() != null) {
-            validate("symbol", dvOrdinal.getSymbol(), language);
+            DvCodedTextCheck.validate("symbol", dvOrdinal.getSymbol(), language);
         }
-    }
-
-    public static void check(String context, com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal)
-            throws IllegalArgumentException {
-        check(context, dvOrdinal, "en");
     }
 }

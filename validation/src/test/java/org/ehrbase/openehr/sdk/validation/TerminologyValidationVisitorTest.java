@@ -37,17 +37,17 @@ import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.openehr.sdk.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
-import org.ehrbase.openehr.sdk.validation.terminology.ItemStructureVisitor;
+import org.ehrbase.openehr.sdk.validation.terminology.TerminologyValidationVisitor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ItemStructureVisitorTest {
-    private ItemStructureVisitor itemStructureVisitor;
+public class TerminologyValidationVisitorTest {
+    private TerminologyValidationVisitor itemStructureVisitor;
 
     @Before
     public void setup() throws Exception {
-        itemStructureVisitor = new ItemStructureVisitor();
+        itemStructureVisitor = new TerminologyValidationVisitor();
     }
 
     @Test

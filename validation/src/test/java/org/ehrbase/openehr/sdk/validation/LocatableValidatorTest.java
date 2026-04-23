@@ -26,6 +26,7 @@ import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.xml.JAXBUtil;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.xml.bind.JAXBException;
@@ -39,11 +40,11 @@ import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.ehrbase.openehr.sdk.validation.terminology.ItemStructureVisitor;
+import org.ehrbase.openehr.sdk.validation.terminology.TerminologyValidationVisitor;
 import org.ehrbase.openehr.sdk.validation.webtemplate.TestDataTemplateProvider;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.junit.jupiter.api.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
 
 /**
  *
@@ -76,7 +77,7 @@ class LocatableValidatorTest {
 
     @Test
     void validateEpisodicComposition() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.INFORME_AMB_1_ARQUETIP_OBS);
+        var template = getInternalTemplate(OperationalTemplateTestData.INFORME_AMB_1_ARQUETIP_OBS);
         var composition = getComposition(CompositionTestDataCanonicalJson.INFORME_AMB_1_ARQUETIP_OBS);
         TerminologyProvider.findOpenEhrValueSet("openehr", "composition category", "ca");
         var result = validator.validate(composition, template);
@@ -85,7 +86,7 @@ class LocatableValidatorTest {
 
     @Test
     void validateInternationalPatientSummary() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.IPS);
+        var template = getInternalTemplate(OperationalTemplateTestData.IPS);
         var composition = getComposition(CompositionTestDataCanonicalJson.IPS);
 
         var result = validator.validate(composition, template);
@@ -94,7 +95,7 @@ class LocatableValidatorTest {
 
     @Test
     void validateReSPECT() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.RE_SPECT);
+        var template = getInternalTemplate(OperationalTemplateTestData.RE_SPECT);
         var composition = getComposition(CompositionTestDataSimSDTJson.RE_SPECT);
 
         var result = validator.validate(composition, template);
@@ -103,7 +104,7 @@ class LocatableValidatorTest {
 
     @Test
     void validIsmTransition() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.ISM_VAILD);
+        var template = getInternalTemplate(OperationalTemplateTestData.ISM_VAILD);
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_VAILD);
 
         var result = validator.validate(composition, template);
@@ -112,7 +113,7 @@ class LocatableValidatorTest {
 
     @Test
     void ismTransitionWithInvalidCurrentState() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.ISM_INVALID_STATE);
+        var template = getInternalTemplate(OperationalTemplateTestData.ISM_INVALID_STATE);
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_INVALID_STATE);
 
         var result = validator.validate(composition, template);
@@ -121,7 +122,7 @@ class LocatableValidatorTest {
 
     @Test
     void ismTransitionWithWrongState() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.ISM_WRONG);
+        var template = getInternalTemplate(OperationalTemplateTestData.ISM_WRONG);
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_WRONG);
 
         var result = validator.validate(composition, template);
@@ -130,7 +131,7 @@ class LocatableValidatorTest {
 
     @Test
     void missingIsmTransition() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.ISM_MISSING);
+        var template = getInternalTemplate(OperationalTemplateTestData.ISM_MISSING);
         var composition = getComposition(CompositionTestDataSimSDTJson.ISM_MISSING);
 
         var result = validator.validate(composition, template);
@@ -139,7 +140,7 @@ class LocatableValidatorTest {
 
     @Test
     void validateInternationalPatientSummary_Invalid() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.IPS);
+        var template = getInternalTemplate(OperationalTemplateTestData.IPS);
         var composition = getComposition(CompositionTestDataCanonicalJson.IPS_INVALID);
 
         var result = validator.validate(composition, template);
@@ -148,7 +149,7 @@ class LocatableValidatorTest {
 
     @Test
     void validateCorona() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.CORONA_ANAMNESE);
+        var template = getInternalTemplate(OperationalTemplateTestData.CORONA_ANAMNESE);
         var composition = getComposition(CompositionTestDataCanonicalJson.CORONA);
 
         var result = validator.validate(composition, template);
@@ -157,7 +158,7 @@ class LocatableValidatorTest {
 
     @Test
     void validateDuration() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.DURATION_VALIDATION);
+        var template = getInternalTemplate(OperationalTemplateTestData.DURATION_VALIDATION);
         var composition = getComposition(CompositionTestDataSimSDTJson.DURATION_VALIDATION);
 
         var result = validator.validate(composition, template);
@@ -166,7 +167,7 @@ class LocatableValidatorTest {
 
     @Test
     void cardinality() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.SECTION_CARDINALITY);
+        var template = getInternalTemplate(OperationalTemplateTestData.SECTION_CARDINALITY);
         var composition = getComposition(CompositionTestDataCanonicalJson.SECTION_CARDINALITY);
 
         var result = validator.validate(composition, template);
@@ -175,7 +176,7 @@ class LocatableValidatorTest {
 
     @Test
     void allTypes() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.ALL_TYPES);
+        var template = getInternalTemplate(OperationalTemplateTestData.ALL_TYPES);
         var composition = getComposition(CompositionTestDataCanonicalJson.ALL_TYPES);
 
         var result = validator.validate(composition, template);
@@ -184,7 +185,7 @@ class LocatableValidatorTest {
 
     @Test
     void validateElementWithChoice() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.VIROLOGY_FINDING);
+        var template = getInternalTemplate(OperationalTemplateTestData.VIROLOGY_FINDING);
         var composition = getComposition(CompositionTestDataCanonicalJson.CHOICE_ELEMENT);
 
         var result = validator.validate(composition, template);
@@ -193,7 +194,7 @@ class LocatableValidatorTest {
 
     @Test
     void rippleConformance() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.RIPPLE_CONFORMANCE_TEST);
+        var template = getInternalTemplate(OperationalTemplateTestData.RIPPLE_CONFORMANCE_TEST);
         var composition = getComposition("RIPPLE-ConformanceTest.xml");
 
         var result = validator.validate(composition, template);
@@ -209,7 +210,7 @@ class LocatableValidatorTest {
     @Test
     void validateLaboratoryTestReport() throws Exception {
         var composition = getComposition("IDCR-LabReportRAW1.xml");
-        var template = getOperationalTemplate("IDCR-LaboratoryTestReport.opt");
+        var template = getInternalTemplate("IDCR-LaboratoryTestReport.opt");
 
         var result = validator.validate(composition, template);
         assertThat(result).isEmpty();
@@ -218,7 +219,7 @@ class LocatableValidatorTest {
     @Test
     void validateProblemList() throws Exception {
         var composition = getComposition("IDCR Problem List.v1.xml");
-        var template = getOperationalTemplate("IDCR Problem List.v1.opt");
+        var template = getInternalTemplate("IDCR Problem List.v1.opt");
 
         var result = validator.validate(composition, template);
         assertThat(result).isEmpty();
@@ -227,7 +228,7 @@ class LocatableValidatorTest {
     @Test
     void validateAdverseReaction() throws Exception {
         var composition = getComposition("IDCR - Adverse Reaction List.v1.xml");
-        var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
+        var template = getInternalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
         assertThat(result).isEmpty();
@@ -236,7 +237,7 @@ class LocatableValidatorTest {
     @Test
     void validateAdverseReaction_BadCodePhrase() throws Exception {
         var composition = getComposition("IDCR - Adverse Reaction List  Bad CodePhrase at0021.v1.xml");
-        var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
+        var template = getInternalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(1);
@@ -245,7 +246,7 @@ class LocatableValidatorTest {
     @Test
     void validateAdverseReaction_BadCodedValue() throws Exception {
         var composition = getComposition("IDCR - Adverse Reaction List Bad Coded Value.v1.xml");
-        var template = getOperationalTemplate("IDCR - Adverse Reaction List.v1.opt");
+        var template = getInternalTemplate("IDCR - Adverse Reaction List.v1.opt");
 
         var result = validator.validate(composition, template);
         assertThat(result).hasSize(1);
@@ -254,7 +255,7 @@ class LocatableValidatorTest {
     @Test
     void validateClusterSlot() throws Exception {
         var composition = getCompositionJson("cluster-slot.ehrbase.or.v0.json");
-        var template = getOperationalTemplate("cluster-slot.ehrbase.org.v0.opt");
+        var template = getInternalTemplate("cluster-slot.ehrbase.org.v0.opt");
 
         var result = validator.validate(composition, template);
         assertThat(result).isEmpty();
@@ -263,7 +264,7 @@ class LocatableValidatorTest {
     @Test
     void validateName() throws Exception {
         var composition = getCompositionJson("name-test.json");
-        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        var template = getInternalTemplate("name-test.ehrbase.org.v0.opt");
 
         var result = validator.validate(composition, template);
         assertThat(result).isEmpty();
@@ -272,7 +273,7 @@ class LocatableValidatorTest {
     @Test
     void validateNameRuntimeName() throws Exception {
         var composition = getCompositionJson("name-test.json");
-        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        var template = getInternalTemplate("name-test.ehrbase.org.v0.opt");
         List<Cluster> objects = getClusterList(composition);
 
         replaceName(objects, "costume name", new DvText("costume name2"));
@@ -284,7 +285,7 @@ class LocatableValidatorTest {
     @Test
     void validateNameRuntimeNameForbidden() throws Exception {
         var composition = getCompositionJson("name-test.json");
-        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        var template = getInternalTemplate("name-test.ehrbase.org.v0.opt");
         List<Cluster> objects = getClusterList(composition);
 
         replaceName(objects, "Fv1", new DvText("costume name2"));
@@ -311,7 +312,7 @@ class LocatableValidatorTest {
     @Test
     void validateNameWrongType() throws Exception {
         var composition = getCompositionJson("name-test.json");
-        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        var template = getInternalTemplate("name-test.ehrbase.org.v0.opt");
 
         List<Cluster> objects = getClusterList(composition);
 
@@ -330,7 +331,7 @@ class LocatableValidatorTest {
     @Test
     void validateNameNotInTemplate() throws Exception {
         var composition = getCompositionJson("name-test.json");
-        var template = getOperationalTemplate("name-test.ehrbase.org.v0.opt");
+        var template = getInternalTemplate("name-test.ehrbase.org.v0.opt");
 
         List<Cluster> objects = getClusterList(composition);
 
@@ -354,7 +355,7 @@ class LocatableValidatorTest {
 
     @Test
     void compositionValidationCRSDK120() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE);
+        var template = getInternalTemplate(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE);
         var composition = getComposition(CompositionTestDataCanonicalJson.CHOICE_DV_QUANTITY);
 
         var result = validator.validate(composition, template);
@@ -363,7 +364,7 @@ class LocatableValidatorTest {
 
     @Test
     void exampleComposition() throws IOException, XmlException {
-        var template = getOperationalTemplate(OperationalTemplateTestData.MINIMAL_ACTION_2);
+        var template = getInternalTemplate(OperationalTemplateTestData.MINIMAL_ACTION_2);
         var composition = getComposition(CompositionTestDataCanonicalJson.MINIMAL_ACTION_2);
 
         var result = validator.validate(composition, template);
@@ -394,27 +395,28 @@ class LocatableValidatorTest {
         }
     }
 
-    private OPERATIONALTEMPLATE getOperationalTemplate(OperationalTemplateTestData template)
-            throws IOException, XmlException {
-        return TemplateDocument.Factory.parse(template.getStream()).getTemplate();
+    private WebTemplate getInternalTemplate(OperationalTemplateTestData template) throws IOException, XmlException {
+        try (InputStream in = template.getStream()) {
+            return OPTParser.parse(in);
+        }
     }
 
-    private OPERATIONALTEMPLATE getOperationalTemplate(String name) throws IOException, XmlException {
+    private WebTemplate getInternalTemplate(String name) throws IOException, XmlException {
         try (var in = new FileInputStream("./src/test/resources/operational_templates/" + name)) {
-            return TemplateDocument.Factory.parse(in).getTemplate();
+            return OPTParser.parse(in);
         }
     }
 
     @Test
     void validateSpanish() throws Exception {
-        var template = getOperationalTemplate(OperationalTemplateTestData.SPANISH_EXAMPLE);
+        var template = getInternalTemplate(OperationalTemplateTestData.SPANISH_EXAMPLE);
         var composition = getComposition(CompositionTestDataCanonicalJson.SPANISH_EXAMPLE);
 
         var result = validator.validate(composition, template);
 
         assertThat(result).isEmpty();
 
-        ItemStructureVisitor itemStructureVisitor = new ItemStructureVisitor();
+        TerminologyValidationVisitor itemStructureVisitor = new TerminologyValidationVisitor();
         itemStructureVisitor.validate(composition);
     }
 }

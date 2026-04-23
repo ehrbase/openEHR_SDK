@@ -23,16 +23,15 @@ import static org.junit.Assert.fail;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
+import org.ehrbase.openehr.sdk.validation.terminology.check.DvCodedTextCheck;
 import org.junit.Test;
 
 public class ItemValidatorTest {
 
     @Test
-    public void matchValidator() throws NoSuchMethodException, IllegalAccessException, ClassNotFoundException {
+    public void getValidator() {
 
-        ItemValidator itemValidator = new ItemValidator();
-
-        itemValidator.add(new org.ehrbase.openehr.sdk.validation.terminology.validator.DvCodedText());
+        ItemValidator itemValidator = new ItemValidator(new DvCodedTextCheck());
 
         DvCodedText dvCodedText =
                 new DvCodedText("secondary allied health care", new CodePhrase(new TerminologyId("openehr"), "234"));
@@ -44,5 +43,7 @@ public class ItemValidatorTest {
         } catch (Throwable throwable) {
             fail();
         }
+
+        // TODO CDR-2273 also test if validation issues can be found
     }
 }

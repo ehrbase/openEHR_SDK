@@ -21,62 +21,60 @@ import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Pathable;
 import java.lang.reflect.Field;
 import java.util.List;
-import org.ehrbase.openehr.sdk.validation.terminology.validator.ItemField;
+import org.ehrbase.openehr.sdk.validation.terminology.check.ItemField;
 
-public class Pathables {
-
-    private ItemValidator itemValidator;
-    private String language;
-
-    Pathables(ItemValidator itemValidator, String language) {
-        this.itemValidator = itemValidator;
-        this.language = language;
+public final class Pathables {
+    private Pathables() {
+        /* NOOP */
     }
 
-    public void traverse(Pathable pathable, String... excludes) throws IllegalArgumentException, InternalError {
-
+    public static void traverse(ItemValidator itemValidator, String language, Pathable pathable, String... excludes)
+            throws IllegalArgumentException, IllegalStateException {
+        if (pathable == null) {
+            return;
+        }
+        // XXX CDR-2273 really only the declared fields?
         for (Field field : pathable.getClass().getDeclaredFields()) {
-            if (!field.getType().equals(List.class)) {
-                try {
-                    if (field.getType() == field.getType().asSubclass(Pathable.class)) {
-
-                        if (isFieldExcluded(excludes, field.getName())) continue;
-
-                        RMObject object = new ItemField<RMObject>(pathable).objectForField(field);
-
-                        if (object instanceof Pathable) {
-                            new Pathables(itemValidator, language).traverse((Pathable) object, excludes);
-                        } else if (object != null)
-                            throw new IllegalArgumentException(
-                                    "Internal: couldn't handle object retrieved using getter");
-                    }
-                } catch (ClassCastException e) {
-                    // check if object is handled for validation
-                    if (itemValidator.isValidatedRmObjectType(field.getType())) {
-                        RMObject object = new ItemField<RMObject>(pathable).objectForField(field);
-                        itemValidator.validate(field.getName(), object, language);
-                    }
-                }
-            } // continue
-            else { // iterate the array
-                List iterable = new ItemField<List>(pathable).objectForField(field);
+            if (field.getType().equals(List.class)) {
+                List iterable = ItemField.objectForField(pathable, field);
 
                 for (Object item : iterable) {
-                    if (item instanceof RMObject) {
-                        itemValidator.validate(field.getName(), (RMObject) item, language);
-                    } else if (item instanceof Pathable) {
-                        traverse((Pathable) item, excludes);
+                    if (item instanceof RMObject rmObject) {
+                        itemValidator.validate(field.getName(), rmObject, language);
+                    } else if (item instanceof Pathable p) {
+                        // XXX CDR-2273 children are never validated?
+                        traverse(itemValidator, language, p, excludes);
                     } else throw new IllegalStateException("Could not handle item in list:" + item);
+                }
+            } else if (Pathable.class.isAssignableFrom(field.getType())) {
+                if (isFieldExcluded(excludes, field.getName())) {
+                    // XXX CDR-2273 why is this is only checked here?
+                    continue;
+                }
+
+                RMObject object = ItemField.objectForField(pathable, field);
+
+                if (object instanceof Pathable p) {
+                    Pathables.traverse(itemValidator, language, p, excludes);
+                } else if (object != null) {
+                    throw new IllegalArgumentException("Internal: couldn't handle object retrieved using getter");
+                }
+            } else {
+                // check if object is handled for validation
+                if (itemValidator.isValidatedRmObjectType(field.getType())) {
+                    RMObject object = ItemField.objectForField(pathable, field);
+                    itemValidator.validate(field.getName(), object, language);
                 }
             }
         }
     }
 
-    private boolean isFieldExcluded(String[] excludes, String fieldName) {
+    private static boolean isFieldExcluded(String[] excludes, String fieldName) {
         for (String exclude : excludes) {
-            if (exclude.equals(fieldName)) return true;
+            if (exclude.equals(fieldName)) {
+                return true;
+            }
         }
-
         return false;
     }
 }

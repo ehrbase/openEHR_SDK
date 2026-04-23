@@ -31,13 +31,10 @@ import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidat
 import org.ehrbase.openehr.sdk.validation.webtemplate.FastRMObjectValidator;
 import org.ehrbase.openehr.sdk.validation.webtemplate.ValidationWalker;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
-import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.jspecify.annotations.NonNull;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
 /**
- * Validator that checks a composition against constraints defined in an Operational Template or a
- * Web Template.
+ * Validator that checks a composition against constraints defined in a WebTemplate.
  * This class is NOT thread-safe!
  */
 public class LocatableValidator {
@@ -79,18 +76,6 @@ public class LocatableValidator {
             rmObjectValidator = new ArchetypeNeglectingRMObjectValidator(
                     ArchieRMInfoLookup.getInstance(), archetypeId -> null, validationCfg);
         }
-    }
-
-    /**
-     * Validates the composition using an Operational Template.
-     *
-     * @param composition the composition to validate
-     * @param template    the operational template used to validate the composition
-     * @return the list of constraint violations
-     */
-    @Deprecated(forRemoval = true)
-    public List<ConstraintViolation> validate(Composition composition, OPERATIONALTEMPLATE template) {
-        return validate(composition, OPTParser.parse(template));
     }
 
     /**

@@ -1058,6 +1058,8 @@ public class OPTParser {
             }
 
             if (code.getTerminology().equals(OPENEHR)) {
+                // TODO CDR-2273 cleanup: determine terminologyAttribute + provide AttributeCodesets
+                // to findOpenEhrValueSet (etc)
                 // Resolve the terminology group for rubric lookups with the group.
                 String terminologyAttribute;
 

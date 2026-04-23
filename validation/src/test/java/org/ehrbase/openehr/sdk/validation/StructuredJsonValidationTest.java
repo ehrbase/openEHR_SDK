@@ -59,7 +59,7 @@ class StructuredJsonValidationTest {
         String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
         Composition unmarshal = cut.unmarshal(flat);
 
-        var existingTemplate = templateProvider.find(templateId);
+        var existingTemplate = templateProvider.buildIntrospect(templateId);
         assertTrue(existingTemplate.isPresent());
 
         var result = validator.validate(unmarshal, existingTemplate.get());

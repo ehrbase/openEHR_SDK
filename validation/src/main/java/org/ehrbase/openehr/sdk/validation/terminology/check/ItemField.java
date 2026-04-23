@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology.validator;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
 import com.nedap.archie.rm.archetyped.Pathable;
 import java.lang.invoke.MethodHandle;
@@ -30,28 +30,28 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @param <T> The expected class for the materialize object: RMObject, Pathable
  */
-public class ItemField<T> {
-
-    private Pathable pathable;
-
-    public ItemField(Pathable pathable) {
-        this.pathable = pathable;
+public final class ItemField {
+    private ItemField() {
+        /* NOOP */
     }
 
-    public T objectForField(Field field) throws IllegalArgumentException, InternalError {
+    public static <T> T objectForField(Pathable pathable, Field field) throws IllegalArgumentException {
+        // XXX CDR-2273 reflection needed here??
         String getterName = "get" + StringUtils.capitalize(field.getName());
         MethodHandle methodHandle;
         try {
             methodHandle = MethodHandles.lookup()
                     .findVirtual(pathable.getClass(), getterName, MethodType.methodType(field.getType()));
         } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw new InternalError("Internal error:" + e.getMessage());
+            throw new RuntimeException("Internal error: " + e.getMessage(), e);
         }
         try {
             Object object = methodHandle.invoke(pathable);
             return (T) object;
+        } catch (RuntimeException | Error e) {
+            throw e;
         } catch (Throwable throwable) {
-            throw new InternalError("Internal:" + throwable.getMessage());
+            throw new RuntimeException("Internal:" + throwable.getMessage(), throwable);
         }
     }
 }

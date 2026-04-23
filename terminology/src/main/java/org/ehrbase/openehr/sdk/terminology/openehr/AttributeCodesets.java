@@ -52,28 +52,25 @@ public class AttributeCodesets {
     private static final String OPENEHR = "openehr";
 
     private static final Map<String, TerminologyContainer> MAPPINGS = Map.ofEntries(
-            group("lifecycle_state", VERSION_LIFECYCLE_STATE.toString()),
-            group("category", COMPOSITION_CATEGORY.toString()),
-            group("setting", SETTING.toString()),
-            group("current_state", INSTRUCTION_STATES.toString()),
-            group("transition", INSTRUCTION_TRANSITIONS.toString()),
-            group("null_flavour", NULL_FLAVOURS.toString()),
-            group("mode", PARTICIPATION_MODE.toString()),
-            group("function", PARTICIPATION_FUNCTION.toString()),
-            group("relationship", SUBJECT_RELATIONSHIP.toString()),
-            group("property", PROPERTY.toString()),
-            group("math_function", EVENT_MATH_FUNCTION.toString()),
-            group("purpose", TERM_MAPPING_PURPOSE.toString()),
-            codeset("language", LANGUAGES.toString(), "ISO_639-1"),
-            codeset("normal_status", NORMAL_STATUSES.toString(), "openehr_normal_status"),
-            codeset("media_type", MEDIA_TYPES.toString(), "IANA_media-types"),
-            codeset("character_set", CHARACTER_SETS.toString(), "IANA_character-sets"),
-            codeset("compression_algorithm", COMPRESSION_ALGORITHMS.toString(), "openehr_compression_algorithm"),
-            codeset("territory", COUNTRIES.toString(), "ISO_3166-1"),
-            codeset(
-                    "integrity_check_algorithm",
-                    INTEGRITY_CHECK_ALGORITHMS.toString(),
-                    "openehr_integrity_check_algorithm"));
+            group("lifecycle_state", VERSION_LIFECYCLE_STATE),
+            group("category", COMPOSITION_CATEGORY),
+            group("setting", SETTING),
+            group("current_state", INSTRUCTION_STATES),
+            group("transition", INSTRUCTION_TRANSITIONS),
+            group("null_flavour", NULL_FLAVOURS),
+            group("mode", PARTICIPATION_MODE),
+            group("function", PARTICIPATION_FUNCTION),
+            group("relationship", SUBJECT_RELATIONSHIP),
+            group("property", PROPERTY),
+            group("math_function", EVENT_MATH_FUNCTION),
+            group("purpose", TERM_MAPPING_PURPOSE),
+            codeset("language", LANGUAGES, "ISO_639-1"),
+            codeset("normal_status", NORMAL_STATUSES, "openehr_normal_status"),
+            codeset("media_type", MEDIA_TYPES, "IANA_media-types"),
+            codeset("character_set", CHARACTER_SETS, "IANA_character-sets"),
+            codeset("compression_algorithm", COMPRESSION_ALGORITHMS, "openehr_compression_algorithm"),
+            codeset("territory", COUNTRIES, "ISO_3166-1"),
+            codeset("integrity_check_algorithm", INTEGRITY_CHECK_ALGORITHMS, "openehr_integrity_check_algorithm"));
 
     /**
      * Returns the mapping entry for the given RM attribute name (snake_case).
@@ -90,12 +87,13 @@ public class AttributeCodesets {
     }
 
     public record TerminologyContainer(String terminology, ContainerType container, String id) {
-        static Map.Entry<String, TerminologyContainer> group(String attribute, String id) {
-            return Map.entry(attribute, new TerminologyContainer(OPENEHR, ContainerType.GROUP, id));
+        static Map.Entry<String, TerminologyContainer> group(String attribute, OpenEHRTerminologyGroupIdentifiers id) {
+            return Map.entry(attribute, new TerminologyContainer(OPENEHR, ContainerType.GROUP, id.getValue()));
         }
 
-        static Map.Entry<String, TerminologyContainer> codeset(String attribute, String id, String terminology) {
-            return Map.entry(attribute, new TerminologyContainer(terminology, ContainerType.CODESET, id));
+        static Map.Entry<String, TerminologyContainer> codeset(
+                String attribute, OpenEHRCodeSetIdentifiers id, String terminology) {
+            return Map.entry(attribute, new TerminologyContainer(terminology, ContainerType.CODESET, id.toString()));
         }
     }
 }
