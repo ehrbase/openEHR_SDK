@@ -18,9 +18,9 @@
 package org.ehrbase.openehr.sdk.validation;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nedap.archie.rm.composition.Composition;
@@ -30,79 +30,64 @@ import com.nedap.archie.rm.ehr.EhrStatus;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.PartyRef;
 import com.nedap.archie.xml.JAXBUtil;
-import java.io.File;
-import javax.xml.bind.JAXBException;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.xml.bind.Unmarshaller;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.openehr.sdk.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.validation.terminology.TerminologyValidationVisitor;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TerminologyValidationVisitorTest {
+class TerminologyValidationVisitorTest {
     private TerminologyValidationVisitor itemStructureVisitor;
 
-    @Before
-    public void setup() throws Exception {
+    @BeforeEach
+    void setup() {
         itemStructureVisitor = new TerminologyValidationVisitor();
     }
 
     @Test
-    public void elementVisitorTest() throws Throwable {
-        Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition)
-                unmarshaller.unmarshal(new File("./src/test/resources/composition/test_all_types.fixed.v1.xml"));
+    void elementVisitorTest() {
+        Composition composition = loadComposition("test_all_types.fixed.v1.xml");
 
         itemStructureVisitor.validate(composition);
-        assertEquals(26, itemStructureVisitor.getElementOccurrences()); // 25 ELEMENTs + 1 ITEM_SINGLE!
+        // 25 ELEMENTs + 1 ITEM_SINGLE!
+        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(26);
     }
 
     @Test
-    public void elementVisitorTestNor() throws Throwable {
-        Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition) unmarshaller.unmarshal(
-                new File("./src/test/resources/composition/IDCR-LabReportRAW1_with_normal_status.xml"));
+    void elementVisitorTestNor() {
+        Composition composition = loadComposition("IDCR-LabReportRAW1_with_normal_status.xml");
 
-        try {
-            itemStructureVisitor.validate(composition);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
+        assertDoesNotThrow(() -> itemStructureVisitor.validate(composition));
     }
 
     @Test
-    public void elementVisitorTest2() throws Throwable {
-        Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition)
-                unmarshaller.unmarshal(new File("./src/test/resources/composition/RIPPLE-ConformanceTest.xml"));
+    void elementVisitorTest2() {
+        Composition composition = loadComposition("RIPPLE-ConformanceTest.xml");
 
         itemStructureVisitor.validate(composition);
-        assertEquals(
-                61,
-                itemStructureVisitor.getElementOccurrences()); // 4 elements are in the context/other_context structure
+                // 4 elements are in the context/other_context structure
+         assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(61);
 
         itemStructureVisitor.validate(composition.getContext().getOtherContext());
-        assertEquals(65, itemStructureVisitor.getElementOccurrences());
+        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(65);
     }
 
     @Test
-    public void elementVisitorTest3() throws Throwable {
-        Unmarshaller unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        Composition composition = (Composition) unmarshaller.unmarshal(
-                new File("./src/test/resources/composition/RIPPLE-ConformanceTest_invalid_other_context_mm_type.xml"));
+    void elementVisitorTest3() {
+        Composition composition = loadComposition("RIPPLE-ConformanceTest_invalid_other_context_mm_type.xml");
 
-        try {
-            itemStructureVisitor.validate(composition);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("supplied code string [video/mp4] is not found in codeset:media types"));
-        }
+        assertThatThrownBy(() ->itemStructureVisitor.validate(composition))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("supplied code string [video/mp3] is not found in codeset:media types");
     }
 
     @Test
-    public void ehrVisitorTest() throws Throwable {
+    void ehrVisitorTest() throws IOException {
         String value = IOUtils.toString(ItemStruktureTestDataCanonicalJson.SIMPLE_EHR_OTHER_Details.getStream(), UTF_8);
 
         ObjectMapper objectMapper = ArchieObjectMapperProvider.getObjectMapper();
@@ -113,20 +98,33 @@ public class TerminologyValidationVisitorTest {
                 "ehr_status", new DvText("ehr_status"), new PartySelf(new PartyRef()), true, true, otherDetails);
 
         itemStructureVisitor.validate(ehrStatus);
-        assertEquals(3, itemStructureVisitor.getElementOccurrences());
+        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(3);
     }
 
     @Test
-    public void testValidateTestAllTypesWithInvalidParticipations() throws JAXBException {
-        Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
-        Composition composition = (Composition)
-                unmarshaller.unmarshal(CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS.getStream());
+    void testValidateTestAllTypesWithInvalidParticipations() {
+        CompositionTestDataCanonicalXML src = CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS;
+        Composition composition = loadComposition(src);
 
-        try {
-            itemStructureVisitor.validate(composition);
-            fail("invalid value in participations not detected");
-        } catch (IllegalArgumentException e) {
-            // NOOP
+        assertThatThrownBy(() -> itemStructureVisitor.validate(composition)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static Composition loadComposition(String fileName) {
+        try (InputStream in = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream("composition/"+ fileName)) {
+            Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
+            return (Composition) unmarshaller.unmarshal(in);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Composition loadComposition(CompositionTestDataCanonicalXML src) {
+        try (InputStream in = src.getStream()) {
+            Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
+            return (Composition) unmarshaller.unmarshal(in);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
