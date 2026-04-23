@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -17,13 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.terminology.openehr;
 
-public class TerminologyResourceException extends RuntimeException {
-
-    public TerminologyResourceException() {
-        super();
-    }
-
-    public TerminologyResourceException(String message) {
-        super(message);
-    }
+public enum ContainerType {
+    GROUP,
+    CODESET,
 }

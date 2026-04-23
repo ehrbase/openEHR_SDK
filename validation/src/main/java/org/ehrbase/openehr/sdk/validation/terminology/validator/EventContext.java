@@ -17,37 +17,21 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-
 public class EventContext extends TerminologyCheck {
 
     public EventContext() {
         this.RM_CLASS = com.nedap.archie.rm.composition.EventContext.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.EventContext eventContext,
-            String language)
+    @SuppressWarnings("java:S1172")
+    public static void check(String context, com.nedap.archie.rm.composition.EventContext eventContext, String language)
             throws IllegalArgumentException {
         if (eventContext.getSetting() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "setting",
-                    eventContext.getSetting().getDefiningCode(),
-                    language);
+            validate("setting", eventContext.getSetting().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.EventContext eventContext)
+    public static void check(String context, com.nedap.archie.rm.composition.EventContext eventContext)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, eventContext, "en");
+        check(context, eventContext, "en");
     }
 }

@@ -17,45 +17,25 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-
 public class IsmTransition extends TerminologyCheck {
 
     public IsmTransition() {
         this.RM_CLASS = com.nedap.archie.rm.composition.IsmTransition.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.IsmTransition ismTransition,
-            String language)
+            String context, com.nedap.archie.rm.composition.IsmTransition ismTransition, String language)
             throws IllegalArgumentException {
         if (ismTransition.getCurrentState() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "current_state",
-                    ismTransition.getCurrentState().getDefiningCode(),
-                    language);
+            validate("current_state", ismTransition.getCurrentState().getDefiningCode(), language);
 
         if (ismTransition.getTransition() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "transition",
-                    ismTransition.getTransition().getDefiningCode(),
-                    language);
+            validate("transition", ismTransition.getTransition().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.IsmTransition ismTransition)
+    public static void check(String context, com.nedap.archie.rm.composition.IsmTransition ismTransition)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, ismTransition, "en");
+        check(context, ismTransition, "en");
     }
 }

@@ -17,37 +17,22 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-
 public class IntervalEvent extends TerminologyCheck {
 
     public IntervalEvent() {
         this.RM_CLASS = com.nedap.archie.rm.datastructures.IntervalEvent.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent,
-            String language)
+            String context, com.nedap.archie.rm.datastructures.IntervalEvent<?> intervalEvent, String language)
             throws IllegalArgumentException {
         if (intervalEvent.getMathFunction() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "mathFunction",
-                    intervalEvent.getMathFunction().getDefiningCode(),
-                    language);
+            validate("mathFunction", intervalEvent.getMathFunction().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.datastructures.IntervalEvent intervalEvent)
+    public static void check(String context, com.nedap.archie.rm.datastructures.IntervalEvent<?> intervalEvent)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, intervalEvent, "en");
+        check(context, intervalEvent, "en");
     }
 }

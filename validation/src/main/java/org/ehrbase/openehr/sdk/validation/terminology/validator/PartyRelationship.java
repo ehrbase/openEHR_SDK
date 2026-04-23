@@ -17,9 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-
 public class PartyRelationship extends TerminologyCheck {
 
     public PartyRelationship() {
@@ -27,24 +24,16 @@ public class PartyRelationship extends TerminologyCheck {
     }
 
     public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.demographic.PartyRelationship partyRelationship,
-            String language)
+            String context, com.nedap.archie.rm.demographic.PartyRelationship partyRelationship, String language)
             throws IllegalArgumentException {
         //        if (participation.getMode() != null)
         //            validate(container, context, participation.getMode().getDefiningCode().getTerminologyId(),
         // participation.getMode().getDefiningCode().getCodeString());
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.demographic.PartyRelationship partyRelationship)
+    public static void check(String context, com.nedap.archie.rm.demographic.PartyRelationship partyRelationship)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, partyRelationship, "en");
+        check(context, partyRelationship, "en");
         //        if (participation.getMode() != null)
         //            validate(container, context, participation.getMode().getDefiningCode().getTerminologyId(),
         // participation.getMode().getDefiningCode().getCodeString());

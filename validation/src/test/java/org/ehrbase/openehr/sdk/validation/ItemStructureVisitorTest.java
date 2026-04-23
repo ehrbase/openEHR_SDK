@@ -35,7 +35,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalXML;
 import org.ehrbase.openehr.sdk.test_data.item_structure.ItemStruktureTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.validation.terminology.ItemStructureVisitor;
@@ -48,8 +47,7 @@ public class ItemStructureVisitorTest {
 
     @Before
     public void setup() throws Exception {
-        LocalizedTerminologies localizedTerminologies = new LocalizedTerminologies();
-        itemStructureVisitor = new ItemStructureVisitor(localizedTerminologies);
+        itemStructureVisitor = new ItemStructureVisitor();
     }
 
     @Test

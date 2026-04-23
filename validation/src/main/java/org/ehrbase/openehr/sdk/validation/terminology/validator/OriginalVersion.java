@@ -17,37 +17,22 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-
 public class OriginalVersion extends TerminologyCheck {
 
     public OriginalVersion() {
         this.RM_CLASS = com.nedap.archie.rm.changecontrol.OriginalVersion.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion,
-            String language)
+            String context, com.nedap.archie.rm.changecontrol.OriginalVersion<?> originalVersion, String language)
             throws IllegalArgumentException {
         if (originalVersion.getLifecycleState() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    context,
-                    originalVersion.getLifecycleState().getDefiningCode(),
-                    language);
+            validate(context, originalVersion.getLifecycleState().getDefiningCode(), language);
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.changecontrol.OriginalVersion originalVersion)
+    public static void check(String context, com.nedap.archie.rm.changecontrol.OriginalVersion<?> originalVersion)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, originalVersion, "en");
+        check(context, originalVersion, "en");
     }
 }

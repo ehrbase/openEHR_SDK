@@ -17,33 +17,23 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-
 public class DvOrdinal extends TerminologyCheck {
 
     public DvOrdinal() {
         this.RM_CLASS = com.nedap.archie.rm.datavalues.quantity.DvOrdinal.class;
     }
 
+    @SuppressWarnings("java:S1172")
     public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal,
-            String language)
+            String context, com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal, String language)
             throws IllegalArgumentException {
         if (dvOrdinal.getSymbol() != null) {
-            validate(terminologyInterface, codesetMapping, "symbol", dvOrdinal.getSymbol(), language);
+            validate("symbol", dvOrdinal.getSymbol(), language);
         }
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal)
+    public static void check(String context, com.nedap.archie.rm.datavalues.quantity.DvOrdinal dvOrdinal)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, dvOrdinal, "en");
+        check(context, dvOrdinal, "en");
     }
 }

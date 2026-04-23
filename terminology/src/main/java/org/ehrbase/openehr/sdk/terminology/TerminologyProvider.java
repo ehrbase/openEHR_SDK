@@ -17,88 +17,92 @@
  */
 package org.ehrbase.openehr.sdk.terminology;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import com.nedap.archie.rm.support.identification.TerminologyId;
+import com.nedap.archie.terminology.TermCode;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
-import org.ehrbase.openehr.sdk.util.exception.SdkException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
+import org.ehrbase.openehr.sdk.terminology.openehr.ContainerType;
+import org.ehrbase.openehr.sdk.terminology.openehr.SimpleTerminologyAccess;
 
 public class TerminologyProvider {
-    public static final String OPENEHR = "openehr";
-    private static final LocalizedTerminologies LOCALIZED_TERMINOLOGIES;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminologyProvider.class);
 
-    static {
-        try {
-            LOCALIZED_TERMINOLOGIES = new LocalizedTerminologies();
-        } catch (Exception e) {
-            throw new SdkException(e.getMessage(), e);
-        }
-    }
+    public static final String OPENEHR = "openehr";
+    private static final SimpleTerminologyAccess TERMINOLOGY_ACCESS = SimpleTerminologyAccess.getInstance();
 
     public static ValueSet findOpenEhrValueSet(String id, String group, String language) {
-        try {
-            if (StringUtils.isNotBlank(group)) {
-                return new ValueSet(
-                        id,
-                        group,
-                        LOCALIZED_TERMINOLOGIES.getDefault().terminology(id).codesForGroupId(group).stream()
-                                .map((CodePhrase cp) -> convert(id, cp, language))
-                                .collect(Collectors.toSet()));
-            } else {
-                return new ValueSet(
-                        id,
-                        "all",
-                        LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream()
-                                .map((CodePhrase cp) -> convert(id, cp, language))
-                                .collect(Collectors.toSet()));
-            }
-        } catch (RuntimeException e) {
-            LOGGER.warn("Unknown  group {} in Terminology {}", group, id);
-            return ValueSet.EMPTY_VALUE_SET;
+        if (StringUtils.isNotBlank(group)) {
+            List<TermCode> terms = TERMINOLOGY_ACCESS.getTermsByOpenEHRGroup(group, language);
+            return new ValueSet(
+                    id,
+                    group,
+                    terms.stream()
+                            .map(tc -> new TermDefinition(tc.getCodeString(), tc.getDescription(), tc.getDescription()))
+                            .collect(Collectors.toSet()));
+        } else {
+            List<TermCode> terms = TERMINOLOGY_ACCESS.getTerms(id, language);
+            return new ValueSet(
+                    id,
+                    "all",
+                    terms.stream()
+                            .map(tc -> new TermDefinition(tc.getCodeString(), tc.getDescription(), tc.getDescription()))
+                            .collect(Collectors.toSet()));
         }
     }
 
     public static ValueSet findOpenEhrValueSet(String id, String[] values, String language) {
-        try {
-            if (ArrayUtils.isNotEmpty(values)) {
-                return new ValueSet(
-                        id,
-                        "local",
-                        Arrays.stream(values)
-                                .map(v -> new CodePhrase(new TerminologyId(id), v))
-                                .map((CodePhrase cp) -> convert(id, cp, language))
-                                .collect(Collectors.toSet()));
-            } else {
-                return new ValueSet(
-                        id,
-                        "all",
-                        LOCALIZED_TERMINOLOGIES.getDefault().codeSet(id).allCodes().stream()
-                                .map((CodePhrase cp) -> convert(id, cp, language))
-                                .collect(Collectors.toSet()));
-            }
-        } catch (RuntimeException e) {
-            LOGGER.warn("Unknown  value {} in Terminology {}", values, id);
-            return ValueSet.EMPTY_VALUE_SET;
+        if (ArrayUtils.isNotEmpty(values)) {
+            return new ValueSet(
+                    id,
+                    "local",
+                    Arrays.stream(values).map(v -> convert(id, v, language)).collect(Collectors.toSet()));
+        } else {
+            List<TermCode> terms = TERMINOLOGY_ACCESS.getTerms(id, language);
+            return new ValueSet(
+                    id,
+                    "all",
+                    terms.stream()
+                            .map(tc -> new TermDefinition(tc.getCodeString(), tc.getDescription(), tc.getDescription()))
+                            .collect(Collectors.toSet()));
         }
     }
 
-    private static TermDefinition convert(String id, CodePhrase codePhrase, String language) {
-        String value;
-        try {
-            value = LOCALIZED_TERMINOLOGIES
-                    .getDefault()
-                    .terminology(id)
-                    .rubricForCode(codePhrase.getCodeString(), language);
-
-        } catch (RuntimeException e) {
-            value = codePhrase.getCodeString();
+    public static ValueSet findOpenEhrValueSet(String id, String[] values, String language, String rmAttributeName) {
+        AttributeCodesets.TerminologyContainer terminologyContainer =
+                rmAttributeName != null ? AttributeCodesets.get(rmAttributeName) : null;
+        if (terminologyContainer != null && terminologyContainer.container() == ContainerType.GROUP) {
+            // Resolves rubrics per group (fixes SPECPR-51 for code 532)
+            if (ArrayUtils.isNotEmpty(values)) {
+                return new ValueSet(
+                        id,
+                        terminologyContainer.id(),
+                        Arrays.stream(values)
+                                .map(v -> convertWithGroup(terminologyContainer.id(), v, language))
+                                .collect(Collectors.toSet()));
+            } else {
+                return findOpenEhrValueSet(id, terminologyContainer.id(), language);
+            }
         }
-        return new TermDefinition(codePhrase.getCodeString(), value, value);
+        return findOpenEhrValueSet(id, values, language);
+    }
+
+    private static TermDefinition convertWithGroup(String groupId, String code, String language) {
+        TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(groupId, language, code);
+        if (term == null && !TERMINOLOGY_ACCESS.supportsLanguage(language)) {
+            term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(groupId, "en", code);
+        }
+        String value = term != null ? term.getDescription() : code;
+        return new TermDefinition(code, value, value);
+    }
+
+    private static TermDefinition convert(String id, String code, String language) {
+        TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEhrId(id, code, language);
+        if (term == null && !TERMINOLOGY_ACCESS.supportsLanguage(language)) {
+            term = TERMINOLOGY_ACCESS.getTermByOpenEhrId(id, code, "en");
+        }
+        String value = term != null ? term.getDescription() : code;
+        return new TermDefinition(code, value, value);
     }
 }

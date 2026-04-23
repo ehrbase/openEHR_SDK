@@ -62,6 +62,7 @@ import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.terminology.TermDefinition;
 import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.terminology.ValueSet;
+import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
@@ -1057,21 +1058,40 @@ public class OPTParser {
             }
 
             if (code.getTerminology().equals(OPENEHR)) {
-                ValueSet valueSet = TerminologyProvider.findOpenEhrValueSet(
-                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage);
+                // Resolve the terminology group for rubric lookups with the group.
+                String terminologyAttribute;
 
-                Map<String, ValueSet> collect = languages.stream()
+                // rmAttributeName is the actual attribute
+                if (AttributeCodesets.get(rmAttributeName) != null) {
+                    terminologyAttribute = rmAttributeName;
+                    // use aqlPath as a fallback to determine the potentially nested attribute
+                } else if (aqlPath.getNodeCount() == 1) {
+                    terminologyAttribute = aqlPath.getLastNode().getName();
+                } else if (aqlPath.getNodeCount() >= 2) {
+                    terminologyAttribute =
+                            aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
+                } else {
+                    terminologyAttribute = null;
+                }
+
+                ValueSet defaultValueset = TerminologyProvider.findOpenEhrValueSet(
+                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage, terminologyAttribute);
+
+                Map<String, ValueSet> valuesetByLanguage = languages.stream()
                         .collect(Collectors.toMap(
                                 Function.identity(),
                                 l -> TerminologyProvider.findOpenEhrValueSet(
-                                        code.getTerminology(), ccodephrase.getCodeListArray(), l)));
+                                        code.getTerminology(),
+                                        ccodephrase.getCodeListArray(),
+                                        l,
+                                        terminologyAttribute)));
 
-                valueSet.getTherms().forEach(t -> {
+                defaultValueset.getTherms().forEach(t -> {
                     WebTemplateInputValue value = new WebTemplateInputValue();
                     value.setValue(t.getCode());
                     value.setLabel(t.getValue());
                     value.getLocalizedLabels()
-                            .putAll(collect.entrySet().stream()
+                            .putAll(valuesetByLanguage.entrySet().stream()
                                     .collect(Collectors.toMap(
                                             Map.Entry::getKey,
                                             e -> e.getValue().getTherms().stream()

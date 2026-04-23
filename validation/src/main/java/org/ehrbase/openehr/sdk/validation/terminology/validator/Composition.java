@@ -17,41 +17,23 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.validator;
 
-import org.ehrbase.openehr.sdk.terminology.openehr.TerminologyInterface;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-
 public class Composition extends TerminologyCheck {
 
     public Composition() {
         this.RM_CLASS = com.nedap.archie.rm.composition.Composition.class;
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.Composition composition)
+    public static void check(String context, com.nedap.archie.rm.composition.Composition composition)
             throws IllegalArgumentException {
-        check(terminologyInterface, codesetMapping, context, composition, "en");
+        check(context, composition, "en");
     }
 
-    public static void check(
-            TerminologyInterface terminologyInterface,
-            AttributeCodesetMapping codesetMapping,
-            String context,
-            com.nedap.archie.rm.composition.Composition composition,
-            String language)
+    @SuppressWarnings("java:S1172")
+    public static void check(String context, com.nedap.archie.rm.composition.Composition composition, String language)
             throws IllegalArgumentException {
         if (composition.getCategory() != null)
-            validate(
-                    terminologyInterface,
-                    codesetMapping,
-                    "category",
-                    composition.getCategory().getDefiningCode(),
-                    language);
-        if (composition.getLanguage() != null)
-            validate(terminologyInterface, codesetMapping, "language", composition.getLanguage(), language);
-        if (composition.getTerritory() != null)
-            validate(terminologyInterface, codesetMapping, "territory", composition.getTerritory(), language);
+            validate("category", composition.getCategory().getDefiningCode(), language);
+        if (composition.getLanguage() != null) validate("language", composition.getLanguage(), language);
+        if (composition.getTerritory() != null) validate("territory", composition.getTerritory(), language);
     }
 }

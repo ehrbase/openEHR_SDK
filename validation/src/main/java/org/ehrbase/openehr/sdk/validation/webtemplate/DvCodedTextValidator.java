@@ -96,7 +96,8 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
                                 MessageFormat.format(
                                         "CodePhrase codeString does not match any option, found: {0}",
                                         definingCode.getCodeString()));
-                    } else if (!matching.get().getLabel().equals(dvCodedText.getValue())) {
+                    } else if (definingCode.getTerminologyId().getName().equals("local")
+                            && !matching.get().getLabel().equals(dvCodedText.getValue())) {
                         return new ConstraintViolation(
                                 aqlPath,
                                 MessageFormat.format(
