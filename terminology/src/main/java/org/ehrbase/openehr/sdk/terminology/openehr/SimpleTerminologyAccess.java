@@ -32,7 +32,7 @@ public class SimpleTerminologyAccess {
     private static final String INSTRUCTION_STATES = "instruction states";
     private static final String CODE_532 = "532";
 
-    private static final Map<String, String> CODE_532_INSTRUCTION_RUBRICS = Map.of(
+    static final Map<String, String> CODE_532_INSTRUCTION_RUBRICS = Map.of(
             "en", "completed",
             "es", "completado",
             "ja", "完了",

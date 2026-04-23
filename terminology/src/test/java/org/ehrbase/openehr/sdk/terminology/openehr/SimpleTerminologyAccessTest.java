@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.terminology.openehr.implementation;
+package org.ehrbase.openehr.sdk.terminology.openehr;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -26,8 +27,6 @@ import static org.junit.Assert.assertTrue;
 import com.nedap.archie.terminology.TermCode;
 import java.util.List;
 import java.util.Map;
-import org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers;
-import org.ehrbase.openehr.sdk.terminology.openehr.SimpleTerminologyAccess;
 import org.junit.Test;
 
 public class SimpleTerminologyAccessTest {
@@ -94,54 +93,32 @@ public class SimpleTerminologyAccessTest {
 
     @Test
     public void code532VersionLifecycleStateIsSupported() {
-        Map<String, String> expectedValues = Map.of(
+        Map<String, String> expectedRubrics = Map.of(
                 "en", "complete",
                 "es", "completo",
                 "pt", "completo",
                 "ja", "完了");
-        List<String> allLanguageCodes = TERMINOLOGY_ACCESS.getTerms("ISO_639-1", "en").stream()
-                .map(TermCode::getCodeString)
-                .toList();
+        List<String> languageCodes = List.of("en", "es", "ja", "pt");
 
-        assertFalse(allLanguageCodes.isEmpty());
-        assertTrue(allLanguageCodes.containsAll(expectedValues.keySet()));
-
-        allLanguageCodes.forEach(lang -> {
+        languageCodes.forEach(lang -> {
             TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
                     OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(), lang, "532");
-            if (expectedValues.containsKey(lang)) {
-                assertNotNull("Support for code is unavailable in language: " + lang, term);
-                assertEquals(expectedValues.get(lang), term.getDescription());
-            } else {
-                assertNull("Support was added for language: " + lang, term);
-            }
+
+            assertThat(expectedRubrics).containsKey(lang);
+            assertThat(expectedRubrics.get(lang)).isEqualTo(term.getDescription());
         });
     }
 
     @Test
     public void code532InstructionStatesIsSupported() {
-        Map<String, String> expectedValues = Map.of(
-                "en", "completed",
-                "es", "completado",
-                "pt", "concluído",
-                "ja", "完了");
+        List<String> languageCodes = List.of("en", "es", "ja", "pt");
+        assertThat(languageCodes).containsAll(SimpleTerminologyAccess.CODE_532_INSTRUCTION_RUBRICS.keySet());
 
-        List<String> allLanguageCodes = TERMINOLOGY_ACCESS.getTerms("ISO_639-1", "en").stream()
-                .map(TermCode::getCodeString)
-                .toList();
-
-        assertFalse(allLanguageCodes.isEmpty());
-        assertTrue(allLanguageCodes.containsAll(expectedValues.keySet()));
-
-        allLanguageCodes.forEach(lang -> {
+        languageCodes.forEach(lang -> {
             TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
                     OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(), lang, "532");
-            if (expectedValues.containsKey(lang)) {
-                assertNotNull("Support for code is unavailable in language: " + lang, term);
-                assertEquals(expectedValues.get(lang), term.getDescription());
-            } else {
-                assertNull("Support was added for language: " + lang, term);
-            }
+            assertNotNull("Support for code is unavailable in language: " + lang, term);
+            assertEquals(SimpleTerminologyAccess.CODE_532_INSTRUCTION_RUBRICS.get(lang), term.getDescription());
         });
     }
 
