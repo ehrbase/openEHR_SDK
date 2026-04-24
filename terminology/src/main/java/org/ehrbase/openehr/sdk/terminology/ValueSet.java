@@ -27,20 +27,20 @@ public class ValueSet {
 
     private final String terminologyId;
     private final String id;
-    private final Set<TermDefinition> therms;
+    private final Set<TermDefinition> terms;
 
-    public ValueSet(String terminologyId, String id, Set<TermDefinition> therms) {
+    public ValueSet(String terminologyId, String id, Set<TermDefinition> terms) {
         this.terminologyId = terminologyId;
         this.id = id;
-        this.therms = therms;
+        this.terms = terms;
     }
 
     public String getTerminologyId() {
         return terminologyId;
     }
 
-    public Set<TermDefinition> getTherms() {
-        return therms;
+    public Set<TermDefinition> getTerms() {
+        return terms;
     }
 
     public String getId() {
@@ -52,11 +52,11 @@ public class ValueSet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ValueSet valueSet = (ValueSet) o;
-        return terminologyId.equals(valueSet.terminologyId) && id.equals(valueSet.id) && therms.equals(valueSet.therms);
+        return terminologyId.equals(valueSet.terminologyId) && id.equals(valueSet.id) && terms.equals(valueSet.terms);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(terminologyId, id, therms);
+        return Objects.hash(terminologyId, id, terms);
     }
 }

@@ -18,17 +18,18 @@
 package org.ehrbase.openehr.sdk.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.ehrbase.openehr.sdk.terminology.TerminologyProvider.OPENEHR;
 
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.xml.JAXBUtil;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
@@ -79,7 +80,7 @@ class LocatableValidatorTest {
     void validateEpisodicComposition() throws Exception {
         var template = getInternalTemplate(OperationalTemplateTestData.INFORME_AMB_1_ARQUETIP_OBS);
         var composition = getComposition(CompositionTestDataCanonicalJson.INFORME_AMB_1_ARQUETIP_OBS);
-        TerminologyProvider.findOpenEhrValueSet("openehr", "composition category", "ca");
+        TerminologyProvider.findOpenEhrValueSet(OPENEHR, "composition category", "ca");
         var result = validator.validate(composition, template);
         assertThat(result).isEmpty();
     }
@@ -349,7 +350,6 @@ class LocatableValidatorTest {
     }
 
     private void replaceName(List<Cluster> cluster, String nameOne, DvText dvText) {
-
         cluster.stream().filter(c -> c.getName().getValue().equals(nameOne)).forEach(c -> c.setName(dvText));
     }
 
@@ -377,20 +377,28 @@ class LocatableValidatorTest {
     }
 
     private Composition getComposition(CompositionTestDataSimSDTJson composition) throws IOException {
-        return new FlatJasonProvider(new TestDataTemplateProvider())
-                .buildFlatJson(FlatFormat.SIM_SDT, composition.getTemplate().getTemplateId())
-                .unmarshal(IOUtils.toString(composition.getStream(), StandardCharsets.UTF_8), Composition.class);
+        try (var in = composition.getStream()) {
+            return new FlatJasonProvider(new TestDataTemplateProvider())
+                    .buildFlatJson(FlatFormat.SIM_SDT, composition.getTemplate().getTemplateId())
+                    .unmarshal(IOUtils.toString(in, StandardCharsets.UTF_8), Composition.class);
+        }
     }
 
     private Composition getComposition(String name) throws IOException, JAXBException {
-        var unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
-        try (FileInputStream in = new FileInputStream("./src/test/resources/composition/" + name)) {
+        try (var in = streamResource("composition/" + name)) {
+            var unmarshaller = JAXBUtil.createRMContext().createUnmarshaller();
             return (Composition) unmarshaller.unmarshal(in);
         }
     }
 
+    private static InputStream streamResource(String resourceName) {
+        return Optional.of(resourceName)
+                .map(Thread.currentThread().getContextClassLoader()::getResourceAsStream)
+                .orElseThrow(() -> new RuntimeException("Cannot load resource " + resourceName));
+    }
+
     private Composition getCompositionJson(String name) throws IOException {
-        try (var in = new FileInputStream("./src/test/resources/composition/" + name)) {
+        try (var in = streamResource("composition/" + name)) {
             return RMDataFormat.canonicalJSON().unmarshal(IOUtils.toString(in, StandardCharsets.UTF_8));
         }
     }
@@ -402,7 +410,7 @@ class LocatableValidatorTest {
     }
 
     private WebTemplate getInternalTemplate(String name) throws IOException, XmlException {
-        try (var in = new FileInputStream("./src/test/resources/operational_templates/" + name)) {
+        try (var in = streamResource("operational_templates/" + name)) {
             return OPTParser.parse(in);
         }
     }

@@ -17,8 +17,10 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology;
 
+import static com.nedap.archie.rmutil.InvariantUtil.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.ehrbase.openehr.sdk.terminology.TerminologyProvider.OPENEHR;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
@@ -34,12 +36,11 @@ class ItemValidatorTest {
         ItemValidator itemValidator = new ItemValidator(new DvCodedTextCheck());
 
         DvCodedText dvCodedText =
-                new DvCodedText("secondary allied health care", new CodePhrase(new TerminologyId("openehr"), "234"));
+                new DvCodedText("secondary allied health care", new CodePhrase(new TerminologyId(OPENEHR), "234"));
 
         assertThat(itemValidator.isValidatedRmObjectType(dvCodedText)).isTrue();
 
-        assertDoesNotThrow(() ->
-            itemValidator.validate("setting", dvCodedText, "en"));
+        assertDoesNotThrow(() -> itemValidator.validate("setting", dvCodedText, ENGLISH));
     }
 
     @Test
@@ -47,20 +48,16 @@ class ItemValidatorTest {
         ItemValidator itemValidator = new ItemValidator(new DvCodedTextCheck());
 
         // unknown code: not present in the openehr terminology group for "setting"
-        DvCodedText unknownCode =
-                new DvCodedText("whatever", new CodePhrase(new TerminologyId("openehr"), "99999"));
+        DvCodedText unknownCode = new DvCodedText("whatever", new CodePhrase(new TerminologyId(OPENEHR), "99999"));
 
-        assertThatThrownBy(() ->
-            itemValidator.validate("setting", unknownCode, "en"))
+        assertThatThrownBy(() -> itemValidator.validate("setting", unknownCode, ENGLISH))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("99999");
 
         // valid code but mismatched value text
-        DvCodedText wrongValue =
-                new DvCodedText("wrong label", new CodePhrase(new TerminologyId("openehr"), "234"));
+        DvCodedText wrongValue = new DvCodedText("wrong label", new CodePhrase(new TerminologyId(OPENEHR), "234"));
 
-        assertThatThrownBy(() ->
-                itemValidator.validate("setting", wrongValue, "en"))
+        assertThatThrownBy(() -> itemValidator.validate("setting", wrongValue, ENGLISH))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("wrong label");
     }

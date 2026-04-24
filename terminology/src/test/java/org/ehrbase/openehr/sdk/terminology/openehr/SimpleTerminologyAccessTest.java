@@ -17,82 +17,78 @@
  */
 package org.ehrbase.openehr.sdk.terminology.openehr;
 
+import static com.nedap.archie.rmutil.InvariantUtil.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
+import com.nedap.archie.terminology.OpenEHRTerminologyAccess;
 import com.nedap.archie.terminology.TermCode;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class SimpleTerminologyAccessTest {
+class SimpleTerminologyAccessTest {
 
     private static final SimpleTerminologyAccess TERMINOLOGY_ACCESS = SimpleTerminologyAccess.getInstance();
 
     @Test
-    public void groupLookupReturnsTerms() {
+    void groupLookupReturnsTerms() {
         List<TermCode> terms = TERMINOLOGY_ACCESS.getTermsByOpenEHRGroup("setting", "en");
-        assertEquals(14, terms.size());
+        assertThat(terms).hasSize(14);
     }
 
     @Test
-    public void groupLookupByCodeReturnsCorrectRubric() {
+    void groupLookupByCodeReturnsCorrectRubric() {
         TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("setting", "en", "237");
-        assertNotNull(term);
-        assertEquals("nursing home care", term.getDescription());
+        assertThat(term).extracting(TermCode::getDescription).isEqualTo("nursing home care");
     }
 
     @Test
-    public void groupLookupUnknownCodeReturnsNull() {
+    void groupLookupUnknownCodeReturnsNull() {
         TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("setting", "en", "240");
-        assertNull(term);
+        assertThat(term).isNull();
     }
 
     @Test
-    public void codesetLookupReturnsTerms() {
+    void codesetLookupReturnsTerms() {
         List<TermCode> terms = TERMINOLOGY_ACCESS.getTerms("ISO_3166-1", "en");
-        assertTrue(terms.size() > 200);
+        assertThat(terms).hasSizeGreaterThan(200);
     }
 
     @Test
-    public void codesetLookupByCodeReturnsCorrectValue() {
+    void codesetLookupByCodeReturnsCorrectValue() {
         TermCode term = TERMINOLOGY_ACCESS.getTerm("ISO_3166-1", "AU", "en");
-        assertNotNull(term);
+        assertThat(term).isNotNull();
     }
 
     @Test
-    public void codesetLookupUnknownCodeReturnsNull() {
+    void codesetLookupUnknownCodeReturnsNull() {
         TermCode term = TERMINOLOGY_ACCESS.getTerm("ISO_3166-1", "ZZ", "en");
-        assertNull(term);
+        assertThat(term).isNull();
     }
 
     @Test
-    public void rubricInSpanish() {
+    void rubricInSpanish() {
         TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("composition category", "es", "433");
-        assertNotNull(term);
-        assertEquals("evento", term.getDescription());
+        assertThat(term).extracting(TermCode::getDescription).isEqualTo("evento");
     }
 
     @Test
-    public void rubricInPortuguese() {
+    void rubricInPortuguese() {
         TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("composition category", "pt", "433");
-        assertNotNull(term);
-        assertEquals("evento", term.getDescription());
+        assertThat(term).extracting(TermCode::getDescription).isEqualTo("evento");
     }
 
     @Test
-    public void rubricInJapanese() {
+    void rubricInJapanese() {
         TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup("composition category", "ja", "433");
-        assertNotNull(term);
-        assertEquals("イベント", term.getDescription());
+        assertThat(term).extracting(TermCode::getDescription).isEqualTo("イベント");
     }
 
     @Test
-    public void code532VersionLifecycleStateIsSupported() {
+    void code532VersionLifecycleStateIsSupported() {
         Map<String, String> expectedRubrics = Map.of(
                 "en", "complete",
                 "es", "completo",
@@ -105,43 +101,70 @@ public class SimpleTerminologyAccessTest {
                     OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(), lang, "532");
 
             assertThat(expectedRubrics).containsKey(lang);
-            assertThat(expectedRubrics.get(lang)).isEqualTo(term.getDescription());
+            assertThat(term).extracting(TermCode::getDescription).isEqualTo(expectedRubrics.get(lang));
         });
     }
 
     @Test
-    public void code532InstructionStatesIsSupported() {
+    void code532InstructionStatesIsSupported() {
         List<String> languageCodes = List.of("en", "es", "ja", "pt");
         assertThat(languageCodes).containsAll(SimpleTerminologyAccess.CODE_532_INSTRUCTION_RUBRICS.keySet());
 
         languageCodes.forEach(lang -> {
             TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
                     OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(), lang, "532");
-            assertNotNull("Support for code is unavailable in language: " + lang, term);
-            assertEquals(SimpleTerminologyAccess.CODE_532_INSTRUCTION_RUBRICS.get(lang), term.getDescription());
+            assertThat(term)
+                    .withFailMessage("Support for code is unavailable in language: %s", lang)
+                    .isNotNull()
+                    .extracting(TermCode::getDescription)
+                    .isEqualTo(SimpleTerminologyAccess.CODE_532_INSTRUCTION_RUBRICS.get(lang));
         });
     }
 
     @Test
-    public void code532PatchedInGroupList() {
+    void code532PatchedInGroupList() {
         List<TermCode> terms = TERMINOLOGY_ACCESS.getTermsByOpenEHRGroup("instruction states", "en");
-        TermCode code532 = terms.stream()
-                .filter(t -> "532".equals(t.getCodeString()))
-                .findFirst()
-                .orElse(null);
-        assertNotNull(code532);
-        assertEquals("completed", code532.getDescription());
+        var code532 =
+                terms.stream().filter(t -> "532".equals(t.getCodeString())).findFirst();
+
+        assertThat(code532).map(TermCode::getDescription).hasValue("completed");
     }
 
     @Test
-    public void supportedLanguages() {
-        assertTrue(TERMINOLOGY_ACCESS.supportsLanguage("en"));
-        assertTrue(TERMINOLOGY_ACCESS.supportsLanguage("es"));
-        assertTrue(TERMINOLOGY_ACCESS.supportsLanguage("ja"));
-        assertTrue(TERMINOLOGY_ACCESS.supportsLanguage("pt"));
-        assertFalse(TERMINOLOGY_ACCESS.supportsLanguage("de"));
-        assertFalse(TERMINOLOGY_ACCESS.supportsLanguage("fr"));
-        assertFalse(TERMINOLOGY_ACCESS.supportsLanguage("ro"));
-        assertFalse(TERMINOLOGY_ACCESS.supportsLanguage(null));
+    void supportsLanguage() {
+        Stream.of("en", "es", "ja", "pt")
+                .forEach(l -> Assertions.assertThat(TERMINOLOGY_ACCESS.supportsLanguage(l))
+                        .isTrue());
+
+        assertThat(SimpleTerminologyAccess.CODE_532_INSTRUCTION_RUBRICS).hasSize(4);
+
+        Stream.of("de", "fr", "ro", null)
+                .forEach(l -> Assertions.assertThat(TERMINOLOGY_ACCESS.supportsLanguage(l))
+                        .isFalse());
+
+        OpenEHRTerminologyAccess archieOpenehrTerminology = OpenEHRTerminologyAccess.getInstance();
+        List<TermCode> languages = archieOpenehrTerminology.getTerms("ISO_639-1", ENGLISH);
+
+        IntSummaryStatistics supportStats = languages.stream()
+                .mapToInt(langTerm -> {
+                    String langCode = langTerm.getCodeString();
+
+                    boolean supported = TERMINOLOGY_ACCESS.supportsLanguage(langCode);
+
+                    TermCode attestationReasonSigned = archieOpenehrTerminology.getTermByOpenEHRGroup(
+                            OpenEHRTerminologyGroupIdentifiers.ATTESTATION_REASON.getValue(), langCode, "240");
+                    boolean supportedByArchie = attestationReasonSigned != null;
+
+                    assertThat(supported)
+                            .withFailMessage(
+                                    "Language %s is%s supported, but should%s",
+                                    langTerm, supported ? " " : " not", supportedByArchie ? "" : " not")
+                            .isEqualTo(supportedByArchie);
+                    return supported ? 1 : 0;
+                })
+                .summaryStatistics();
+
+        assertThat(supportStats.getSum()).isEqualTo(SimpleTerminologyAccess.CODE_532_INSTRUCTION_RUBRICS.size());
+        assertThat(supportStats.getCount()).isGreaterThan(200);
     }
 }

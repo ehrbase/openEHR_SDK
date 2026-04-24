@@ -70,8 +70,8 @@ class TerminologyValidationVisitorTest {
         Composition composition = loadComposition("RIPPLE-ConformanceTest.xml");
 
         itemStructureVisitor.validate(composition);
-                // 4 elements are in the context/other_context structure
-         assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(61);
+        // 4 elements are in the context/other_context structure
+        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(61);
 
         itemStructureVisitor.validate(composition.getContext().getOtherContext());
         assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(65);
@@ -81,7 +81,7 @@ class TerminologyValidationVisitorTest {
     void elementVisitorTest3() {
         Composition composition = loadComposition("RIPPLE-ConformanceTest_invalid_other_context_mm_type.xml");
 
-        assertThatThrownBy(() ->itemStructureVisitor.validate(composition))
+        assertThatThrownBy(() -> itemStructureVisitor.validate(composition))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("supplied code string [video/mp3] is not found in codeset:media types");
     }
@@ -106,12 +106,13 @@ class TerminologyValidationVisitorTest {
         CompositionTestDataCanonicalXML src = CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS;
         Composition composition = loadComposition(src);
 
-        assertThatThrownBy(() -> itemStructureVisitor.validate(composition)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> itemStructureVisitor.validate(composition))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     private static Composition loadComposition(String fileName) {
-        try (InputStream in = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("composition/"+ fileName)) {
+        try (InputStream in =
+                Thread.currentThread().getContextClassLoader().getResourceAsStream("composition/" + fileName)) {
             Unmarshaller unmarshaller = JAXBUtil.getArchieJAXBContext().createUnmarshaller();
             return (Composition) unmarshaller.unmarshal(in);
         } catch (Exception e) {

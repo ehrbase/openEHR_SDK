@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.check;
 
+import static com.nedap.archie.rmutil.InvariantUtil.ENGLISH;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.terminology.TermCode;
 import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
@@ -58,13 +60,13 @@ public class CodePhraseCheck implements TerminologyCheck<CodePhrase> {
                                 terminologyContainer.id(), language, codePhrase.getCodeString());
                         if (t == null && !terminologyAccess.supportsLanguage(language)) {
                             t = terminologyAccess.getTermByOpenEHRGroup(
-                                    terminologyContainer.id(), "en", codePhrase.getCodeString());
+                                    terminologyContainer.id(), ENGLISH, codePhrase.getCodeString());
                         }
                         yield t;
                     }
                     case CODESET -> // External codesets (ISO_639-1, ISO_3166-1...) are only loaded in en
                         SimpleTerminologyAccess.getInstance()
-                                .getTerm(terminologyContainer.terminology(), codePhrase.getCodeString(), "en");
+                                .getTerm(terminologyContainer.terminology(), codePhrase.getCodeString(), ENGLISH);
                 };
 
         if (term == null) {

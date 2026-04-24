@@ -22,13 +22,20 @@ package org.ehrbase.openehr.sdk.terminology.openehr;
  *
  * @author Rong Chen
  */
-public enum OpenEHRTerminologyGroupIdentifiers {
+// TODO CDR-2273 rename
+public enum OpenEHRTerminologyGroupIdentifiers implements OpenEHRTerminologyIdentifier {
+    // XXX CDR-2273 There is a bit of double validation, see e.g. Composition::languageValid. Is our task just to check
+    // that the value is correct?
     AUDIT_CHANGE_TYPE("audit change type"),
     ATTESTATION_REASON("attestation reason"),
     COMPOSITION_CATEGORY("composition category"),
+    EXTRACT_ACTION_TYPE("extract action type"),
+    EXTRACT_CONTENT_TYPE("extract content type"),
+    EXTRACT_UPDATE_TRIGGER_EVENT_TYPE("extract update trigger event type"),
     EVENT_MATH_FUNCTION("event math function"),
     INSTRUCTION_STATES("instruction states"),
     INSTRUCTION_TRANSITIONS("instruction transitions"),
+    MULTIMEDIA("MultiMedia"),
     NULL_FLAVOURS("null flavours"),
     PROPERTY("property"),
     PARTICIPATION_FUNCTION("participation function"),
@@ -38,12 +45,12 @@ public enum OpenEHRTerminologyGroupIdentifiers {
     TERM_MAPPING_PURPOSE("term mapping purpose"),
     VERSION_LIFECYCLE_STATE("version lifecycle state");
 
+    private final String value;
+
     /**
-     * Private constructor
-     *
-     * @param value
+     * @param value String value of the identifier
      */
-    private OpenEHRTerminologyGroupIdentifiers(String value) {
+    OpenEHRTerminologyGroupIdentifiers(String value) {
         this.value = value;
     }
 
@@ -68,6 +75,7 @@ public enum OpenEHRTerminologyGroupIdentifiers {
      *
      * @return the string value
      */
+    @Override
     public String toString() {
         return value;
     }
@@ -77,12 +85,10 @@ public enum OpenEHRTerminologyGroupIdentifiers {
      *
      * @return value
      */
+    @Override
     public String getValue() {
         return value;
     }
-
-    /* String value of the identifier */
-    private final String value;
 }
 
 /*

@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology.check;
 
+import static com.nedap.archie.rmutil.InvariantUtil.ENGLISH;
+
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.terminology.TermCode;
@@ -57,9 +59,9 @@ public class DvCodedTextCheck implements TerminologyCheck<DvCodedText> {
             // fallback: check if the value matches the English rubric
             TermCode englishTerm = terminologyContainer.container() == ContainerType.GROUP
                     ? SimpleTerminologyAccess.getInstance()
-                            .getTermByOpenEHRGroup(terminologyContainer.id(), "en", definingCode.getCodeString())
+                            .getTermByOpenEHRGroup(terminologyContainer.id(), ENGLISH, definingCode.getCodeString())
                     : SimpleTerminologyAccess.getInstance()
-                            .getTerm(terminologyContainer.terminology(), definingCode.getCodeString(), "en");
+                            .getTerm(terminologyContainer.terminology(), definingCode.getCodeString(), ENGLISH);
 
             if (englishTerm == null || !englishTerm.getDescription().equals(dvCodedText.getValue())) {
                 throw new IllegalArgumentException("supplied value [" + dvCodedText.getValue()
