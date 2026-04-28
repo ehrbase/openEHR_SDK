@@ -118,6 +118,7 @@ public class OPTParser {
     public static final String CODED_TEXT = "CODED_TEXT";
     public static final String OPENEHR = "openehr";
     public static final String CURRENT_STATE = "current_state";
+    private static final String LOCAL_TERMINOLOGY = "local";
 
     private static final Set<String> LOCATABLE_TYPES =
             ArchieRMInfoLookup.getInstance().getTypeInfo(Locatable.class).getAllDescendantClasses().stream()
@@ -499,7 +500,7 @@ public class OPTParser {
                 WebTemplateInput code = new WebTemplateInput();
                 code.setSuffix("code");
                 code.setType(CODED_TEXT);
-                code.setTerminology("local");
+                code.setTerminology(LOCAL_TERMINOLOGY);
 
                 for (WebTemplateNode i : ismTransitions) {
                     WebTemplateInputValue value = i.findChildById(CAREFLOW_STEP)
@@ -1007,6 +1008,7 @@ public class OPTParser {
             WebTemplateInput code = new WebTemplateInput();
             inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
             code.setType(CODED_TEXT);
+            code.setTerminology(LOCAL_TERMINOLOGY);
             node.getInputs().add(code);
             Optional.of(cdvordinal)
                     .map(CDVORDINAL::getAssumedValue)
@@ -1104,7 +1106,8 @@ public class OPTParser {
 
             } else {
                 Arrays.stream(ccodephrase.getCodeListArray())
-                        .map(o -> StringUtils.isBlank(code.getTerminology()) || "local".equals(code.getTerminology())
+                        .map(o -> StringUtils.isBlank(code.getTerminology())
+                                        || LOCAL_TERMINOLOGY.equals(code.getTerminology())
                                 ? o
                                 : code.getTerminology() + "::" + o)
                         .forEach(o -> {
