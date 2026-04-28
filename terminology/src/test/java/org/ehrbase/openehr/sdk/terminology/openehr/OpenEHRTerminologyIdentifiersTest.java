@@ -60,7 +60,6 @@ class OpenEHRTerminologyIdentifiersTest {
                 .containsExactlyInAnyOrderElementsOf(
                         archieByContainerType.get(ContainerType.CODESET).keySet());
 
-        // XXX CDR-2273 Missing: "MultiMedia", "extract update trigger event type", "extract content type", "extract
         // action type"
         assertThat(groupIds)
                 .containsExactlyInAnyOrderElementsOf(

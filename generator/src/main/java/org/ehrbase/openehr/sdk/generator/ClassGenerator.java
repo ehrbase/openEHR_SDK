@@ -522,7 +522,7 @@ public class ClassGenerator {
                     className = ClassName.get(NullFlavour.class);
                     break;
                 default:
-                    if (CollectionUtils.isNotEmpty(valueSet.getTherms())) {
+                    if (CollectionUtils.isNotEmpty(valueSet.getTerms())) {
 
                         final TypeSpec enumValueSet = context.currentEnums.computeIfAbsent(
                                 valueSet, vs -> buildEnumValueSet(context, node, vs));
@@ -580,7 +580,7 @@ public class ClassGenerator {
 
         MethodSpec constructor = buildConstructor(fieldSpec1, fieldSpec2, fieldSpec3, fieldSpec4);
         enumBuilder.addMethod(constructor);
-        valueSet.getTherms()
+        valueSet.getTerms()
                 .forEach(t -> enumBuilder.addEnumConstant(
                         defaultNamingStrategy.buildEnumConstantName(context, node, t.getValue()),
                         TypeSpec.anonymousClassBuilder(

@@ -470,85 +470,7 @@ public class OPTParser {
                 }
             }
 
-            WebTemplateNode[] ismTransitions = newChildren.stream()
-                    .flatMap(Arrays::stream)
-                    .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
-                    .toArray(WebTemplateNode[]::new);
-            if (ismTransitions.length > 0) {
-                WebTemplateNode firstChild = ismTransitions[0];
-                WebTemplateNode ismTransition = new WebTemplateNode();
-                ismTransition.setName(cattribute.getRmAttributeName());
-                ismTransition.setId(buildId(cattribute.getRmAttributeName()));
-                ismTransition.setMin(firstChild.getMin());
-                ismTransition.setMax(firstChild.getMax());
-                ismTransition.setRmType(RmConstants.ISM_TRANSITION);
-                ismTransition.setInContext(true);
-                ismTransition.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName()));
-
-                WebTemplateNode careflowStep = new WebTemplateNode();
-                WebTemplateNode careflowStepProto = firstChild
-                        .findChildById(CAREFLOW_STEP)
-                        .orElseThrow(() -> new SdkException(String.format("Missing node: %s", CAREFLOW_STEP)));
-                careflowStep.setMin(careflowStepProto.getMin());
-                careflowStep.setMax(careflowStepProto.getMin());
-                careflowStep.setName("Careflow_step");
-                careflowStep.setId(CAREFLOW_STEP);
-                careflowStep.setRmType(RmConstants.DV_CODED_TEXT);
-                careflowStep.setInContext(true);
-                careflowStep.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), CAREFLOW_STEP));
-                WebTemplateInput code = new WebTemplateInput();
-                code.setSuffix("code");
-                code.setType(CODED_TEXT);
-                code.setTerminology("local");
-
-                for (WebTemplateNode i : ismTransitions) {
-                    WebTemplateInputValue value = i.findChildById(CAREFLOW_STEP)
-                            .orElseThrow()
-                            .getInputs()
-                            .get(0)
-                            .getList()
-                            .get(0);
-                    value.getCurrentStates()
-                            .addAll(i.findChildById(CURRENT_STATE).orElseThrow().getInputs().get(0).getList().stream()
-                                    .map(WebTemplateInputValue::getValue)
-                                    .toList());
-                    code.getList().add(value);
-                }
-                careflowStep.getInputs().add(code);
-                ismTransition.getChildren().add(careflowStep);
-
-                WebTemplateNode currentState = new WebTemplateNode();
-                WebTemplateNode currentStateProto =
-                        firstChild.findChildById(CURRENT_STATE).orElseThrow();
-                currentState.setMin(currentStateProto.getMin());
-                currentState.setMax(currentStateProto.getMin());
-                currentState.setRmType(RmConstants.DV_CODED_TEXT);
-                currentState.setName("Current_state");
-                currentState.setId(CURRENT_STATE);
-                currentState.setInContext(true);
-                currentState.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), CURRENT_STATE));
-                WebTemplateInput code2 = new WebTemplateInput();
-                code2.setSuffix("code");
-                code2.setType(CODED_TEXT);
-                code2.setTerminology(OPENEHR);
-
-                Arrays.stream(ismTransitions)
-                        .flatMap(n -> n.findChildById(CURRENT_STATE).stream())
-                        .map(WebTemplateNode::getInputs)
-                        .flatMap(List::stream)
-                        .map(WebTemplateInput::getList)
-                        .flatMap(List::stream)
-                        .forEach(code2.getList()::add);
-
-                currentState.getInputs().add(code2);
-                ismTransition.getChildren().add(currentState);
-                WebTemplateNode transition =
-                        firstChild.findChildById("transition").orElseThrow();
-                transition.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), "transition"));
-                transition.setInContext(true);
-                ismTransition.getChildren().add(transition);
-                node.getChildren().add(ismTransition);
-            }
+            handleActionIsmTransitions(aqlPath, node, cattribute, newChildren);
 
             Optional.of(cattribute)
                     .filter(CMULTIPLEATTRIBUTE.class::isInstance)
@@ -672,6 +594,110 @@ public class OPTParser {
         });
 
         node.getChildren().forEach(child -> addInContext(node, child));
+    }
+
+    private static void handleActionIsmTransitions(
+            AqlPath aqlPath, WebTemplateNode node, CATTRIBUTE cattribute, List<WebTemplateNode[]> newChildren) {
+        if (!RmConstants.ACTION.equals(node.getRmType())) {
+            return;
+        }
+
+        WebTemplateNode[] ismTransitionNodes = newChildren.stream()
+                .flatMap(Arrays::stream)
+                .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
+                .toArray(WebTemplateNode[]::new);
+
+        if (ismTransitionNodes.length == 0) {
+            return;
+        }
+
+        WebTemplateNode firstChild = ismTransitionNodes[0];
+        String rmAttributeName = cattribute.getRmAttributeName();
+
+        WebTemplateNode ismTransition = new WebTemplateNode();
+        {
+            ismTransition.setName(rmAttributeName);
+            ismTransition.setId(buildId(rmAttributeName));
+            ismTransition.setMin(firstChild.getMin());
+            ismTransition.setMax(firstChild.getMax());
+            ismTransition.setRmType(RmConstants.ISM_TRANSITION);
+            ismTransition.setInContext(true);
+            ismTransition.setAqlPath(aqlPath.addEnd(rmAttributeName));
+        }
+
+        WebTemplateNode careflowStep = new WebTemplateNode();
+        {
+            WebTemplateNode careflowStepProto = firstChild
+                    .findChildById(CAREFLOW_STEP)
+                    .orElseThrow(() -> new SdkException(String.format("Missing node: %s", CAREFLOW_STEP)));
+            careflowStep.setMin(careflowStepProto.getMin());
+            careflowStep.setMax(careflowStepProto.getMin());
+            careflowStep.setName("Careflow_step");
+            careflowStep.setId(CAREFLOW_STEP);
+            careflowStep.setRmType(RmConstants.DV_CODED_TEXT);
+            careflowStep.setInContext(true);
+            careflowStep.setAqlPath(aqlPath.addEnd(rmAttributeName, CAREFLOW_STEP));
+        }
+
+        WebTemplateInput code = new WebTemplateInput();
+        {
+            code.setSuffix("code");
+            code.setType(CODED_TEXT);
+            code.setTerminology("local");
+        }
+
+        for (WebTemplateNode itNode : ismTransitionNodes) {
+            // expectation: only one careflow step
+            WebTemplateInputValue value = itNode.findChildById(CAREFLOW_STEP)
+                    .orElseThrow()
+                    .getInputs()
+                    .get(0)
+                    .getList()
+                    .get(0);
+
+            // add current states of ism transition to careflow step
+            value.getCurrentStates()
+                    .addAll(itNode.findChildById(CURRENT_STATE).orElseThrow().getInputs().get(0).getList().stream()
+                            .map(WebTemplateInputValue::getValue)
+                            .toList());
+
+            code.getList().add(value);
+        }
+        careflowStep.getInputs().add(code);
+
+        ismTransition.getChildren().add(careflowStep);
+
+        WebTemplateNode currentState = new WebTemplateNode();
+        WebTemplateNode currentStateProto =
+                firstChild.findChildById(CURRENT_STATE).orElseThrow();
+        currentState.setMin(currentStateProto.getMin());
+        currentState.setMax(currentStateProto.getMin());
+        currentState.setRmType(RmConstants.DV_CODED_TEXT);
+        currentState.setName("Current_state");
+        currentState.setId(CURRENT_STATE);
+        currentState.setInContext(true);
+        currentState.setAqlPath(aqlPath.addEnd(rmAttributeName, CURRENT_STATE));
+        WebTemplateInput code2 = new WebTemplateInput();
+        code2.setSuffix("code");
+        code2.setType(CODED_TEXT);
+        code2.setTerminology(OPENEHR);
+
+        Arrays.stream(ismTransitionNodes)
+                .flatMap(n -> n.findChildById(CURRENT_STATE).stream())
+                .map(WebTemplateNode::getInputs)
+                .flatMap(List::stream)
+                .map(WebTemplateInput::getList)
+                .flatMap(List::stream)
+                .forEach(code2.getList()::add);
+
+        currentState.getInputs().add(code2);
+        ismTransition.getChildren().add(currentState);
+        WebTemplateNode transition = firstChild.findChildById("transition").orElseThrow();
+        transition.setAqlPath(aqlPath.addEnd(rmAttributeName, "transition"));
+        transition.setInContext(true);
+        ismTransition.getChildren().add(transition);
+
+        node.getChildren().add(ismTransition);
     }
 
     private void replaceParentAql(WebTemplateNode node, AqlPath oldBase, AqlPath newBase) {
@@ -1104,7 +1130,8 @@ public class OPTParser {
                         }
                         // CDR-2273 Sometimes the parent attribute is relevant (e.g. for DV_CODED_TEXT.defining_code),
                         // unlike DV_MULTIMEDIA.media_type: take its attribute
-                        // TODO CDR-2273 we need to make sure the whole RM model is covered in AttributeCodesets without conflicts.
+                        // TODO CDR-2273 we need to make sure the whole RM model is covered in AttributeCodesets without
+                        // conflicts.
                         String terminologyAttribute =
                                 aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
                         return AttributeCodesets.get(terminologyAttribute);
@@ -1125,7 +1152,7 @@ public class OPTParser {
                                     l,
                                     rmConstrainedTerminologyContainer)));
 
-            defaultValueset.getTherms().forEach(t -> {
+            defaultValueset.getTerms().forEach(t -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();
                 value.setValue(t.getCode());
                 value.setLabel(t.getValue());
@@ -1133,7 +1160,7 @@ public class OPTParser {
                         .putAll(valuesetByLanguage.entrySet().stream()
                                 .collect(Collectors.toMap(
                                         Map.Entry::getKey,
-                                        e -> e.getValue().getTherms().stream()
+                                        e -> e.getValue().getTerms().stream()
                                                 .filter(x -> x.getCode().equals(t.getCode()))
                                                 .findAny()
                                                 .map(TermDefinition::getValue)
@@ -1271,7 +1298,7 @@ public class OPTParser {
 
         String alnumsCleaned = NON_ALNUM.matcher(term).replaceAll(" ");
         String normalTerm =
-                StringUtils.normalizeSpace(alnumsCleaned).replace(" ", "_").toLowerCase();
+                StringUtils.normalizeSpace(alnumsCleaned).replace(' ', '_').toLowerCase();
 
         if (Character.isDigit(normalTerm.charAt(0))) {
             return "a" + normalTerm;

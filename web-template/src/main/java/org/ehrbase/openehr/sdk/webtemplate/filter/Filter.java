@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -96,33 +95,46 @@ public class Filter implements WebTemplateFilter {
 
     protected void preHandle(WebTemplateNode node) {
 
-        List<WebTemplateNode> ismTransitionList = node.getChildren().stream()
-                .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
-                .collect(Collectors.toList());
-        if (!ismTransitionList.isEmpty()) {
-            node.getChildren().removeAll(ismTransitionList);
-            node.getChildren().add(ismTransitionList.get(0));
-        }
-
-        if (node.getRmType().equals(RmConstants.ELEMENT)) {
-            if (WebTemplateUtils.isChoiceDvCodedTextAndDvText(node)) {
-                WebTemplateNode merged = mergeDVText(node);
-                merged.setId(node.getId());
-                node.getChildren().clear();
-                node.getChildren().add(merged);
-            } else {
-                List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
-                if (trueChildren.size() == 1) {
-                    // Element will be skipped and the value node inherits the id
-                    trueChildren.get(0).setId(node.getId());
+        switch (node.getRmType()) {
+            case RmConstants.ACTION -> {
+                List<WebTemplateNode> children = node.getChildren();
+                List<WebTemplateNode> ismTransitionList = children.stream()
+                        .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
+                        .toList();
+                if (!ismTransitionList.isEmpty()) {
+                    children.removeAll(ismTransitionList);
+                    children.add(ismTransitionList.get(0));
                 }
+            }
+            case RmConstants.ELEMENT -> {
+                if (WebTemplateUtils.isChoiceDvCodedTextAndDvText(node)) {
+                    WebTemplateNode merged = mergeDVText(node);
+                    merged.setId(node.getId());
+                    node.getChildren().clear();
+                    node.getChildren().add(merged);
+                } else {
+                    List<WebTemplateNode> trueChildren = WebTemplateUtils.getTrueChildrenElement(node);
+                    if (trueChildren.size() == 1) {
+                        // Element will be skipped and the value node inherits the id
+                        trueChildren.get(0).setId(node.getId());
+                    }
+                }
+            }
+            case RmConstants.DV_ORDINAL -> {
+                // remove terminology_id from symbol: is implicitly "local"
+                node.getInputs().stream()
+                        .filter(ip -> OPTParser.CODED_TEXT.equals(ip.getType()))
+                        .forEach(ip -> ip.setTerminology(null));
+            }
+            default -> {
+                /*NOOP*/
             }
         }
 
         List<WebtemplateCardinality> cardinalities = node.getCardinalities().stream()
                 .filter(webtemplateCardinality ->
                         BooleanUtils.isNotTrue(webtemplateCardinality.getExcludeFromWebTemplate()))
-                .collect(Collectors.toList());
+                .toList();
 
         node.getCardinalities().clear();
         node.getCardinalities().addAll(cardinalities);
