@@ -41,7 +41,6 @@ public class CodePhraseCheck implements TerminologyCheck<CodePhrase> {
         }
 
         String terminologyId = codePhrase.getTerminologyId().getValue();
-
         if ("local".equals(terminologyId)) {
             return null;
         }

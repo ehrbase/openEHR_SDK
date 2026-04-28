@@ -86,7 +86,6 @@ import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CDOMAINTYPE;
 import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.CDVQUANTITY;
-import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
 import org.openehr.schemas.v1.COBJECT;
 import org.openehr.schemas.v1.CODEPHRASE;
@@ -104,6 +103,7 @@ import org.openehr.schemas.v1.StringDictionaryItem;
 import org.openehr.schemas.v1.TATTRIBUTE;
 import org.openehr.schemas.v1.TCOMPLEXOBJECT;
 import org.openehr.schemas.v1.TCONSTRAINT;
+import org.openehr.schemas.v1.TERMINOLOGYID;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -251,7 +251,7 @@ public class OPTParser {
 
     private WebTemplateNode[] parseCARCHETYPEROOT(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
 
-        // extract local Terminologies
+        // extract local Terminologies code -> language -> TermDefinition
         Map<String, Map<String, TermDefinition>> termDefinitionMap = new HashMap<>();
         for (ARCHETYPETERM term : carchetyperoot.getTermDefinitionsArray()) {
             String code = term.getCode();
@@ -950,226 +950,255 @@ public class OPTParser {
 
         WebTemplateNode node = buildNode(cdomaintype, rmAttributeName, termDefinitionMap, null);
         node.setAqlPath(aqlPath);
-        if (cdomaintype instanceof CDVSTATE) {
-            throw new SdkException(
-                    String.format("Unexpected class: %s", cdomaintype.getClass().getSimpleName()));
-        } else if (cdomaintype instanceof CDVQUANTITY cdvquantity) {
 
-            WebTemplateInput magnitude = new WebTemplateInput();
-            magnitude.setSuffix("magnitude");
-            magnitude.setType("DECIMAL");
-            Optional.of(cdvquantity)
-                    .map(CDVQUANTITY::getAssumedValue)
-                    .map(DVQUANTITY::getMagnitude)
-                    .map(d -> Double.toString(d))
-                    .ifPresent(magnitude::setDefaultValue);
-            inputHandler.findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
-            node.getInputs().add(magnitude);
-
-            WebTemplateInput unit = new WebTemplateInput();
-            unit.setSuffix("unit");
-            unit.setType(CODED_TEXT);
-            Optional.of(cdvquantity)
-                    .map(CDVQUANTITY::getAssumedValue)
-                    .map(DVQUANTITY::getUnits)
-                    .ifPresent(unit::setDefaultValue);
-            inputHandler.findDefaultValue(node, "units").ifPresent(unit::setDefaultValue);
-            node.getInputs().add(unit);
-
-            Arrays.stream(cdvquantity.getListArray()).forEach(o -> {
-                WebTemplateInputValue value = new WebTemplateInputValue();
-                value.setLabel(o.getUnits());
-                value.setValue(o.getUnits());
-
-                WebTemplateValidation validation = new WebTemplateValidation();
-                boolean addValidation = false;
-                if (o.getMagnitude() != null) {
-                    addValidation = true;
-                    validation.setRange(inputHandler.extractInterval(o.getMagnitude()));
-                }
-                if (o.getPrecision() != null) {
-                    addValidation = true;
-                    validation.setPrecision(inputHandler.extractInterval(o.getPrecision()));
-                }
-                if (addValidation) {
-                    value.setValidation(validation);
-                }
-                value.getLocalizedLabels()
-                        .putAll(termDefinitionMap.getOrDefault(o.getUnits(), Collections.emptyMap()).entrySet().stream()
-                                .collect(Collectors.toMap(
-                                        Map.Entry::getKey, e -> e.getValue().getValue())));
-                unit.getList().add(value);
-            });
-            if (unit.getList().size() == 1) {
-                magnitude.setValidation(unit.getList().get(0).getValidation());
-            }
+        if (cdomaintype instanceof CDVQUANTITY cdvquantity) {
+            parseCDVQUANTITY(termDefinitionMap, cdvquantity, node);
         } else if (cdomaintype instanceof CDVORDINAL cdvordinal) {
-            WebTemplateInput code = new WebTemplateInput();
-            inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
-            code.setType(CODED_TEXT);
-            node.getInputs().add(code);
-            Optional.of(cdvordinal)
-                    .map(CDVORDINAL::getAssumedValue)
-                    .map(DVORDINAL::getSymbol)
-                    .map(DVCODEDTEXT::getDefiningCode)
-                    .map(CODEPHRASE::getCodeString)
-                    .ifPresent(code::setDefaultValue);
-            Arrays.stream((cdvordinal).getListArray()).forEach(o -> {
+            parseCDVORDINAL(termDefinitionMap, cdvordinal, node);
+        } else if (cdomaintype instanceof CCODEPHRASE ccodephrase) {
+            parseCCODEPHRASE(aqlPath, termDefinitionMap, rmAttributeName, ccodephrase, node);
+        } else /* if (cdomaintype instanceof CDVSTATE) */ {
+            throw new SdkException(
+                    "Unexpected class: %s".formatted(cdomaintype.getClass().getSimpleName()));
+        }
+        return node;
+    }
+
+    private void parseCDVQUANTITY(
+            Map<String, Map<String, TermDefinition>> termDefinitionMap, CDVQUANTITY cdvquantity, WebTemplateNode node) {
+        WebTemplateInput magnitude = new WebTemplateInput();
+        magnitude.setSuffix("magnitude");
+        magnitude.setType("DECIMAL");
+        Optional.of(cdvquantity)
+                .map(CDVQUANTITY::getAssumedValue)
+                .map(DVQUANTITY::getMagnitude)
+                .map(d -> Double.toString(d))
+                .ifPresent(magnitude::setDefaultValue);
+        inputHandler.findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
+        node.getInputs().add(magnitude);
+
+        WebTemplateInput unit = new WebTemplateInput();
+        unit.setSuffix("unit");
+        unit.setType(CODED_TEXT);
+        Optional.of(cdvquantity)
+                .map(CDVQUANTITY::getAssumedValue)
+                .map(DVQUANTITY::getUnits)
+                .ifPresent(unit::setDefaultValue);
+        inputHandler.findDefaultValue(node, "units").ifPresent(unit::setDefaultValue);
+        node.getInputs().add(unit);
+
+        Arrays.stream(cdvquantity.getListArray()).forEach(o -> {
+            WebTemplateInputValue value = new WebTemplateInputValue();
+            value.setLabel(o.getUnits());
+            value.setValue(o.getUnits());
+
+            WebTemplateValidation validation = new WebTemplateValidation();
+            boolean addValidation = false;
+            if (o.getMagnitude() != null) {
+                addValidation = true;
+                validation.setRange(inputHandler.extractInterval(o.getMagnitude()));
+            }
+            if (o.getPrecision() != null) {
+                addValidation = true;
+                validation.setPrecision(inputHandler.extractInterval(o.getPrecision()));
+            }
+            if (addValidation) {
+                value.setValidation(validation);
+            }
+            value.getLocalizedLabels()
+                    .putAll(termDefinitionMap.getOrDefault(o.getUnits(), Collections.emptyMap()).entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey, e -> e.getValue().getValue())));
+            unit.getList().add(value);
+        });
+        if (unit.getList().size() == 1) {
+            magnitude.setValidation(unit.getList().get(0).getValidation());
+        }
+    }
+
+    private void parseCDVORDINAL(
+            Map<String, Map<String, TermDefinition>> termDefinitionMap, CDVORDINAL cdvordinal, WebTemplateNode node) {
+        WebTemplateInput code = new WebTemplateInput();
+        inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
+        code.setType(CODED_TEXT);
+        Optional<CODEPHRASE> symbol = Optional.of(cdvordinal)
+                .map(CDVORDINAL::getAssumedValue)
+                .map(DVORDINAL::getSymbol)
+                .map(DVCODEDTEXT::getDefiningCode);
+        // only "local" is supported
+        symbol.map(CODEPHRASE::getTerminologyId)
+                .map(TERMINOLOGYID::getValue)
+                .filter("local"::equals)
+                .ifPresent(t -> {
+                    throw new SdkException(String.format("Invalid DV_ORDINAL.symbol terminology_id: %s", t));
+                });
+        code.setTerminology("local");
+        node.getInputs().add(code);
+        symbol.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
+        Arrays.stream(cdvordinal.getListArray())
+                .map(o -> {
+                    WebTemplateInputValue value = new WebTemplateInputValue();
+                    value.setOrdinal(o.getValue());
+                    value.setValue(o.getSymbol().getDefiningCode().getCodeString());
+                    value.getLocalizedLabels()
+                            .putAll(
+                                    Optional.ofNullable(termDefinitionMap.get(value.getValue()))
+                                            .map(Map::entrySet)
+                                            .stream()
+                                            .flatMap(Set::stream)
+                                            .collect(Collectors.toMap(
+                                                    Map.Entry::getKey,
+                                                    e -> e.getValue().getValue())));
+                    value.getLocalizedDescriptions()
+                            .putAll(
+                                    Optional.ofNullable(termDefinitionMap.get(value.getValue()))
+                                            .map(Map::entrySet)
+                                            .stream()
+                                            .flatMap(Set::stream)
+                                            .collect(Collectors.toMap(
+                                                    Map.Entry::getKey,
+                                                    e -> e.getValue().getDescription())));
+                    value.setLabel(value.getLocalizedLabels().get(defaultLanguage));
+                    value.getLocalizedDescriptions().putIfAbsent(defaultLanguage, "");
+                    return value;
+                })
+                .forEach(code.getList()::add);
+    }
+
+    private void parseCCODEPHRASE(
+            AqlPath aqlPath,
+            Map<String, Map<String, TermDefinition>> termDefinitionMap,
+            String rmAttributeName,
+            CCODEPHRASE ccodephrase,
+            WebTemplateNode node) {
+        WebTemplateInput code = new WebTemplateInput();
+        inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
+        code.setSuffix("code");
+        node.getInputs().add(code);
+        Optional.of(ccodephrase)
+                .map(CCODEPHRASE::getAssumedValue)
+                .map(CODEPHRASE::getCodeString)
+                .ifPresent(code::setDefaultValue);
+
+        Optional<String> terminology;
+        if (ccodephrase instanceof CCODEREFERENCE ccodereference) {
+            terminology = Optional.of(ccodereference)
+                    .map(CCODEREFERENCE::getReferenceSetUri)
+                    .map(s -> Strings.CS.removeStart(s, "terminology:"));
+        } else {
+            terminology =
+                    Optional.of(ccodephrase).map(CCODEPHRASE::getTerminologyId).map(OBJECTID::getValue);
+        }
+        terminology.ifPresent(code::setTerminology);
+
+        if (code.getTerminology().equals(OPENEHR)) {
+            // TODO CDR-2273 cleanup: determine terminologyAttribute + provide AttributeCodesets
+            // to findOpenEhrValueSet (etc)
+            // Resolve the terminology group for rubric lookups with the group.
+
+            AttributeCodesets.TerminologyContainer rmConstrainedTerminologyContainer = Optional.of(rmAttributeName)
+                    .map(AttributeCodesets::get)
+                    .orElseGet(() -> {
+                        if (aqlPath.getNodeCount() < 2) {
+                            return null;
+                        }
+                        // CDR-2273 Sometimes the parent attribute is relevant (e.g. for DV_CODED_TEXT.defining_code),
+                        // unlike DV_MULTIMEDIA.media_type: take its attribute
+                        // TODO CDR-2273 we need to make sure the whole RM model is covered in AttributeCodesets without conflicts.
+                        String terminologyAttribute =
+                                aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
+                        return AttributeCodesets.get(terminologyAttribute);
+                    });
+
+            ValueSet defaultValueset = TerminologyProvider.findOpenEhrValueSet(
+                    code.getTerminology(),
+                    ccodephrase.getCodeListArray(),
+                    defaultLanguage,
+                    rmConstrainedTerminologyContainer);
+
+            Map<String, ValueSet> valuesetByLanguage = languages.stream()
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            l -> TerminologyProvider.findOpenEhrValueSet(
+                                    code.getTerminology(),
+                                    ccodephrase.getCodeListArray(),
+                                    l,
+                                    rmConstrainedTerminologyContainer)));
+
+            defaultValueset.getTherms().forEach(t -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();
-                value.setOrdinal(o.getValue());
-                value.setValue(o.getSymbol().getDefiningCode().getCodeString());
+                value.setValue(t.getCode());
+                value.setLabel(t.getValue());
                 value.getLocalizedLabels()
-                        .putAll(Optional.ofNullable(termDefinitionMap.get(value.getValue())).map(Map::entrySet).stream()
-                                .flatMap(Set::stream)
+                        .putAll(valuesetByLanguage.entrySet().stream()
                                 .collect(Collectors.toMap(
-                                        Map.Entry::getKey, e -> e.getValue().getValue())));
-                value.getLocalizedDescriptions()
-                        .putAll(Optional.ofNullable(termDefinitionMap.get(value.getValue())).map(Map::entrySet).stream()
-                                .flatMap(Set::stream)
-                                .collect(Collectors.toMap(
-                                        Map.Entry::getKey, e -> e.getValue().getDescription())));
-                value.setLabel(value.getLocalizedLabels().get(defaultLanguage));
-                if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
-                    value.getLocalizedDescriptions().put(defaultLanguage, "");
-                }
+                                        Map.Entry::getKey,
+                                        e -> e.getValue().getTherms().stream()
+                                                .filter(x -> x.getCode().equals(t.getCode()))
+                                                .findAny()
+                                                .map(TermDefinition::getValue)
+                                                .orElse(""))));
                 code.getList().add(value);
             });
 
-        } else if (cdomaintype instanceof CCODEPHRASE ccodephrase) {
-            WebTemplateInput code = new WebTemplateInput();
-            inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
-            code.setSuffix("code");
-            node.getInputs().add(code);
-            Optional.of(ccodephrase)
-                    .map(CCODEPHRASE::getAssumedValue)
-                    .map(CODEPHRASE::getCodeString)
-                    .ifPresent(code::setDefaultValue);
-
-            if (ccodephrase instanceof CCODEREFERENCE ccodereference) {
-                code.setTerminology(Optional.of(ccodereference)
-                        .map(CCODEREFERENCE::getReferenceSetUri)
-                        .map(s -> Strings.CS.removeStart(s, "terminology:"))
-                        .orElse(null));
-            } else {
-                code.setTerminology(Optional.of(ccodephrase)
-                        .map(CCODEPHRASE::getTerminologyId)
-                        .map(OBJECTID::getValue)
-                        .orElse(null));
-            }
-
-            if (code.getTerminology().equals(OPENEHR)) {
-                // TODO CDR-2273 cleanup: determine terminologyAttribute + provide AttributeCodesets
-                // to findOpenEhrValueSet (etc)
-                // Resolve the terminology group for rubric lookups with the group.
-                String terminologyAttribute;
-
-                // rmAttributeName is the actual attribute
-                if (AttributeCodesets.get(rmAttributeName) != null) {
-                    terminologyAttribute = rmAttributeName;
-                    // use aqlPath as a fallback to determine the potentially nested attribute
-                } else if (aqlPath.getNodeCount() == 1) {
-                    terminologyAttribute = aqlPath.getLastNode().getName();
-                } else if (aqlPath.getNodeCount() >= 2) {
-                    terminologyAttribute =
-                            aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
-                } else {
-                    terminologyAttribute = null;
-                }
-
-                ValueSet defaultValueset = TerminologyProvider.findOpenEhrValueSet(
-                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage, terminologyAttribute);
-
-                Map<String, ValueSet> valuesetByLanguage = languages.stream()
-                        .collect(Collectors.toMap(
-                                Function.identity(),
-                                l -> TerminologyProvider.findOpenEhrValueSet(
-                                        code.getTerminology(),
-                                        ccodephrase.getCodeListArray(),
-                                        l,
-                                        terminologyAttribute)));
-
-                defaultValueset.getTherms().forEach(t -> {
-                    WebTemplateInputValue value = new WebTemplateInputValue();
-                    value.setValue(t.getCode());
-                    value.setLabel(t.getValue());
-                    value.getLocalizedLabels()
-                            .putAll(valuesetByLanguage.entrySet().stream()
-                                    .collect(Collectors.toMap(
-                                            Map.Entry::getKey,
-                                            e -> e.getValue().getTherms().stream()
-                                                    .filter(x -> x.getCode().equals(t.getCode()))
-                                                    .findAny()
-                                                    .map(TermDefinition::getValue)
-                                                    .orElse(""))));
-                    code.getList().add(value);
-                });
-
-            } else {
-                Arrays.stream(ccodephrase.getCodeListArray())
-                        .map(o -> StringUtils.isBlank(code.getTerminology()) || "local".equals(code.getTerminology())
-                                ? o
-                                : code.getTerminology() + "::" + o)
-                        .forEach(o -> {
-                            WebTemplateInputValue value = new WebTemplateInputValue();
-                            Optional<TermDefinition> termDefinition = Optional.ofNullable(termDefinitionMap.get(o))
-                                    .map(e -> e.get(defaultLanguage));
-                            if (termDefinition.isEmpty()) {
-                                o = o.replace(code.getTerminology() + "::", "");
-                                termDefinition = Optional.ofNullable(termDefinitionMap.get(o))
-                                        .map(e -> e.get(defaultLanguage));
-                            }
-
-                            if (termDefinition.isPresent()) {
-                                value.setValue(termDefinition.get().getCode());
-                                if (StringUtils.isNotBlank((code.getTerminology()))) {
-                                    value.setValue(value.getValue().replace(code.getTerminology() + "::", ""));
-                                }
-                                value.setLabel(termDefinition.get().getValue());
-
-                                value.getLocalizedLabels()
-                                        .putAll(
-                                                termDefinitionMap
-                                                        .getOrDefault(o, Collections.emptyMap())
-                                                        .entrySet()
-                                                        .stream()
-                                                        .collect(Collectors.toMap(
-                                                                Map.Entry::getKey,
-                                                                e -> e.getValue()
-                                                                        .getValue())));
-                                value.getLocalizedDescriptions()
-                                        .putAll(
-                                                termDefinitionMap
-                                                        .getOrDefault(o, Collections.emptyMap())
-                                                        .entrySet()
-                                                        .stream()
-                                                        .filter(e -> StringUtils.isNotBlank(
-                                                                e.getValue().getDescription()))
-                                                        .collect(Collectors.toMap(
-                                                                Map.Entry::getKey,
-                                                                e -> e.getValue()
-                                                                        .getDescription())));
-                                if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
-                                    value.getLocalizedDescriptions().put(defaultLanguage, "");
-                                }
-                                code.getList().add(value);
-                            }
-                        });
-            }
-
-            if (code.getList().isEmpty()) {
-                code.setType("TEXT");
-                WebTemplateInput value = InputHandler.buildWebTemplateInput("value", "TEXT");
-                value.setTerminology(code.getTerminology());
-                node.getInputs().add(value);
-            } else {
-                code.setType(CODED_TEXT);
-            }
-
         } else {
-            throw new SdkException(
-                    String.format("Unexpected class: %s", cdomaintype.getClass().getSimpleName()));
+            Arrays.stream(ccodephrase.getCodeListArray())
+                    .map(o -> StringUtils.isBlank(code.getTerminology()) || "local".equals(code.getTerminology())
+                            ? o
+                            : code.getTerminology() + "::" + o)
+                    .forEach(o -> {
+                        WebTemplateInputValue value = new WebTemplateInputValue();
+                        Optional<TermDefinition> termDefinition =
+                                Optional.ofNullable(termDefinitionMap.get(o)).map(e -> e.get(defaultLanguage));
+                        if (termDefinition.isEmpty()) {
+                            o = o.replace(code.getTerminology() + "::", "");
+                            termDefinition = Optional.ofNullable(termDefinitionMap.get(o))
+                                    .map(e -> e.get(defaultLanguage));
+                        }
+
+                        if (termDefinition.isPresent()) {
+                            value.setValue(termDefinition.get().getCode());
+                            if (StringUtils.isNotBlank((code.getTerminology()))) {
+                                value.setValue(value.getValue().replace(code.getTerminology() + "::", ""));
+                            }
+                            value.setLabel(termDefinition.get().getValue());
+
+                            value.getLocalizedLabels()
+                                    .putAll(
+                                            termDefinitionMap
+                                                    .getOrDefault(o, Collections.emptyMap())
+                                                    .entrySet()
+                                                    .stream()
+                                                    .collect(Collectors.toMap(
+                                                            Map.Entry::getKey,
+                                                            e -> e.getValue().getValue())));
+                            value.getLocalizedDescriptions()
+                                    .putAll(
+                                            termDefinitionMap
+                                                    .getOrDefault(o, Collections.emptyMap())
+                                                    .entrySet()
+                                                    .stream()
+                                                    .filter(e -> StringUtils.isNotBlank(
+                                                            e.getValue().getDescription()))
+                                                    .collect(Collectors.toMap(
+                                                            Map.Entry::getKey,
+                                                            e -> e.getValue().getDescription())));
+                            if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
+                                value.getLocalizedDescriptions().put(defaultLanguage, "");
+                            }
+                            code.getList().add(value);
+                        }
+                    });
         }
-        return node;
+
+        if (code.getList().isEmpty()) {
+            code.setType("TEXT");
+            WebTemplateInput value = InputHandler.buildWebTemplateInput("value", "TEXT");
+            value.setTerminology(code.getTerminology());
+            node.getInputs().add(value);
+        } else {
+            code.setType(CODED_TEXT);
+        }
     }
 
     private WebTemplateNode buildNode(
