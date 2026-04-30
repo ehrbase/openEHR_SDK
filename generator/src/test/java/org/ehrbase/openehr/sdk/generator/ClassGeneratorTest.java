@@ -38,7 +38,7 @@ import org.assertj.core.groups.Tuple;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ClassGeneratorTest {
 
@@ -47,7 +47,7 @@ public class ClassGeneratorTest {
     private static final boolean WRITE_FILES = false;
 
     @Test
-    public void testGenerate() throws IOException, XmlException {
+    void testGenerate() throws IOException, XmlException {
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setAddNullFlavor(true);
         ClassGenerator cut = new ClassGenerator(config);
@@ -61,7 +61,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs)
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         assertThat(fieldSpecs)
                 .extracting(f -> f.name, f -> f.type.toString())
@@ -209,7 +209,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateAltEvents() throws IOException, XmlException {
+    void testGenerateAltEvents() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
 
         ClassGeneratorResult generate =
@@ -308,7 +308,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateDiagnose() throws IOException, XmlException {
+    void testGenerateDiagnose() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.DIAGNOSE));
@@ -335,7 +335,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateEpisode() throws IOException, XmlException {
+    void testGenerateEpisode() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.EPISODE_OF_CARE));
@@ -389,7 +389,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateSmICS() throws IOException, XmlException {
+    void testGenerateSmICS() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.SM_I_C_S_BEFUND));
@@ -501,7 +501,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateD4LQuestionnaire() throws IOException, XmlException {
+    void testGenerateD4LQuestionnaire() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.D4L_QUESTIONNAIRE));
@@ -517,7 +517,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateGECCODiagnose() throws IOException, XmlException {
+    void testGenerateGECCODiagnose() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.GECCO_DIAGNOSE));
@@ -552,7 +552,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateAny() throws IOException, XmlException {
+    void testGenerateAny() throws IOException, XmlException {
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.ALL);
         ClassGenerator cut = new ClassGenerator(config);
@@ -571,7 +571,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateErrorTest() throws IOException, XmlException {
+    void testGenerateErrorTest() throws IOException, XmlException {
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.SECTION);
         ClassGenerator cut = new ClassGenerator(config);
@@ -589,7 +589,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateSingleEvent() throws IOException, XmlException {
+    void testGenerateSingleEvent() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.SINGLE_EVENT));
@@ -606,7 +606,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateSingleEventWithOption() throws IOException, XmlException {
+    void testGenerateSingleEventWithOption() throws IOException, XmlException {
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setGenerateChoicesForSingleEvent(true);
         ClassGenerator cut = new ClassGenerator(config);
@@ -625,7 +625,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGeneratePatientenaufenthalt() throws IOException, XmlException {
+    void testGeneratePatientenaufenthalt() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.PATIENTEN_AUFENTHALT));
@@ -642,7 +642,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateStationaererVersorgungsfall() throws IOException, XmlException {
+    void testGenerateStationaererVersorgungsfall() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.EPISODE_SUMMARY));
@@ -659,7 +659,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateBefundDerBlutgasanalyse() throws IOException, XmlException {
+    void testGenerateBefundDerBlutgasanalyse() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.BEFUND_DER_BLUTGASANALYSE));
@@ -735,7 +735,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateMultiOccurrence() throws IOException, XmlException {
+    void testGenerateMultiOccurrence() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.MULTI_OCCURRENCE));
@@ -829,7 +829,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateAllTypes() throws IOException, XmlException {
+    void testGenerateAllTypes() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.ALL_TYPES));
@@ -839,7 +839,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs)
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         assertThat(fieldSpecs).hasSize(88);
 
@@ -852,7 +852,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateVirologyFinding() throws IOException, XmlException {
+    void testGenerateVirologyFinding() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.VIROLOGY_FINDING));
@@ -955,7 +955,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateCorona() throws IOException, XmlException {
+    void testGenerateCorona() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.CORONA_ANAMNESE));
@@ -973,7 +973,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateCoronaOptimizerSettingSection() throws IOException, XmlException {
+    void testGenerateCoronaOptimizerSettingSection() throws IOException, XmlException {
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.SECTION);
         Map<Character, String> characterStringMap = Map.of(
@@ -1003,7 +1003,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateCoronaOptimizerSettingAll() throws IOException, XmlException {
+    void testGenerateCoronaOptimizerSettingAll() throws IOException, XmlException {
         ClassGeneratorConfig config = new ClassGeneratorConfig();
         config.setOptimizerSetting(OptimizerSetting.ALL);
         ClassGenerator cut = new ClassGenerator(config);
@@ -1024,7 +1024,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateSchwangerschaftsstatus() throws IOException, XmlException {
+    void testGenerateSchwangerschaftsstatus() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.SCHWANGERSCHAFTSSTATUS));
@@ -1083,7 +1083,7 @@ public class ClassGeneratorTest {
     }
 
     @Test
-    public void testGenerateReactCare() throws IOException, XmlException {
+    void testGenerateReactCare() throws IOException, XmlException {
         ClassGenerator cut = new ClassGenerator(new ClassGeneratorConfig());
         ClassGeneratorResult generate =
                 cut.generate(PACKAGE_NAME, getWebTemplate(OperationalTemplateTestData.OPEN_E_REACT_CARE));
@@ -1093,7 +1093,7 @@ public class ClassGeneratorTest {
                 .filter(t -> !t.kind.equals(TypeSpec.Kind.ENUM))
                 .map(t -> t.fieldSpecs)
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         assertThat(fieldSpecs).hasSize(410);
 

@@ -27,12 +27,12 @@ import org.apache.xmlbeans.XmlException;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class WebTemplateSkeletonBuilderTest {
+class WebTemplateSkeletonBuilderTest {
 
     @Test
-    public void build() throws XmlException, IOException {
+    void build() throws XmlException, IOException {
         WebTemplate webTemplate = OPTParser.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream());
 
         Composition generate = WebTemplateSkeletonBuilder.build(webTemplate, true);

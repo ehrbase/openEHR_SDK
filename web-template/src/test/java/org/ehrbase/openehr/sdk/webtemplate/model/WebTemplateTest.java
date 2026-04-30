@@ -31,12 +31,12 @@ import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplate
 import org.ehrbase.openehr.sdk.test_data.webtemplate.WebTemplateTestData;
 import org.ehrbase.openehr.sdk.webtemplate.parser.NodeId;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class WebTemplateTest {
+class WebTemplateTest {
 
     @Test
-    public void testCanParseFromFile() throws IOException {
+    void testCanParseFromFile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         WebTemplate actual = objectMapper.readValue(
                 IOUtils.toString(WebTemplateTestData.CORONA.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
@@ -44,7 +44,7 @@ public class WebTemplateTest {
     }
 
     @Test
-    public void testFindByAqlPath() throws IOException, XmlException {
+    void testFindByAqlPath() throws IOException, XmlException {
         WebTemplate actual = OPTParser.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
 
         assertThat(actual.findByAqlPath("/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Symptome']"))
@@ -54,7 +54,7 @@ public class WebTemplateTest {
     }
 
     @Test
-    public void isRelativePathNameDependent() throws IOException, XmlException {
+    void isRelativePathNameDependent() throws IOException, XmlException {
         WebTemplate actual = OPTParser.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
 
         WebTemplateNode node =
@@ -68,7 +68,7 @@ public class WebTemplateTest {
     }
 
     @Test
-    public void testQueryUpperUnbounded() throws IOException, XmlException {
+    void testQueryUpperUnbounded() throws IOException, XmlException {
         List<WebTemplateNode> result = OPTParser.parse(OperationalTemplateTestData.IDCR_PROBLEM_LIST.getStream())
                 .upperNotBounded();
 
@@ -76,7 +76,7 @@ public class WebTemplateTest {
     }
 
     @Test
-    public void testQueryUpperUnbounded2() throws IOException, XmlException {
+    void testQueryUpperUnbounded2() throws IOException, XmlException {
         List<WebTemplateNode> result = OPTParser.parse(OperationalTemplateTestData.IDCR_LABORATORY_TEST.getStream())
                 .upperNotBounded();
 
@@ -84,7 +84,7 @@ public class WebTemplateTest {
     }
 
     @Test
-    public void testMultiValued() throws IOException, XmlException {
+    void testMultiValued() throws IOException, XmlException {
         List<WebTemplateNode> result = OPTParser.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
                 .multiValued();
 
@@ -92,7 +92,7 @@ public class WebTemplateTest {
     }
 
     @Test
-    public void findAllContainmentCombinations() throws IOException, XmlException {
+    void findAllContainmentCombinations() throws IOException, XmlException {
         Set<Set<NodeId>> actual = OPTParser.parse(OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream())
                 .findAllContainmentCombinations();
 

@@ -20,11 +20,12 @@ package org.ehrbase.openehr.sdk.webtemplate.parser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class InputHandlerTest extends TestCase {
+class InputHandlerTest{
 
-    public void testBuildDurationConstrains() {
+    @Test
+    void testBuildDurationConstrains() {
 
         assertThat(new InputHandler(null).buildDurationConstrains("PT5M"))
                 .containsExactlyInAnyOrderEntriesOf(Map.of("MT", 5));
