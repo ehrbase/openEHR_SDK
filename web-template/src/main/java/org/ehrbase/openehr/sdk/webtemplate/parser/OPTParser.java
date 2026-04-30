@@ -1054,7 +1054,7 @@ public class OPTParser {
         // only "local" is supported
         symbol.map(CODEPHRASE::getTerminologyId)
                 .map(TERMINOLOGYID::getValue)
-                .filter("local"::equals)
+                .filter(t -> !"local".equals(t))
                 .ifPresent(t -> {
                     throw new SdkException(String.format("Invalid DV_ORDINAL.symbol terminology_id: %s", t));
                 });
