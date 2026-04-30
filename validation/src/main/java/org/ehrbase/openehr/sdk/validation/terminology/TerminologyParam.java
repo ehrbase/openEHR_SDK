@@ -27,7 +27,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class TerminologyParam {
     static final Pattern PATTERN = Pattern.compile(
-            "(?<api>//[^/]*)/(?<type>CodeSystem|ValueSet)(?:/)?(?<op>\\$expand|\\$validate-code)?(?<param>\\?.*)?");
+            "(?<api>//[^/]*)/(?<type>CodeSystem|ValueSet)/?(?<op>\\$expand|\\$validate-code)?(?:\\?(?<param>.*))?");
     /**
      * @param url fhir url of format:
      * </br>
@@ -36,33 +36,29 @@ public class TerminologyParam {
      * {@code //<some char>/<"CodeSystem" or "ValueSet">/<"$expand" or "$validate-code">?<req-parameter>}
      */
     public static TerminologyParam ofFhir(String url) {
-        if (url == null) return new TerminologyParam();
+        if (url == null) {
+            return new TerminologyParam();
+        }
 
         Matcher matcher = PATTERN.matcher(url);
-        if (!matcher.matches()) return new TerminologyParam();
+        if (!matcher.matches()) {
+            return new TerminologyParam();
+        }
 
-        String api = matcher.group("api");
-        String type = matcher.group("type");
-        String op = matcher.group("op");
-        String param = matcher.group("param");
+        TerminologyParam tp = new TerminologyParam(matcher.group("api"));
 
-        if (api == null) throw new RuntimeException("Missing service-api");
+        // tp.useValueSet() is default
+        if ("CodeSystem".equals(matcher.group("type"))) {
+            tp.useCodeSystem();
+        }
 
-        TerminologyParam tp = new TerminologyParam(api);
-        if ("codesystem".equalsIgnoreCase(type)) tp.useCodeSystem();
-        if ("valueset".equalsIgnoreCase(type)) tp.useValueSet();
-        tp.setOperation(op);
-        tp.setParameter(param != null ? param.substring(1) : null);
+        tp.setOperation(matcher.group("op"));
+        tp.setParameter(matcher.group("param"));
 
         return tp;
     }
 
-    public static TerminologyParam ofServiceApi(String api) {
-        return new TerminologyParam(api);
-    }
-
-    //  private String aqlPath;
-    private String serviceApi; // should be checked in teh impl.
+    private String serviceApi;
     private String operation;
     private boolean useValueSet = true;
     private boolean useCodeSystem = false;
@@ -83,7 +79,6 @@ public class TerminologyParam {
         TerminologyParam that = (TerminologyParam) o;
 
         return new EqualsBuilder()
-                //      .append(aqlPath, that.aqlPath)
                 .append(serviceApi, that.serviceApi)
                 .append(operation, that.operation)
                 .append(useValueSet, that.useValueSet)
@@ -96,7 +91,6 @@ public class TerminologyParam {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                //      .append(aqlPath)
                 .append(serviceApi)
                 .append(operation)
                 .append(useValueSet)
@@ -105,14 +99,6 @@ public class TerminologyParam {
                 .append(codePhrase)
                 .hashCode();
     }
-
-    //  public void setAqlPath(String path) {
-    //    this.aqlPath = path;
-    //  }
-
-    //  public String getAqlPath() {
-    //    return aqlPath;
-    //  }
 
     public void useValueSet() {
         useValueSet = true;
@@ -142,10 +128,6 @@ public class TerminologyParam {
 
     public void setCodePhrase(CodePhrase cp) {
         this.codePhrase = cp;
-    }
-
-    public Optional<String> renderCodePhrase(Function<CodePhrase, Optional<String>> renderer) {
-        return renderer.apply(codePhrase);
     }
 
     public boolean isUseValueSet() {
