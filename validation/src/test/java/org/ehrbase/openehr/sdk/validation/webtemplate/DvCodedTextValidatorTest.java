@@ -26,10 +26,7 @@ import com.nedap.archie.rm.support.identification.TerminologyId;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.util.List;
-import org.ehrbase.openehr.sdk.util.functional.Try;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.validation.ConstraintViolationException;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.validation.terminology.TerminologyParam;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
@@ -99,7 +96,7 @@ class DvCodedTextValidatorTest {
                 TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status");
         tp.setCodePhrase(codePhrase);
 
-        Mockito.when(externalTerminologyValidationMock.validate(tp)).thenReturn(Try.success(Boolean.TRUE));
+        Mockito.when(externalTerminologyValidationMock.validate(tp)).thenReturn(null);
 
         //    Mockito.doNothing()
         //        .when(fhirTerminologyValidationMock)
@@ -124,13 +121,9 @@ class DvCodedTextValidatorTest {
         Mockito.when(externalTerminologyValidationMock.supports(tp)).thenReturn(true);
 
         Mockito.when(externalTerminologyValidationMock.validate(tp))
-                .thenReturn(
-                        Try.failure(
-                                new ConstraintViolationException(
-                                        List.of(
-                                                new ConstraintViolation(
-                                                        "/test/dv_coded_text_fhir_value_set",
-                                                        "The terminology http://hl7.org/fhir/name-use must be http://hl7.org/fhir/observation-status")))));
+                .thenReturn(new ConstraintViolation(
+                        "/test/dv_coded_text_fhir_value_set",
+                        "The terminology http://hl7.org/fhir/name-use must be http://hl7.org/fhir/observation-status"));
 
         var validator = new DvCodedTextValidator(externalTerminologyValidationMock);
         var node = parseNode("dv_codedtext_fhir_codesystem.json");
@@ -152,12 +145,9 @@ class DvCodedTextValidatorTest {
 
         Mockito.when(externalTerminologyValidationMock.validate(tp))
                 .thenReturn(
-                        Try.failure(
-                                new ConstraintViolationException(
-                                        List.of(
-                                                new ConstraintViolation(
-                                                        "/test/dv_coded_text_fhir_code_system",
-                                                        "The specified code 'casual' is not known to belong to the specified code system 'http://hl7.org/fhir/observation-status'")))));
+                        new ConstraintViolation(
+                                "/test/dv_coded_text_fhir_code_system",
+                                "The specified code 'casual' is not known to belong to the specified code system 'http://hl7.org/fhir/observation-status'"));
 
         //    Mockito.doThrow(
         //            new ConstraintViolationException(List.of(
@@ -186,7 +176,7 @@ class DvCodedTextValidatorTest {
         // Mockito initialization
         Mockito.when(externalTerminologyValidationMock.supports(tp)).thenReturn(true);
 
-        Mockito.when(externalTerminologyValidationMock.validate(tp)).thenReturn(Try.success(true));
+        Mockito.when(externalTerminologyValidationMock.validate(tp)).thenReturn(null);
 
         var validator = new DvCodedTextValidator(externalTerminologyValidationMock);
         var node = parseNode("dv_codedtext_fhir_valueset.json");
@@ -208,12 +198,9 @@ class DvCodedTextValidatorTest {
 
         Mockito.when(externalTerminologyValidationMock.validate(tp))
                 .thenReturn(
-                        Try.failure(
-                                new ConstraintViolationException(
-                                        List.of(
-                                                new ConstraintViolation(
-                                                        "/test/dv_coded_text_fhir_value_set",
-                                                        "The terminology http://snomed.info/sct must be http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2")))));
+                        new ConstraintViolation(
+                                "/test/dv_coded_text_fhir_value_set",
+                                "The terminology http://snomed.info/sct must be http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2"));
 
         var validator = new DvCodedTextValidator(externalTerminologyValidationMock);
         var node = parseNode("dv_codedtext_fhir_valueset.json");
@@ -236,12 +223,9 @@ class DvCodedTextValidatorTest {
 
         Mockito.when(externalTerminologyValidationMock.validate(tp))
                 .thenReturn(
-                        Try.failure(
-                                new ConstraintViolationException(
-                                        List.of(
-                                                new ConstraintViolation(
-                                                        "/test/dv_coded_text_fhir_value_set",
-                                                        "The value UKN does not match any option from value set http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2")))));
+                        new ConstraintViolation(
+                                "/test/dv_coded_text_fhir_value_set",
+                                "The value UKN does not match any option from value set http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2"));
 
         var validator = new DvCodedTextValidator(externalTerminologyValidationMock);
         var node = parseNode("dv_codedtext_fhir_valueset.json");

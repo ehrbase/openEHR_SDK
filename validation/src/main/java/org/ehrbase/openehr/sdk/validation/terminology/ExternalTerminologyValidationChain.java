@@ -21,8 +21,7 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.ehrbase.openehr.sdk.util.functional.Try;
-import org.ehrbase.openehr.sdk.validation.ConstraintViolationException;
+import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 
 /**
  * {@link ExternalTerminologyValidation} that provides support for chaining several external terminology server.
@@ -56,14 +55,22 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
     }
 
     @Override
-    public Try<Boolean, ConstraintViolationException> validate(TerminologyParam param) {
-        for (ExternalTerminologyValidation next : chain) if (next.supports(param)) return next.validate(param);
-        return Try.success(Boolean.FALSE);
+    public ConstraintViolation validate(TerminologyParam param) {
+        for (ExternalTerminologyValidation next : chain) {
+            if (next.supports(param)) {
+                return next.validate(param);
+            }
+        }
+        return null;
     }
 
     @Override
     public List<DvCodedText> expand(TerminologyParam param) {
-        for (ExternalTerminologyValidation next : chain) if (next.supports(param)) return next.expand(param);
+        for (ExternalTerminologyValidation next : chain) {
+            if (next.supports(param)) {
+                return next.expand(param);
+            }
+        }
         return Collections.emptyList();
     }
 }
