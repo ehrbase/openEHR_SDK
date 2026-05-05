@@ -5,12 +5,10 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added
  ### Changed
-- Replaced codeset XML parsing with a static codeset mapping [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
-- SimpleTerminologyAccess uses Archie internally [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
-- DV Coded Texts' labels are validated only when terminology is local [#739](https://github.com/ehrbase/openEHR_SDK/pull/739)
-- Web template inputs derived from C_DV_ORDINAL default to 'local' terminology [#739] (https://github.com/ehrbase/openEHR_SDK/pull/739)
  ### Fixed
-- Terminology validation falls back to English for unsupported languages [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
+- Fixed terminology validation of DV_ORDINAL.value and DV_CODDED_TEXT.value [#739](https://github.com/ehrbase/openEHR_SDK/pull/739)
+- Fixed terminology validation for e.g. Spanish templates [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
+- Regardless of the composition language, the English terms of openehr terminologies are now always accepted [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
 
 ## [2.31.0]
  ### Added 
