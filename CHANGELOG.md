@@ -3,8 +3,12 @@
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
- ### Added 
- ### Fixed 
+ ### Added
+ ### Changed
+ ### Fixed
+- Fixed terminology validation of DV_ORDINAL.value and DV_CODDED_TEXT.value [#739](https://github.com/ehrbase/openEHR_SDK/pull/739)
+- Fixed terminology validation for e.g. Spanish templates [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
+- Regardless of the composition language, the English terms of openehr terminologies are now always accepted [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
 
 ## [2.31.0]
  ### Added 

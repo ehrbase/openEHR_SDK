@@ -118,6 +118,7 @@ public class OPTParser {
     public static final String CODED_TEXT = "CODED_TEXT";
     public static final String OPENEHR = "openehr";
     public static final String CURRENT_STATE = "current_state";
+    private static final String LOCAL_TERMINOLOGY = "local";
 
     private static final Set<String> LOCATABLE_TYPES =
             ArchieRMInfoLookup.getInstance().getTypeInfo(Locatable.class).getAllDescendantClasses().stream()
@@ -1047,18 +1048,15 @@ public class OPTParser {
         WebTemplateInput code = new WebTemplateInput();
         inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
         code.setType(CODED_TEXT);
-        Optional<CODEPHRASE> symbol = Optional.of(cdvordinal)
-                .map(CDVORDINAL::getAssumedValue)
-                .map(DVORDINAL::getSymbol)
-                .map(DVCODEDTEXT::getDefiningCode);
-        // only "local" is supported
-        symbol.map(CODEPHRASE::getTerminologyId)
-                .map(TERMINOLOGYID::getValue)
-                .filter(t -> !"local".equals(t))
-                .ifPresent(t -> {
-                    throw new SdkException(String.format("Invalid DV_ORDINAL.symbol terminology_id: %s", t));
-                });
-        code.setTerminology("local");
+        Optional<CODEPHRASE> codephrase = Optional.of(cdvordinal)
+                    .map(CDVORDINAL::getAssumedValue)
+                    .map(DVORDINAL::getSymbol)
+                    .map(DVCODEDTEXT::getDefiningCode);
+        codephrase
+                    .map(CODEPHRASE::getTerminologyId)
+                    .map(TERMINOLOGYID::getValue)
+                    .ifPresent(code::setTerminology);
+        codephrase.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
         node.getInputs().add(code);
         symbol.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
         Arrays.stream(cdvordinal.getListArray())
