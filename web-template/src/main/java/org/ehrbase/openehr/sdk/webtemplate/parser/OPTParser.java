@@ -1058,7 +1058,6 @@ public class OPTParser {
                     .ifPresent(code::setTerminology);
         codephrase.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
         node.getInputs().add(code);
-        symbol.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
         Arrays.stream(cdvordinal.getListArray())
                 .map(o -> {
                     WebTemplateInputValue value = new WebTemplateInputValue();
