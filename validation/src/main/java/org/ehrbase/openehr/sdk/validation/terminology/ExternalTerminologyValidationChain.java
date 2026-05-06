@@ -17,9 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology;
 
-import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 
@@ -64,13 +62,4 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
         return null;
     }
 
-    @Override
-    public List<DvCodedText> expand(TerminologyParam param) {
-        for (ExternalTerminologyValidation next : chain) {
-            if (next.supports(param)) {
-                return next.expand(param);
-            }
-        }
-        return Collections.emptyList();
-    }
 }

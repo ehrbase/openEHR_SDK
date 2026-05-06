@@ -17,8 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology;
 
-import com.nedap.archie.rm.datavalues.DvCodedText;
-import java.util.List;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 
 /**
@@ -29,5 +27,4 @@ public interface ExternalTerminologyValidation {
 
     ConstraintViolation validate(TerminologyParam param);
 
-    List<DvCodedText> expand(TerminologyParam param);
 }
