@@ -26,5 +26,4 @@ public interface ExternalTerminologyValidation {
     boolean supports(TerminologyParam param);
 
     ConstraintViolation validate(TerminologyParam param);
-
 }

@@ -119,9 +119,7 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
             return List.of();
         }
 
-        TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology());
-        tp.setCodePhrase(dvCodedText.getDefiningCode());
-
+        TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology(), dvCodedText.getDefiningCode());
         if (externalTerminologyValidation.supports(tp)) {
             ConstraintViolation constraintViolation = externalTerminologyValidation.validate(tp);
             if (constraintViolation != null) {

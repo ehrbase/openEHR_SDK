@@ -22,128 +22,36 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class TerminologyParam {
+public record TerminologyParam(
+        String serviceApi, boolean useValueSet, CodePhrase codePhrase, String operation, String parameter) {
     static final Pattern PATTERN = Pattern.compile(
             "(?<api>//[^/]*)/(?<type>CodeSystem|ValueSet)/?(?<op>\\$expand|\\$validate-code)?(?:\\?(?<param>.*))?");
+
     /**
-     * @param url fhir url of format:
-     * </br>
-     * {@code //<some char>/<"CodeSystem" or "ValueSet">?<req-parameter>}
-     * </br>
-     * {@code //<some char>/<"CodeSystem" or "ValueSet">/<"$expand" or "$validate-code">?<req-parameter>}
+     * @param url          fhir url of format:
+     *                     </br>
+     *                     {@code //<some char>/<"CodeSystem" or "ValueSet">?<req-parameter>}
+     *                     </br>
+     *                     {@code //<some char>/<"CodeSystem" or "ValueSet">/<"$expand" or "$validate-code">?<req-parameter>}
+     * @param definingCode
      */
-    public static TerminologyParam ofFhir(String url) {
+    public static TerminologyParam ofFhir(String url, final CodePhrase definingCode) {
         if (url == null) {
-            return new TerminologyParam();
+            return null;
         }
 
         Matcher matcher = PATTERN.matcher(url);
         if (!matcher.matches()) {
-            return new TerminologyParam();
+            return null;
         }
 
-        TerminologyParam tp = new TerminologyParam(matcher.group("api"));
-
-        // tp.useValueSet() is default
-        if ("CodeSystem".equals(matcher.group("type"))) {
-            tp.useCodeSystem();
-        }
-
-        tp.setOperation(matcher.group("op"));
-        tp.setParameter(matcher.group("param"));
-
-        return tp;
-    }
-
-    private String serviceApi;
-    private String operation;
-    private boolean useValueSet = true;
-    private boolean useCodeSystem = false;
-    private String parameter;
-    private CodePhrase codePhrase = null;
-
-    private TerminologyParam() {}
-
-    private TerminologyParam(String serviceApi) {
-        this.serviceApi = serviceApi;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TerminologyParam that = (TerminologyParam) o;
-
-        return new EqualsBuilder()
-                .append(serviceApi, that.serviceApi)
-                .append(operation, that.operation)
-                .append(useValueSet, that.useValueSet)
-                .append(useCodeSystem, that.useCodeSystem)
-                .append(parameter, that.parameter)
-                .append(codePhrase, that.codePhrase)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-                .append(serviceApi)
-                .append(operation)
-                .append(useValueSet)
-                .append(useCodeSystem)
-                .append(parameter)
-                .append(codePhrase)
-                .hashCode();
-    }
-
-    public void useValueSet() {
-        useValueSet = true;
-        useCodeSystem = false;
-    }
-
-    public void useCodeSystem() {
-        useCodeSystem = true;
-        useValueSet = false;
-    }
-
-    public Optional<String> getServiceApi() {
-        return Optional.ofNullable(serviceApi);
-    }
-
-    public void setOperation(String op) {
-        this.operation = op;
-    }
-
-    public Optional<String> getOperation() {
-        return Optional.ofNullable(operation);
-    }
-
-    public Optional<CodePhrase> getCodePhrase() {
-        return Optional.ofNullable(codePhrase);
-    }
-
-    public void setCodePhrase(CodePhrase cp) {
-        this.codePhrase = cp;
-    }
-
-    public boolean isUseValueSet() {
-        return useValueSet;
-    }
-
-    public boolean isUseCodeSystem() {
-        return useCodeSystem;
-    }
-
-    public void setParameter(String param) {
-        this.parameter = param;
-    }
-
-    public Optional<String> getParameter() {
-        return Optional.ofNullable(parameter);
+        return new TerminologyParam(
+                matcher.group("api"),
+                "ValueSet".equals(matcher.group("type")),
+                definingCode,
+                matcher.group("op"),
+                matcher.group("param"));
     }
 
     public Optional<String> extractFromParameter(Function<String, Optional<String>> extractor) {

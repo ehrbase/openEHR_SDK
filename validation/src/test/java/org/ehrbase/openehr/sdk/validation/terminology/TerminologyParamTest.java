@@ -24,35 +24,33 @@ class TerminologyParamTest {
 
     @Test
     void createTerminologyParam0() {
-        TerminologyParam tp =
-                TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem/$expand?url=http://hl7.org/fhir/observation-status");
+        TerminologyParam tp = TerminologyParam.ofFhir(
+                "//fhir.hl7.org/CodeSystem/$expand?url=http://hl7.org/fhir/observation-status", null);
 
-        Assertions.assertEquals("//fhir.hl7.org", tp.getServiceApi().get());
-        Assertions.assertTrue(tp.isUseCodeSystem());
-        Assertions.assertEquals("$expand", tp.getOperation().get());
-        Assertions.assertEquals(
-                "url=http://hl7.org/fhir/observation-status", tp.getParameter().get());
+        Assertions.assertEquals("//fhir.hl7.org", tp.serviceApi());
+        Assertions.assertFalse(tp.useValueSet());
+        Assertions.assertEquals("$expand", tp.operation());
+        Assertions.assertEquals("url=http://hl7.org/fhir/observation-status", tp.parameter());
     }
 
     @Test
     void createTerminologyParam1() {
         TerminologyParam tp =
-                TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status");
+                TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", null);
 
-        Assertions.assertEquals("//fhir.hl7.org", tp.getServiceApi().get());
-        Assertions.assertTrue(tp.isUseCodeSystem());
-        Assertions.assertTrue(tp.getOperation().isEmpty());
-        Assertions.assertEquals(
-                "url=http://hl7.org/fhir/observation-status", tp.getParameter().get());
+        Assertions.assertEquals("//fhir.hl7.org", tp.serviceApi());
+        Assertions.assertFalse(tp.useValueSet());
+        Assertions.assertNull(tp.operation());
+        Assertions.assertEquals("url=http://hl7.org/fhir/observation-status", tp.parameter());
     }
 
     @Test
     void createTerminologyParam2() {
-        TerminologyParam tp = TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem");
+        TerminologyParam tp = TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem", null);
 
-        Assertions.assertEquals("//fhir.hl7.org", tp.getServiceApi().get());
-        Assertions.assertTrue(tp.isUseCodeSystem());
-        Assertions.assertTrue(tp.getOperation().isEmpty());
-        Assertions.assertTrue(tp.getParameter().isEmpty());
+        Assertions.assertEquals("//fhir.hl7.org", tp.serviceApi());
+        Assertions.assertFalse(tp.useValueSet());
+        Assertions.assertNull(tp.operation());
+        Assertions.assertNull(tp.parameter());
     }
 }

@@ -1049,13 +1049,13 @@ public class OPTParser {
         inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
         code.setType(CODED_TEXT);
         Optional<CODEPHRASE> codephrase = Optional.of(cdvordinal)
-                    .map(CDVORDINAL::getAssumedValue)
-                    .map(DVORDINAL::getSymbol)
-                    .map(DVCODEDTEXT::getDefiningCode);
+                .map(CDVORDINAL::getAssumedValue)
+                .map(DVORDINAL::getSymbol)
+                .map(DVCODEDTEXT::getDefiningCode);
         codephrase
-                    .map(CODEPHRASE::getTerminologyId)
-                    .map(TERMINOLOGYID::getValue)
-                    .ifPresent(code::setTerminology);
+                .map(CODEPHRASE::getTerminologyId)
+                .map(TERMINOLOGYID::getValue)
+                .ifPresent(code::setTerminology);
         codephrase.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
         node.getInputs().add(code);
         Arrays.stream(cdvordinal.getListArray())

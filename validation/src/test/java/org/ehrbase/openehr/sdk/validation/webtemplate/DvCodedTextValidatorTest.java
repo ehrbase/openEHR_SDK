@@ -89,12 +89,11 @@ class DvCodedTextValidatorTest {
 
         // Mockito initialization
         Mockito.when(externalTerminologyValidationMock.supports(TerminologyParam.ofFhir(
-                        "//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status")))
+                        "//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", codePhrase)))
                 .thenReturn(true);
 
-        TerminologyParam tp =
-                TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status");
-        tp.setCodePhrase(codePhrase);
+        TerminologyParam tp = TerminologyParam.ofFhir(
+                "//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", codePhrase);
 
         Mockito.when(externalTerminologyValidationMock.validate(tp)).thenReturn(null);
 
@@ -113,9 +112,8 @@ class DvCodedTextValidatorTest {
     void testValidate_FhirCodeSystem_WrongTerminologyId() {
         var codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/name-use"), "usual");
 
-        TerminologyParam tp =
-                TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status");
-        tp.setCodePhrase(codePhrase);
+        TerminologyParam tp = TerminologyParam.ofFhir(
+                "//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", codePhrase);
 
         // Mockito initialization
         Mockito.when(externalTerminologyValidationMock.supports(tp)).thenReturn(true);
@@ -136,9 +134,8 @@ class DvCodedTextValidatorTest {
     void testValidate_FhirCodeSystem_WrongCode() {
         var codePhrase = new CodePhrase(new TerminologyId("http://hl7.org/fhir/observation-status"), "casual");
 
-        TerminologyParam tp =
-                TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status");
-        tp.setCodePhrase(codePhrase);
+        TerminologyParam tp = TerminologyParam.ofFhir(
+                "//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", codePhrase);
 
         // Mockito initialization
         Mockito.when(externalTerminologyValidationMock.supports(tp)).thenReturn(true);
@@ -170,8 +167,8 @@ class DvCodedTextValidatorTest {
                 new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2"), "UKN");
 
         TerminologyParam tp = TerminologyParam.ofFhir(
-                "//fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2");
-        tp.setCodePhrase(codePhrase);
+                "//fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2",
+                codePhrase);
 
         // Mockito initialization
         Mockito.when(externalTerminologyValidationMock.supports(tp)).thenReturn(true);
@@ -190,8 +187,8 @@ class DvCodedTextValidatorTest {
         var codePhrase = new CodePhrase(new TerminologyId("http://snomed.info/sct"), "ANON");
 
         TerminologyParam tp = TerminologyParam.ofFhir(
-                "//fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2");
-        tp.setCodePhrase(codePhrase);
+                "//fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2",
+                codePhrase);
 
         // Mockito initialization
         Mockito.when(externalTerminologyValidationMock.supports(tp)).thenReturn(true);
@@ -215,8 +212,8 @@ class DvCodedTextValidatorTest {
                 new CodePhrase(new TerminologyId("http://terminology.hl7.org/CodeSystem/v3-EntityNameUseR2"), "UKN");
 
         TerminologyParam tp = TerminologyParam.ofFhir(
-                "//fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2");
-        tp.setCodePhrase(codePhrase);
+                "//fhir.hl7.org/ValueSet/$expand?url=http://terminology.hl7.org/ValueSet/v3-EntityNameUseR2",
+                codePhrase);
 
         // Mockito initialization
         Mockito.when(externalTerminologyValidationMock.supports(tp)).thenReturn(true);

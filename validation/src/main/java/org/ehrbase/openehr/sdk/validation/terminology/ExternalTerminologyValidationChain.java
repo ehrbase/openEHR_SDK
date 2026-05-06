@@ -61,5 +61,4 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
         }
         return null;
     }
-
 }
