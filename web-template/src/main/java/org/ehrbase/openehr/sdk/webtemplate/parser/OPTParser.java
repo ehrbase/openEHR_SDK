@@ -1013,12 +1013,11 @@ public class OPTParser {
                     .map(CDVORDINAL::getAssumedValue)
                     .map(DVORDINAL::getSymbol)
                     .map(DVCODEDTEXT::getDefiningCode);
-            codephrase.map(CODEPHRASE::getTerminologyId)
+            codephrase
+                    .map(CODEPHRASE::getTerminologyId)
                     .map(TERMINOLOGYID::getValue)
                     .ifPresent(code::setTerminology);
-            codephrase
-                    .map(CODEPHRASE::getCodeString)
-                    .ifPresent(code::setDefaultValue);
+            codephrase.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
             node.getInputs().add(code);
             Arrays.stream((cdvordinal).getListArray()).forEach(o -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();

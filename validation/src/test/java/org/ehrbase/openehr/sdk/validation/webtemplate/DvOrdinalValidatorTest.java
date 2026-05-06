@@ -50,15 +50,15 @@ class DvOrdinalValidatorTest extends AbstractRMObjectValidatorTest {
         var result = validator.validate(new DvOrdinal(1L, symbol), node);
         assertTrue(result.isEmpty());
 
-        //wrong code
+        // wrong code
         symbol = new DvCodedText("First", new CodePhrase(new TerminologyId("local"), "at0001"));
         result = validator.validate(new DvOrdinal(1L, symbol), node);
         assertEquals(1, result.size());
-        //Wrong value
+        // Wrong value
         symbol = new DvCodedText("First", new CodePhrase(new TerminologyId("local"), "at0043"));
         result = validator.validate(new DvOrdinal(2L, symbol), node);
         assertEquals(1, result.size());
-        //wrong terminology
+        // wrong terminology
         symbol = new DvCodedText("First", new CodePhrase(new TerminologyId("other"), "at0043"));
         result = validator.validate(new DvOrdinal(1L, symbol), node);
         assertEquals(1, result.size());
