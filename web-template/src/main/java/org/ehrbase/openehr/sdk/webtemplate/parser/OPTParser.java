@@ -104,6 +104,7 @@ import org.openehr.schemas.v1.StringDictionaryItem;
 import org.openehr.schemas.v1.TATTRIBUTE;
 import org.openehr.schemas.v1.TCOMPLEXOBJECT;
 import org.openehr.schemas.v1.TCONSTRAINT;
+import org.openehr.schemas.v1.TERMINOLOGYID;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -1008,14 +1009,17 @@ public class OPTParser {
             WebTemplateInput code = new WebTemplateInput();
             inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
             code.setType(CODED_TEXT);
-            code.setTerminology(LOCAL_TERMINOLOGY);
-            node.getInputs().add(code);
-            Optional.of(cdvordinal)
+            Optional<CODEPHRASE> codephrase = Optional.of(cdvordinal)
                     .map(CDVORDINAL::getAssumedValue)
                     .map(DVORDINAL::getSymbol)
-                    .map(DVCODEDTEXT::getDefiningCode)
+                    .map(DVCODEDTEXT::getDefiningCode);
+            codephrase.map(CODEPHRASE::getTerminologyId)
+                    .map(TERMINOLOGYID::getValue)
+                    .ifPresent(code::setTerminology);
+            codephrase
                     .map(CODEPHRASE::getCodeString)
                     .ifPresent(code::setDefaultValue);
+            node.getInputs().add(code);
             Arrays.stream((cdvordinal).getListArray()).forEach(o -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();
                 value.setOrdinal(o.getValue());
