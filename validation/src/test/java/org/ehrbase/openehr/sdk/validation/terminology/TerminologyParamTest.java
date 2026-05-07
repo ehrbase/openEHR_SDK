@@ -17,40 +17,47 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology;
 
-import org.junit.jupiter.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 class TerminologyParamTest {
 
     @Test
-    void createTerminologyParam0() {
+    void createValueSet() {
         TerminologyParam tp = TerminologyParam.ofFhir(
-                "//fhir.hl7.org/CodeSystem/$expand?url=http://hl7.org/fhir/observation-status", null);
+                "//fhir.hl7.org/ValueSet/$expand?url=http://hl7.org/fhir/observation-status", null);
 
-        Assertions.assertEquals("//fhir.hl7.org", tp.serviceApi());
-        Assertions.assertFalse(tp.useValueSet());
-        Assertions.assertEquals("$expand", tp.operation());
-        Assertions.assertEquals("url=http://hl7.org/fhir/observation-status", tp.parameter());
+        assertThat(tp.serviceApi()).isEqualTo("//fhir.hl7.org");
+        assertThat(tp.resouceType()).isEqualTo(TerminologyParam.ResouceType.VALUE_SET);
+        assertThat(tp.operation()).isEqualTo("$expand");
+        assertThat(tp.parameter()).isEqualTo("url=http://hl7.org/fhir/observation-status");
     }
 
     @Test
-    void createTerminologyParam1() {
+    void createCodeSystem() {
         TerminologyParam tp =
                 TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem?url=http://hl7.org/fhir/observation-status", null);
 
-        Assertions.assertEquals("//fhir.hl7.org", tp.serviceApi());
-        Assertions.assertFalse(tp.useValueSet());
-        Assertions.assertNull(tp.operation());
-        Assertions.assertEquals("url=http://hl7.org/fhir/observation-status", tp.parameter());
+        assertThat(tp.serviceApi()).isEqualTo("//fhir.hl7.org");
+        assertThat(tp.resouceType()).isEqualTo(TerminologyParam.ResouceType.CODE_SYSTEM);
+        assertThat(tp.operation()).isNull();
+        assertThat(tp.parameter()).isEqualTo("url=http://hl7.org/fhir/observation-status");
     }
 
     @Test
-    void createTerminologyParam2() {
+    void createWithoutUrlParameter() {
         TerminologyParam tp = TerminologyParam.ofFhir("//fhir.hl7.org/CodeSystem", null);
 
-        Assertions.assertEquals("//fhir.hl7.org", tp.serviceApi());
-        Assertions.assertFalse(tp.useValueSet());
-        Assertions.assertNull(tp.operation());
-        Assertions.assertNull(tp.parameter());
+        assertThat(tp.serviceApi()).isEqualTo("//fhir.hl7.org");
+        assertThat(tp.resouceType()).isEqualTo(TerminologyParam.ResouceType.CODE_SYSTEM);
+        assertThat(tp.operation()).isNull();
+        assertThat(tp.parameter()).isNull();
+    }
+
+    @Test
+    void createInvalid() {
+        TerminologyParam tp = TerminologyParam.ofFhir("//fhir.hl7.org/Observation", null);
+        assertThat(tp).isNull();
     }
 }

@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
@@ -1107,7 +1106,7 @@ public class OPTParser {
         if (ccodephrase instanceof CCODEREFERENCE ccodereference) {
             terminology = Optional.of(ccodereference)
                     .map(CCODEREFERENCE::getReferenceSetUri)
-                    .map(s -> Strings.CS.removeStart(s, "terminology:"));
+                    .map(OPTParser::removeSchema);
         } else {
             terminology =
                     Optional.of(ccodephrase).map(CCODEPHRASE::getTerminologyId).map(OBJECTID::getValue);
@@ -1223,6 +1222,17 @@ public class OPTParser {
         } else {
             code.setType(CODED_TEXT);
         }
+    }
+
+    static String removeSchema(String uri) {
+        if (uri == null) {
+            return null;
+        }
+        int sep = uri.indexOf(':');
+        if (sep < 0) {
+            return uri;
+        }
+        return uri.substring(sep + 1);
     }
 
     private WebTemplateNode buildNode(

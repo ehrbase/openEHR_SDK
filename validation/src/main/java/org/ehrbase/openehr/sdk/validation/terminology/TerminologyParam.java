@@ -18,13 +18,17 @@
 package org.ehrbase.openehr.sdk.validation.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record TerminologyParam(
-        String serviceApi, boolean useValueSet, CodePhrase codePhrase, String operation, String parameter) {
+        String serviceApi, ResouceType resouceType, CodePhrase codePhrase, String operation, String parameter) {
+
+    public enum ResouceType {
+        CODE_SYSTEM,
+        VALUE_SET
+    }
+
     static final Pattern PATTERN = Pattern.compile(
             "(?<api>//[^/]*)/(?<type>CodeSystem|ValueSet)/?(?<op>\\$expand|\\$validate-code)?(?:\\?(?<param>.*))?");
 
@@ -46,15 +50,9 @@ public record TerminologyParam(
             return null;
         }
 
+        ResouceType resouceType =
+                "ValueSet".equals(matcher.group("type")) ? ResouceType.VALUE_SET : ResouceType.CODE_SYSTEM;
         return new TerminologyParam(
-                matcher.group("api"),
-                "ValueSet".equals(matcher.group("type")),
-                definingCode,
-                matcher.group("op"),
-                matcher.group("param"));
-    }
-
-    public Optional<String> extractFromParameter(Function<String, Optional<String>> extractor) {
-        return extractor.apply(parameter);
+                matcher.group("api"), resouceType, definingCode, matcher.group("op"), matcher.group("param"));
     }
 }
