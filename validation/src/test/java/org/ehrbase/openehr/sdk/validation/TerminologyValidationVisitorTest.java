@@ -42,46 +42,46 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TerminologyValidationVisitorTest {
-    private TerminologyValidationVisitor itemStructureVisitor;
+    private TerminologyValidationVisitor validationVisitor;
 
     @BeforeEach
     void setup() {
-        itemStructureVisitor = new TerminologyValidationVisitor();
+        validationVisitor = new TerminologyValidationVisitor();
     }
 
     @Test
     void elementVisitorTest() {
         Composition composition = loadComposition("test_all_types.fixed.v1.xml");
 
-        itemStructureVisitor.validate(composition);
+        validationVisitor.validate(composition);
         // 25 ELEMENTs + 1 ITEM_SINGLE!
-        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(26);
+        assertThat(validationVisitor.getElementOccurrences()).isEqualTo(26);
     }
 
     @Test
     void elementVisitorTestNor() {
         Composition composition = loadComposition("IDCR-LabReportRAW1_with_normal_status.xml");
 
-        assertDoesNotThrow(() -> itemStructureVisitor.validate(composition));
+        assertDoesNotThrow(() -> validationVisitor.validate(composition));
     }
 
     @Test
     void elementVisitorTest2() {
         Composition composition = loadComposition("RIPPLE-ConformanceTest.xml");
 
-        itemStructureVisitor.validate(composition);
+        validationVisitor.validate(composition);
         // 4 elements are in the context/other_context structure
-        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(61);
+        assertThat(validationVisitor.getElementOccurrences()).isEqualTo(61);
 
-        itemStructureVisitor.validate(composition.getContext().getOtherContext());
-        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(65);
+        validationVisitor.validate(composition.getContext().getOtherContext());
+        assertThat(validationVisitor.getElementOccurrences()).isEqualTo(65);
     }
 
     @Test
     void elementVisitorTest3() {
         Composition composition = loadComposition("RIPPLE-ConformanceTest_invalid_other_context_mm_type.xml");
 
-        assertThatThrownBy(() -> itemStructureVisitor.validate(composition))
+        assertThatThrownBy(() -> validationVisitor.validate(composition))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("supplied code string [video/mp3] is not found in codeset:media types");
     }
@@ -97,8 +97,8 @@ class TerminologyValidationVisitorTest {
         EhrStatus ehrStatus = new EhrStatus(
                 "ehr_status", new DvText("ehr_status"), new PartySelf(new PartyRef()), true, true, otherDetails);
 
-        itemStructureVisitor.validate(ehrStatus);
-        assertThat(itemStructureVisitor.getElementOccurrences()).isEqualTo(3);
+        validationVisitor.validate(ehrStatus);
+        assertThat(validationVisitor.getElementOccurrences()).isEqualTo(3);
     }
 
     @Test
@@ -106,7 +106,7 @@ class TerminologyValidationVisitorTest {
         CompositionTestDataCanonicalXML src = CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS;
         Composition composition = loadComposition(src);
 
-        assertThatThrownBy(() -> itemStructureVisitor.validate(composition))
+        assertThatThrownBy(() -> validationVisitor.validate(composition))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

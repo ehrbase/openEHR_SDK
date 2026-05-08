@@ -424,7 +424,6 @@ class LocatableValidatorTest {
 
         assertThat(result).isEmpty();
 
-        TerminologyValidationVisitor itemStructureVisitor = new TerminologyValidationVisitor();
-        itemStructureVisitor.validate(composition);
+        new TerminologyValidationVisitor().validate(composition);
     }
 }
