@@ -29,16 +29,20 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
     private final List<ExternalTerminologyValidation> chain;
 
     public ExternalTerminologyValidationChain() {
-        chain = new ArrayList<>();
+        this.chain = new ArrayList<>();
     }
 
     public ExternalTerminologyValidationChain(List<ExternalTerminologyValidation> chain) {
-        this.chain = chain;
+        this.chain = new ArrayList<>(chain);
     }
 
     @Override
     public boolean supports(TerminologyParam param) {
-        for (ExternalTerminologyValidation next : chain) if (next.supports(param)) return true;
+        for (ExternalTerminologyValidation next : chain) {
+            if (next.supports(param)) {
+                return true;
+            }
+        }
         return false;
     }
 
