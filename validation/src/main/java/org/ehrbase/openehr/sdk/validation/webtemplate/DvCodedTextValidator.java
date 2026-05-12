@@ -123,8 +123,8 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
         if (externalTerminologyValidation.supports(tp)) {
             ConstraintViolation constraintViolation = externalTerminologyValidation.validate(tp);
             if (constraintViolation != null) {
-                return List.of(
-                        new ConstraintViolation(aqlPath, "Failed to validate " + dvCodedText), constraintViolation);
+                return List.of(new ConstraintViolation(
+                        aqlPath, "Invalid terminology: %s".formatted(constraintViolation.getMessage())));
             }
         }
         return List.of();

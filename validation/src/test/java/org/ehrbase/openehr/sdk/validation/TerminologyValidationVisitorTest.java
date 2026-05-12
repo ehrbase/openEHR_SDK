@@ -106,8 +106,7 @@ class TerminologyValidationVisitorTest {
         CompositionTestDataCanonicalXML src = CompositionTestDataCanonicalXML.ALL_TYPES_INVALID_PARTICIPATIONS;
         Composition composition = loadComposition(src);
 
-        assertThatThrownBy(() -> validationVisitor.validate(composition))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> validationVisitor.validate(composition)).isInstanceOf(IllegalArgumentException.class);
     }
 
     private static Composition loadComposition(String fileName) {
