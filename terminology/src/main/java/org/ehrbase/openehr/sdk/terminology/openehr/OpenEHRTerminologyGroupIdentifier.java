@@ -23,7 +23,6 @@ package org.ehrbase.openehr.sdk.terminology.openehr;
  * @author Rong Chen
  */
 public enum OpenEHRTerminologyGroupIdentifier implements OpenEHRTerminologyIdentifier {
-
     AUDIT_CHANGE_TYPE("audit change type"),
     ATTESTATION_REASON("attestation reason"),
     COMPOSITION_CATEGORY("composition category"),
