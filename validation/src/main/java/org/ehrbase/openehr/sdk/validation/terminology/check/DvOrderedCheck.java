@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2019 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,18 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-import static org.junit.Assert.assertEquals;
+import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
 
-import com.nedap.archie.rm.datatypes.CodePhrase;
-import org.junit.Test;
+public class DvOrderedCheck implements TerminologyCheck<DvOrdered> {
+    @Override
+    public Class<DvOrdered> rmClass() {
+        return DvOrdered.class;
+    }
 
-public class ClassBindingTest {
-
-    @Test
-    public void bindingTest() {
-        assertEquals(
-                CodePhrase.class, new org.ehrbase.openehr.sdk.validation.terminology.validator.CodePhrase().rmClass());
+    @Override
+    public void check(String context, DvOrdered dvOrdered, String language) {
+        CodePhraseCheck.validate("normal_status", dvOrdered.getNormalStatus(), language);
     }
 }

@@ -17,12 +17,9 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology;
 
-import com.nedap.archie.rm.datavalues.DvCodedText;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import org.ehrbase.openehr.sdk.util.functional.Try;
-import org.ehrbase.openehr.sdk.validation.ConstraintViolationException;
+import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 
 /**
  * {@link ExternalTerminologyValidation} that provides support for chaining several external terminology server.
@@ -32,16 +29,20 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
     private final List<ExternalTerminologyValidation> chain;
 
     public ExternalTerminologyValidationChain() {
-        chain = new ArrayList<>();
+        this.chain = new ArrayList<>();
     }
 
     public ExternalTerminologyValidationChain(List<ExternalTerminologyValidation> chain) {
-        this.chain = chain;
+        this.chain = new ArrayList<>(chain);
     }
 
     @Override
     public boolean supports(TerminologyParam param) {
-        for (ExternalTerminologyValidation next : chain) if (next.supports(param)) return true;
+        for (ExternalTerminologyValidation next : chain) {
+            if (next.supports(param)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -56,14 +57,12 @@ public class ExternalTerminologyValidationChain implements ExternalTerminologyVa
     }
 
     @Override
-    public Try<Boolean, ConstraintViolationException> validate(TerminologyParam param) {
-        for (ExternalTerminologyValidation next : chain) if (next.supports(param)) return next.validate(param);
-        return Try.success(Boolean.FALSE);
-    }
-
-    @Override
-    public List<DvCodedText> expand(TerminologyParam param) {
-        for (ExternalTerminologyValidation next : chain) if (next.supports(param)) return next.expand(param);
-        return Collections.emptyList();
+    public ConstraintViolation validate(TerminologyParam param) {
+        for (ExternalTerminologyValidation next : chain) {
+            if (next.supports(param)) {
+                return next.validate(param);
+            }
+        }
+        return null;
     }
 }

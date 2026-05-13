@@ -18,71 +18,53 @@
 package org.ehrbase.openehr.sdk.terminology.openehr;
 
 /**
- * List of identifiers for groups in the openEHR terminology.
+ * List of identifiers for code sets in the openEHR terminology.
  *
  * @author Rong Chen
  */
-public enum OpenEHRTerminologyGroupIdentifiers {
-    AUDIT_CHANGE_TYPE("audit change type"),
-    ATTESTATION_REASON("attestation reason"),
-    COMPOSITION_CATEGORY("composition category"),
-    EVENT_MATH_FUNCTION("event math function"),
-    INSTRUCTION_STATES("instruction states"),
-    INSTRUCTION_TRANSITIONS("instruction transitions"),
-    NULL_FLAVOURS("null flavours"),
-    PROPERTY("property"),
-    PARTICIPATION_FUNCTION("participation function"),
-    PARTICIPATION_MODE("participation mode"),
-    SUBJECT_RELATIONSHIP("subject relationship"),
-    SETTING("setting"),
-    TERM_MAPPING_PURPOSE("term mapping purpose"),
-    VERSION_LIFECYCLE_STATE("version lifecycle state");
+public enum OpenEHRCodeSetIdentifier implements OpenEHRTerminologyIdentifier {
+    CHARACTER_SETS("character sets"),
+    COMPRESSION_ALGORITHMS("compression algorithms"),
+    COUNTRIES("countries"),
+    INTEGRITY_CHECK_ALGORITHMS("integrity check algorithms"),
+    LANGUAGES("languages"),
+    MEDIA_TYPES("media types"),
+    NORMAL_STATUSES("normal statuses");
+
+    private final String value;
 
     /**
-     * Private constructor
-     *
-     * @param value
+     * @param value String value of the identifier
      */
-    private OpenEHRTerminologyGroupIdentifiers(String value) {
+    OpenEHRCodeSetIdentifier(String value) {
         this.value = value;
     }
 
-    /**
-     * Validity function to test if an identifier is in the set
-     * defined by this class.
-     *
-     * @param value
-     * @return true if id valid
-     */
-    public static boolean validTerminologyGroupId(String value) {
-        for (OpenEHRTerminologyGroupIdentifiers id : values()) {
-            if (id.value.equals(value)) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public String getValue() {
+        return value;
     }
 
-    /**
-     * Gets String representation of this identifier
-     *
-     * @return the string value
-     */
+    @Override
     public String toString() {
         return value;
     }
 
     /**
-     * Gets the string value
+     * Validity function to test if an identifier is in the set
+     * defined by this class
      *
-     * @return value
+     * @param id
+     * @return true if valid
      */
-    public String getValue() {
-        return value;
+    public static boolean validCodeSetId(String id) {
+        for (OpenEHRCodeSetIdentifier codeSetId : values()) {
+            if (codeSetId.value.equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
-
-    /* String value of the identifier */
-    private final String value;
 }
 
 /*
@@ -99,7 +81,7 @@ public enum OpenEHRTerminologyGroupIdentifiers {
  *  for the specific language governing rights and limitations under the
  *  License.
  *
- *  The Original Code is OpenEHRTerminologyGroupIdentifiers.java
+ *  The Original Code is OpenEHRCodeSetIdentifiers.java
  *
  *  The Initial Developer of the Original Code is Rong Chen.
  *  Portions created by the Initial Developer are Copyright (C) 2003-2006

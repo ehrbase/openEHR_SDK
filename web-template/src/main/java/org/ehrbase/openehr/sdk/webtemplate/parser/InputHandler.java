@@ -65,8 +65,7 @@ public class InputHandler {
         input.setType(cprimitiveobject.getRmTypeName().replace("_", ""));
         if (input.getType().equals("REAL")) {
             input.setType("DECIMAL");
-        }
-        if (input.getType().equals("STRING")) {
+        } else if (input.getType().equals("STRING")) {
             input.setType("TEXT");
         }
 
@@ -81,52 +80,41 @@ public class InputHandler {
                 .ifPresent(input::setDefaultValue);
 
         boolean addValidation = false;
-        if (item instanceof CDATETIME) {
+        if (item instanceof CDATETIME cdatetime) {
+            pattern = cdatetime.getPattern();
 
-            pattern = ((CDATETIME) item).getPattern();
-
-        } else if (item instanceof CTIME) {
-            pattern = ((CTIME) item).getPattern();
-        } else if (item instanceof CDATE) {
-            pattern = ((CDATE) item).getPattern();
-        } else if (item instanceof CSTRING) {
-            pattern = ((CSTRING) item).getPattern();
-            Arrays.stream(((CSTRING) item).getListArray()).forEach(i -> {
+        } else if (item instanceof CTIME ctime) {
+            pattern = ctime.getPattern();
+        } else if (item instanceof CDATE cdate) {
+            pattern = cdate.getPattern();
+        } else if (item instanceof CSTRING cstring) {
+            pattern = cstring.getPattern();
+            Arrays.stream(cstring.getListArray()).forEach(i -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();
                 value.setValue(i);
                 value.setLabel(i);
                 input.getList().add(value);
             });
-            input.setListOpen(((CSTRING) item).getListOpen());
-        }
-
-        if (item instanceof CDURATION) {
-            pattern = ((CDURATION) item).getPattern();
-            range = extractInterval(((CDURATION) item).getRange());
-        }
-
-        if (item instanceof CINTEGER) {
-            range = extractInterval(((CINTEGER) item).getRange());
-            Arrays.stream(((CINTEGER) item).getListArray()).forEach(i -> {
+            input.setListOpen(cstring.getListOpen());
+        } else if (item instanceof CDURATION cduration) {
+            pattern = cduration.getPattern();
+            range = extractInterval(cduration.getRange());
+        } else if (item instanceof CINTEGER cinteger) {
+            range = extractInterval(cinteger.getRange());
+            Arrays.stream(cinteger.getListArray()).forEach(i -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();
                 value.setValue(Integer.toString(i));
                 input.getList().add(value);
             });
-        } else if (item instanceof CREAL) {
-            range = extractInterval(((CREAL) item).getRange());
-        }
-
-        if (item instanceof CBOOLEAN) {
-            if (((CBOOLEAN) item).getFalseValid() && !((CBOOLEAN) item).getTrueValid()) {
-                WebTemplateInputValue falseInputValue = new WebTemplateInputValue();
-                falseInputValue.setLabel("false");
-                falseInputValue.setValue("false");
-                input.getList().add(falseInputValue);
-            } else if (!((CBOOLEAN) item).getFalseValid() && ((CBOOLEAN) item).getTrueValid()) {
-                WebTemplateInputValue falseInputValue = new WebTemplateInputValue();
-                falseInputValue.setLabel("true");
-                falseInputValue.setValue("true");
-                input.getList().add(falseInputValue);
+        } else if (item instanceof CREAL creal) {
+            range = extractInterval(creal.getRange());
+        } else if (item instanceof CBOOLEAN cboolean) {
+            if (cboolean.getFalseValid() != cboolean.getTrueValid()) {
+                String booleanString = Boolean.toString(cboolean.getTrueValid());
+                WebTemplateInputValue inputValue = new WebTemplateInputValue();
+                inputValue.setLabel(booleanString);
+                inputValue.setValue(booleanString);
+                input.getList().add(inputValue);
             }
         }
         if (StringUtils.isNotBlank(pattern)) {

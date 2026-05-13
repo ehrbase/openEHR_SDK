@@ -15,25 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology.validator;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-public class PartyRelationship extends TerminologyCheck {
+import com.nedap.archie.rm.demographic.PartyRelationship;
 
-    public PartyRelationship() {
-        this.RM_CLASS = com.nedap.archie.rm.demographic.PartyRelationship.class;
+// XXX CDR-2273 This is Demographics.
+public class PartyRelationshipCheck implements TerminologyCheck<PartyRelationship> {
+    @Override
+    public Class<PartyRelationship> rmClass() {
+        return PartyRelationship.class;
     }
 
-    public static void check(
-            String context, com.nedap.archie.rm.demographic.PartyRelationship partyRelationship, String language)
-            throws IllegalArgumentException {
-        //        if (participation.getMode() != null)
-        //            validate(container, context, participation.getMode().getDefiningCode().getTerminologyId(),
-        // participation.getMode().getDefiningCode().getCodeString());
-    }
-
-    public static void check(String context, com.nedap.archie.rm.demographic.PartyRelationship partyRelationship)
-            throws IllegalArgumentException {
-        check(context, partyRelationship, "en");
+    @Override
+    public void check(String context, PartyRelationship partyRelationship, String language) {
         //        if (participation.getMode() != null)
         //            validate(container, context, participation.getMode().getDefiningCode().getTerminologyId(),
         // participation.getMode().getDefiningCode().getCodeString());

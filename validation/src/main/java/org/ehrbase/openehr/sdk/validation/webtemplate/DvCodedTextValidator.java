@@ -22,9 +22,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.ehrbase.openehr.sdk.util.functional.Try;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.validation.ConstraintViolationException;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.validation.terminology.TerminologyParam;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
@@ -57,9 +55,12 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
      */
     @Override
     public List<ConstraintViolation> validate(DvCodedText dvCodedText, WebTemplateNode node) {
+        // see Web Templates Guide 6.2. DV_CODED_TEXT
+        // archetype-internal terminology
         List<ConstraintViolation> codedText = WebTemplateValidationUtils.findInputWithType(node, "CODED_TEXT")
                 .map(input -> validateInternalCode(node.getAqlPath(), dvCodedText, input))
                 .orElse(List.of());
+        // external / openehr terminology
         List<ConstraintViolation> text = WebTemplateValidationUtils.findInputWithType(node, "TEXT")
                 .map(input1 -> validateExternalTerminology(node.getAqlPath(), dvCodedText, input1))
                 .orElse(List.of());
@@ -86,7 +87,7 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
         Optional<ConstraintViolation> otherViolation = Optional.of(input)
                 .filter(WebTemplateValidationUtils::hasList)
                 .map(i -> {
-                    var matching = input.getList().stream()
+                    var matching = i.getList().stream()
                             .filter(inputValue -> Objects.equals(inputValue.getValue(), definingCode.getCodeString()))
                             .findFirst();
 
@@ -97,6 +98,7 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
                                         "CodePhrase codeString does not match any option, found: {0}",
                                         definingCode.getCodeString()));
                     } else if (definingCode.getTerminologyId().getName().equals("local")
+                            // TODO CDR-2273 check matching->getLocalizedLabels?
                             && !matching.get().getLabel().equals(dvCodedText.getValue())) {
                         return new ConstraintViolation(
                                 aqlPath,
@@ -117,17 +119,12 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
             return List.of();
         }
 
-        TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology());
-        tp.setCodePhrase(dvCodedText.getDefiningCode());
-
+        TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology(), dvCodedText.getDefiningCode());
         if (externalTerminologyValidation.supports(tp)) {
-            Try<Boolean, ConstraintViolationException> validationResult = externalTerminologyValidation.validate(tp);
-            if (validationResult.isFailure()) {
-                ConstraintViolationException ex =
-                        validationResult.getAsFailure().get();
-                return ConstraintValidator.concat(
-                        List.of(new ConstraintViolation(aqlPath, "Failed to validate " + dvCodedText)),
-                        ex.getConstraintViolations());
+            ConstraintViolation constraintViolation = externalTerminologyValidation.validate(tp);
+            if (constraintViolation != null) {
+                return List.of(new ConstraintViolation(
+                        aqlPath, "Invalid terminology: %s".formatted(constraintViolation.getMessage())));
             }
         }
         return List.of();

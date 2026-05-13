@@ -15,21 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology.validator;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-public class CodePhrase extends TerminologyCheck {
+import com.nedap.archie.rm.datastructures.IntervalEvent;
 
-    public CodePhrase() {
-        this.RM_CLASS = com.nedap.archie.rm.datatypes.CodePhrase.class;
+public class IntervalEventCheck implements TerminologyCheck<IntervalEvent> {
+    @Override
+    public Class<IntervalEvent> rmClass() {
+        return IntervalEvent.class;
     }
 
-    public static void check(String context, com.nedap.archie.rm.datatypes.CodePhrase codePhrase)
-            throws IllegalArgumentException {
-        check(context, codePhrase, "en");
-    }
-
-    public static void check(String context, com.nedap.archie.rm.datatypes.CodePhrase codePhrase, String language)
-            throws IllegalArgumentException {
-        validate(context, codePhrase, language);
+    @Override
+    public void check(String context, IntervalEvent intervalEvent, String language) {
+        CodePhraseCheck.validate("mathFunction", intervalEvent.getMathFunction().getDefiningCode(), language);
     }
 }

@@ -19,25 +19,25 @@ package org.ehrbase.openehr.sdk.terminology.openehr;
 
 import static org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets.TerminologyContainer.codeset;
 import static org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets.TerminologyContainer.group;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.CHARACTER_SETS;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.COMPRESSION_ALGORITHMS;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.COUNTRIES;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.INTEGRITY_CHECK_ALGORITHMS;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.LANGUAGES;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.MEDIA_TYPES;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifiers.NORMAL_STATUSES;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.COMPOSITION_CATEGORY;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.EVENT_MATH_FUNCTION;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_TRANSITIONS;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.NULL_FLAVOURS;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.PARTICIPATION_FUNCTION;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.PARTICIPATION_MODE;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.PROPERTY;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.SETTING;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.SUBJECT_RELATIONSHIP;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.TERM_MAPPING_PURPOSE;
-import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifier.CHARACTER_SETS;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifier.COMPRESSION_ALGORITHMS;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifier.COUNTRIES;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifier.INTEGRITY_CHECK_ALGORITHMS;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifier.LANGUAGES;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifier.MEDIA_TYPES;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRCodeSetIdentifier.NORMAL_STATUSES;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.COMPOSITION_CATEGORY;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.EVENT_MATH_FUNCTION;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.INSTRUCTION_STATES;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.INSTRUCTION_TRANSITIONS;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.NULL_FLAVOURS;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.PARTICIPATION_FUNCTION;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.PARTICIPATION_MODE;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.PROPERTY;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.SETTING;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.SUBJECT_RELATIONSHIP;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.TERM_MAPPING_PURPOSE;
+import static org.ehrbase.openehr.sdk.terminology.openehr.OpenEHRTerminologyGroupIdentifier.VERSION_LIFECYCLE_STATE;
 
 import java.util.Map;
 import org.ehrbase.openehr.sdk.util.SnakeCase;
@@ -52,28 +52,25 @@ public class AttributeCodesets {
     private static final String OPENEHR = "openehr";
 
     private static final Map<String, TerminologyContainer> MAPPINGS = Map.ofEntries(
-            group("lifecycle_state", VERSION_LIFECYCLE_STATE.toString()),
-            group("category", COMPOSITION_CATEGORY.toString()),
-            group("setting", SETTING.toString()),
-            group("current_state", INSTRUCTION_STATES.toString()),
-            group("transition", INSTRUCTION_TRANSITIONS.toString()),
-            group("null_flavour", NULL_FLAVOURS.toString()),
-            group("mode", PARTICIPATION_MODE.toString()),
-            group("function", PARTICIPATION_FUNCTION.toString()),
-            group("relationship", SUBJECT_RELATIONSHIP.toString()),
-            group("property", PROPERTY.toString()),
-            group("math_function", EVENT_MATH_FUNCTION.toString()),
-            group("purpose", TERM_MAPPING_PURPOSE.toString()),
-            codeset("language", LANGUAGES.toString(), "ISO_639-1"),
-            codeset("normal_status", NORMAL_STATUSES.toString(), "openehr_normal_status"),
-            codeset("media_type", MEDIA_TYPES.toString(), "IANA_media-types"),
-            codeset("character_set", CHARACTER_SETS.toString(), "IANA_character-sets"),
-            codeset("compression_algorithm", COMPRESSION_ALGORITHMS.toString(), "openehr_compression_algorithm"),
-            codeset("territory", COUNTRIES.toString(), "ISO_3166-1"),
-            codeset(
-                    "integrity_check_algorithm",
-                    INTEGRITY_CHECK_ALGORITHMS.toString(),
-                    "openehr_integrity_check_algorithm"));
+            group("lifecycle_state", VERSION_LIFECYCLE_STATE),
+            group("category", COMPOSITION_CATEGORY),
+            group("setting", SETTING),
+            group("current_state", INSTRUCTION_STATES),
+            group("transition", INSTRUCTION_TRANSITIONS),
+            group("null_flavour", NULL_FLAVOURS),
+            group("mode", PARTICIPATION_MODE),
+            group("function", PARTICIPATION_FUNCTION),
+            group("relationship", SUBJECT_RELATIONSHIP),
+            group("property", PROPERTY),
+            group("math_function", EVENT_MATH_FUNCTION),
+            group("purpose", TERM_MAPPING_PURPOSE),
+            codeset("language", LANGUAGES, "ISO_639-1"),
+            codeset("normal_status", NORMAL_STATUSES, "openehr_normal_status"),
+            codeset("media_type", MEDIA_TYPES, "IANA_media-types"),
+            codeset("character_set", CHARACTER_SETS, "IANA_character-sets"),
+            codeset("compression_algorithm", COMPRESSION_ALGORITHMS, "openehr_compression_algorithm"),
+            codeset("territory", COUNTRIES, "ISO_3166-1"),
+            codeset("integrity_check_algorithm", INTEGRITY_CHECK_ALGORITHMS, "openehr_integrity_check_algorithm"));
 
     /**
      * Returns the mapping entry for the given RM attribute name (snake_case).
@@ -90,12 +87,13 @@ public class AttributeCodesets {
     }
 
     public record TerminologyContainer(String terminology, ContainerType container, String id) {
-        static Map.Entry<String, TerminologyContainer> group(String attribute, String id) {
-            return Map.entry(attribute, new TerminologyContainer(OPENEHR, ContainerType.GROUP, id));
+        static Map.Entry<String, TerminologyContainer> group(String attribute, OpenEHRTerminologyGroupIdentifier id) {
+            return Map.entry(attribute, new TerminologyContainer(OPENEHR, ContainerType.GROUP, id.getValue()));
         }
 
-        static Map.Entry<String, TerminologyContainer> codeset(String attribute, String id, String terminology) {
-            return Map.entry(attribute, new TerminologyContainer(terminology, ContainerType.CODESET, id));
+        static Map.Entry<String, TerminologyContainer> codeset(
+                String attribute, OpenEHRCodeSetIdentifier id, String terminology) {
+            return Map.entry(attribute, new TerminologyContainer(terminology, ContainerType.CODESET, id.toString()));
         }
     }
 }

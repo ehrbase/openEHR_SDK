@@ -15,21 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology.validator;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-public class DvCodedText extends TerminologyCheck {
+import com.nedap.archie.rm.composition.EventContext;
 
-    public DvCodedText() {
-        this.RM_CLASS = com.nedap.archie.rm.datavalues.DvCodedText.class;
+public class EventContextCheck implements TerminologyCheck<EventContext> {
+    @Override
+    public Class<EventContext> rmClass() {
+        return EventContext.class;
     }
 
-    public static void check(String context, com.nedap.archie.rm.datavalues.DvCodedText dvCodedText)
-            throws IllegalArgumentException {
-        check(context, dvCodedText, "en");
-    }
-
-    public static void check(String context, com.nedap.archie.rm.datavalues.DvCodedText dvCodedText, String language)
-            throws IllegalArgumentException {
-        validate(context, dvCodedText, language);
+    @Override
+    public void check(String context, EventContext eventContext, String language) {
+        CodePhraseCheck.validate("setting", eventContext.getSetting().getDefiningCode(), language);
     }
 }

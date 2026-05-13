@@ -19,13 +19,19 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 public abstract class AbstractRMObjectValidatorTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    protected WebTemplateNode parseNode(String file) throws IOException {
-        return objectMapper.readValue(getClass().getResourceAsStream(file), WebTemplateNode.class);
+    protected WebTemplateNode parseNode(String file) {
+        try (InputStream in = getClass().getResourceAsStream(file)) {
+            return OBJECT_MAPPER.readValue(in, WebTemplateNode.class);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

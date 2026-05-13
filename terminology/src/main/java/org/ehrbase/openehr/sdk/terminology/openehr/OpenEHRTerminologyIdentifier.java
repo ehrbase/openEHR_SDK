@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 vitasystems GmbH and Hannover Medical School.
+ * Copyright (c) 2026 vitasystems GmbH and Hannover Medical School.
  *
  * This file is part of project openEHR_SDK
  *
@@ -15,18 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.util.functional;
+package org.ehrbase.openehr.sdk.terminology.openehr;
 
-import java.util.function.Supplier;
-
-public interface ExceptionalSupplier<T, E extends Exception> extends Supplier<T> {
-    T doGet() throws E;
-
-    default T get() {
-        try {
-            return doGet();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+public interface OpenEHRTerminologyIdentifier {
+    String getValue();
 }

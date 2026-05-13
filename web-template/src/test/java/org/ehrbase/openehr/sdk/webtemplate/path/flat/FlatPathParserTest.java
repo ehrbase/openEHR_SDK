@@ -19,13 +19,12 @@ package org.ehrbase.openehr.sdk.webtemplate.path.flat;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FlatPathParserTest {
+class FlatPathParserTest {
 
     @Test
-    public void parse() {
-
+    void parse() {
         String path = "context/end_time|value";
         FlatPathDto cut = FlatPathParser.parse(path);
         assertThat(cut).isNotNull();
@@ -35,8 +34,7 @@ public class FlatPathParserTest {
     }
 
     @Test
-    public void parseWithCount() {
-
+    void parseWithCount() {
         String path = "context/end_time:3";
         FlatPathDto cut = FlatPathParser.parse(path);
         assertThat(cut).isNotNull();
@@ -47,8 +45,7 @@ public class FlatPathParserTest {
     }
 
     @Test
-    public void parseComplex() {
-
+    void parseComplex() {
         String path =
                 "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
         FlatPathDto cut = FlatPathParser.parse(path);
@@ -56,8 +53,7 @@ public class FlatPathParserTest {
     }
 
     @Test
-    public void parseContext() {
-
+    void parseContext() {
         String path = "ctx/participation_identifiers:1|assigner:1";
         FlatPathDto cut = FlatPathParser.parse(path);
         assertThat(cut.format()).isEqualTo(path);

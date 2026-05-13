@@ -48,6 +48,8 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
@@ -91,11 +93,11 @@ class OPTParserTest {
 
         List<String> errors = compareWebTemplate(actual, expected);
 
-        checkErrors(errors, new String[] {
-            "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category",
-            "InContext not equal null != true in  id=math_function aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/math_function",
-            "InContext not equal null != true in  id=width aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/width"
-        });
+        checkErrors(
+                errors,
+                "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category",
+                "InContext not equal null != true in  id=math_function aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/math_function",
+                "InContext not equal null != true in  id=width aql=/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Risikogebiet']/items[openEHR-EHR-OBSERVATION.travel_event.v0]/data[at0001]/events[at0002]/width");
     }
 
     @Test
@@ -118,15 +120,15 @@ class OPTParserTest {
 
         List<String> errors = compareWebTemplate(actual, expected);
 
-        checkErrors(errors, new String[] {
-            "Extra Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016]/value",
-            "Missing Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016 and name/value='External terminology']/value",
-            "InputValue not equal 1234:Hello world != 1234:null in id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
-            "LocalizedNames not equal [en=event] != [en=event, sl=] in inputValue.code:433 id=category aql=/category",
-            "LocalizedNames not equal [en=Hello world] != [en=, sl=] in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
-            "LocalizedDescriptions not equal {en=} != {} in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
-            "DefaultValue not equal null != 1234 in input.suffix:code id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value"
-        });
+        checkErrors(
+                errors,
+                "Extra Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016]/value",
+                "Missing Node id=external_terminology aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0016 and name/value='External terminology']/value",
+                "InputValue not equal 1234:Hello world != 1234:null in id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+                "LocalizedNames not equal [en=event] != [en=event, sl=] in inputValue.code:433 id=category aql=/category",
+                "LocalizedNames not equal [en=Hello world] != [en=, sl=] in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+                "LocalizedDescriptions not equal {en=} != {} in inputValue.code:1234 id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value",
+                "DefaultValue not equal null != 1234 in input.suffix:code id=testing_dv_text aql=/content[openEHR-EHR-OBSERVATION.testing.v1]/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.testing.v1]/items[at0026]/value");
     }
 
     @Test
@@ -142,13 +144,13 @@ class OPTParserTest {
                 .filter(f -> !f.startsWith("LocalizedDescriptions not equal")
                         && !f.startsWith("LocalizedNames not equal")
                         && !f.startsWith("Annotations not equal"))
-                .collect(Collectors.toList());
+                .toList();
 
-        checkErrors(errors, new String[] {
-            "Extra Input code:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value",
-            "Extra Input value:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value",
-            "Missing Input null:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value"
-        });
+        checkErrors(
+                errors,
+                "Extra Input code:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value",
+                "Extra Input value:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value",
+                "Missing Input null:TEXT in id=name_des_problems_der_diagnose aql=/content[openEHR-EHR-EVALUATION.problem_diagnosis.v1 and name/value='Vorliegende Diagnose']/data[at0001]/items[at0002]/value");
     }
 
     @Test
@@ -164,15 +166,15 @@ class OPTParserTest {
         List<String> errors = compareWebTemplate(actual, expected);
 
         // Nodes wich are generated by the parser but are not in the example
-        checkErrors(errors, new String[] {
-            "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category",
-            "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:g id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
-            "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:kg id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
-            "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=2000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=2000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:[lb_av] id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
-            "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:g id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
-            "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:kg id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
-            "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=2000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=2000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:[lb_av] id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value"
-        });
+        checkErrors(
+                errors,
+                "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category",
+                "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:g id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
+                "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:kg id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
+                "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=2000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=2000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:[lb_av] id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0026]/data[at0001]/items[at0004]/value",
+                "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:g id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
+                "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=1000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=1000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:kg id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
+                "Validation not equal WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=2000.0, maxOp=LT_EQ}, pattern='null'} != WebTemplateValidation{precision=null, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=2000, maxOp=LT_EQ}, pattern='null'} in inputValue.code:[lb_av] id=gewicht aql=/content[openEHR-EHR-OBSERVATION.body_weight.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value");
     }
 
     @Test
@@ -186,10 +188,10 @@ class OPTParserTest {
                 WebTemplate.class);
 
         List<String> errors = compareWebTemplate(actual, expected);
-        checkErrors(errors, new String[] {
-            "Validation not equal WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=100.0, maxOp=LT}, pattern='null'} != WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=100, maxOp=LT}, pattern='null'} in inputValue.code:Cel id=temperature aql=/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
-            "Validation not equal WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=30.0, minOp=GT_EQ, max=200.0, maxOp=LT}, pattern='null'} != WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=30, minOp=GT_EQ, max=200, maxOp=LT}, pattern='null'} in inputValue.code:[degF] id=temperature aql=/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value"
-        });
+        checkErrors(
+                errors,
+                "Validation not equal WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=0.0, minOp=GT_EQ, max=100.0, maxOp=LT}, pattern='null'} != WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=0, minOp=GT_EQ, max=100, maxOp=LT}, pattern='null'} in inputValue.code:Cel id=temperature aql=/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value",
+                "Validation not equal WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=30.0, minOp=GT_EQ, max=200.0, maxOp=LT}, pattern='null'} != WebTemplateValidation{precision=WebTemplateValidationInterval{min=1, minOp=GT_EQ, max=1, maxOp=LT_EQ}, range=WebTemplateValidationInterval{min=30, minOp=GT_EQ, max=200, maxOp=LT}, pattern='null'} in inputValue.code:[degF] id=temperature aql=/content[openEHR-EHR-OBSERVATION.body_temperature.v2]/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value");
     }
 
     @Test
@@ -203,16 +205,14 @@ class OPTParserTest {
                 WebTemplate.class);
 
         List<String> errors = compareWebTemplate(actual, expected);
-        checkErrors(
-                errors.stream()
-                        .filter(e -> Stream.of(
-                                        "Annotations not equal",
-                                        "InputValue not equal",
-                                        "LocalizedNames not equal",
-                                        "LocalizedDescriptions not equal")
-                                .noneMatch(e::startsWith))
-                        .collect(Collectors.toList()),
-                new String[] {});
+        checkErrors(errors.stream()
+                .filter(e -> Stream.of(
+                                "Annotations not equal",
+                                "InputValue not equal",
+                                "LocalizedNames not equal",
+                                "LocalizedDescriptions not equal")
+                        .noneMatch(e::startsWith))
+                .toList());
     }
 
     @Test
@@ -239,8 +239,7 @@ class OPTParserTest {
                 IOUtils.toString(WebTemplateTestData.INITIAL_ASSESSMENT.getStream(), StandardCharsets.UTF_8),
                 WebTemplate.class);
 
-        List<String> errors = compareWebTemplate(actual, expected);
-        checkErrors(errors, new String[] {});
+        checkErrors(compareWebTemplate(actual, expected));
     }
 
     @Test
@@ -252,9 +251,8 @@ class OPTParserTest {
         WebTemplate expected = OM.readValue(
                 IOUtils.toString(WebTemplateTestData.ADDICTION.getStream(), StandardCharsets.UTF_8), WebTemplate.class);
 
-        List<String> errors = compareWebTemplate(actual, expected);
         checkErrors(
-                errors,
+                compareWebTemplate(actual, expected),
                 "LocalizedNames not equal [de=event] != [de=] in inputValue.code:433 id=category aql=/category");
     }
 
@@ -269,9 +267,9 @@ class OPTParserTest {
                 WebTemplate.class);
 
         List<String> errors = compareWebTemplate(actual, expected);
-        checkErrors(errors, new String[] {
-            "DefaultValue not equal 100.0 != null in input.suffix:denominator id=total_body_surface_area_tbsa_affected aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0014]/value"
-        });
+        checkErrors(
+                errors,
+                "DefaultValue not equal 100.0 != null in input.suffix:denominator id=total_body_surface_area_tbsa_affected aql=/content[openEHR-EHR-OBSERVATION.affected_body_surface_area.v0]/data[at0001]/events[at0002]/data[at0003]/items[at0014]/value");
     }
 
     @Test
@@ -285,11 +283,11 @@ class OPTParserTest {
                 WebTemplate.class);
 
         List<String> errors = compareWebTemplate(actual, expected);
-        checkErrors(errors, new String[] {
-            "InputValue not equal 146:mean != 146:Durchschnitt in id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function",
-            "LocalizedNames not equal [de=event, ar-sy=event, en=event, fi=event] != [de=, fi=, en=event, ar-sy=] in inputValue.code:433 id=category aql=/category",
-            "LocalizedNames not equal [de=mean, ar-sy=mean, en=mean, fi=mean] != [de=Durchschnitt, fi=, en=mean, ar-sy=] in inputValue.code:146 id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function"
-        });
+        checkErrors(
+                errors,
+                "InputValue not equal 146:mean != 146:Durchschnitt in id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function",
+                "LocalizedNames not equal [de=event, ar-sy=event, en=event, fi=event] != [de=, fi=, en=event, ar-sy=] in inputValue.code:433 id=category aql=/category",
+                "LocalizedNames not equal [de=mean, ar-sy=mean, en=mean, fi=mean] != [de=Durchschnitt, fi=, en=mean, ar-sy=] in inputValue.code:146 id=math_function aql=/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at1042]/math_function");
     }
 
     @Test
@@ -360,13 +358,15 @@ class OPTParserTest {
         assertThat(nodes).hasSize(2);
     }
 
-    void checkErrors(List<String> errors, String... expectedErrors) {
+    void checkErrors(List<String> errorList, String... expectedErrors) {
 
         SoftAssertions softAssertions = new SoftAssertions();
 
-        softAssertions.assertThat(errors).containsAll(Arrays.asList(expectedErrors));
+        List<String> expected = Arrays.asList(expectedErrors);
+        softAssertions.assertThat(errorList).containsAll(expected);
 
-        errors.removeAll(Arrays.asList(expectedErrors));
+        List<String> errors =
+                errorList.stream().filter(s -> !expected.contains(s)).toList();
 
         // Nodes which are generated by the parser but are not in the example
         softAssertions
@@ -697,28 +697,40 @@ class OPTParserTest {
         List<WebTemplateNode> nodes = webTemplate.findAllByAqlPath(
                 "[openEHR-EHR-COMPOSITION.encounter.v1]/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]",
                 true);
-        assertThat(nodes).isNotNull();
-        assertThat(nodes.size()).isGreaterThan(0);
+        assertThat(nodes).hasSizeGreaterThan(0);
         WebTemplateNode node = nodes.get(0);
         assertThat(node).isNotNull();
         assertThat(node.getNodeId()).isNotNull();
         WebTemplateAnnotation annotation = node.getAnnotations();
         assertThat(annotation).isNotNull();
         assertThat(annotation.getOther()).isNotNull();
-        assertThat(annotation.getOther().size()).isEqualTo(3);
+        assertThat(annotation.getOther()).hasSize(3);
 
         webTemplate = new Filter().filter(webTemplate);
         nodes = webTemplate.findAllByAqlPath(
                 "[openEHR-EHR-COMPOSITION.encounter.v1]/content[openEHR-EHR-OBSERVATION.blood_pressure.v2]/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value",
                 true);
-        assertThat(nodes).isNotNull();
-        assertThat(nodes.size()).isGreaterThan(0);
+        assertThat(nodes).hasSizeGreaterThan(0);
         node = nodes.get(0);
         assertThat(node).isNotNull();
         assertThat(node.getNodeId()).isNotNull();
         annotation = node.getAnnotations();
         assertThat(annotation).isNotNull();
         assertThat(annotation.getOther()).isNotNull();
-        assertThat(annotation.getOther().size()).isEqualTo(3);
+        assertThat(annotation.getOther()).hasSize(3);
+    }
+
+    @ParameterizedTest
+    @CsvSource(nullValues = "NULL", textBlock = """
+            NULL,                    NULL,
+            '',                      '',
+            terminology,             terminology,
+            :value,                  value,
+            schema:,                 '',
+            terminology:some-value,  some-value,
+            terminology://fhir.hl7.org/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/surface, //fhir.hl7.org/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/surface
+""")
+    void testRemoveSchema(String input, String expected) {
+        assertThat(OPTParser.removeSchema(input)).isEqualTo(expected);
     }
 }

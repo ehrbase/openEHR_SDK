@@ -19,13 +19,13 @@ package org.ehrbase.openehr.sdk.aql.webtemplatepath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class AqlPathTest {
+class AqlPathTest {
 
     @Test
-    public void testParse() {
+    void testParse() {
         String path = "/other_context[at0001]/items[at0006]";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -35,7 +35,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseWithAndInName() {
+    void testParseWithAndInName() {
         String path =
                 "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]/items[openEHR-EHR-CLUSTER.location.v1]";
         AqlPath cut = AqlPath.parse(path);
@@ -54,7 +54,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseWithAndInArchetypeId() {
+    void testParseWithAndInArchetypeId() {
         String path = "/content[openEHR-EHR-OBSERVATION.wordwithandin.v1]";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -63,7 +63,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseWithAttribute() {
+    void testParseWithAttribute() {
         String path = "/context/end_time|value";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -74,7 +74,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testNodeWithAtCode() {
+    void testNodeWithAtCode() {
         AqlPath path1 = AqlPath.parse("/context/end_time|value");
         AqlPath path2 = AqlPath.parse("/context/end_time[at0001]|value");
         AqlPath path3 = AqlPath.parse("/context/end_time[at0002]|value");
@@ -85,7 +85,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testNodeWithNameValue() {
+    void testNodeWithNameValue() {
         AqlPath path1 = AqlPath.parse("/context/end_time[at0001]|value");
         AqlPath path2 = AqlPath.parse("/context/end_time[at0001 and name/value='foo']|value");
         assertThat(path1.replaceLastNode(n -> n.withNameValue("foo"))).isEqualTo(path2);
@@ -94,7 +94,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testNodeClearOtherPredicates() {
+    void testNodeClearOtherPredicates() {
         AqlPath path1 = AqlPath.parse("/context/end_time[at0001]|value");
         AqlPath path2 = AqlPath.parse("/context/end_time[at0001 and name/value='foo' and foo='bar']|value");
         assertThat(path1.replaceLastNode(AqlPath.AqlNode::clearOtherPredicates)).isEqualTo(path1);
@@ -102,7 +102,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseWithPredicate() {
+    void testParseWithPredicate() {
         String path = "/content[openEHR-EHR-SECTION.adhoc.v1 and name/value='Allgemeine Angaben']";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -114,7 +114,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseWithPredicateAndInName() {
+    void testParseWithPredicateAndInName() {
         String path =
                 "/items[openEHR-EHR-SECTION.adhoc.v1 and name/value='Details of other relevant care planning documents and \\' \\\\ [] = where to find them']";
         AqlPath cut = AqlPath.parse(path);
@@ -128,7 +128,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseWithPredicateInShortForm() {
+    void testParseWithPredicateInShortForm() {
         String path = "/content[openEHR-EHR-SECTION.adhoc.v1,'Symptome']";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -140,7 +140,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseEmpty() {
+    void testParseEmpty() {
         String path = "/";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -150,7 +150,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseOnlyAttribute() {
+    void testParseOnlyAttribute() {
         String path = "|value";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -160,7 +160,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseAttributeAndAtCode() {
+    void testParseAttributeAndAtCode() {
         String path = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude";
         AqlPath cut = AqlPath.parse(path);
         assertThat(cut).isNotNull();
@@ -171,7 +171,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testGetLast() {
+    void testGetLast() {
         String path = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude";
         AqlPath cut = AqlPath.parse(path).getEnd(1);
         assertThat(cut).isNotNull();
@@ -181,7 +181,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testRemoveStartAqlPath() {
+    void testRemoveStartAqlPath() {
         AqlPath path1 = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
         AqlPath path2 = AqlPath.parse("/data[at0001]/events[at0002]");
 
@@ -193,7 +193,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testFormatRemoveStartNodes() {
+    void testFormatRemoveStartNodes() {
         AqlPath path = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
 
         assertThat(path.removeStart(0)).isSameAs(path);
@@ -207,7 +207,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testRemoveEndAqlPath() {
+    void testRemoveEndAqlPath() {
         String path = "/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude";
         AqlPath path1 = AqlPath.parse(path);
         AqlPath path2 = path1.getEnd(1);
@@ -226,7 +226,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testFormatRemoveEndNodes() {
+    void testFormatRemoveEndNodes() {
         AqlPath path = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
 
         assertThat(path.removeEnd(0)).isSameAs(path);
@@ -237,7 +237,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testAddEndAqlPath() {
+    void testAddEndAqlPath() {
         AqlPath path1 = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]");
         AqlPath path2 = AqlPath.parse("/items[at0004 and name/value='Name']|magnitude");
         AqlPath actual = path1.addEnd(path2);
@@ -250,7 +250,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testAddEndStrings() {
+    void testAddEndStrings() {
 
         AqlPath path = AqlPath.parse("/data[at0001]|foo");
         assertThat(path.addEnd("|foo")).isSameAs(path);
@@ -262,7 +262,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testAddEndNodes() {
+    void testAddEndNodes() {
         AqlPath path = AqlPath.parse("/data[at0001]|foo");
         var n1 = AqlPath.parse("events[at0002]").getLastNode();
         var n2 = AqlPath.parse("data[at0003]").getLastNode();
@@ -275,7 +275,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testGetEnd() {
+    void testGetEnd() {
         assertThat(AqlPath.EMPTY_PATH.getEnd(100)).isSameAs(AqlPath.EMPTY_PATH);
         AqlPath path = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
 
@@ -287,7 +287,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testReplaceNodeAtPos() {
+    void testReplaceNodeAtPos() {
         AqlPath path = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
         var node = AqlPath.parse("foo[at0666]").getLastNode();
 
@@ -298,7 +298,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testReplaceLastNode() {
+    void testReplaceLastNode() {
         AqlPath path = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
         var node = AqlPath.parse("foo[at0666]").getLastNode();
 
@@ -309,14 +309,14 @@ public class AqlPathTest {
                 .isEqualTo(AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]"));
 
         assertThat(AqlPath.ROOT_PATH.replaceLastNode(n -> {
-                    Assert.fail("Unexpected node replacement");
+                    Assertions.fail("Unexpected node replacement");
                     return null;
                 }))
                 .isSameAs(AqlPath.ROOT_PATH);
     }
 
     @Test
-    public void testWithAttributeName() {
+    void testWithAttributeName() {
         AqlPath path = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
         assertThat(path.withAttributeName("foo"))
                 .isEqualTo(AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|foo"));
@@ -325,7 +325,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testIsEmpty() {
+    void testIsEmpty() {
         assertThat(AqlPath.EMPTY_PATH.isEmpty()).isTrue();
         assertThat(AqlPath.parse("|magnitude").isEmpty()).isTrue();
         assertThat(AqlPath.parse("/").isEmpty()).isFalse();
@@ -335,7 +335,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testStartsWith() {
+    void testStartsWith() {
         AqlPath path1 = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]");
         AqlPath path2 = AqlPath.parse("/data[at0001]/events[at0002]");
         AqlPath path3 = AqlPath.parse("/data[at0001]/events[at0066]");
@@ -358,7 +358,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testGetPath() {
+    void testGetPath() {
         AqlPath path = AqlPath.parse("/data[at0001]/events[at0002]/data[at0003]/items[at0004]|magnitude");
         assertThat(path.getPath()).isEqualTo("/data[at0001]/events[at0002]/data[at0003]/items[at0004]");
         assertThat(AqlPath.parse("|magnitude").getPath()).isEmpty();
@@ -367,7 +367,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testFormatBoolean() {
+    void testFormatBoolean() {
         AqlPath path = AqlPath.parse(
                 "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]|foo");
         assertThat(path.format(true))
@@ -379,7 +379,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testFormatEnum() {
+    void testFormatEnum() {
         AqlPath path = AqlPath.parse(
                 "/content[openEHR-EHR-OBSERVATION.laboratory_test_result.v1 and name/value='Einsenderstandort']/protocol[at0004]/items[at0094]|foo");
         assertThat(path.format(AqlPath.OtherPredicatesFormat.FULL, true))
@@ -403,7 +403,7 @@ public class AqlPathTest {
     }
 
     @Test
-    public void testParseSpace() {
+    void testParseSpace() {
         AqlPath path;
 
         path = AqlPath.parse(

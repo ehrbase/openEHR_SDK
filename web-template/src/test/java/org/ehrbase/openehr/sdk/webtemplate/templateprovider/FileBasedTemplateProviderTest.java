@@ -17,54 +17,49 @@
  */
 package org.ehrbase.openehr.sdk.webtemplate.templateprovider;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import javax.xml.namespace.QName;
 import org.apache.xmlbeans.XmlOptions;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-public class FileBasedTemplateProviderTest {
+class FileBasedTemplateProviderTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path folder;
 
-    public static void writeTemplateFile(File templateFolder, String templateId) throws IOException {
+    static void writeTemplateFile(Path templateFolder, String templateId) throws IOException {
         TestDataTemplateProvider testDataTemplateProvider = new TestDataTemplateProvider();
         OPERATIONALTEMPLATE operationaltemplate =
                 testDataTemplateProvider.find(templateId).get();
         XmlOptions opts = new XmlOptions();
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));
 
-        Path path = Paths.get(
-                templateFolder.getPath(), operationaltemplate.getTemplateId().getValue() + ".opt");
+        Path path = templateFolder.resolve(operationaltemplate.getTemplateId().getValue() + ".opt");
         Files.write(path, Collections.singletonList(operationaltemplate.xmlText(opts)), StandardCharsets.UTF_8);
     }
 
     @Test
-    public void find() throws IOException {
+    void find() throws IOException {
 
-        File templateFolder = folder.newFolder("template");
+        Path templateFolder = Files.createDirectory(folder.resolve("template"));
 
         writeTemplateFile(templateFolder, "ehrbase_blood_pressure_simple.de.v0");
 
-        FileBasedTemplateProvider cut = new FileBasedTemplateProvider(templateFolder.toPath());
+        FileBasedTemplateProvider cut = new FileBasedTemplateProvider(templateFolder);
 
-        assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
+        assertThat(cut.find("ehrbase_blood_pressure_simple.de.v0")).isPresent();
 
-        assertFalse(cut.find("test_all_types.en.v1").isPresent());
+        assertThat(cut.find("test_all_types.en.v1")).isNotPresent();
 
         writeTemplateFile(templateFolder, "test_all_types.en.v1");
-        assertTrue(cut.find("test_all_types.en.v1").isPresent());
+        assertThat(cut.find("test_all_types.en.v1")).isPresent();
     }
 }

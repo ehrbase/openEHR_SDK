@@ -17,6 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.terminology;
 
+import static com.nedap.archie.rmutil.InvariantUtil.ENGLISH;
+
 import com.nedap.archie.terminology.TermCode;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +58,7 @@ public class TerminologyProvider {
         if (ArrayUtils.isNotEmpty(values)) {
             return new ValueSet(
                     id,
+                    // "local" here means constrained in template, not locally defined…
                     "local",
                     Arrays.stream(values).map(v -> convert(id, v, language)).collect(Collectors.toSet()));
         } else {
@@ -69,20 +72,22 @@ public class TerminologyProvider {
         }
     }
 
-    public static ValueSet findOpenEhrValueSet(String id, String[] values, String language, String rmAttributeName) {
-        AttributeCodesets.TerminologyContainer terminologyContainer =
-                rmAttributeName != null ? AttributeCodesets.get(rmAttributeName) : null;
-        if (terminologyContainer != null && terminologyContainer.container() == ContainerType.GROUP) {
-            // Resolves rubrics per group (fixes SPECPR-51 for code 532)
+    public static ValueSet findOpenEhrValueSet(
+            String id,
+            String[] values,
+            String language,
+            AttributeCodesets.TerminologyContainer rmConstrainedTerminologyContainer) {
+        if (rmConstrainedTerminologyContainer != null
+                && rmConstrainedTerminologyContainer.container() == ContainerType.GROUP) {
             if (ArrayUtils.isNotEmpty(values)) {
                 return new ValueSet(
                         id,
-                        terminologyContainer.id(),
+                        rmConstrainedTerminologyContainer.id(),
                         Arrays.stream(values)
-                                .map(v -> convertWithGroup(terminologyContainer.id(), v, language))
+                                .map(v -> convertWithGroup(rmConstrainedTerminologyContainer.id(), v, language))
                                 .collect(Collectors.toSet()));
             } else {
-                return findOpenEhrValueSet(id, terminologyContainer.id(), language);
+                return findOpenEhrValueSet(id, rmConstrainedTerminologyContainer.id(), language);
             }
         }
         return findOpenEhrValueSet(id, values, language);
@@ -91,7 +96,7 @@ public class TerminologyProvider {
     private static TermDefinition convertWithGroup(String groupId, String code, String language) {
         TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(groupId, language, code);
         if (term == null && !TERMINOLOGY_ACCESS.supportsLanguage(language)) {
-            term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(groupId, "en", code);
+            term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(groupId, ENGLISH, code);
         }
         String value = term != null ? term.getDescription() : code;
         return new TermDefinition(code, value, value);
@@ -100,7 +105,7 @@ public class TerminologyProvider {
     private static TermDefinition convert(String id, String code, String language) {
         TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEhrId(id, code, language);
         if (term == null && !TERMINOLOGY_ACCESS.supportsLanguage(language)) {
-            term = TERMINOLOGY_ACCESS.getTermByOpenEhrId(id, code, "en");
+            term = TERMINOLOGY_ACCESS.getTermByOpenEhrId(id, code, ENGLISH);
         }
         String value = term != null ? term.getDescription() : code;
         return new TermDefinition(code, value, value);

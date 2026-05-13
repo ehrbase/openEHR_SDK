@@ -15,21 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology.validator;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.generic.Participation;
 
-public class Participation extends TerminologyCheck {
-
-    public Participation() {
-        this.RM_CLASS = com.nedap.archie.rm.generic.Participation.class;
+public class ParticipationCheck implements TerminologyCheck<Participation> {
+    @Override
+    public Class<Participation> rmClass() {
+        return Participation.class;
     }
 
-    @SuppressWarnings("java:S1172")
-    public static void check(String context, com.nedap.archie.rm.generic.Participation participation, String language) {
+    @Override
+    public void check(String context, Participation participation, String language) {
         if (participation.getMode() != null) {
             // validate mode as a DvCodedText
-            validate(
+            DvCodedTextCheck.validate(
                     "mode",
                     new DvCodedText(
                             participation.getMode().getValue(),
@@ -37,13 +38,8 @@ public class Participation extends TerminologyCheck {
                     language);
         }
 
-        if (participation.getFunction() != null && participation.getFunction() instanceof DvCodedText) {
-            validate("mode", (DvCodedText) participation.getFunction(), language);
+        if (participation.getFunction() instanceof DvCodedText func) {
+            DvCodedTextCheck.validate("mode", func, language);
         }
-    }
-
-    public static void check(String context, com.nedap.archie.rm.generic.Participation participation)
-            throws IllegalArgumentException {
-        check(context, participation, "en");
     }
 }

@@ -23,12 +23,12 @@ import java.util.Map;
 import org.ehrbase.openehr.sdk.aql.dto.AqlQuery;
 import org.ehrbase.openehr.sdk.aql.dto.containment.AbstractContainmentExpression;
 import org.ehrbase.openehr.sdk.aql.parser.AqlQueryParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AqlUtilTest {
+class AqlUtilTest {
 
     @Test
-    public void removeParameter() {
+    void removeParameter() {
         String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
@@ -42,7 +42,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterWithOr() {
+    void removeParameterWithOr() {
         String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
@@ -57,7 +57,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterWithTripleOr() {
+    void removeParameterWithTripleOr() {
         String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
@@ -73,7 +73,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterMultiple() {
+    void removeParameterMultiple() {
         String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
@@ -89,7 +89,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterWithMixedOrAnd() {
+    void removeParameterWithMixedOrAnd() {
         String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
@@ -109,7 +109,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterWithMixedAndOr() {
+    void removeParameterWithMixedAndOr() {
         String aql = """
                 Select c0 as F1, e/ehr_id/value
                 from EHR e
@@ -129,7 +129,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterParameterNotfound() {
+    void removeParameterParameterNotfound() {
         String aql =
                 "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1] where (e/ehr_id/value = $ehrid or (e/ehr_id/value = $ehrid2 and e/ehr_id/value = $ehrid3))";
 
@@ -139,7 +139,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterNoWhere() {
+    void removeParameterNoWhere() {
         String aql =
                 "Select c0 as F1, e/ehr_id/value as F2 from EHR e contains COMPOSITION c0[openEHR-EHR-COMPOSITION.report.v1]";
 
@@ -149,7 +149,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterInNotConditionInsideAndCondition() {
+    void removeParameterInNotConditionInsideAndCondition() {
         String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
@@ -166,7 +166,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterInNotCondition() {
+    void removeParameterInNotCondition() {
         String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
@@ -183,7 +183,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterInLikeCondition() {
+    void removeParameterInLikeCondition() {
         String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
@@ -199,7 +199,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterInMatchesConditionMatchesIsKept() {
+    void removeParameterInMatchesConditionMatchesIsKept() {
         String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
@@ -215,7 +215,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void removeParameterInMatchesConditionMatchesIsRemoved() {
+    void removeParameterInMatchesConditionMatchesIsRemoved() {
         String aql = """
                 SELECT c0 AS F1, e/ehr_id/value
                 FROM EHR e
@@ -231,7 +231,7 @@ public class AqlUtilTest {
     }
 
     @Test
-    public void containmentExpressionsByIdentifier() {
+    void containmentExpressionsByIdentifier() {
         AqlQuery aqlQuery = AqlQueryParser.parse("""
         SELECT o1/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value/magnitude AS Systolic
         FROM EHR e

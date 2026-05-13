@@ -23,13 +23,13 @@ import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datavalues.DvText;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-public class OptSkeletonBuilderTest {
+class OptSkeletonBuilderTest {
 
     @Test
-    public void testGenerate() throws Exception {
+    void testGenerate() throws Exception {
 
         org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(
                 OperationalTemplateTestData.BLOOD_PRESSURE_SIMPLE.getStream());
@@ -47,7 +47,7 @@ public class OptSkeletonBuilderTest {
     }
 
     @Test
-    public void testGenerateCorona() throws Exception {
+    void testGenerateCorona() throws Exception {
 
         org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(
                 OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
@@ -63,7 +63,7 @@ public class OptSkeletonBuilderTest {
     }
 
     @Test
-    public void testGenerateEpisodeOfCare() throws Exception {
+    void testGenerateEpisodeOfCare() throws Exception {
 
         org.openehr.schemas.v1.TemplateDocument document = org.openehr.schemas.v1.TemplateDocument.Factory.parse(
                 OperationalTemplateTestData.EPISODE_OF_CARE.getStream());

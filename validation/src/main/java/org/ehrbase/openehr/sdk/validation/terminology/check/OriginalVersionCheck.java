@@ -15,17 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-import com.nedap.archie.rm.archetyped.Locatable;
-import com.nedap.archie.rm.composition.Composition;
-import com.nedap.archie.rm.datastructures.ItemStructure;
+import com.nedap.archie.rm.changecontrol.OriginalVersion;
 
-public interface I_ItemStructureVisitor {
+public class OriginalVersionCheck implements TerminologyCheck<OriginalVersion> {
+    @Override
+    public Class<OriginalVersion> rmClass() {
+        return OriginalVersion.class;
+    }
 
-    void validate(Composition composition) throws IllegalArgumentException, InternalError;
-
-    void validate(ItemStructure itemStructure) throws IllegalArgumentException, InternalError;
-
-    void validate(Locatable locatable) throws IllegalArgumentException, InternalError;
+    @Override
+    public void check(String context, OriginalVersion originalVersion, String language) {
+        if (originalVersion.getLifecycleState() != null) {
+            CodePhraseCheck.validate(
+                    context, originalVersion.getLifecycleState().getDefiningCode(), language);
+        }
+    }
 }

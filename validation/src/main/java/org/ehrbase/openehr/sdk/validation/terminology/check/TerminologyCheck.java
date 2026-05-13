@@ -15,18 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology.validator;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-public class ClassBind {
+import com.nedap.archie.rm.RMObject;
 
-    private Class validatorClass;
+public interface TerminologyCheck<T extends RMObject> {
 
-    public ClassBind(Class validatorClass) {
-        this.validatorClass = validatorClass;
-    }
+    Class<T> rmClass();
 
-    public Class rmClass() {
-        validatorClass.getDeclaredFields();
-        return null;
-    }
+    void check(String context, T rmObject, String language) throws IllegalArgumentException;
 }

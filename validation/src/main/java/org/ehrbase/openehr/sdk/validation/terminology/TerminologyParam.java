@@ -18,153 +18,42 @@
 package org.ehrbase.openehr.sdk.validation.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class TerminologyParam {
+public record TerminologyParam(
+        String serviceApi, ResouceType resouceType, CodePhrase codePhrase, String operation, String parameter) {
+
+    public enum ResouceType {
+        CODE_SYSTEM,
+        VALUE_SET
+    }
+
+    // FIXME CDR-2273 based on URL parser
     static final Pattern PATTERN = Pattern.compile(
-            "(?<api>//[^/]*)/(?<type>CodeSystem|ValueSet)(?:/)?(?<op>\\$expand|\\$validate-code)?(?<param>\\?.*)?");
+            "(?<api>//[^/]*)/(?<type>CodeSystem|ValueSet)/?(?<op>\\$expand|\\$validate-code)?(?:\\?(?<param>.*))?");
+
     /**
-     * @param url fhir url of format:
-     * </br>
-     * {@code //<some char>/<"CodeSystem" or "ValueSet">?<req-parameter>}
-     * </br>
-     * {@code //<some char>/<"CodeSystem" or "ValueSet">/<"$expand" or "$validate-code">?<req-parameter>}
+     * @param url          fhir url of format:
+     *                     </br>
+     *                     {@code //<some char>/<"CodeSystem" or "ValueSet">?<req-parameter>}
+     *                     </br>
+     *                     {@code //<some char>/<"CodeSystem" or "ValueSet">/<"$expand" or "$validate-code">?<req-parameter>}
+     * @param definingCode
      */
-    public static TerminologyParam ofFhir(String url) {
-        if (url == null) return new TerminologyParam();
+    public static TerminologyParam ofFhir(String url, final CodePhrase definingCode) {
+        if (url == null) {
+            return null;
+        }
 
         Matcher matcher = PATTERN.matcher(url);
-        if (!matcher.matches()) return new TerminologyParam();
+        if (!matcher.matches()) {
+            return null;
+        }
 
-        String api = matcher.group("api");
-        String type = matcher.group("type");
-        String op = matcher.group("op");
-        String param = matcher.group("param");
-
-        if (api == null) throw new RuntimeException("Missing service-api");
-
-        TerminologyParam tp = new TerminologyParam(api);
-        if ("codesystem".equalsIgnoreCase(type)) tp.useCodeSystem();
-        if ("valueset".equalsIgnoreCase(type)) tp.useValueSet();
-        tp.setOperation(op);
-        tp.setParameter(param != null ? param.substring(1) : null);
-
-        return tp;
-    }
-
-    public static TerminologyParam ofServiceApi(String api) {
-        return new TerminologyParam(api);
-    }
-
-    //  private String aqlPath;
-    private String serviceApi; // should be checked in teh impl.
-    private String operation;
-    private boolean useValueSet = true;
-    private boolean useCodeSystem = false;
-    private String parameter;
-    private CodePhrase codePhrase = null;
-
-    private TerminologyParam() {}
-
-    private TerminologyParam(String serviceApi) {
-        this.serviceApi = serviceApi;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TerminologyParam that = (TerminologyParam) o;
-
-        return new EqualsBuilder()
-                //      .append(aqlPath, that.aqlPath)
-                .append(serviceApi, that.serviceApi)
-                .append(operation, that.operation)
-                .append(useValueSet, that.useValueSet)
-                .append(useCodeSystem, that.useCodeSystem)
-                .append(parameter, that.parameter)
-                .append(codePhrase, that.codePhrase)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-                //      .append(aqlPath)
-                .append(serviceApi)
-                .append(operation)
-                .append(useValueSet)
-                .append(useCodeSystem)
-                .append(parameter)
-                .append(codePhrase)
-                .hashCode();
-    }
-
-    //  public void setAqlPath(String path) {
-    //    this.aqlPath = path;
-    //  }
-
-    //  public String getAqlPath() {
-    //    return aqlPath;
-    //  }
-
-    public void useValueSet() {
-        useValueSet = true;
-        useCodeSystem = false;
-    }
-
-    public void useCodeSystem() {
-        useCodeSystem = true;
-        useValueSet = false;
-    }
-
-    public Optional<String> getServiceApi() {
-        return Optional.ofNullable(serviceApi);
-    }
-
-    public void setOperation(String op) {
-        this.operation = op;
-    }
-
-    public Optional<String> getOperation() {
-        return Optional.ofNullable(operation);
-    }
-
-    public Optional<CodePhrase> getCodePhrase() {
-        return Optional.ofNullable(codePhrase);
-    }
-
-    public void setCodePhrase(CodePhrase cp) {
-        this.codePhrase = cp;
-    }
-
-    public Optional<String> renderCodePhrase(Function<CodePhrase, Optional<String>> renderer) {
-        return renderer.apply(codePhrase);
-    }
-
-    public boolean isUseValueSet() {
-        return useValueSet;
-    }
-
-    public boolean isUseCodeSystem() {
-        return useCodeSystem;
-    }
-
-    public void setParameter(String param) {
-        this.parameter = param;
-    }
-
-    public Optional<String> getParameter() {
-        return Optional.ofNullable(parameter);
-    }
-
-    public Optional<String> extractFromParameter(Function<String, Optional<String>> extractor) {
-        return extractor.apply(parameter);
+        ResouceType resouceType =
+                "ValueSet".equals(matcher.group("type")) ? ResouceType.VALUE_SET : ResouceType.CODE_SYSTEM;
+        return new TerminologyParam(
+                matcher.group("api"), resouceType, definingCode, matcher.group("op"), matcher.group("param"));
     }
 }

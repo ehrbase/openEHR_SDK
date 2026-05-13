@@ -15,25 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.validation.terminology;
+package org.ehrbase.openehr.sdk.validation.terminology.check;
 
-import java.lang.invoke.MethodHandle;
+import com.nedap.archie.rm.datavalues.TermMapping;
 
-public class ValidationHandler {
-
-    private final Class clazz;
-    private final MethodHandle check;
-
-    public ValidationHandler(Class clazz, MethodHandle check) {
-        this.clazz = clazz;
-        this.check = check;
+public class TermMappingCheck implements TerminologyCheck<TermMapping> {
+    @Override
+    public Class<TermMapping> rmClass() {
+        return TermMapping.class;
     }
 
-    public Class getClazz() {
-        return clazz;
+    public void check(String context, TermMapping termMapping, String language) {
+        checkTermMapping(termMapping, language);
     }
 
-    public MethodHandle check() {
-        return check;
+    public static void checkTermMapping(TermMapping termMapping, String language) {
+        if (termMapping != null && termMapping.getPurpose() != null) {
+            CodePhraseCheck.validate("purpose", termMapping.getPurpose().getDefiningCode(), language);
+        }
     }
 }
