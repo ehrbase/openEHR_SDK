@@ -22,8 +22,7 @@ package org.ehrbase.openehr.sdk.terminology.openehr;
  *
  * @author Rong Chen
  */
-// TODO CDR-2273 rename
-public enum OpenEHRCodeSetIdentifiers implements OpenEHRTerminologyIdentifier {
+public enum OpenEHRCodeSetIdentifier implements OpenEHRTerminologyIdentifier {
     CHARACTER_SETS("character sets"),
     COMPRESSION_ALGORITHMS("compression algorithms"),
     COUNTRIES("countries"),
@@ -37,7 +36,7 @@ public enum OpenEHRCodeSetIdentifiers implements OpenEHRTerminologyIdentifier {
     /**
      * @param value String value of the identifier
      */
-    OpenEHRCodeSetIdentifiers(String value) {
+    OpenEHRCodeSetIdentifier(String value) {
         this.value = value;
     }
 
@@ -59,7 +58,7 @@ public enum OpenEHRCodeSetIdentifiers implements OpenEHRTerminologyIdentifier {
      * @return true if valid
      */
     public static boolean validCodeSetId(String id) {
-        for (OpenEHRCodeSetIdentifiers codeSetId : values()) {
+        for (OpenEHRCodeSetIdentifier codeSetId : values()) {
             if (codeSetId.value.equals(id)) {
                 return true;
             }

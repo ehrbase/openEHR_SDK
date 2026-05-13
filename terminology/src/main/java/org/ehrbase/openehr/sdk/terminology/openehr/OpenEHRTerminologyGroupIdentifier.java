@@ -22,10 +22,8 @@ package org.ehrbase.openehr.sdk.terminology.openehr;
  *
  * @author Rong Chen
  */
-// TODO CDR-2273 rename
-public enum OpenEHRTerminologyGroupIdentifiers implements OpenEHRTerminologyIdentifier {
-    // XXX CDR-2273 There is a bit of double validation, see e.g. Composition::languageValid. Is our task just to check
-    // that the value is correct?
+public enum OpenEHRTerminologyGroupIdentifier implements OpenEHRTerminologyIdentifier {
+
     AUDIT_CHANGE_TYPE("audit change type"),
     ATTESTATION_REASON("attestation reason"),
     COMPOSITION_CATEGORY("composition category"),
@@ -50,7 +48,7 @@ public enum OpenEHRTerminologyGroupIdentifiers implements OpenEHRTerminologyIden
     /**
      * @param value String value of the identifier
      */
-    OpenEHRTerminologyGroupIdentifiers(String value) {
+    OpenEHRTerminologyGroupIdentifier(String value) {
         this.value = value;
     }
 
@@ -62,7 +60,7 @@ public enum OpenEHRTerminologyGroupIdentifiers implements OpenEHRTerminologyIden
      * @return true if id valid
      */
     public static boolean validTerminologyGroupId(String value) {
-        for (OpenEHRTerminologyGroupIdentifiers id : values()) {
+        for (OpenEHRTerminologyGroupIdentifier id : values()) {
             if (id.value.equals(value)) {
                 return true;
             }

@@ -98,7 +98,7 @@ class SimpleTerminologyAccessTest {
 
         languageCodes.forEach(lang -> {
             TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
-                    OpenEHRTerminologyGroupIdentifiers.VERSION_LIFECYCLE_STATE.toString(), lang, "532");
+                    OpenEHRTerminologyGroupIdentifier.VERSION_LIFECYCLE_STATE.toString(), lang, "532");
 
             assertThat(expectedRubrics).containsKey(lang);
             assertThat(term).extracting(TermCode::getDescription).isEqualTo(expectedRubrics.get(lang));
@@ -112,7 +112,7 @@ class SimpleTerminologyAccessTest {
 
         languageCodes.forEach(lang -> {
             TermCode term = TERMINOLOGY_ACCESS.getTermByOpenEHRGroup(
-                    OpenEHRTerminologyGroupIdentifiers.INSTRUCTION_STATES.toString(), lang, "532");
+                    OpenEHRTerminologyGroupIdentifier.INSTRUCTION_STATES.toString(), lang, "532");
             assertThat(term)
                     .withFailMessage("Support for code is unavailable in language: %s", lang)
                     .isNotNull()
@@ -152,7 +152,7 @@ class SimpleTerminologyAccessTest {
                     boolean supported = TERMINOLOGY_ACCESS.supportsLanguage(langCode);
 
                     TermCode attestationReasonSigned = archieOpenehrTerminology.getTermByOpenEHRGroup(
-                            OpenEHRTerminologyGroupIdentifiers.ATTESTATION_REASON.getValue(), langCode, "240");
+                            OpenEHRTerminologyGroupIdentifier.ATTESTATION_REASON.getValue(), langCode, "240");
                     boolean supportedByArchie = attestationReasonSigned != null;
 
                     assertThat(supported)

@@ -72,7 +72,6 @@ public class TerminologyValidationVisitor {
 
     public TerminologyValidationVisitor() {
         itemValidator = new ItemValidator(
-                // XXX CDR-2273 IsmTransitionCheck was twice, but CodePhraseCheck was missing
                 // XXX CDR-2273 Is this complete? See PartyRelationshipCheck vs. PARTY_RELATED.relationship?
                 new DvCodedTextCheck(),
                 new CompositionCheck(),

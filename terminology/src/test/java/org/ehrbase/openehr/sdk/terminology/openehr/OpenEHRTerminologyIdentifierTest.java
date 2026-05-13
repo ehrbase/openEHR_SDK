@@ -34,9 +34,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Tests for {@link OpenEHRTerminologyGroupIdentifiers} and {@link OpenEHRCodeSetIdentifiers}
+ * Tests for {@link OpenEHRTerminologyGroupIdentifier} and {@link OpenEHRCodeSetIdentifier}
  */
-class OpenEHRTerminologyIdentifiersTest {
+class OpenEHRTerminologyIdentifierTest {
 
     @Test
     void checkAgainstArchieXml() {
@@ -45,16 +45,16 @@ class OpenEHRTerminologyIdentifiersTest {
         var archieByContainerType = archieContainers.stream()
                 .collect(Collectors.groupingBy(Pair::getValue, Collectors.toMap(Pair::getKey, Pair::getValue)));
 
-        for (OpenEHRCodeSetIdentifiers value : OpenEHRCodeSetIdentifiers.values()) {
+        for (OpenEHRCodeSetIdentifier value : OpenEHRCodeSetIdentifier.values()) {
             assertThat(archieByContainerType.get(ContainerType.CODESET)).containsKey(value.getValue());
         }
-        for (OpenEHRTerminologyGroupIdentifiers value : OpenEHRTerminologyGroupIdentifiers.values()) {
+        for (OpenEHRTerminologyGroupIdentifier value : OpenEHRTerminologyGroupIdentifier.values()) {
             assertThat(archieByContainerType.get(ContainerType.GROUP)).containsKey(value.getValue());
         }
 
-        var codesetIds = Arrays.stream(OpenEHRCodeSetIdentifiers.values()).map(OpenEHRCodeSetIdentifiers::getValue);
-        var groupIds = Arrays.stream(OpenEHRTerminologyGroupIdentifiers.values())
-                .map(OpenEHRTerminologyGroupIdentifiers::getValue);
+        var codesetIds = Arrays.stream(OpenEHRCodeSetIdentifier.values()).map(OpenEHRCodeSetIdentifier::getValue);
+        var groupIds = Arrays.stream(OpenEHRTerminologyGroupIdentifier.values())
+                .map(OpenEHRTerminologyGroupIdentifier::getValue);
 
         assertThat(codesetIds)
                 .containsExactlyInAnyOrderElementsOf(
@@ -75,7 +75,7 @@ class OpenEHRTerminologyIdentifiersTest {
     }
 
     static void addTerminologyContainers(List<Pair<String, ContainerType>> containers, String resource) {
-        try (InputStream is = OpenEHRTerminologyIdentifiersTest.class.getResourceAsStream(resource)) {
+        try (InputStream is = OpenEHRTerminologyIdentifierTest.class.getResourceAsStream(resource)) {
             if (is == null) {
                 throw new IllegalStateException("Resource not found: " + resource);
             }

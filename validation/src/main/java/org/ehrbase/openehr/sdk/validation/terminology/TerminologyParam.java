@@ -29,6 +29,7 @@ public record TerminologyParam(
         VALUE_SET
     }
 
+    // FIXME CDR-2273 based on URL parser
     static final Pattern PATTERN = Pattern.compile(
             "(?<api>//[^/]*)/(?<type>CodeSystem|ValueSet)/?(?<op>\\$expand|\\$validate-code)?(?:\\?(?<param>.*))?");
 
