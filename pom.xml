@@ -63,8 +63,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
-
-        <isEhrbaseBuild>false</isEhrbaseBuild>
         <skipTests>${isEhrbaseBuild}</skipTests>
         <skipITs>${isEhrbaseBuild}</skipITs>
         <failsafeArgLine/>
@@ -158,6 +156,7 @@
                         </requireMavenVersion>
                     </rules>
                     <fail>true</fail>
+                    <skip>${isEhrbaseBuild}</skip>
                 </configuration>
                 <executions>
                     <execution>
