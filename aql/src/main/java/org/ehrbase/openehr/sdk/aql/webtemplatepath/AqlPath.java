@@ -306,9 +306,22 @@ public final class AqlPath implements Serializable {
     }
 
     private String formatUncached(OtherPredicatesFormat otherPredicatesFormat, boolean includeAttributeName) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(estimateStringSize());
         appendFormat(sb, otherPredicatesFormat, includeAttributeName);
         return sb.toString();
+    }
+
+    private int estimateStringSize() {
+        return switch (nodes.length) {
+            case 0 -> 0;
+            case 1 -> 75;
+            case 2 -> 150;
+            case 3 -> 175;
+            case 4 -> 200;
+            case 5 -> 225;
+            case 6 -> 250;
+            default -> 275;
+        };
     }
 
     private void appendFormat(

@@ -68,7 +68,7 @@ public class ClassGeneratorRunner {
                         Paths.get(cmd.getOptionValue("opt")).toFile())
                 .getTemplate();
         ClassGenerator cut = new ClassGenerator(getClassGeneratorConfig(cmd));
-        ClassGeneratorResult generate = cut.generate(cmd.getOptionValue("package"), new OPTParser(template).parse());
+        ClassGeneratorResult generate = cut.generate(cmd.getOptionValue("package"), OPTParser.parse(template));
 
         java.nio.file.Path fsRoot = Paths.get(cmd.getOptionValue("out"));
 

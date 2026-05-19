@@ -20,12 +20,16 @@ package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 import static org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient.DefaultRestEhrEndpoint.EHR_PATH;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.nedap.archie.rm.changecontrol.OriginalVersion;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.ehr.VersionedComposition;
+import com.nedap.archie.rm.generic.RevisionHistory;
 import com.nedap.archie.rm.generic.RevisionHistoryItem;
+import com.nedap.archie.rm.support.identification.ObjectRef;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
@@ -34,15 +38,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.apache.commons.lang3.Strings;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.ehrbase.openehr.sdk.client.openehrclient.VersionedCompositionEndpoint;
 import org.ehrbase.openehr.sdk.response.dto.OriginalVersionResponseData;
-import org.ehrbase.openehr.sdk.response.dto.RevisionHistoryResponseData;
 import org.ehrbase.openehr.sdk.serialisation.dto.RmToGeneratedDtoConverter;
+import org.ehrbase.openehr.sdk.serialisation.jsonencoding.CanonicalJson;
 import org.ehrbase.openehr.sdk.util.exception.ClientException;
+import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
 
 @SuppressWarnings({"java:S6212", "java:S1075"})
@@ -78,12 +84,26 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
                 .getConfig()
                 .getBaseUri()
                 .resolve(EHR_PATH + ehrId + VERSIONED_COMPOSITION_PATH + versionedObjectUid + REVISION_HISTORY_PATH);
-        Optional<RevisionHistoryResponseData> result =
-                defaultRestClient.httpGet(uri, RevisionHistoryResponseData.class);
-        if (result.isEmpty()) {
+        HttpResponse response = defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_JSON.getMimeType());
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
             return new ArrayList<>();
-        } else {
-            return result.get().getRevisionHistoryItems();
+        }
+
+        try (InputStream in = response.getEntity().getContent()) {
+            JsonNode node = DefaultRestClient.OBJECT_MAPPER.readTree(in);
+            if (node.isArray()) {
+                List<RevisionHistoryItem> result = new ArrayList<>();
+                for (JsonNode item : node) {
+                    result.add(CanonicalJson.MARSHAL_OM.treeToValue(item, RevisionHistoryItem.class));
+                }
+                return result;
+            } else {
+                return CanonicalJson.MARSHAL_OM
+                        .treeToValue(node, RevisionHistory.class)
+                        .getItems();
+            }
+        } catch (IOException e) {
+            throw new ClientException(e.getMessage(), e);
         }
     }
 
@@ -118,17 +138,41 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
         }
     }
 
-    public <T> Optional<OriginalVersion<T>> internalFindVersion(URI uri, Class<T> clazz) {
+    protected <T> Optional<OriginalVersion<T>> internalFindVersion(URI uri, Class<T> clazz) {
         HttpResponse response = defaultRestClient.internalGet(uri, null, ContentType.APPLICATION_JSON.getMimeType());
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
             return Optional.empty();
         }
 
-        try {
-            TypeReference<OriginalVersionResponseData<Composition>> valueTypeRef = new TypeReference<>() {};
-            return Optional.of(DefaultRestClient.OBJECT_MAPPER.readValue(
-                            response.getEntity().getContent(), valueTypeRef))
-                    .map(originalVersion -> this.convert(originalVersion, clazz));
+        try (InputStream in = response.getEntity().getContent()) {
+            JsonNode node = DefaultRestClient.OBJECT_MAPPER.readTree(in);
+            JsonNode contributionNode = node.get("contribution");
+            if (contributionNode.has("uid")
+                    || Strings.CS.equals(contributionNode.get("_type").textValue(), RmConstants.CONTRIBUTION)) {
+                TypeReference<OriginalVersionResponseData<Composition>> valueTypeRef = new TypeReference<>() {};
+                return Optional.of(DefaultRestClient.OBJECT_MAPPER.treeToValue(node, valueTypeRef))
+                        .map(originalVersion -> this.convert(originalVersion, clazz));
+            } else {
+                TypeReference<OriginalVersion<Composition>> valueTypeRef = new TypeReference<>() {};
+                return Optional.of(CanonicalJson.MARSHAL_OM.treeToValue(node, valueTypeRef))
+                        .map(originalVersion -> {
+                            if (clazz.isAssignableFrom(Composition.class)) {
+                                return (OriginalVersion<T>) originalVersion;
+                            }
+                            OriginalVersion<T> ret = new OriginalVersion<>(
+                                    originalVersion.getUid(),
+                                    originalVersion.getPrecedingVersionUid(),
+                                    null,
+                                    originalVersion.getLifecycleState(),
+                                    originalVersion.getCommitAudit(),
+                                    originalVersion.getContribution(),
+                                    originalVersion.getSignature(),
+                                    originalVersion.getOtherInputVersionUids(),
+                                    originalVersion.getAttestations());
+                            this.convertAndSetData(originalVersion.getData(), clazz, ret);
+                            return ret;
+                        });
+            }
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
@@ -151,12 +195,18 @@ public class DefaultRestVersionedCompositionEndpoint implements VersionedComposi
         result.setSignature(originalVersion.getSignature());
         result.setOtherInputVersionUids(originalVersion.getOtherInputVersionUids());
         result.setAttestations(originalVersion.getAttestations());
+        result.setContribution(
+                new ObjectRef<>(originalVersion.getContribution().getUid(), "local", RmConstants.CONTRIBUTION));
 
-        T composition = createFlattener(defaultRestClient.getTemplateProvider())
-                .toGeneratedDto(originalVersion.getData(), clazz);
-        result.setData(composition);
+        convertAndSetData(originalVersion.getData(), clazz, result);
 
         return result;
+    }
+
+    private <T> void convertAndSetData(
+            final Composition originalVersion, final Class<T> clazz, final OriginalVersion<T> result) {
+        T composition = createFlattener(defaultRestClient.getTemplateProvider()).toGeneratedDto(originalVersion, clazz);
+        result.setData(composition);
     }
 
     protected RmToGeneratedDtoConverter createFlattener(TemplateProvider templateProvider) {

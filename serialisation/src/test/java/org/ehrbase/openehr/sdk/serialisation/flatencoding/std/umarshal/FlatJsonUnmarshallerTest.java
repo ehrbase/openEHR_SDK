@@ -34,11 +34,13 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rm.generic.PartySelf;
 import com.nedap.archie.rm.support.identification.HierObjectId;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
 import org.ehrbase.openehr.sdk.serialisation.exception.UnmarshalException;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataConformanceSDTJson;
@@ -51,8 +53,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
 
 class FlatJsonUnmarshallerTest {
 
@@ -171,16 +171,13 @@ class FlatJsonUnmarshallerTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
                         2022-11-01|2022-11-01
                         2022-11|2022-11
                         2022|2022
                         2022-11-01T13|2022-11-01T13:00
                         2022-11-01T13+02:00|2022-11-01T13:00+02:00
-                    """,
-            delimiterString = "|")
+                    """, delimiterString = "|")
     void validDvDateTime(String input, String expected) throws Exception {
 
         WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
@@ -221,15 +218,12 @@ class FlatJsonUnmarshallerTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
                 13:12:11|13:12:11
                 13:12|13:12
                 13|13:00
                 13+02:00|13:00+02:00
-            """,
-            delimiterString = "|")
+            """, delimiterString = "|")
     void validDvTimeTest(String input, String expected) throws Exception {
 
         WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
@@ -268,14 +262,11 @@ class FlatJsonUnmarshallerTest {
     }
 
     @ParameterizedTest
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
                 2022-11-01|2022-11-01
                 2022-11|2022-11
                 2022|2022
-            """,
-            delimiterString = "|")
+            """, delimiterString = "|")
     void validDvDateTest(String input, String expected) throws Exception {
 
         WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
@@ -305,23 +296,22 @@ class FlatJsonUnmarshallerTest {
                 "/content[openEHR-EHR-ADMIN_ENTRY.document_attachment.v0]/data[at0003]/items[openEHR-EHR-CLUSTER.media_file.v1]/items[at0001]/value");
         assertThat(object).isInstanceOf(DvMultimedia.class).satisfies(obj -> {
             var dvMultimedia = (DvMultimedia) obj;
-            assertThat(dvMultimedia.getData()).isNotNull().satisfies(bytes -> assertThat(new String(bytes))
-                    .isEqualTo("Shall Be Base64 encoded"));
+            assertThat(dvMultimedia.getData())
+                    .isNotNull()
+                    .satisfies(bytes -> assertThat(new String(bytes)).isEqualTo("Shall Be Base64 encoded"));
         });
     }
 
     // -- Helper --
 
     private static WebTemplate webTemplateFromOTP(OperationalTemplateTestData data) {
-        WebTemplate webTemplate = null;
         try (var in = data.getStream()) {
-            OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(in).getTemplate();
-            webTemplate = new OPTParser(template).parse();
+            WebTemplate webTemplate = OPTParser.parse(in);
             assertThat(webTemplate).isNotNull();
-        } catch (Exception e) {
-            fail(e);
+            return webTemplate;
+        } catch (IOException | XmlException e) {
+            throw new AssertionError(e);
         }
-        return webTemplate;
     }
 
     private static Composition unmarshallComposition(

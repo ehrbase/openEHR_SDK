@@ -41,10 +41,8 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
             insert(
                     rmObject.getData(),
                     defaultValues,
-                    node
-                            .findMatching(n -> Objects.equals(
+                    node.streamMatching(n -> Objects.equals(
                                     n.getNodeId(), rmObject.getData().getArchetypeNodeId()))
-                            .stream()
                             .findFirst()
                             .orElse(FlatHelper.buildDummyChild("history", node)));
         }
@@ -53,10 +51,8 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
             insert(
                     rmObject.getState(),
                     defaultValues,
-                    node
-                            .findMatching(n -> Objects.equals(
+                    node.streamMatching(n -> Objects.equals(
                                     n.getNodeId(), rmObject.getState().getArchetypeNodeId()))
-                            .stream()
                             .findFirst()
                             .orElse(FlatHelper.buildDummyChild("history", node)));
         }
@@ -81,7 +77,7 @@ public class ObservationValueInserter extends AbstractValueInserter<Observation>
                     .forEach(e -> insert(
                             e,
                             rmObject.getOrigin().getValue(),
-                            node.findMatching(n -> Objects.equals(n.getNodeId(), e.getArchetypeNodeId())).stream()
+                            node.streamMatching(n -> Objects.equals(n.getNodeId(), e.getArchetypeNodeId()))
                                     .findFirst()
                                     .orElse(FlatHelper.buildDummyChild("event", node))));
         }

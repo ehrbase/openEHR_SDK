@@ -18,12 +18,13 @@
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.marshal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 import com.nedap.archie.rm.composition.Composition;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatTestHelper;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
@@ -32,8 +33,6 @@ import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplate
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.junit.jupiter.api.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
 
 @SuppressWarnings("java:S2970")
 class FlatJsonMarshallerTest {
@@ -188,15 +187,13 @@ class FlatJsonMarshallerTest {
     // -- Helper --
 
     private static WebTemplate webTemplateFromOTP(OperationalTemplateTestData data) {
-        WebTemplate webTemplate = null;
         try (var in = data.getStream()) {
-            OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(in).getTemplate();
-            webTemplate = new OPTParser(template).parse();
+            WebTemplate webTemplate = OPTParser.parse(in);
             assertThat(webTemplate).isNotNull();
-        } catch (Exception e) {
-            fail(e);
+            return webTemplate;
+        } catch (IOException | XmlException e) {
+            throw new AssertionError(e);
         }
-        return webTemplate;
     }
 
     private static Composition composition(CompositionTestDataCanonicalJson data) throws Exception {

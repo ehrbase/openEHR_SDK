@@ -136,9 +136,11 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
             Context<T> context, WebTemplateNode currentNode) {
         RMObject curentRmObject = context.getRmObjectDeque().peek();
 
-        return getChildLocatable(curentRmObject).filter(Objects::nonNull).filter(c -> currentNode.getChildren().stream()
-                .filter(n -> !n.isArchetypeSlot())
-                .noneMatch(n -> matches(c.getLeft(), c.getRight(), n)));
+        return getChildLocatable(curentRmObject)
+                .filter(Objects::nonNull)
+                .filter(c -> currentNode.getChildren().stream()
+                        .filter(n -> !n.isArchetypeSlot())
+                        .noneMatch(n -> matches(c.getLeft(), c.getRight(), n)));
     }
 
     private static boolean matches(String attributeName, Locatable locatable, WebTemplateNode n) {

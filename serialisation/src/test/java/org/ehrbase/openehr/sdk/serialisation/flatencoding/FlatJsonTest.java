@@ -68,9 +68,7 @@ class FlatJsonTest {
         Composition composition = unmarshall(testDataSimSDTJson, templateId);
         String value = rmDataFormat(templateId).marshal(composition);
 
-        assertStartsWith(
-                value,
-                """
+        assertStartsWith(value, """
                 {
                   "bericht/category|code" : "433",
                   "bericht/category|value" : "event",
@@ -91,9 +89,7 @@ class FlatJsonTest {
         Composition composition = unmarshall(testDataSimSDTJson, templateId);
         String value = rmDataFormat(templateId).marshalWithOptions(composition, Set.of());
 
-        assertThat(value)
-                .startsWith(
-                        """
+        assertThat(value).startsWith("""
                 {"bericht/category|code":"433","bericht/category|value":"event","bericht/category|terminology":""");
     }
 
@@ -106,9 +102,7 @@ class FlatJsonTest {
         Composition composition = unmarshall(testDataSimSDTJson, templateId);
         String value = rmDataFormat(templateId).marshalWithOptions(composition, MarshalOption.PRETTY_PRINT);
 
-        assertStartsWith(
-                value,
-                """
+        assertStartsWith(value, """
                 {
                   "multi_list/category|code" : "433",
                   "multi_list/category|value" : "event",

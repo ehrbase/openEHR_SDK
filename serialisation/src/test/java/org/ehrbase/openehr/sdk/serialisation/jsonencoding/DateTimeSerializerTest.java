@@ -122,7 +122,7 @@ class DateTimeSerializerTest {
                         "magStat",
                         new DvDuration(),
                         DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123456789+01:00")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123456789+01:00\",\"normal_status\":{\"_type\":\"CODE_PHRASE\"},\"normal_range\":{\"_type\":\"DV_INTERVAL\",\"upper_unbounded\":false,\"lower_unbounded\":false,\"lower_included\":true,\"upper_included\":true},\"other_reference_ranges\":[{\"range\":{\"_type\":\"DV_INTERVAL\",\"upper_unbounded\":true,\"lower_unbounded\":true,\"lower_included\":false,\"upper_included\":false},\"meaning\":{\"_type\":\"DV_TEXT\",\"value\":\"meaning\"}}],\"magnitude_status\":\"magStat\",\"accuracy\":{\"_type\":\"DV_DURATION\"}}");
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123456789+01:00\",\"normal_status\":{\"_type\":\"CODE_PHRASE\"},\"normal_range\":{\"_type\":\"DV_INTERVAL\",\"lower_included\":true,\"lower_unbounded\":false,\"upper_unbounded\":false,\"upper_included\":true},\"other_reference_ranges\":[{\"_type\":\"REFERENCE_RANGE\",\"range\":{\"_type\":\"DV_INTERVAL\",\"lower_included\":false,\"lower_unbounded\":true,\"upper_unbounded\":true,\"upper_included\":false},\"meaning\":{\"_type\":\"DV_TEXT\",\"value\":\"meaning\"}}],\"magnitude_status\":\"magStat\",\"accuracy\":{\"_type\":\"DV_DURATION\"}}");
 
         private final DvDateTime testData;
         private final String expectedJson;

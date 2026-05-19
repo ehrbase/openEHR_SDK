@@ -32,18 +32,12 @@ import org.ehrbase.openehr.sdk.webtemplate.model.FilteredWebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
 import org.junit.jupiter.api.Test;
-import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
-import org.openehr.schemas.v1.TemplateDocument;
 
 class WalkerTest {
 
     @Test
     void testClone() throws IOException, XmlException {
-
-        OPERATIONALTEMPLATE template = TemplateDocument.Factory.parse(
-                        OperationalTemplateTestData.CORONA_ANAMNESE.getStream())
-                .getTemplate();
-        WebTemplate webTemplate = new OPTParser(template).parse();
+        WebTemplate webTemplate = OPTParser.parse(OperationalTemplateTestData.CORONA_ANAMNESE.getStream());
 
         FilteredWebTemplate filteredWebTemplate = new Filter().filter(webTemplate);
 

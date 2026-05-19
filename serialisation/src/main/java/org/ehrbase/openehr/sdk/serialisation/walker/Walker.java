@@ -133,11 +133,13 @@ public abstract class Walker<T> {
                 } else {
                     // Number of entries to be added
                     int size = calculateSize(context, childrenForPath.get(0));
-                    childConstellations = IntStream.range(0, size).boxed().flatMap(index -> streamChildConstellations(
-                                    context, currentNode, choicePredicate, childrenForPath, index)
-                            // for each index at most one of the choices is retained
-                            // an index may be skipped if none of the choices is accepted
-                            .limit(1));
+                    childConstellations = IntStream.range(0, size)
+                            .boxed()
+                            .flatMap(index -> streamChildConstellations(
+                                            context, currentNode, choicePredicate, childrenForPath, index)
+                                    // for each index at most one of the choices is retained
+                                    // an index may be skipped if none of the choices is accepted
+                                    .limit(1));
                 }
 
                 childConstellations.forEach(constellation -> {

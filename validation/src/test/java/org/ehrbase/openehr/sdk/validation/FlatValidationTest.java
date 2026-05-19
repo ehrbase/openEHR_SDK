@@ -35,14 +35,14 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("java:S5976")
 class FlatValidationTest {
 
-    private final CompositionValidator validator;
+    private final LocatableValidator validator;
 
     private final TestDataTemplateProvider templateProvider;
 
     private final FlatJasonProvider flatJsonProvider;
 
     public FlatValidationTest() {
-        validator = new CompositionValidator();
+        validator = new LocatableValidator();
         templateProvider = new TestDataTemplateProvider();
         flatJsonProvider = new FlatJasonProvider(templateProvider);
     }
@@ -189,7 +189,7 @@ class FlatValidationTest {
         var json = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
         var composition = unmarshaller.unmarshal(json);
 
-        var existingTemplate = templateProvider.find(templateId);
+        var existingTemplate = templateProvider.buildIntrospect(templateId);
         assertTrue(existingTemplate.isPresent());
 
         var result = validator.validate(composition, existingTemplate.get());

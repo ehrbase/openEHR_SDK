@@ -61,9 +61,7 @@ class RmObjectJsonSerializerTest {
         composition.setName(new DvText("default pretty print test"));
 
         Assertions.assertThat(serialize(new RmObjectJsonSerializer(), composition))
-                .isEqualTo(
-                        systemEol(
-                                """
+                .isEqualTo(systemEol("""
                 {
                   "_type" : "COMPOSITION",
                   "name" : {
@@ -84,9 +82,7 @@ class RmObjectJsonSerializerTest {
         composition.setName(new DvText("explicit pretty print test"));
 
         Assertions.assertThat(serialize(new RmObjectJsonSerializer(MarshalOption.PRETTY_PRINT), composition))
-                .isEqualTo(
-                        systemEol(
-                                """
+                .isEqualTo(systemEol("""
                 {
                   "_type" : "COMPOSITION",
                   "name" : {
@@ -103,8 +99,7 @@ class RmObjectJsonSerializerTest {
         composition.setName(new DvText("no pretty print test"));
 
         Assertions.assertThat(serialize(new RmObjectJsonSerializer(MarshalOption.DEFAULT_OPTIONS), composition))
-                .isEqualTo(
-                        """
+                .isEqualTo("""
                 {"_type":"COMPOSITION","name":{"_type":"DV_TEXT","value":"no pretty print test"}}""");
     }
 }

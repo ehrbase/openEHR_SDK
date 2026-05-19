@@ -115,7 +115,7 @@ public class GeneratorMojo implements org.apache.maven.plugin.Mojo {
                     new MojoExecutionException("Unable to parse template file: " + templateFile, e);
                 }
 
-                WebTemplate webTemplate = new OPTParser(template).parse();
+                WebTemplate webTemplate = OPTParser.parse(template);
                 ClassGeneratorResult generate = generator.generate(packageName, webTemplate);
 
                 Path fsRoot = outputDirectory.toPath();

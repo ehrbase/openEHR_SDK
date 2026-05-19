@@ -19,12 +19,12 @@ package org.ehrbase.openehr.sdk.webtemplate.path.flat;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FlatPathDtoTest {
+class FlatPathDtoTest {
 
     @Test
-    public void startsWith() {
+    void startsWith() {
         FlatPathDto cut = new FlatPathDto("encounter/body_temperature:1/any_event:0/temperature|magnitude");
 
         assertThat(cut.startsWith("encounter/body_temperature:1/any_event:0/temperature"))
@@ -32,14 +32,14 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void startsWith2() {
+    void startsWith2() {
         FlatPathDto cut = new FlatPathDto("vitals/vitals/haemoglobin_a1c/_link:1|type");
 
         assertThat(cut.startsWith("vitals/vitals/haemoglobin_a1c/_link")).isTrue();
     }
 
     @Test
-    public void startsWithMissingCount() {
+    void startsWithMissingCount() {
         FlatPathDto cut = new FlatPathDto("encounter/body_temperature:1/any_event/temperature|magnitude");
 
         assertThat(cut.startsWith("encounter/body_temperature:1/any_event:0/temperature"))
@@ -47,7 +47,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void isEqualTo() {
+    void isEqualTo() {
         FlatPathDto cut = new FlatPathDto("encounter/body_temperature:1/any_event:0/temperature|magnitude");
 
         assertThat(cut.isEqualTo("encounter/body_temperature:1/any_event:0/temperature|magnitude"))
@@ -55,7 +55,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void isEqualToMissingCount() {
+    void isEqualToMissingCount() {
         FlatPathDto cut = new FlatPathDto("encounter/body_temperature:1/any_event/temperature|magnitude");
 
         assertThat(cut.isEqualTo("encounter/body_temperature:1/any_event:0/temperature|magnitude"))
@@ -63,7 +63,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void removeEnd() {
+    void removeEnd() {
 
         String path =
                 "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
@@ -75,7 +75,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void removeEndMissingCount() {
+    void removeEndMissingCount() {
 
         String path =
                 "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
@@ -86,7 +86,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void removeEndMissingCount2() {
+    void removeEndMissingCount2() {
 
         String path =
                 "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
@@ -97,7 +97,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void removeStart() {
+    void removeStart() {
 
         String path =
                 "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
@@ -110,7 +110,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void removeStartNonMatching() {
+    void removeStartNonMatching() {
 
         String path = "encounter/body_temperature:1/any_event/temperature2|magnitude";
         FlatPathDto cut = FlatPathParser.parse(path);
@@ -120,7 +120,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void removeStartMissingCount() {
+    void removeStartMissingCount() {
 
         String path =
                 "bericht/risikogebiet/reisefall/beliebiges_intervallereignis/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
@@ -133,7 +133,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void removeStartMissingCount2() {
+    void removeStartMissingCount2() {
 
         String path =
                 "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0/land";
@@ -146,7 +146,7 @@ public class FlatPathDtoTest {
     }
 
     @Test
-    public void addEnd() {
+    void addEnd() {
 
         String path =
                 "bericht/risikogebiet/reisefall:0/beliebiges_intervallereignis:0/bestimmte_reise:0/bestimmtes_reiseziel:0";

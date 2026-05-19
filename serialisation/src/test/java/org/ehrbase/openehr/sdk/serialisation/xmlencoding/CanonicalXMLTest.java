@@ -85,9 +85,7 @@ class CanonicalXMLTest {
 
         String marshal = RMDataFormat.canonicalXML().marshal(composition);
 
-        assertThat(marshal)
-                .startsWith(
-                        """
+        assertThat(marshal).startsWith("""
               <composition xmlns:ns2="http://schemas.openehr.org/v1">
                   <name>
                       <value>pretty print test</value>
@@ -101,9 +99,7 @@ class CanonicalXMLTest {
         Composition composition = unmarshallComposition(CompositionTestDataCanonicalXML.ALL_TYPES);
 
         String marshal = RMDataFormat.canonicalXML().marshalWithOptions(composition);
-        assertThat(marshal)
-                .startsWith(
-                        """
+        assertThat(marshal).startsWith("""
                 <composition archetype_node_id="openEHR-EHR-COMPOSITION.test_all_types.v1" xmlns:ns2="http://schemas.openehr.org/v1"><name><value>Test all types</value></name><archetype_details><archetype_id>""");
     }
 
@@ -115,9 +111,7 @@ class CanonicalXMLTest {
 
         String marshal = RMDataFormat.canonicalXML().marshalWithOptions(composition, MarshalOption.PRETTY_PRINT);
 
-        assertThat(marshal)
-                .startsWith(
-                        """
+        assertThat(marshal).startsWith("""
               <composition xmlns:ns2="http://schemas.openehr.org/v1">
                   <name>
                       <value>pretty print test</value>
@@ -133,9 +127,7 @@ class CanonicalXMLTest {
         folder.addItem(new PartyRef());
 
         String inline = RMDataFormat.canonicalXML().marshalInline(folder, new QName(null, "folder"));
-        assertThat(inline)
-                .isEqualTo(
-                        """
+        assertThat(inline).isEqualTo("""
                 <name><value>folder name</value></name><items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PARTY_REF"/>""");
     }
 }

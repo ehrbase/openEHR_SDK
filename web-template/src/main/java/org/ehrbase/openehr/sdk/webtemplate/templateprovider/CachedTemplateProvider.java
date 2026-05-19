@@ -76,8 +76,7 @@ public class CachedTemplateProvider implements TemplateProvider {
     public Optional<WebTemplate> buildIntrospect(String templateId) {
         WebTemplate templateIntrospect = introspectCache.get(templateId);
         if (templateIntrospect == null) {
-            templateIntrospect =
-                    find(templateId).map(t -> new OPTParser(t).parse()).orElse(null);
+            templateIntrospect = find(templateId).map(OPTParser::parse).orElse(null);
         }
 
         return Optional.ofNullable(templateIntrospect);

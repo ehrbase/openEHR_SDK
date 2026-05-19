@@ -71,8 +71,9 @@ public class PartyRelatedStdConfig extends AbstractsStdConfig<PartyRelated> {
 
             context.getNodeDeque().push(subNode);
 
-            StdFromCompositionWalker.findPostprocessors(rmObject.getClass()).forEach(p -> ((MarshalPostprocessor) p)
-                    .process(newTerm, rmObject.getRelationship(), values, context));
+            StdFromCompositionWalker.findPostprocessors(rmObject.getClass())
+                    .forEach(p ->
+                            ((MarshalPostprocessor) p).process(newTerm, rmObject.getRelationship(), values, context));
 
             context.getNodeDeque().poll();
         }

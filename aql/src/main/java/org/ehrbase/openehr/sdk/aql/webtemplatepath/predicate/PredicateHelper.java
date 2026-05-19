@@ -93,7 +93,7 @@ public class PredicateHelper {
         } else {
 
             LogicalOperator predicateLogicalOperator = buildLogicalOperator(
-                    Arrays.asList(boolList),
+                    boolList,
                     s -> {
                         final LogicalOperator ret;
                         if (PredicateLogicalOperatorSymbol.AND.equals(s)) {
@@ -109,11 +109,11 @@ public class PredicateHelper {
     }
 
     static Object[] parsePredicate(CharSequence predicate) {
-
         List<CharSequence> split = AqlPathHelper.split(predicate, 0, -1, true, PREDICATES_MATCHER);
+        int l = split.size();
 
-        Object[] ret = new Object[split.size()];
-        for (int i = 0, l = split.size(); i < l; i++) {
+        Object[] ret = new Object[l];
+        for (int i = 0; i < l; i++) {
             if (i % 2 == 0) {
                 ret[i] = handleOperator(split.get(i), i);
             } else {
@@ -124,17 +124,11 @@ public class PredicateHelper {
     }
 
     private static PredicateLogicalOperatorSymbol handleSymbol(CharSequence sequence) {
-        switch (CharSequenceHelper.trim(sequence).toString()) {
-            case ",":
-            case "and":
-            case "AND":
-                return PredicateLogicalOperatorSymbol.AND;
-            case "or":
-            case "OR":
-                return PredicateLogicalOperatorSymbol.OR;
-            default:
-                throw new SdkException(String.format("Unknown symbol %s", sequence));
-        }
+        return switch (CharSequenceHelper.trim(sequence).toString()) {
+            case ",", "and", "AND" -> PredicateLogicalOperatorSymbol.AND;
+            case "or", "OR" -> PredicateLogicalOperatorSymbol.OR;
+            default -> throw new SdkException(String.format("Unknown symbol %s", sequence));
+        };
     }
 
     private static PredicateComparisonOperator handleOperator(CharSequence sequence, int i) {
@@ -166,7 +160,8 @@ public class PredicateHelper {
 
     private static PathPredicateOperand parseValue(String statement, CharSequence s) {
 
-        if (s.length() > 0 && s.charAt(0) == '$') {
+        int length = s.length();
+        if (length > 0 && s.charAt(0) == '$') {
             QueryParameter parameterValue = new QueryParameter();
             parameterValue.setName(CharSequenceHelper.subSequence(s, 1).toString());
             return parameterValue;
@@ -174,9 +169,9 @@ public class PredicateHelper {
 
         if (ARCHETYPE_NODE_ID.equals(statement)) {
             return new StringPrimitive(s.toString());
-        } else if (s.length() > 1 && s.charAt(0) == '\'') {
+        } else if (length > 1 && s.charAt(0) == '\'') {
             return new StringPrimitive(
-                    CharSequenceHelper.subSequence(s, 1, s.length() - 1).toString());
+                    CharSequenceHelper.subSequence(s, 1, length - 1).toString());
         } else if (representsPlainInteger(s)) {
             return new LongPrimitive(Long.parseLong(s.toString()));
         } else {
@@ -446,7 +441,7 @@ public class PredicateHelper {
     }
 
     private static <S, T> LogicalOperator<S, T> buildLogicalOperator(
-            List<Object> boolList, Function<S, LogicalOperator<S, T>> creator, ToIntFunction<S> precedenceFunction) {
+            Object[] boolList, Function<S, LogicalOperator<S, T>> creator, ToIntFunction<S> precedenceFunction) {
         OperatorStructure<S> structure = buildLogicalOperatorStructure(boolList, precedenceFunction);
         return buildLogicalOperator(structure, creator);
     }
@@ -467,15 +462,15 @@ public class PredicateHelper {
     }
 
     private static <S> OperatorStructure<S> buildLogicalOperatorStructure(
-            List<Object> boolList, ToIntFunction<S> precedenceFunction) {
+            Object[] boolList, ToIntFunction<S> precedenceFunction) {
 
-        S currentSymbol = (S) boolList.get(1);
-        OperatorStructure<S> currentOperator = new OperatorStructure(currentSymbol, boolList.get(0));
+        S currentSymbol = (S) boolList[1];
+        OperatorStructure<S> currentOperator = new OperatorStructure<>(currentSymbol, boolList[0]);
 
         OperatorStructure<S> lowestOperator = currentOperator;
-        for (int i = 2, l = boolList.size(); i < l; i += 2) {
-            S nextSymbol = i + 1 < l ? (S) boolList.get(i + 1) : null;
-            Object currentOpValue = boolList.get(i);
+        for (int i = 2, l = boolList.length; i < l; i += 2) {
+            S nextSymbol = i + 1 < l ? (S) boolList[i + 1] : null;
+            Object currentOpValue = boolList[i];
             if (nextSymbol == null || Objects.equals(currentSymbol, nextSymbol)) {
                 currentOperator.addChild(currentOpValue);
 

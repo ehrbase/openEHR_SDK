@@ -35,7 +35,7 @@ class StructuredJsonValidationTest {
 
     private static final TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
 
-    private final CompositionValidator validator = new CompositionValidator();
+    private final LocatableValidator validator = new LocatableValidator();
 
     @Test
     void testRoundTrip() throws IOException {
@@ -59,7 +59,7 @@ class StructuredJsonValidationTest {
         String flat = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
         Composition unmarshal = cut.unmarshal(flat);
 
-        var existingTemplate = templateProvider.find(templateId);
+        var existingTemplate = templateProvider.buildIntrospect(templateId);
         assertTrue(existingTemplate.isPresent());
 
         var result = validator.validate(unmarshal, existingTemplate.get());

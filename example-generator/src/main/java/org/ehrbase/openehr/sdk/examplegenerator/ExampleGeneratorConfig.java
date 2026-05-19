@@ -636,7 +636,7 @@ public class ExampleGeneratorConfig {
                     value.setDenominator(Math.floor(value.getDenominator()));
                     break;
                 default:
-                    // NOOP
+                // NOOP
             }
         }
 

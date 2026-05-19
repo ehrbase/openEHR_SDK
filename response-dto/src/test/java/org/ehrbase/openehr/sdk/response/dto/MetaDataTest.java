@@ -43,9 +43,7 @@ public class MetaDataTest {
 
         String json = objectMapper.writeValueAsString(metaData);
 
-        assertThat(json)
-                .isEqualToIgnoringWhitespace(
-                        """
+        assertThat(json).isEqualToIgnoringWhitespace("""
                         {
                           "_type" : "RESULTSET",
                           "_schema_version" : "1.0.4",
@@ -73,9 +71,7 @@ public class MetaDataTest {
         String json = objectMapper.writeValueAsString(metaData);
 
         // the additional properties are ordered by key
-        assertThat(json)
-                .isEqualToNormalizingWhitespace(
-                        """
+        assertThat(json).isEqualToNormalizingWhitespace("""
                         {
                           "_href" : "https://example.com/subpath/ehrbase/rest/openehr/v1/query/aql",
                           "_type" : "RESULTSET",
@@ -95,15 +91,13 @@ public class MetaDataTest {
     @Test
     void deserializedJSONMinimal() throws JsonProcessingException {
 
-        MetaData metaData = objectMapper.readValue(
-                """
+        MetaData metaData = objectMapper.readValue("""
                         {
                           "_type" : "RESULTSET",
                           "_schema_version" : "1.0.4",
                           "_created" : "2017-08-19T00:25:47.568+02:00",
                           "_executed_aql" : "SELECT e/ehr_id/value FROM EHR e"
-                        }""",
-                MetaData.class);
+                        }""", MetaData.class);
 
         assertNull(metaData.getHref());
         assertNull(metaData.getGenerator());
@@ -122,8 +116,7 @@ public class MetaDataTest {
     @Test
     void deserializeJSON() throws JsonProcessingException {
 
-        MetaData metaData = objectMapper.readValue(
-                """
+        MetaData metaData = objectMapper.readValue("""
                         {
                           "_href" : "https://example.com/ehrbase/rest/openehr/v1/query/aql",
                           "_type" : "RESULTSET",
@@ -137,8 +130,7 @@ public class MetaDataTest {
                           },
                           "numeric_value" : 50,
                           "string_value" : "a_string"
-                        }""",
-                MetaData.class);
+                        }""", MetaData.class);
 
         assertEquals("https://example.com/ehrbase/rest/openehr/v1/query/aql", metaData.getHref());
         assertEquals(MetaData.RESULTSET, metaData.getType());

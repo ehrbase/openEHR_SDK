@@ -27,6 +27,6 @@ public interface TemplateProvider {
     Optional<OPERATIONALTEMPLATE> find(String templateId);
 
     default Optional<WebTemplate> buildIntrospect(String templateId) {
-        return find(templateId).map(t -> new OPTParser(t).parse());
+        return find(templateId).map(OPTParser::parse);
     }
 }

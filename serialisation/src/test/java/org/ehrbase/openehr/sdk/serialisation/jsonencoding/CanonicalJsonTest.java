@@ -126,10 +126,7 @@ class CanonicalJsonTest {
     void marshalDefaultPrettyPrint() {
 
         Element element = new Element("at0042", new DvText("pretty print"), null);
-        assertThat(rmDataFormat().marshal(element))
-                .isEqualTo(
-                        systemEol(
-                                """
+        assertThat(rmDataFormat().marshal(element)).isEqualTo(systemEol("""
                        {
                          "_type" : "ELEMENT",
                          "name" : {
@@ -144,9 +141,7 @@ class CanonicalJsonTest {
     void marshalWithOptionsNoPrettyPrint() {
 
         Element element = new Element("at0042", new DvText("default no pretty print"), null);
-        assertThat(rmDataFormat().marshalWithOptions(element))
-                .isEqualTo(
-                        """
+        assertThat(rmDataFormat().marshalWithOptions(element)).isEqualTo("""
                        {"_type":"ELEMENT","name":{"_type":"DV_TEXT","value":"default no pretty print"},"archetype_node_id":"at0042"}""");
     }
 
@@ -155,9 +150,7 @@ class CanonicalJsonTest {
 
         Element element = new Element("at0042", new DvText("pretty print"), null);
         assertThat(rmDataFormat().marshalWithOptions(element, MarshalOption.PRETTY_PRINT))
-                .isEqualTo(
-                        systemEol(
-                                """
+                .isEqualTo(systemEol("""
                        {
                          "_type" : "ELEMENT",
                          "name" : {
@@ -174,52 +167,37 @@ class CanonicalJsonTest {
 
     @Test
     void marshalDuration() {
-        JSONAssert.assertEquals(
-                rmDataFormat().marshal(new DvDuration(Duration.ofDays(30L))),
-                """
-                        {"_type":"DV_DURATION","value":"PT720H"}""",
-                true);
+        JSONAssert.assertEquals(rmDataFormat().marshal(new DvDuration(Duration.ofDays(30L))), """
+                        {"_type":"DV_DURATION","value":"PT720H"}""", true);
     }
 
     @Test
     void marshalEmptyDvText() {
 
-        JSONAssert.assertEquals(
-                rmDataFormat().marshal(new DvText("")),
-                """
-                        {"_type":"DV_TEXT","value":""}""",
-                true);
+        JSONAssert.assertEquals(rmDataFormat().marshal(new DvText("")), """
+                        {"_type":"DV_TEXT","value":""}""", true);
     }
 
     // check that dot is not converted into a comma!
     @Test
     void marshalDvDateTime() {
 
-        JSONAssert.assertEquals(
-                rmDataFormat().marshal(new DvDateTime("2021-10-01T10:32:51.543+07:00")),
-                """
-                        {"_type":"DV_DATE_TIME","value":"2021-10-01T10:32:51.543+07:00"}""",
-                true);
+        JSONAssert.assertEquals(rmDataFormat().marshal(new DvDateTime("2021-10-01T10:32:51.543+07:00")), """
+                        {"_type":"DV_DATE_TIME","value":"2021-10-01T10:32:51.543+07:00"}""", true);
     }
 
     @Test
     void marshalDvDateTimeWithZero() {
 
-        JSONAssert.assertEquals(
-                rmDataFormat().marshal(new DvDateTime("2022-02-25T10:55:41.400Z")),
-                """
-                        {"_type":"DV_DATE_TIME","value":"2022-02-25T10:55:41.4Z"}""",
-                true);
+        JSONAssert.assertEquals(rmDataFormat().marshal(new DvDateTime("2022-02-25T10:55:41.400Z")), """
+                        {"_type":"DV_DATE_TIME","value":"2022-02-25T10:55:41.4Z"}""", true);
     }
 
     @Test
     void marshalDvTimeWithZero() {
 
-        JSONAssert.assertEquals(
-                rmDataFormat().marshal(new DvTime("10:55:41.400Z")),
-                """
-                        {"_type":"DV_TIME","value":"10:55:41.4Z"}""",
-                true);
+        JSONAssert.assertEquals(rmDataFormat().marshal(new DvTime("10:55:41.400Z")), """
+                        {"_type":"DV_TIME","value":"10:55:41.4Z"}""", true);
     }
 
     @Test
@@ -227,11 +205,8 @@ class CanonicalJsonTest {
 
         ItemTree itemTree = new ItemTree();
         itemTree.setNameAsString("test");
-        JSONAssert.assertEquals(
-                rmDataFormat().marshal(itemTree),
-                """
-                        {"_type":"ITEM_TREE","name":{"_type":"DV_TEXT","value":"test"}}""",
-                true);
+        JSONAssert.assertEquals(rmDataFormat().marshal(itemTree), """
+                        {"_type":"ITEM_TREE","name":{"_type":"DV_TEXT","value":"test"}}""", true);
     }
 
     @Test

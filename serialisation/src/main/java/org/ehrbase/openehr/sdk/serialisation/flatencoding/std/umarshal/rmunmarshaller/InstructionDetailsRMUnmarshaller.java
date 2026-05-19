@@ -46,8 +46,9 @@ public class InstructionDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Ins
             Context<Map<FlatPathDto, String>> context,
             Set<String> consumedPaths) {
 
-        if (currentValues.keySet().stream().anyMatch(k -> List.of("instruction_uid", "wt_path", "instruction_index")
-                .contains(k.getLast().getAttributeName()))) {
+        if (currentValues.keySet().stream()
+                .anyMatch(k -> List.of("instruction_uid", "wt_path", "instruction_index")
+                        .contains(k.getLast().getAttributeName()))) {
             throw new SdkException(String.format(
                     "Calculation of Path from instruction_uid, wt_path or instruction_index is not supported. Provide |path at %s ",
                     currentTerm));
