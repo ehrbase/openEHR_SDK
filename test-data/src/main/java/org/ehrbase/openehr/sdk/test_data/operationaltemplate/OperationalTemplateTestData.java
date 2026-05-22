@@ -32,6 +32,8 @@ public enum OperationalTemplateTestData {
     IDCR_PROBLEM_LIST("IDCR  Problem List.v1", "IDCR - Problem List.v1.opt", "IDCR - Problem List.v1"),
     IDCR_ADVERSE_REACTION_LIST(
             "IDCR -  Adverse Reaction List.v1", "IDCR - Adverse Reaction List.v1.opt", "Adverse Reaction List.v1"),
+    IDCR_ADVERSE_REACTION_LIST2(
+            "IDCR -  Adverse Reaction List.v2", "IDCR - Adverse Reaction List.v2.opt", "Adverse Reaction List.v2"),
     BLOOD_PRESSURE_SIMPLE(
             "Very simple blood_pressure template",
             "ehrbase_blood_pressure_simple.de.v0.opt",
@@ -86,7 +88,7 @@ public enum OperationalTemplateTestData {
     SECTION_CARDINALITY("Cardinality test template sections", "section_cardinality.opt", "cardinality_of_section"),
     SSIAD_PR_IE_SM("Cardinality test template sections", "SSIAD_PRIeSM.opt", "SSIAD PRIeSM"),
     NULLID("My Nullid test", "nullid.opt", "null-nodeid-example"),
-    ISM_MISSING("ISM withn missing transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
+    ISM_MISSING("ISM within missing transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
     ISM_WRONG("ISM transition with wrong current state", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
     ISM_VAILD("Vaild ism transition", "test-ism.vitagroup.de.v1.opt", "test-ism.vitagroup.de.v1"),
 

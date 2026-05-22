@@ -20,16 +20,40 @@ package org.ehrbase.openehr.sdk.validation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.openehr.sdk.terminology.TerminologyProvider.OPENEHR;
 
+import com.nedap.archie.adl14.ADL14ConversionConfiguration;
+import com.nedap.archie.adl14.ADL14Converter;
+import com.nedap.archie.adl14.ADL14Parser;
+import com.nedap.archie.adl14.ADL2ConversionResult;
+import com.nedap.archie.adl14.ADL2ConversionResultList;
+import com.nedap.archie.adlparser.ADLParseException;
+import com.nedap.archie.aom.Archetype;
+import com.nedap.archie.archetypevalidator.ArchetypeValidator;
+import com.nedap.archie.archetypevalidator.ValidationResult;
+import com.nedap.archie.flattener.InMemoryFullArchetypeRepository;
+import com.nedap.archie.flattener.OperationalTemplateProvider;
+import com.nedap.archie.json.ArchieRMObjectMapperProvider;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.directory.Folder;
+import com.nedap.archie.rminfo.ArchieRMInfoLookup;
+import com.nedap.archie.rminfo.MetaModel;
+import com.nedap.archie.rminfo.MetaModelProvider;
+import com.nedap.archie.rminfo.MetaModels;
+import com.nedap.archie.rminfo.ReferenceModels;
+import com.nedap.archie.rminfo.SimpleMetaModelProvider;
 import com.nedap.archie.xml.JAXBUtil;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
@@ -67,6 +91,79 @@ class LocatableValidatorTest {
                                 "/archetype_node_id",
                                 "Attribute archetype_node_id of class FOLDER does not match existence 1..1"),
                         new Tuple("/name", "Attribute name of class FOLDER does not match existence 1..1"));
+    }
+
+    @Test
+    void validateArchetype() throws Exception {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource("archetypes_salut.zip");
+
+
+        List<Archetype> archetypes = convertToAdl(resource);
+
+//        ReferenceModels models = new ReferenceModels(ArchieRMInfoLookup.getInstance());
+//        MetaModels metaModels = new MetaModels(models, null);
+//        ArchetypeValidator archetypeValidator = new ArchetypeValidator(metaModels);
+
+//        ValidationResult validationResult = archetypeValidator.validate(archetype);
+//
+//        validationResult.getFlattened()
+
+        InMemoryFullArchetypeRepository archetypeProvider = new InMemoryFullArchetypeRepository();
+        archetypes.forEach(archetypeProvider::addArchetype);
+
+        LocatableValidator validator = new LocatableValidator(null, true, true, archetypeProvider);
+
+
+        var template = getInternalTemplate(OperationalTemplateTestData.IDCR_ADVERSE_REACTION_LIST2);
+        var composition = getComposition(CompositionTestDataSimSDTJson.ADVERSE_REACTION_LIST2);
+
+        var result = validator.validate(composition, template);
+        assertThat(result).isEmpty();
+    }
+
+    static List<Archetype> convertToAdl(URL adlZip) throws IOException, ADLParseException {
+
+
+        ReferenceModels models = new ReferenceModels();
+        models.registerModel(ArchieRMInfoLookup.getInstance(), new ArchieRMObjectMapperProvider());
+
+        List<Archetype> archetypes = new ArrayList<>();
+        ADL14Parser parser = new ADL14Parser(new SimpleMetaModelProvider(models, null));
+
+        try (InputStream in = adlZip.openStream(); ZipInputStream zin =  new ZipInputStream(in)) {
+            ZipEntry entry;
+            while ((entry= zin.getNextEntry()) != null) {
+                if (entry.isDirectory() || !entry.getName().endsWith(".adl")) {
+                    continue;
+                }
+//                System.out.println(entry.getName());
+                byte[] bytes = zin.readAllBytes();
+
+                ADL14ConversionConfiguration conversionConfiguration = new ADL14ConversionConfiguration();
+                Archetype archetype = parser.parse(new ByteArrayInputStream(bytes), conversionConfiguration);
+                if(parser.getErrors().hasNoErrors()) {
+                    archetypes.add(archetype);
+                } else {
+                    //handle parse error
+                    System.err.println("Archetype has errors: " + entry.getName());
+                }
+            }
+        }
+
+
+        ADL14ConversionConfiguration conversionConfiguration = new ADL14ConversionConfiguration();
+        MetaModelProvider mmp = new SimpleMetaModelProvider(models, null);
+        ADL14Converter converter = new ADL14Converter(mmp, conversionConfiguration);
+
+        ADL2ConversionResultList resultList = converter.convert(archetypes);
+//        for(ADL2ConversionResult adl2ConversionResult:resultList.getConversionResults()) {
+//            if(adl2ConversionResult.getException() == null) {
+//                // convertedArchetype is the ADL 2 conversion result. Additional warning messages in adl2ConversionResult.getLog()
+//                Archetype convertedArchetype = adl2ConversionResult.getArchetype();
+//            }
+//        }
+
+        return resultList.getConversionResults().stream().filter(r -> r.getException() == null).map(r -> r.getArchetype()).toList();
     }
 
     @Test

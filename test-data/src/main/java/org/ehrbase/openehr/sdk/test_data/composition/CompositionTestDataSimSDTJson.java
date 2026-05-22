@@ -28,6 +28,10 @@ public enum CompositionTestDataSimSDTJson implements CompositionTestDataSimSDTJs
             "AlternativeEvents",
             "IDCR - Adverse Reaction List.json",
             OperationalTemplateTestData.IDCR_ADVERSE_REACTION_LIST),
+    ADVERSE_REACTION_LIST2(
+            "AlternativeEvents",
+            "IDCR - Adverse Reaction List2.json",
+            OperationalTemplateTestData.IDCR_ADVERSE_REACTION_LIST),
     CORONA("Corona", "corona.json", OperationalTemplateTestData.CORONA_ANAMNESE),
     CORONA_WITH_OTHER_PARTICIPATION(
             "Corona", "corona_with_other_participation.json", OperationalTemplateTestData.CORONA_ANAMNESE),
