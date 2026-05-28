@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.Year;
-import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -165,19 +163,14 @@ public final class OpenEHRDateTimeParseUtils {
                 parsed = ISO_8601_DATE_PARSER.parse(isoDate);
             }
 
+            Temporal result;
             if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
-                return LocalDate.from(parsed);
+                result = LocalDate.from(parsed);
+            } else {
+                result = PartialDate.from(parsed);
             }
 
-            if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
-                return YearMonth.from(parsed);
-            }
-
-            if (parsed.isSupported(ChronoField.YEAR)) {
-                return Year.from(parsed);
-            }
-            throw new DateTimeException(
-                    isoDate + " does not provide any field required for the possible precisions:" + isoDate);
+            return requireTemporal(isoDate, result);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
@@ -198,16 +191,16 @@ public final class OpenEHRDateTimeParseUtils {
                 parsed = ISO_8601_TIME_PARSER.parse(isoTime);
             }
 
+            final TemporalAccessor result;
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
                 // Do not use OffsetTime::from, so we do not have to unwrap exceptions to get meaningful messages
-                return OffsetTime.of(LocalTime.from(parsed), ZoneOffset.from(parsed));
+                result = OffsetTime.of(LocalTime.from(parsed), ZoneOffset.from(parsed));
+            } else if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
+                result = LocalTime.from(parsed);
+            } else {
+                result = null;
             }
-
-            if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
-                return LocalTime.from(parsed);
-            }
-            throw new DateTimeException(
-                    isoTime + " does not provide any field required for the possible precisions:" + isoTime);
+            return requireTemporal(isoTime, result);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour to avoid breaking stuff
@@ -228,32 +221,33 @@ public final class OpenEHRDateTimeParseUtils {
                 parsed = ISO_8601_DATE_TIME_PARSER.parse(isoDateTime);
             }
 
+            TemporalAccessor result;
             if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
                 // Do not use OffsetTime::from, so we do not have to unwrap exceptions to get meaningful messages
                 if (parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
-                    return OffsetDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed), ZoneOffset.from(parsed));
+                    result = OffsetDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed), ZoneOffset.from(parsed));
                 } else {
-                    return LocalDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed));
+                    result = LocalDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed));
                 }
+            } else if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
+                result = LocalDate.from(parsed);
+            } else {
+                result = PartialDateTime.from(parsed);
             }
 
-            if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
-                return LocalDate.from(parsed);
-            }
-
-            if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
-                return YearMonth.from(parsed);
-            }
-
-            if (parsed.isSupported(ChronoField.YEAR)) {
-                return Year.from(parsed);
-            }
-            throw new DateTimeException(
-                    isoDateTime + " does not provide any field required for the possible precisions:" + isoDateTime);
+            return requireTemporal(isoDateTime, result);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
             throw new IllegalArgumentException(e.getMessage() + ":" + isoDateTime, e);
         }
+    }
+
+    private static <T extends TemporalAccessor> T requireTemporal(String str, T value) {
+        if (value == null) {
+            throw new DateTimeException(
+                    "%s does not provide any field required for the possible precisions: %s".formatted(str, str));
+        }
+        return value;
     }
 }

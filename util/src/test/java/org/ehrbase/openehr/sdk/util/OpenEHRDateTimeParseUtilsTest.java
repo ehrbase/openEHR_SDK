@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -28,7 +29,6 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -38,8 +38,8 @@ class OpenEHRDateTimeParseUtilsTest {
 
         // ------Extended valid format and values
         EXTENDED_PRECISION_DAY("2023-01-01", LocalDate.of(2023, 1, 1)),
-        EXTENDED_PRECISION_MONTH("2023-01", YearMonth.of(2023, 1)),
-        EXTENDED_PRECISION_YEAR("2023", Year.of(2023)),
+        EXTENDED_PRECISION_MONTH("2023-01", PartialDate.of(YearMonth.of(2023, 1))),
+        EXTENDED_PRECISION_YEAR("2023", PartialDate.of(Year.of(2023))),
 
         // ------Extended valid format, invalid values
         EXTENDED_INVALID_NO_LEAP_YEAR(
@@ -78,8 +78,8 @@ class OpenEHRDateTimeParseUtilsTest {
 
         // ------Compact valid format and values
         COMPACT_PRECISION_DAY("20230101", LocalDate.of(2023, 1, 1)),
-        COMPACT_PRECISION_MONTH("202301", YearMonth.of(2023, 1)),
-        COMPACT_PRECISION_YEAR("2023", Year.of(2023)),
+        COMPACT_PRECISION_MONTH("202301", PartialDate.of(YearMonth.of(2023, 1))),
+        COMPACT_PRECISION_YEAR("2023", PartialDate.of(Year.of(2023))),
 
         // ------Compact valid format, invalid values
         COMPACT_INVALID_NO_LEAP_YEAR(
@@ -121,14 +121,12 @@ class OpenEHRDateTimeParseUtilsTest {
 
         private final String input;
         private final TemporalAccessor expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
         DateTestData(String input, TemporalAccessor expected) {
             this.input = input;
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -140,7 +138,6 @@ class OpenEHRDateTimeParseUtilsTest {
         DateTestData(String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -149,14 +146,14 @@ class OpenEHRDateTimeParseUtilsTest {
     @ParameterizedTest
     @EnumSource(DateTestData.class)
     void parseDate(DateTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            assertThat(OpenEHRDateTimeParseUtils.parseDate(data.input)).isEqualTo(data.expected);
+        } else {
             Exception exception =
                     assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeParseUtils.parseDate(data.input));
             if (data.expectedExceptionMessage != null) {
-                Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
+                assertThat(exception).hasMessage(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeParseUtils.parseDate(data.input));
         }
     }
 
@@ -288,14 +285,12 @@ class OpenEHRDateTimeParseUtilsTest {
 
         private final String input;
         private final TemporalAccessor expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
         TimeTestData(String input, TemporalAccessor expected) {
             this.input = input;
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -307,7 +302,6 @@ class OpenEHRDateTimeParseUtilsTest {
         TimeTestData(String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -316,14 +310,14 @@ class OpenEHRDateTimeParseUtilsTest {
     @ParameterizedTest
     @EnumSource(TimeTestData.class)
     void parseTime(TimeTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            assertThat(OpenEHRDateTimeParseUtils.parseTime(data.input)).isEqualTo(data.expected);
+        } else {
             Exception exception =
                     assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeParseUtils.parseTime(data.input));
             if (data.expectedExceptionMessage != null) {
-                Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
+                assertThat(exception).hasMessage(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeParseUtils.parseTime(data.input));
         }
     }
 
@@ -360,8 +354,8 @@ class OpenEHRDateTimeParseUtilsTest {
         EXTENDED_PRECISION_MINUTE("2023-01-01T12:13", LocalDateTime.of(2023, 1, 1, 12, 13, 0)),
         EXTENDED_PRECISION_HOUR("2023-01-01T12", LocalDateTime.of(2023, 1, 1, 12, 0, 0)),
         EXTENDED_PRECISION_DAY("2023-01-01", LocalDate.of(2023, 1, 1)),
-        EXTENDED_PRECISION_MONTH("2023-01", YearMonth.of(2023, 1)),
-        EXTENDED_PRECISION_YEAR("2023", Year.of(2023)),
+        EXTENDED_PRECISION_MONTH("2023-01", PartialDateTime.of((YearMonth.of(2023, 1)))),
+        EXTENDED_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
 
         // -------Extended valid format, invalid values
         EXTENDED_INVALID_NO_LEAP_YEAR(
@@ -461,8 +455,8 @@ class OpenEHRDateTimeParseUtilsTest {
         COMPACT_PRECISION_MINUTE("20230101T1213", LocalDateTime.of(2023, 1, 1, 12, 13, 0)),
         COMPACT_PRECISION_HOUR("20230101T12", LocalDateTime.of(2023, 1, 1, 12, 0, 0)),
         COMPACT_PRECISION_DAY("20230101", LocalDate.of(2023, 1, 1)),
-        COMPACT_PRECISION_MONTH("202301", YearMonth.of(2023, 1)),
-        COMPACT_PRECISION_YEAR("2023", Year.of(2023)),
+        COMPACT_PRECISION_MONTH("202301", PartialDateTime.of(YearMonth.of(2023, 1))),
+        COMPACT_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
 
         // ------Compact valid format, invalid field values
         COMPACT_INVALID_NO_LEAP_YEAR(
@@ -530,14 +524,12 @@ class OpenEHRDateTimeParseUtilsTest {
 
         private final String input;
         private final TemporalAccessor expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
         DateTimeTestData(String input, TemporalAccessor expected) {
             this.input = input;
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -550,7 +542,6 @@ class OpenEHRDateTimeParseUtilsTest {
                 String input, Class<? extends Exception> expectedExceptionType, String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -559,14 +550,14 @@ class OpenEHRDateTimeParseUtilsTest {
     @ParameterizedTest
     @EnumSource(DateTimeTestData.class)
     void parseDateTime(DateTimeTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            assertThat(OpenEHRDateTimeParseUtils.parseDateTime(data.input)).isEqualTo(data.expected);
+        } else {
             Exception exception =
                     assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeParseUtils.parseDateTime(data.input));
             if (data.expectedExceptionMessage != null) {
-                Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
+                assertThat(exception).hasMessage(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeParseUtils.parseDateTime(data.input));
         }
     }
 }

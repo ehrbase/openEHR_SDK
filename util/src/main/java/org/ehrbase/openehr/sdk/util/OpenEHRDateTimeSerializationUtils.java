@@ -126,6 +126,12 @@ public final class OpenEHRDateTimeSerializationUtils {
             return null;
         }
 
+        if (temporal instanceof PartialDateTime pdt) {
+            temporal = pdt.getPartial();
+        } else if (temporal instanceof PartialDate pd) {
+            temporal = pd.getPartial();
+        }
+
         if (!temporal.isSupported(lowestResolution)) {
             throw new IllegalArgumentException(
                     "The given TemporalAccessor does not support the minimal resolution defined by openEHR: "
@@ -161,7 +167,7 @@ public final class OpenEHRDateTimeSerializationUtils {
 
         TemporalAccessor value = dateTime.getValue();
         LocalDate date = toLocalDate(value);
-        final Long epochSecond;
+        final long epochSecond;
         if (value.isSupported(ChronoField.HOUR_OF_DAY)) {
             Pair<LocalTime, ZoneOffset> localTimeWithTz = toLocalTimeAndTz(value);
             epochSecond = date.toEpochSecond(localTimeWithTz.getLeft(), localTimeWithTz.getRight());
@@ -191,16 +197,16 @@ public final class OpenEHRDateTimeSerializationUtils {
 
         // Most common cases (the ones we parse ISO strings with a date component to) where creating a new LocalDate is
         // not necessary
-        if (value instanceof OffsetDateTime) {
-            return ((OffsetDateTime) value).toLocalDate();
-        }
-
-        if (value instanceof LocalDateTime) {
-            return ((LocalDateTime) value).toLocalDate();
-        }
-
-        if (value instanceof LocalDate) {
-            return (LocalDate) value;
+        if (value instanceof OffsetDateTime odt) {
+            return odt.toLocalDate();
+        } else if (value instanceof LocalDateTime ldt) {
+            return ldt.toLocalDate();
+        } else if (value instanceof LocalDate ld) {
+            return ld;
+        } else if (value instanceof PartialDateTime pdt) {
+            return pdt.toLocalDate();
+        } else if (value instanceof PartialDate pd) {
+            return pd.toLocalDate();
         }
 
         // more exotic cases
@@ -216,20 +222,16 @@ public final class OpenEHRDateTimeSerializationUtils {
 
         // Most common cases (the ones we parse ISO strings with a time component to) where creating a new LocalTime is
         // not necessary
-        if (value instanceof OffsetTime) {
-            return Pair.of(((OffsetTime) value).toLocalTime(), ((OffsetTime) value).getOffset());
-        }
-
-        if (value instanceof LocalTime) {
-            return Pair.of((LocalTime) value, ZoneOffset.UTC);
-        }
-
-        if (value instanceof OffsetDateTime) {
-            return Pair.of(((OffsetDateTime) value).toLocalTime(), ((OffsetDateTime) value).getOffset());
-        }
-
-        if (value instanceof LocalDateTime) {
-            return Pair.of(((LocalDateTime) value).toLocalTime(), ZoneOffset.UTC);
+        if (value instanceof OffsetTime ot) {
+            return Pair.of(ot.toLocalTime(), ot.getOffset());
+        } else if (value instanceof LocalTime lt) {
+            return Pair.of(lt, ZoneOffset.UTC);
+        } else if (value instanceof OffsetDateTime odt) {
+            return Pair.of(odt.toLocalTime(), odt.getOffset());
+        } else if (value instanceof LocalDateTime ldt) {
+            return Pair.of(ldt.toLocalTime(), ZoneOffset.UTC);
+        } else if (value instanceof PartialDateTime pd) {
+            return Pair.of(pd.toLocalTime(), ZoneOffset.UTC);
         }
 
         // More exotic cases

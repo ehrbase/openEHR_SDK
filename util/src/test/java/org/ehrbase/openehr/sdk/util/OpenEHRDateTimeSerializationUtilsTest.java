@@ -47,6 +47,10 @@ class OpenEHRDateTimeSerializationUtilsTest {
         PRECISION_MONTH(YearMonth.of(2023, 1), "2023-01"),
         PRECISION_YEAR(Year.of(2023), "2023"),
 
+        // ------partial precisions, as created by the parser
+        PRECISION_PARTIAL_MONTH(PartialDate.of(YearMonth.of(2023, 1)), "2023-01"),
+        PRECISION_PARTIAL_YEAR(PartialDate.of(Year.of(2023)), "2023"),
+
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
                 LocalTime.of(0, 0),
@@ -55,14 +59,12 @@ class OpenEHRDateTimeSerializationUtilsTest {
 
         private final TemporalAccessor input;
         private final String expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
         DateTestData(TemporalAccessor input, String expected) {
             this.input = input;
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -73,7 +75,6 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -82,14 +83,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
     @ParameterizedTest
     @EnumSource(DateTestData.class)
     void formatDate(DateTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDate(data.input));
+        } else {
             Exception exception = assertThrows(
                     data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.formatDate(data.input));
             if (data.expectedExceptionMessage != null) {
                 Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDate(data.input));
         }
     }
 
@@ -120,14 +121,12 @@ class OpenEHRDateTimeSerializationUtilsTest {
 
         private final TemporalAccessor input;
         private final String expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
         TimeTestData(TemporalAccessor input, String expected) {
             this.input = input;
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -138,7 +137,6 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -147,14 +145,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
     @ParameterizedTest
     @EnumSource(TimeTestData.class)
     void formatTime(TimeTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatTime(data.input));
+        } else {
             Exception exception = assertThrows(
                     data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.formatTime(data.input));
             if (data.expectedExceptionMessage != null) {
                 Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatTime(data.input));
         }
     }
 
@@ -188,6 +186,8 @@ class OpenEHRDateTimeSerializationUtilsTest {
         PRECISION_DAY(LocalDate.of(2023, 1, 1), "2023-01-01"),
         PRECISION_MONTH(YearMonth.of(2023, 1), "2023-01"),
         PRECISION_YEAR(Year.of(2023), "2023"),
+        PRECISION_PARTIAL_MONTH(PartialDateTime.of(YearMonth.of(2023, 1)), "2023-01"),
+        PRECISION_PARTIAL_YEAR(PartialDateTime.of(Year.of(2023)), "2023"),
 
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
@@ -197,14 +197,12 @@ class OpenEHRDateTimeSerializationUtilsTest {
 
         private final TemporalAccessor input;
         private final String expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
         DateTimeTestData(TemporalAccessor input, String expected) {
             this.input = input;
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -215,7 +213,6 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -224,14 +221,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
     @ParameterizedTest
     @EnumSource(DateTimeTestData.class)
     void formatDateTime(DateTimeTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDateTime(data.input));
+        } else {
             Exception exception = assertThrows(
                     data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.formatDateTime(data.input));
             if (data.expectedExceptionMessage != null) {
                 Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDateTime(data.input));
         }
     }
 
@@ -247,6 +244,12 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 LocalDate.of(2023, 3, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
         PRECISION_YEAR(
                 new DvDate(Year.of(2023)), LocalDate.of(2023, 1, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_MONTH(
+                new DvDate(PartialDate.of(YearMonth.of(2023, 3))),
+                LocalDate.of(2023, 3, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_YEAR(
+                new DvDate(PartialDate.of(Year.of(2023))),
+                LocalDate.of(2023, 1, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
         MISSING_YEAR(new DvDate(Instant.ofEpochSecond(0)), DateTimeException.class);
 
         private final DvDate input;
@@ -264,19 +267,15 @@ class OpenEHRDateTimeSerializationUtilsTest {
             this.expected = null;
             this.expectedExceptionType = expectedExceptionType;
         }
-
-        boolean shouldThrowException() {
-            return this.expectedExceptionType != null;
-        }
     }
 
     @ParameterizedTest
     @EnumSource(DvDateMagnitudeTestData.class)
     void testToMagnitudeDvDate(DvDateMagnitudeTestData data) {
-        if (data.shouldThrowException()) {
-            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
-        } else {
+        if (data.expectedExceptionType == null) {
             Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
         }
     }
 
@@ -337,6 +336,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 LocalDate.of(2023, 3, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
                         + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
         PRECISION_YEAR(
+                new DvDateTime(PartialDateTime.of(Year.of(2023))),
+                LocalDate.of(2023, 1, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_MONTH(
+                new DvDateTime(PartialDateTime.of(YearMonth.of(2023, 3))),
+                LocalDate.of(2023, 3, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_YEAR(
                 new DvDateTime(Year.of(2023)),
                 LocalDate.of(2023, 1, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
                         + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
@@ -357,19 +364,15 @@ class OpenEHRDateTimeSerializationUtilsTest {
             this.expected = null;
             this.expectedExceptionType = expectedExceptionType;
         }
-
-        boolean shouldThrowException() {
-            return this.expectedExceptionType != null;
-        }
     }
 
     @ParameterizedTest
     @EnumSource(DvDateTimeMagnitudeTestData.class)
     void testToMagnitudeDvDateTime(DvDateTimeMagnitudeTestData data) {
-        if (data.shouldThrowException()) {
-            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
-        } else {
+        if (data.expectedExceptionType == null) {
             Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
         }
     }
 
@@ -419,19 +422,15 @@ class OpenEHRDateTimeSerializationUtilsTest {
             this.expected = null;
             this.expectedExceptionType = expectedExceptionType;
         }
-
-        boolean shouldThrowException() {
-            return this.expectedExceptionType != null;
-        }
     }
 
     @ParameterizedTest
     @EnumSource(DvTimeMagnitudeTestData.class)
     void testToMagnitudeDvTime(DvTimeMagnitudeTestData data) {
-        if (data.shouldThrowException()) {
-            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
-        } else {
+        if (data.expectedExceptionType == null) {
             Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
         }
     }
 }
