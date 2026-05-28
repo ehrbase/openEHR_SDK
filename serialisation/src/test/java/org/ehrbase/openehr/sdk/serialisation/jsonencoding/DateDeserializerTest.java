@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.time.Year;
 import java.util.List;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.util.PartialDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -120,7 +121,7 @@ class DateDeserializerTest {
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION(
                 new DvDate(
                         List.of(new ReferenceRange<>(new DvText("meaning"), new DvInterval<DvDate>(null, null))),
-                        new DvInterval<>(new DvDate(Year.of(2023)), null),
+                        new DvInterval<>(new DvDate(PartialDate.of(Year.of(2023))), null),
                         new CodePhrase(),
                         "magStat",
                         new DvDuration(),
