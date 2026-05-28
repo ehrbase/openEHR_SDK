@@ -426,4 +426,16 @@ class LocatableValidatorTest {
 
         new TerminologyValidationVisitor().validate(composition);
     }
+
+    @Test
+    void validatePartialDateTime() throws Exception {
+        var template = getInternalTemplate(OperationalTemplateTestData.INTERVAL_PARTIAL_DATE);
+        var composition = getComposition(CompositionTestDataCanonicalJson.INTERVAL_PARTIAL_DATE);
+
+        var result = validator.validate(composition, template);
+
+        assertThat(result).isEmpty();
+
+        new TerminologyValidationVisitor().validate(composition);
+    }
 }
