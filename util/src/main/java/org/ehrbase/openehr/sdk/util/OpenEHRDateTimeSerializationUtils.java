@@ -126,12 +126,6 @@ public final class OpenEHRDateTimeSerializationUtils {
             return null;
         }
 
-        if (temporal instanceof PartialDateTime pdt) {
-            temporal = pdt.getPartial();
-        } else if (temporal instanceof PartialDate pd) {
-            temporal = pd.getPartial();
-        }
-
         if (!temporal.isSupported(lowestResolution)) {
             throw new IllegalArgumentException(
                     "The given TemporalAccessor does not support the minimal resolution defined by openEHR: "
@@ -205,8 +199,6 @@ public final class OpenEHRDateTimeSerializationUtils {
             return ld;
         } else if (value instanceof PartialDateTime pdt) {
             return pdt.toLocalDate();
-        } else if (value instanceof PartialDate pd) {
-            return pd.toLocalDate();
         }
 
         // more exotic cases

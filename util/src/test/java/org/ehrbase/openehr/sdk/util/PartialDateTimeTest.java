@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import org.junit.jupiter.api.Test;
 
 class PartialDateTimeTest {
@@ -49,26 +51,29 @@ class PartialDateTimeTest {
 
     @Test
     void from() {
-        assertThat(PartialDateTime.from(LocalDateTime.of(2024, 3, 7, 1, 2, 3)))
-                .isNotNull()
-                .extracting(PartialDateTime::getPartial)
-                .isEqualTo(YearMonth.of(2024, 3));
-        assertThat(PartialDateTime.from(YearMonth.of(2024, 3)))
-                .isNotNull()
-                .extracting(PartialDateTime::getPartial)
-                .isEqualTo(YearMonth.of(2024, 3));
-        assertThat(PartialDateTime.from(Year.of(2024)))
-                .isNotNull()
-                .extracting(PartialDateTime::getPartial)
-                .isEqualTo(Year.of(2024));
+        assertFieldsMatch(PartialDateTime.from(LocalDateTime.of(2024, 3, 7, 1, 2, 3)), YearMonth.of(2024, 3));
+        assertFieldsMatch(PartialDateTime.from(YearMonth.of(2024, 3)), YearMonth.of(2024, 3));
+        assertFieldsMatch(PartialDateTime.from(Year.of(2024)), Year.of(2024));
     }
 
-    @Test
-    void getPartial() {
-        YearMonth yearMonth = YearMonth.of(2024, 3);
-        var c = PartialDateTime.of(yearMonth);
+    private void assertFieldsMatch(PartialDateTime from, TemporalAccessor expected) {
+        ChronoField[] relevantFields = new ChronoField[] {
+            ChronoField.YEAR,
+            ChronoField.MONTH_OF_YEAR,
+            ChronoField.DAY_OF_MONTH,
+            ChronoField.HOUR_OF_DAY,
+            ChronoField.MINUTE_OF_HOUR,
+            ChronoField.SECOND_OF_MINUTE,
+            ChronoField.OFFSET_SECONDS
+        };
 
-        assertThat(c.getPartial()).isSameAs(yearMonth);
+        for (ChronoField field : relevantFields) {
+            if (expected.isSupported(field)) {
+                assertThat(from.get(field)).isEqualTo(expected.get(field));
+            } else {
+                assertThat(from.isSupported(field)).isFalse();
+            }
+        }
     }
 
     @Test

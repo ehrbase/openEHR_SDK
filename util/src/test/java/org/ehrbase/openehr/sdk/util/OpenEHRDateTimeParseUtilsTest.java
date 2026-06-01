@@ -38,8 +38,8 @@ class OpenEHRDateTimeParseUtilsTest {
 
         // ------Extended valid format and values
         EXTENDED_PRECISION_DAY("2023-01-01", LocalDate.of(2023, 1, 1)),
-        EXTENDED_PRECISION_MONTH("2023-01", PartialDate.of(YearMonth.of(2023, 1))),
-        EXTENDED_PRECISION_YEAR("2023", PartialDate.of(Year.of(2023))),
+        EXTENDED_PRECISION_MONTH("2023-01", PartialDateTime.of(YearMonth.of(2023, 1))),
+        EXTENDED_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
 
         // ------Extended valid format, invalid values
         EXTENDED_INVALID_NO_LEAP_YEAR(
@@ -78,8 +78,8 @@ class OpenEHRDateTimeParseUtilsTest {
 
         // ------Compact valid format and values
         COMPACT_PRECISION_DAY("20230101", LocalDate.of(2023, 1, 1)),
-        COMPACT_PRECISION_MONTH("202301", PartialDate.of(YearMonth.of(2023, 1))),
-        COMPACT_PRECISION_YEAR("2023", PartialDate.of(Year.of(2023))),
+        COMPACT_PRECISION_MONTH("202301", PartialDateTime.of(YearMonth.of(2023, 1))),
+        COMPACT_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
 
         // ------Compact valid format, invalid values
         COMPACT_INVALID_NO_LEAP_YEAR(

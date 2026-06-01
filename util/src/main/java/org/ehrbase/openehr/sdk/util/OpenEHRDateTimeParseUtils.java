@@ -167,7 +167,7 @@ public final class OpenEHRDateTimeParseUtils {
             if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
                 result = LocalDate.from(parsed);
             } else {
-                result = PartialDate.from(parsed);
+                result = PartialDateTime.from(parsed);
             }
 
             return requireTemporal(isoDate, result);

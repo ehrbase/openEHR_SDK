@@ -31,6 +31,8 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 
 /**
@@ -60,6 +62,16 @@ public final class PartialDateTime implements ChronoLocalDateTime<LocalDate> {
         return new PartialDateTime(yearMonth);
     }
 
+    public static PartialDateTime from(TemporalAccessor temporal) {
+        if (temporal.isSupported(ChronoField.MONTH_OF_YEAR)) {
+            return of(YearMonth.from(temporal));
+        } else if (temporal.isSupported(ChronoField.YEAR)) {
+            return of(Year.from(temporal));
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public Chronology getChronology() {
         return localDateTime.getChronology();
@@ -81,7 +93,15 @@ public final class PartialDateTime implements ChronoLocalDateTime<LocalDate> {
 
     @Override
     public boolean isSupported(TemporalField field) {
-        return localDateTime.isSupported(field);
+        return partial.isSupported(field);
+    }
+
+    @Override
+    public <R> R query(TemporalQuery<R> query) {
+        if (TemporalQueries.localDate() == query) {
+            return (R) toLocalDate();
+        }
+        return ChronoLocalDateTime.super.query(query);
     }
 
     @Override
@@ -109,23 +129,9 @@ public final class PartialDateTime implements ChronoLocalDateTime<LocalDate> {
         return localDateTime.getLong(field);
     }
 
-    public static PartialDateTime from(TemporalAccessor temporal) {
-        if (temporal.isSupported(ChronoField.MONTH_OF_YEAR)) {
-            return of(YearMonth.from(temporal));
-        } else if (temporal.isSupported(ChronoField.YEAR)) {
-            return of(Year.from(temporal));
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public String toString() {
         return partial.toString();
-    }
-
-    public TemporalAccessor getPartial() {
-        return partial;
     }
 
     @Override
