@@ -37,9 +37,9 @@ class OpenEHRDateTimeParseUtilsTest {
         NULL_INPUT(null, (TemporalAccessor) null),
 
         // ------Extended valid format and values
-        EXTENDED_PRECISION_DAY("2023-01-01", LocalDate.of(2023, 1, 1)),
-        EXTENDED_PRECISION_MONTH("2023-01", PartialDateTime.of(YearMonth.of(2023, 1))),
-        EXTENDED_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
+        EXTENDED_PRECISION_DAY("2023-01-01", new PartialDateTime(LocalDate.of(2023, 1, 1))),
+        EXTENDED_PRECISION_MONTH("2023-01", new PartialDateTime(YearMonth.of(2023, 1))),
+        EXTENDED_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
 
         // ------Extended valid format, invalid values
         EXTENDED_INVALID_NO_LEAP_YEAR(
@@ -77,9 +77,9 @@ class OpenEHRDateTimeParseUtilsTest {
         EXTENDED_INVALID_TIME_STRING("12:13:14.123456789Z", IllegalArgumentException.class),
 
         // ------Compact valid format and values
-        COMPACT_PRECISION_DAY("20230101", LocalDate.of(2023, 1, 1)),
-        COMPACT_PRECISION_MONTH("202301", PartialDateTime.of(YearMonth.of(2023, 1))),
-        COMPACT_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
+        COMPACT_PRECISION_DAY("20230101", new PartialDateTime(LocalDate.of(2023, 1, 1))),
+        COMPACT_PRECISION_MONTH("202301", new PartialDateTime(YearMonth.of(2023, 1))),
+        COMPACT_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
 
         // ------Compact valid format, invalid values
         COMPACT_INVALID_NO_LEAP_YEAR(
@@ -354,8 +354,8 @@ class OpenEHRDateTimeParseUtilsTest {
         EXTENDED_PRECISION_MINUTE("2023-01-01T12:13", LocalDateTime.of(2023, 1, 1, 12, 13, 0)),
         EXTENDED_PRECISION_HOUR("2023-01-01T12", LocalDateTime.of(2023, 1, 1, 12, 0, 0)),
         EXTENDED_PRECISION_DAY("2023-01-01", LocalDate.of(2023, 1, 1)),
-        EXTENDED_PRECISION_MONTH("2023-01", PartialDateTime.of((YearMonth.of(2023, 1)))),
-        EXTENDED_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
+        EXTENDED_PRECISION_MONTH("2023-01", new PartialDateTime((YearMonth.of(2023, 1)))),
+        EXTENDED_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
 
         // -------Extended valid format, invalid values
         EXTENDED_INVALID_NO_LEAP_YEAR(
@@ -455,8 +455,8 @@ class OpenEHRDateTimeParseUtilsTest {
         COMPACT_PRECISION_MINUTE("20230101T1213", LocalDateTime.of(2023, 1, 1, 12, 13, 0)),
         COMPACT_PRECISION_HOUR("20230101T12", LocalDateTime.of(2023, 1, 1, 12, 0, 0)),
         COMPACT_PRECISION_DAY("20230101", LocalDate.of(2023, 1, 1)),
-        COMPACT_PRECISION_MONTH("202301", PartialDateTime.of(YearMonth.of(2023, 1))),
-        COMPACT_PRECISION_YEAR("2023", PartialDateTime.of(Year.of(2023))),
+        COMPACT_PRECISION_MONTH("202301", new PartialDateTime(YearMonth.of(2023, 1))),
+        COMPACT_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
 
         // ------Compact valid format, invalid field values
         COMPACT_INVALID_NO_LEAP_YEAR(

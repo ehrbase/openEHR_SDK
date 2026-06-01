@@ -121,7 +121,7 @@ class DateDeserializerTest {
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION(
                 new DvDate(
                         List.of(new ReferenceRange<>(new DvText("meaning"), new DvInterval<DvDate>(null, null))),
-                        new DvInterval<>(new DvDate(PartialDateTime.of(Year.of(2023))), null),
+                        new DvInterval<>(new DvDate(new PartialDateTime(Year.of(2023))), null),
                         new CodePhrase(),
                         "magStat",
                         new DvDuration(),

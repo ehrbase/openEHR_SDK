@@ -164,10 +164,10 @@ public final class OpenEHRDateTimeParseUtils {
             }
 
             Temporal result;
-            if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
-                result = LocalDate.from(parsed);
-            } else {
-                result = PartialDateTime.from(parsed);
+            try {
+                result = new PartialDateTime(parsed);
+            } catch (IllegalArgumentException e) {
+                result = null;
             }
 
             return requireTemporal(isoDate, result);
@@ -232,7 +232,11 @@ public final class OpenEHRDateTimeParseUtils {
             } else if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
                 result = LocalDate.from(parsed);
             } else {
-                result = PartialDateTime.from(parsed);
+                try {
+                    result = new PartialDateTime(parsed);
+                } catch (IllegalArgumentException e) {
+                    result = null;
+                }
             }
 
             return requireTemporal(isoDateTime, result);

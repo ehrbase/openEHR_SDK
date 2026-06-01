@@ -27,13 +27,25 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class PartialDateTimeTest {
 
     @Test
+    void checkFieldOrder() {
+        for (int i = 1; i < PartialDateTime.CHRONO_FIELDS.length - 1; i++) {
+            assertThat(PartialDateTime.CHRONO_FIELDS[i].ordinal())
+                    .isLessThan(PartialDateTime.CHRONO_FIELDS[i - 1].ordinal());
+        }
+    }
+
+    @Test
     void ofYear() {
-        var c = PartialDateTime.of(Year.of(2024));
+        var c = new PartialDateTime(Year.of(2024));
 
         assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 1, 1, 0, 0));
         assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 1, 1));
@@ -42,18 +54,22 @@ class PartialDateTimeTest {
 
     @Test
     void ofYearMonth() {
-        var c = PartialDateTime.of(YearMonth.of(2024, 3));
+        var c = new PartialDateTime(YearMonth.of(2024, 3));
 
         assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 3, 1, 0, 0));
         assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 3, 1));
         assertThat(LocalTime.from(c)).isEqualTo(LocalTime.of(0, 0));
     }
 
-    @Test
-    void from() {
-        assertFieldsMatch(PartialDateTime.from(LocalDateTime.of(2024, 3, 7, 1, 2, 3)), YearMonth.of(2024, 3));
-        assertFieldsMatch(PartialDateTime.from(YearMonth.of(2024, 3)), YearMonth.of(2024, 3));
-        assertFieldsMatch(PartialDateTime.from(Year.of(2024)), Year.of(2024));
+    public static Stream<Arguments> fieldsMatch() {
+        return Stream.of(LocalDateTime.of(2024, 3, 7, 1, 2, 3), YearMonth.of(2024, 3), Year.of(2024))
+                .map(Arguments::of);
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void fieldsMatch(TemporalAccessor temporal) {
+        assertFieldsMatch(new PartialDateTime(temporal), temporal);
     }
 
     private void assertFieldsMatch(PartialDateTime from, TemporalAccessor expected) {
@@ -64,6 +80,7 @@ class PartialDateTimeTest {
             ChronoField.HOUR_OF_DAY,
             ChronoField.MINUTE_OF_HOUR,
             ChronoField.SECOND_OF_MINUTE,
+            ChronoField.NANO_OF_SECOND,
             ChronoField.OFFSET_SECONDS
         };
 
@@ -79,33 +96,15 @@ class PartialDateTimeTest {
     @Test
     void to_string() {
         YearMonth yearMonth = YearMonth.of(2024, 3);
-        assertThat(PartialDateTime.of(yearMonth)).hasToString(yearMonth.toString());
+        assertThat(new PartialDateTime(yearMonth)).hasToString(yearMonth.toString());
 
         Year year = Year.of(2024);
-        assertThat(PartialDateTime.of(year)).hasToString(year.toString());
-    }
-
-    @Test
-    void toLocalTime() {
-        PartialDateTime partialDate = PartialDateTime.of(YearMonth.of(2024, 3));
-        assertThat(partialDate.toLocalTime()).isEqualTo(LocalTime.MIDNIGHT);
-    }
-
-    @Test
-    void toLocalDate() {
-        PartialDateTime partialDate = PartialDateTime.of(YearMonth.of(2024, 3));
-        assertThat(partialDate.toLocalDate()).isEqualTo(LocalDate.of(2024, 3, 1));
-    }
-
-    @Test
-    void toLocalDateTime() {
-        PartialDateTime partialDate = PartialDateTime.of(YearMonth.of(2024, 3));
-        assertThat(partialDate.toLocalDateTime()).isEqualTo(LocalDateTime.of(2024, 3, 1, 0, 0));
+        assertThat(new PartialDateTime(year)).hasToString(year.toString());
     }
 
     @Test
     void dvDateTimeMagnitude() {
-        PartialDateTime partialDate = PartialDateTime.of(YearMonth.of(2024, 3));
+        PartialDateTime partialDate = new PartialDateTime(YearMonth.of(2024, 3));
         DvDateTime d = new DvDateTime(partialDate);
         assertThat(d.getMagnitude())
                 .isGreaterThan(DvDateTime.SECONDS_BETWEEN_0001_AND_1970 + 54 * 365 * 24 * 3600)

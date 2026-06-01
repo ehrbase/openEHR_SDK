@@ -18,15 +18,9 @@
 package org.ehrbase.openehr.sdk.util;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.Year;
-import java.time.YearMonth;
-import java.time.ZoneId;
-import java.time.chrono.ChronoLocalDateTime;
-import java.time.chrono.ChronoZonedDateTime;
-import java.time.chrono.Chronology;
+import java.time.ZoneOffset;
+import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -34,113 +28,142 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
+import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * Allows Year and YearMonth to behave like LocalDateTime
  */
-public final class PartialDateTime implements ChronoLocalDateTime<LocalDate> {
+public final class PartialDateTime implements Temporal {
 
-    private final Temporal partial;
-    private final LocalDateTime localDateTime;
+    static final ChronoField[] CHRONO_FIELDS = new ChronoField[] {
+        ChronoField.YEAR,
+        ChronoField.MONTH_OF_YEAR,
+        ChronoField.DAY_OF_MONTH,
+        //
+        ChronoField.HOUR_OF_DAY,
+        ChronoField.MINUTE_OF_HOUR,
+        ChronoField.SECOND_OF_MINUTE,
+        ChronoField.NANO_OF_SECOND,
+        //
+        ChronoField.OFFSET_SECONDS
+    };
 
-    private PartialDateTime(Temporal value) {
-        this.partial = value;
+    private static final int OFFSET_POS = 7;
 
-        int year = value.get(ChronoField.YEAR);
-        int month = value.isSupported(ChronoField.MONTH_OF_YEAR)
-                ? value.get(ChronoField.MONTH_OF_YEAR)
-                : Month.JANUARY.getValue();
-        int day = value.isSupported(ChronoField.DAY_OF_MONTH) ? value.get(ChronoField.DAY_OF_MONTH) : 1;
-        this.localDateTime = LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.MIDNIGHT);
-    }
+    private final Integer[] fields = new Integer[CHRONO_FIELDS.length];
 
-    public static PartialDateTime of(Year year) {
-        return new PartialDateTime(year);
-    }
+    private final ChronoField resolution;
 
-    public static PartialDateTime of(YearMonth yearMonth) {
-        return new PartialDateTime(yearMonth);
-    }
-
-    public static PartialDateTime from(TemporalAccessor temporal) {
-        if (temporal.isSupported(ChronoField.MONTH_OF_YEAR)) {
-            return of(YearMonth.from(temporal));
-        } else if (temporal.isSupported(ChronoField.YEAR)) {
-            return of(Year.from(temporal));
-        } else {
-            return null;
+    public PartialDateTime(TemporalAccessor value) {
+        if (!value.isSupported(ChronoField.YEAR)) {
+            throw new IllegalArgumentException("Date must be year-based: " + value);
         }
-    }
+        ChronoField res = ChronoField.YEAR;
+        fields[0] = value.get(res);
 
-    @Override
-    public Chronology getChronology() {
-        return localDateTime.getChronology();
-    }
+        int i = 1;
+        for (; i < OFFSET_POS; i++) {
+            ChronoField f = CHRONO_FIELDS[i];
+            if (value.isSupported(f)) {
+                res = f;
+                fields[i] = value.get(f);
+            } else {
+                break;
+            }
+        }
+        resolution = res;
 
-    @Override
-    public LocalDate toLocalDate() {
-        return localDateTime.toLocalDate();
-    }
-
-    public LocalDateTime toLocalDateTime() {
-        return localDateTime;
-    }
-
-    @Override
-    public LocalTime toLocalTime() {
-        return LocalTime.MIDNIGHT;
+        if (value.isSupported(ChronoField.OFFSET_SECONDS)) {
+            if (fields[3] == null) {
+                throw new IllegalArgumentException("offset is not supported");
+            }
+            fields[OFFSET_POS] = value.get(ChronoField.OFFSET_SECONDS);
+        }
     }
 
     @Override
     public boolean isSupported(TemporalField field) {
-        return partial.isSupported(field);
+        int i = ArrayUtils.indexOf(CHRONO_FIELDS, field);
+        if (i < 0) {
+            return false;
+        }
+        return fields[i] != null;
     }
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
+        Object result;
         if (TemporalQueries.localDate() == query) {
-            return (R) toLocalDate();
+            result = LocalDate.of(
+                    fields[0], ObjectUtils.firstNonNull(fields[1], 1), ObjectUtils.firstNonNull(fields[2], 1));
+        } else if (TemporalQueries.localTime() == query) {
+            result = LocalTime.of(
+                    ObjectUtils.firstNonNull(fields[3], 0),
+                    ObjectUtils.firstNonNull(fields[4], 0),
+                    ObjectUtils.firstNonNull(fields[5], 0),
+                    ObjectUtils.firstNonNull(fields[6], 0));
+        } else if (TemporalQueries.zone() == query) {
+            result = fields[7] == null ? null : ZoneOffset.ofTotalSeconds(fields[7]);
+        } else if (TemporalQueries.chronology() == query) {
+            result = IsoChronology.INSTANCE;
+        } else if (TemporalQueries.offset() == query) {
+            result = fields[7] == null ? null : ZoneOffset.ofTotalSeconds(fields[7]);
+        } else if (TemporalQueries.precision() == query) {
+            result = resolution.getBaseUnit();
+        } else {
+            result = null;
         }
-        return ChronoLocalDateTime.super.query(query);
+        return (R) result;
     }
 
     @Override
-    public ChronoLocalDateTime<LocalDate> with(TemporalField field, long newValue) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ChronoLocalDateTime<LocalDate> plus(long amountToAdd, TemporalUnit unit) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ChronoZonedDateTime<LocalDate> atZone(ZoneId zone) {
-        return localDateTime.atZone(zone);
-    }
-
-    @Override
-    public long until(Temporal endExclusive, TemporalUnit unit) {
-        return localDateTime.until(endExclusive, unit);
+    public int get(TemporalField field) {
+        int i = ArrayUtils.indexOf(CHRONO_FIELDS, field);
+        if (i < 0) {
+            throw new IllegalArgumentException(field + " is not supported");
+        }
+        return fields[i];
     }
 
     @Override
     public long getLong(TemporalField field) {
-        return localDateTime.getLong(field);
+        return get(field);
     }
 
     @Override
     public String toString() {
-        return partial.toString();
+        return OpenEHRDateTimeSerializationUtils.formatDateTime(this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof PartialDateTime pd && partial.equals(pd.partial);
+        return obj instanceof PartialDateTime pd && Arrays.equals(fields, pd.fields);
     }
 
     @Override
     public int hashCode() {
-        return partial.hashCode();
+        return Arrays.hashCode(fields);
+    }
+
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        return false;
+    }
+
+    @Override
+    public Temporal with(TemporalField field, long newValue) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Temporal plus(long amountToAdd, TemporalUnit unit) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        throw new UnsupportedOperationException();
     }
 }

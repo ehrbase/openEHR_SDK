@@ -198,7 +198,7 @@ public final class OpenEHRDateTimeSerializationUtils {
         } else if (value instanceof LocalDate ld) {
             return ld;
         } else if (value instanceof PartialDateTime pdt) {
-            return pdt.toLocalDate();
+            return pdt.query(TemporalQueries.localDate());
         }
 
         // more exotic cases
@@ -223,7 +223,7 @@ public final class OpenEHRDateTimeSerializationUtils {
         } else if (value instanceof LocalDateTime ldt) {
             return Pair.of(ldt.toLocalTime(), ZoneOffset.UTC);
         } else if (value instanceof PartialDateTime pd) {
-            return Pair.of(pd.toLocalTime(), ZoneOffset.UTC);
+            return Pair.of(pd.query(TemporalQueries.localTime()), (ZoneOffset) pd.query(TemporalQueries.zone()));
         }
 
         // More exotic cases

@@ -48,8 +48,8 @@ class OpenEHRDateTimeSerializationUtilsTest {
         PRECISION_YEAR(Year.of(2023), "2023"),
 
         // ------partial precisions, as created by the parser
-        PRECISION_PARTIAL_MONTH(PartialDateTime.of(YearMonth.of(2023, 1)), "2023-01"),
-        PRECISION_PARTIAL_YEAR(PartialDateTime.of(Year.of(2023)), "2023"),
+        PRECISION_PARTIAL_MONTH(new PartialDateTime(YearMonth.of(2023, 1)), "2023-01"),
+        PRECISION_PARTIAL_YEAR(new PartialDateTime(Year.of(2023)), "2023"),
 
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
@@ -186,8 +186,8 @@ class OpenEHRDateTimeSerializationUtilsTest {
         PRECISION_DAY(LocalDate.of(2023, 1, 1), "2023-01-01"),
         PRECISION_MONTH(YearMonth.of(2023, 1), "2023-01"),
         PRECISION_YEAR(Year.of(2023), "2023"),
-        PRECISION_PARTIAL_MONTH(PartialDateTime.of(YearMonth.of(2023, 1)), "2023-01"),
-        PRECISION_PARTIAL_YEAR(PartialDateTime.of(Year.of(2023)), "2023"),
+        PRECISION_PARTIAL_MONTH(new PartialDateTime(YearMonth.of(2023, 1)), "2023-01"),
+        PRECISION_PARTIAL_YEAR(new PartialDateTime(Year.of(2023)), "2023"),
 
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
@@ -245,10 +245,10 @@ class OpenEHRDateTimeSerializationUtilsTest {
         PRECISION_YEAR(
                 new DvDate(Year.of(2023)), LocalDate.of(2023, 1, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
         PRECISION_PARTIAL_MONTH(
-                new DvDate(PartialDateTime.of(YearMonth.of(2023, 3))),
+                new DvDate(new PartialDateTime(YearMonth.of(2023, 3))),
                 LocalDate.of(2023, 3, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
         PRECISION_PARTIAL_YEAR(
-                new DvDate(PartialDateTime.of(Year.of(2023))),
+                new DvDate(new PartialDateTime(Year.of(2023))),
                 LocalDate.of(2023, 1, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
         MISSING_YEAR(new DvDate(Instant.ofEpochSecond(0)), DateTimeException.class);
 
@@ -336,11 +336,11 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 LocalDate.of(2023, 3, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
                         + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
         PRECISION_YEAR(
-                new DvDateTime(PartialDateTime.of(Year.of(2023))),
+                new DvDateTime(new PartialDateTime(Year.of(2023))),
                 LocalDate.of(2023, 1, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
                         + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
         PRECISION_PARTIAL_MONTH(
-                new DvDateTime(PartialDateTime.of(YearMonth.of(2023, 3))),
+                new DvDateTime(new PartialDateTime(YearMonth.of(2023, 3))),
                 LocalDate.of(2023, 3, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
                         + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
         PRECISION_PARTIAL_YEAR(

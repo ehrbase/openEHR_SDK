@@ -17,12 +17,31 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.jsonencoding;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.nedap.archie.json.JacksonUtil;
+import java.io.IOException;
+import org.ehrbase.openehr.sdk.util.PartialDateTime;
 
 public final class ArchieObjectMapperProvider {
 
-    private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER =
+            JacksonUtil.getObjectMapper().copy();
+
+    static {
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(PartialDateTime.class, new JsonSerializer<PartialDateTime>() {
+            @Override
+            public void serialize(PartialDateTime value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException {
+                gen.writeString(value.toString());
+            }
+        });
+        OBJECT_MAPPER.registerModule(module);
+    }
 
     private ArchieObjectMapperProvider() {
         // NOOP
