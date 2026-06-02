@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 import org.ehrbase.openehr.sdk.webtemplate.path.flat.FlatPathDto;
 
 public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime> {
@@ -47,7 +48,7 @@ public class DvDateTimeRMUnmarshaller extends AbstractRMUnmarshaller<DvDateTime>
                 currentValues,
                 s -> {
                     if ("now".equals(s)) {
-                        rmObject.setValue(OffsetDateTime.now());
+                        rmObject.setValue(new OpenEhrTemporal(OffsetDateTime.now()));
                     } else if (s != null) {
                         TemporalAccessor temp = OpenEHRDateTimeParseUtils.parseDateTime(s);
                         rmObject.setValue(temp);

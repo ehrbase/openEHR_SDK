@@ -24,11 +24,13 @@ import com.nedap.archie.rm.datastructures.History;
 import com.nedap.archie.rm.datastructures.ItemStructure;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.time.temporal.TemporalAccessor;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.webtemplate.path.flat.FlatPathDto;
 
 public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History> {
@@ -48,7 +50,7 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
                 values,
                 s -> {
                     if (s != null) {
-                        rmObject.setOrigin(new DvDateTime(s));
+                        rmObject.setOrigin(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime(s)));
                     }
                 },
                 String.class,
@@ -59,10 +61,9 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
                     .getEvents().stream()
                             .map(Event::getTime)
                             .filter(Objects::nonNull)
-                            .map(DvDateTime::getValue)
-                            .filter(Objects::nonNull)
-                            .sorted()
-                            .findFirst();
+                            .sorted(Comparator.comparingDouble(DvDateTime::getMagnitude))
+                            .findFirst()
+                    .map(DvDateTime::getValue);
             first.ifPresent(temporalAccessor ->
                     ((History<ItemStructure>) rmObject).setOrigin(new DvDateTime(temporalAccessor)));
         }

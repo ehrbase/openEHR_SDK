@@ -17,8 +17,10 @@
  */
 package org.ehrbase.openehr.sdk.util;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
@@ -35,7 +37,7 @@ import org.apache.commons.lang3.ObjectUtils;
 /**
  * Allows Year and YearMonth to behave like LocalDateTime
  */
-public final class PartialDateTime implements Temporal {
+public final class OpenEhrTemporal implements Temporal {
 
     static final ChronoField[] CHRONO_FIELDS = new ChronoField[] {
         ChronoField.YEAR,
@@ -56,7 +58,11 @@ public final class PartialDateTime implements Temporal {
 
     private final ChronoField resolution;
 
-    public PartialDateTime(TemporalAccessor value) {
+    public OpenEhrTemporal(TemporalAccessor value) {
+        this(value, ChronoField.NANO_OF_SECOND);
+    }
+
+    OpenEhrTemporal(TemporalAccessor value, ChronoField maxResolution) {
         boolean dateBased = value.isSupported(ChronoField.YEAR);
 
         if (!dateBased
@@ -73,7 +79,7 @@ public final class PartialDateTime implements Temporal {
 
         for (; i < OFFSET_POS; i++) {
             ChronoField f = CHRONO_FIELDS[i];
-            if (value.isSupported(f)) {
+            if (f.ordinal() >= maxResolution.ordinal() && value.isSupported(f)) {
                 res = f;
                 fields[i] = value.get(f);
             } else {
@@ -82,11 +88,40 @@ public final class PartialDateTime implements Temporal {
         }
         resolution = res;
 
+        if (fields[0] != null && fields[2] != null) {
+            checkValidDate();
+        }
+
         if (value.isSupported(ChronoField.OFFSET_SECONDS)) {
             if (fields[3] == null) {
                 throw new IllegalArgumentException("offset is not supported");
             }
             fields[OFFSET_POS] = value.get(ChronoField.OFFSET_SECONDS);
+        }
+    }
+
+    /**
+     * @see LocalDate#create(int, int, int)
+     */
+    private void checkValidDate() {
+        int year = fields[0];
+        int month = fields[1];
+        int dayOfMonth = fields[2];
+        if (dayOfMonth > 28) {
+            int dom =
+                    switch (month) {
+                        case 2 -> (IsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
+                        case 4, 6, 9, 11 -> 30;
+                        default -> 31;
+                    };
+            if (dayOfMonth > dom) {
+                if (dayOfMonth == 29) {
+                    throw new DateTimeException("Invalid date 'February 29' as '" + year + "' is not a leap year");
+                } else {
+                    throw new DateTimeException(
+                            "Invalid date '" + Month.of(month).name() + " " + dayOfMonth + "'");
+                }
+            }
         }
     }
 
@@ -146,12 +181,14 @@ public final class PartialDateTime implements Temporal {
 
     @Override
     public String toString() {
-        return OpenEHRDateTimeSerializationUtils.formatDateTime(this);
+        return fields[0] == null
+                ? OpenEHRDateTimeSerializationUtils.formatTime(this)
+                : OpenEHRDateTimeSerializationUtils.formatDateTime(this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof PartialDateTime pd && Arrays.equals(fields, pd.fields);
+        return obj instanceof OpenEhrTemporal pd && Arrays.equals(fields, pd.fields);
     }
 
     @Override

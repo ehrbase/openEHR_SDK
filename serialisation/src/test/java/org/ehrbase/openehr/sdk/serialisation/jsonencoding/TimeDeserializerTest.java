@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -140,22 +141,22 @@ class TimeDeserializerTest {
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION_WITH_OFFSET(
                 new DvTime(
                         List.of(new ReferenceRange<>(new DvText("meaning"), new DvInterval<DvTime>(null, null))),
-                        new DvInterval<>(new DvTime(LocalTime.of(20, 0)), null),
+                        new DvInterval<>(new DvTime(new OpenEhrTemporal(LocalTime.of(20, 0,0))), null),
                         new CodePhrase(),
                         "magStat",
                         new DvDuration(),
                         OpenEHRDateTimeParseUtils.parseTime("20:15:10.123456789+00:00")),
-                "{\"_type\":\"DV_TIME\",\"value\":\"20:15:10.123456789+00:00\",\"normal_status\":{\"_type\":\"CODE_PHRASE\"},\"normal_range\":{\"_type\":\"DV_INTERVAL\",\"lower\":{\"_type\":\"DV_TIME\",\"value\":\"20:00\"},\"upper_unbounded\":true,\"lower_unbounded\":false,\"lower_included\":true,\"upper_included\":false},\"other_reference_ranges\":[{\"range\":{\"_type\":\"DV_INTERVAL\",\"upper_unbounded\":true,\"lower_unbounded\":true,\"lower_included\":false,\"upper_included\":false},\"meaning\":{\"_type\":\"DV_TEXT\",\"value\":\"meaning\"}}],\"magnitude_status\":\"magStat\",\"accuracy\":{\"_type\":\"DV_DURATION\"}}",
+                "{\"_type\":\"DV_TIME\",\"value\":\"20:15:10.123456789+00:00\",\"normal_status\":{\"_type\":\"CODE_PHRASE\"},\"normal_range\":{\"_type\":\"DV_INTERVAL\",\"lower\":{\"_type\":\"DV_TIME\",\"value\":\"20:00:00.0\"},\"upper_unbounded\":true,\"lower_unbounded\":false,\"lower_included\":true,\"upper_included\":false},\"other_reference_ranges\":[{\"range\":{\"_type\":\"DV_INTERVAL\",\"upper_unbounded\":true,\"lower_unbounded\":true,\"lower_included\":false,\"upper_included\":false},\"meaning\":{\"_type\":\"DV_TEXT\",\"value\":\"meaning\"}}],\"magnitude_status\":\"magStat\",\"accuracy\":{\"_type\":\"DV_DURATION\"}}",
                 2),
         INVALID(
                 "{\"_type\":\"DV_TIME\",\"value\":\"24:00\"}",
                 JsonMappingException.class,
-                "Text '24:00' could not be parsed: Invalid value for HourOfDay (valid values 0 - 23): 24:24:00 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvTime[\"value\"])",
+                "Invalid value for HourOfDay (valid values 0 - 23): 24:24:00 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvTime[\"value\"])",
                 1),
         INVALID_COMPACT(
                 "{\"_type\":\"DV_TIME\",\"value\":\"2400\"}",
                 JsonMappingException.class,
-                "Text '2400' could not be parsed: Invalid value for HourOfDay (valid values 0 - 23): 24:2400 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvTime[\"value\"])",
+                "Invalid value for HourOfDay (valid values 0 - 23): 24:2400 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvTime[\"value\"])",
                 1);
 
         private final DvTime pojo;

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.nedap.archie.json.JacksonUtil;
 import java.io.IOException;
-import org.ehrbase.openehr.sdk.util.PartialDateTime;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 
 public final class ArchieObjectMapperProvider {
 
@@ -33,9 +33,9 @@ public final class ArchieObjectMapperProvider {
 
     static {
         SimpleModule module = new SimpleModule();
-        module.addSerializer(PartialDateTime.class, new JsonSerializer<PartialDateTime>() {
+        module.addSerializer(OpenEhrTemporal.class, new JsonSerializer<OpenEhrTemporal>() {
             @Override
-            public void serialize(PartialDateTime value, JsonGenerator gen, SerializerProvider serializers)
+            public void serialize(OpenEhrTemporal value, JsonGenerator gen, SerializerProvider serializers)
                     throws IOException {
                 gen.writeString(value.toString());
             }

@@ -63,7 +63,7 @@ public final class OpenEHRDateTimeSerializationUtils {
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
@@ -92,7 +92,7 @@ public final class OpenEHRDateTimeSerializationUtils {
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
@@ -197,7 +197,7 @@ public final class OpenEHRDateTimeSerializationUtils {
             return ldt.toLocalDate();
         } else if (value instanceof LocalDate ld) {
             return ld;
-        } else if (value instanceof PartialDateTime pdt) {
+        } else if (value instanceof OpenEhrTemporal pdt) {
             return pdt.query(TemporalQueries.localDate());
         }
 
@@ -222,7 +222,7 @@ public final class OpenEHRDateTimeSerializationUtils {
             return Pair.of(odt.toLocalTime(), odt.getOffset());
         } else if (value instanceof LocalDateTime ldt) {
             return Pair.of(ldt.toLocalTime(), ZoneOffset.UTC);
-        } else if (value instanceof PartialDateTime pd) {
+        } else if (value instanceof OpenEhrTemporal pd) {
             return Pair.of(pd.query(TemporalQueries.localTime()), (ZoneOffset) pd.query(TemporalQueries.zone()));
         }
 

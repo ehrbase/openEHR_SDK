@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.time.Year;
 import java.util.List;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
-import org.ehrbase.openehr.sdk.util.PartialDateTime;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -121,7 +121,7 @@ class DateDeserializerTest {
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION(
                 new DvDate(
                         List.of(new ReferenceRange<>(new DvText("meaning"), new DvInterval<DvDate>(null, null))),
-                        new DvInterval<>(new DvDate(new PartialDateTime(Year.of(2023))), null),
+                        new DvInterval<>(new DvDate(new OpenEhrTemporal(Year.of(2023))), null),
                         new CodePhrase(),
                         "magStat",
                         new DvDuration(),
@@ -131,12 +131,12 @@ class DateDeserializerTest {
         INVALID(
                 "{\"_type\":\"DV_DATE\",\"value\":\"2023-01-00\"}",
                 JsonMappingException.class,
-                "Text '2023-01-00' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDate[\"value\"])",
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDate[\"value\"])",
                 1),
         INVALID_COMPACT(
                 "{\"_type\":\"DV_DATE\",\"value\":\"20230100\"}",
                 JsonMappingException.class,
-                "Text '20230100' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDate[\"value\"])",
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDate[\"value\"])",
                 1);
 
         private final DvDate pojo;

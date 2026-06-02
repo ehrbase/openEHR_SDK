@@ -20,14 +20,12 @@ package org.ehrbase.openehr.sdk.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.Year;
-import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -37,31 +35,31 @@ class OpenEHRDateTimeParseUtilsTest {
         NULL_INPUT(null, (TemporalAccessor) null),
 
         // ------Extended valid format and values
-        EXTENDED_PRECISION_DAY("2023-01-01", new PartialDateTime(LocalDate.of(2023, 1, 1))),
-        EXTENDED_PRECISION_MONTH("2023-01", new PartialDateTime(YearMonth.of(2023, 1))),
-        EXTENDED_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
+        EXTENDED_PRECISION_DAY("2023-01-01", ChronoField.DAY_OF_MONTH),
+        EXTENDED_PRECISION_MONTH("2023-01", ChronoField.MONTH_OF_YEAR),
+        EXTENDED_PRECISION_YEAR("2023", ChronoField.YEAR),
 
         // ------Extended valid format, invalid values
         EXTENDED_INVALID_NO_LEAP_YEAR(
                 "2023-02-29",
                 IllegalArgumentException.class,
-                "Text '2023-02-29' could not be parsed: Invalid date 'February 29' as '2023' is not a leap year:2023-02-29"),
+                "Invalid date 'February 29' as '2023' is not a leap year:2023-02-29"),
         EXTENDED_INVALID_DAY_LOWER(
                 "2023-01-00",
                 IllegalArgumentException.class,
-                "Text '2023-01-00' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00"),
         EXTENDED_INVALID_DAY_UPPER(
                 "2023-01-32",
                 IllegalArgumentException.class,
-                "Text '2023-01-32' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 32:2023-01-32"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 32:2023-01-32"),
         EXTENDED_INVALID_MONTH_LOWER(
                 "2023-00-01",
                 IllegalArgumentException.class,
-                "Text '2023-00-01' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 0:2023-00-01"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 0:2023-00-01"),
         EXTENDED_INVALID_MONTH_UPPER(
                 "2023-13-01",
                 IllegalArgumentException.class,
-                "Text '2023-13-01' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 13:2023-13-01"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 13:2023-13-01"),
 
         // Extended invalid field width
         // There are no invalid values for 4-digit years, so no test case for that
@@ -77,32 +75,32 @@ class OpenEHRDateTimeParseUtilsTest {
         EXTENDED_INVALID_TIME_STRING("12:13:14.123456789Z", IllegalArgumentException.class),
 
         // ------Compact valid format and values
-        COMPACT_PRECISION_DAY("20230101", new PartialDateTime(LocalDate.of(2023, 1, 1))),
-        COMPACT_PRECISION_MONTH("202301", new PartialDateTime(YearMonth.of(2023, 1))),
-        COMPACT_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
+        COMPACT_PRECISION_DAY("20230101", ChronoField.DAY_OF_MONTH),
+        COMPACT_PRECISION_MONTH("202301", ChronoField.MONTH_OF_YEAR),
+        COMPACT_PRECISION_YEAR("2023", ChronoField.YEAR),
 
         // ------Compact valid format, invalid values
         COMPACT_INVALID_NO_LEAP_YEAR(
                 "20230229",
                 IllegalArgumentException.class,
-                "Text '20230229' could not be parsed: Invalid date 'February 29' as '2023' is not a leap year:20230229"),
+                "Invalid date 'February 29' as '2023' is not a leap year:20230229"),
         // There are no invalid values for 4digit years, so no test case for that
         COMPACT_INVALID_MONTH_LOWER(
                 "20230001",
                 IllegalArgumentException.class,
-                "Text '20230001' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 0:20230001"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 0:20230001"),
         COMPACT_INVALID_MONTH_UPPER(
                 "20231301",
                 IllegalArgumentException.class,
-                "Text '20231301' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 13:20231301"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 13:20231301"),
         COMPACT_INVALID_DAY_LOWER(
                 "20230100",
                 IllegalArgumentException.class,
-                "Text '20230100' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100"),
         COMPACT_INVALID_DAY_UPPER(
                 "20230132",
                 IllegalArgumentException.class,
-                "Text '20230132' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 32:20230132"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 32:20230132"),
 
         // ------Compact invalid field width
         // checking width of individual fields is not possible in compact time format as there are no separators, so we
@@ -123,6 +121,17 @@ class OpenEHRDateTimeParseUtilsTest {
         private final TemporalAccessor expected;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
+
+        DateTestData(String input, ChronoField precision1) {
+            this(input, precision1, null);
+        }
+
+        DateTestData(String input, ChronoField precision1, ZoneOffset offset) {
+            this.input = input;
+            this.expected = buildExpectedTemporal(precision1, offset, true);
+            this.expectedExceptionType = null;
+            this.expectedExceptionMessage = null;
+        }
 
         DateTestData(String input, TemporalAccessor expected) {
             this.input = input;
@@ -158,49 +167,49 @@ class OpenEHRDateTimeParseUtilsTest {
     }
 
     enum TimeTestData {
-        NULL_INPUT(null, (TemporalAccessor) null),
+        NULL_INPUT(null, (ChronoField) null),
 
         // ------Extended valid format and values
         EXTENDED_PRECISION_NANOSECOND_ZULU_OFFSET(
-                "12:13:14.123456789Z", OffsetTime.of(12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(0, 0))),
+                "12:13:14.123456789Z", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(0, 0)),
         EXTENDED_PRECISION_NANOSECOND_WITH_OFFSET(
-                "12:13:14.123456789+01:30", OffsetTime.of(12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(1, 30))),
+                "12:13:14.123456789+01:30", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         EXTENDED_PRECISION_MILLISECOND_WITH_OFFSET(
-                "12:13:14.123+01:30", OffsetTime.of(12, 13, 14, 123000000, ZoneOffset.ofHoursMinutes(1, 30))),
+                "12:13:14.123+01:30", ChronoField.MILLI_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         EXTENDED_PRECISION_SECOND_WITH_OFFSET(
-                "12:13:14+01:30", OffsetTime.of(12, 13, 14, 0, ZoneOffset.ofHoursMinutes(1, 30))),
+                "12:13:14+01:30", ChronoField.SECOND_OF_MINUTE, ZoneOffset.ofHoursMinutes(1, 30)),
         EXTENDED_PRECISION_MINUTE_WITH_OFFSET(
-                "12:13+01:30", OffsetTime.of(12, 13, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
-        EXTENDED_PRECISION_HOUR_WITH_OFFSET("12+01:30", OffsetTime.of(12, 0, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
-        EXTENDED_PRECISION_NANOSECOND_POINT("12:13:14.123456789", LocalTime.of(12, 13, 14, 123456789)),
-        EXTENDED_PRECISION_NANOSECOND_COMMA("12:13:14,123456789", LocalTime.of(12, 13, 14, 123456789)),
-        EXTENDED_PRECISION_MILLISECOND_POINT("12:13:14.123", LocalTime.of(12, 13, 14, 123000000)),
-        EXTENDED_PRECISION_MILLISECOND_COMMA("12:13:14,123", LocalTime.of(12, 13, 14, 123000000)),
-        EXTENDED_PRECISION_SECOND("12:13:14", LocalTime.of(12, 13, 14)),
-        EXTENDED_PRECISION_MINUTE("12:13", LocalTime.of(12, 13, 0)),
-        EXTENDED_PRECISION_HOUR("12", LocalTime.of(12, 0, 0)),
+                "12:13+01:30", ChronoField.MINUTE_OF_HOUR, ZoneOffset.ofHoursMinutes(1, 30)),
+        EXTENDED_PRECISION_HOUR_WITH_OFFSET("12+01:30", ChronoField.HOUR_OF_DAY, ZoneOffset.ofHoursMinutes(1, 30)),
+        EXTENDED_PRECISION_NANOSECOND_POINT("12:13:14.123456789", ChronoField.NANO_OF_SECOND),
+        EXTENDED_PRECISION_NANOSECOND_COMMA("12:13:14,123456789", ChronoField.NANO_OF_SECOND),
+        EXTENDED_PRECISION_MILLISECOND_POINT("12:13:14.123", ChronoField.MILLI_OF_SECOND),
+        EXTENDED_PRECISION_MILLISECOND_COMMA("12:13:14,123", ChronoField.MILLI_OF_SECOND),
+        EXTENDED_PRECISION_SECOND("12:13:14", ChronoField.SECOND_OF_MINUTE),
+        EXTENDED_PRECISION_MINUTE("12:13", ChronoField.MINUTE_OF_HOUR),
+        EXTENDED_PRECISION_HOUR("12", ChronoField.HOUR_OF_DAY),
 
         // ------Extended valid format, invalid values
         EXTENDED_INVALID_OFFSET_LOWER(
                 "12:13:14.123456789+18:01",
                 IllegalArgumentException.class,
-                "Zone offset not in valid range: -18:00 to +18:00:12:13:14.123456789+18:01"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): 64860:12:13:14.123456789+18:01"),
         EXTENDED_INVALID_OFFSET_UPPER(
                 "12:13:14.123456789-18:01",
                 IllegalArgumentException.class,
-                "Zone offset not in valid range: -18:00 to +18:00:12:13:14.123456789-18:01"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): -64860:12:13:14.123456789-18:01"),
         EXTENDED_INVALID_SECONDS_UPPER(
                 "12:13:60.000000000+01:30",
                 IllegalArgumentException.class,
-                "Text '12:13:60.000000000+01:30' could not be parsed: Invalid value for SecondOfMinute (valid values 0 - 59): 60:12:13:60.000000000+01:30"),
+                "Invalid value for SecondOfMinute (valid values 0 - 59): 60:12:13:60.000000000+01:30"),
         EXTENDED_INVALID_MINUTES_UPPER(
                 "12:60:00.000000000+01:30",
                 IllegalArgumentException.class,
-                "Text '12:60:00.000000000+01:30' could not be parsed: Invalid value for MinuteOfHour (valid values 0 - 59): 60:12:60:00.000000000+01:30"),
+                "Invalid value for MinuteOfHour (valid values 0 - 59): 60:12:60:00.000000000+01:30"),
         EXTENDED_INVALID_HOURS_UPPER(
                 "24:00:00.000000000+01:30",
                 IllegalArgumentException.class,
-                "Text '24:00:00.000000000+01:30' could not be parsed: Invalid value for HourOfDay (valid values 0 - 23): 24:24:00:00.000000000+01:30"),
+                "Invalid value for HourOfDay (valid values 0 - 23): 24:24:00:00.000000000+01:30"),
         EXTENDED_INVALID_FRACTIONAL_MINUTES("12:13.000000000+01:30", IllegalArgumentException.class),
         EXTENDED_INVALID_FRACTIONAL_HOURS("12.000000000+01:30", IllegalArgumentException.class),
 
@@ -223,45 +232,44 @@ class OpenEHRDateTimeParseUtilsTest {
 
         // ------Compact valid format and values
         COMPACT_PRECISION_NANOSECOND_ZULU_OFFSET(
-                "121314.123456789Z", OffsetTime.of(12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(0, 0))),
+                "121314.123456789Z", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(0, 0)),
         COMPACT_PRECISION_NANOSECOND_WITH_OFFSET(
-                "121314.123456789+0130", OffsetTime.of(12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(1, 30))),
+                "121314.123456789+0130", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         COMPACT_PRECISION_MILLISECOND_WITH_OFFSET(
-                "121314.123+0130", OffsetTime.of(12, 13, 14, 123000000, ZoneOffset.ofHoursMinutes(1, 30))),
+                "121314.123+0130", ChronoField.MILLI_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         COMPACT_PRECISION_SECOND_WITH_OFFSET(
-                "121314+0130", OffsetTime.of(12, 13, 14, 0, ZoneOffset.ofHoursMinutes(1, 30))),
-        COMPACT_PRECISION_MINUTE_WITH_OFFSET(
-                "1213+0130", OffsetTime.of(12, 13, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
-        COMPACT_PRECISION_HOUR_WITH_OFFSET("12+0130", OffsetTime.of(12, 0, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
-        COMPACT_PRECISION_NANOSECOND_POINT("121314.123456789", LocalTime.of(12, 13, 14, 123456789)),
-        COMPACT_PRECISION_NANOSECOND_COMMA("121314,123456789", LocalTime.of(12, 13, 14, 123456789)),
-        COMPACT_PRECISION_MILLISECOND_POINT("121314.123", LocalTime.of(12, 13, 14, 123000000)),
-        COMPACT_PRECISION_MILLISECOND_COMMA("121314,123", LocalTime.of(12, 13, 14, 123000000)),
-        COMPACT_PRECISION_SECOND("121314", LocalTime.of(12, 13, 14)),
-        COMPACT_PRECISION_MINUTE("1213", LocalTime.of(12, 13, 0)),
-        COMPACT_PRECISION_HOUR("12", LocalTime.of(12, 0, 0)),
+                "121314+0130", ChronoField.SECOND_OF_MINUTE, ZoneOffset.ofHoursMinutes(1, 30)),
+        COMPACT_PRECISION_MINUTE_WITH_OFFSET("1213+0130", ChronoField.MINUTE_OF_HOUR, ZoneOffset.ofHoursMinutes(1, 30)),
+        COMPACT_PRECISION_HOUR_WITH_OFFSET("12+0130", ChronoField.HOUR_OF_DAY, ZoneOffset.ofHoursMinutes(1, 30)),
+        COMPACT_PRECISION_NANOSECOND_POINT("121314.123456789", ChronoField.NANO_OF_SECOND),
+        COMPACT_PRECISION_NANOSECOND_COMMA("121314,123456789", ChronoField.NANO_OF_SECOND),
+        COMPACT_PRECISION_MILLISECOND_POINT("121314.123", ChronoField.MILLI_OF_SECOND),
+        COMPACT_PRECISION_MILLISECOND_COMMA("121314,123", ChronoField.MILLI_OF_SECOND),
+        COMPACT_PRECISION_SECOND("121314", ChronoField.SECOND_OF_MINUTE),
+        COMPACT_PRECISION_MINUTE("1213", ChronoField.MINUTE_OF_HOUR),
+        COMPACT_PRECISION_HOUR("12", ChronoField.HOUR_OF_DAY),
 
         // ------Compact valid format, invalid values
         COMPACT_INVALID_OFFSET_LOWER(
                 "121314.123456789+1801",
                 IllegalArgumentException.class,
-                "Zone offset not in valid range: -18:00 to +18:00:121314.123456789+1801"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): 64860:121314.123456789+1801"),
         COMPACT_INVALID_OFFSET_UPPER(
                 "121314.123456789-1801",
                 IllegalArgumentException.class,
-                "Zone offset not in valid range: -18:00 to +18:00:121314.123456789-1801"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): -64860:121314.123456789-1801"),
         COMPACT_INVALID_SECONDS_UPPER(
                 "121360.000000000+0130",
                 IllegalArgumentException.class,
-                "Text '121360.000000000+0130' could not be parsed: Invalid value for SecondOfMinute (valid values 0 - 59): 60:121360.000000000+0130"),
+                "Invalid value for SecondOfMinute (valid values 0 - 59): 60:121360.000000000+0130"),
         COMPACT_INVALID_MINUTES_UPPER(
                 "126000.000000000+0130",
                 IllegalArgumentException.class,
-                "Text '126000.000000000+0130' could not be parsed: Invalid value for MinuteOfHour (valid values 0 - 59): 60:126000.000000000+0130"),
+                "Invalid value for MinuteOfHour (valid values 0 - 59): 60:126000.000000000+0130"),
         COMPACT_INVALID_HOURS_UPPER(
                 "240000.000000000+0130",
                 IllegalArgumentException.class,
-                "Text '240000.000000000+0130' could not be parsed: Invalid value for HourOfDay (valid values 0 - 23): 24:240000.000000000+0130"),
+                "Invalid value for HourOfDay (valid values 0 - 23): 24:240000.000000000+0130"),
         COMPACT_INVALID_FRACTIONAL_MINUTES("1213.000000000+0130", IllegalArgumentException.class),
         COMPACT_INVALID_FRACTIONAL_HOURS("12.000000000+0130", IllegalArgumentException.class),
 
@@ -288,9 +296,13 @@ class OpenEHRDateTimeParseUtilsTest {
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
-        TimeTestData(String input, TemporalAccessor expected) {
+        TimeTestData(String input, ChronoField precision1) {
+            this(input, precision1, null);
+        }
+
+        TimeTestData(String input, ChronoField precision1, ZoneOffset offset) {
             this.input = input;
-            this.expected = expected;
+            this.expected = buildExpectedTemporal(precision1, offset, false);
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -322,84 +334,75 @@ class OpenEHRDateTimeParseUtilsTest {
     }
 
     enum DateTimeTestData {
-        NULL_INPUT(null, (TemporalAccessor) null),
+        NULL_INPUT(null, (ChronoField) null),
 
         // Extended valid format and values
         EXTENDED_PRECISION_NANOSECOND_ZULU_OFFSET(
-                "2023-01-01T12:13:14.123456789Z",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(0, 0))),
+                "2023-01-01T12:13:14.123456789Z", ChronoField.NANO_OF_SECOND, ZoneOffset.UTC),
         EXTENDED_PRECISION_NANOSECOND_WITH_OFFSET(
-                "2023-01-01T12:13:14.123456789+01:30",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(1, 30))),
+                "2023-01-01T12:13:14.123456789+01:30", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         EXTENDED_PRECISION_MILLISECOND_WITH_OFFSET(
-                "2023-01-01T12:13:14.123+01:30",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123000000, ZoneOffset.ofHoursMinutes(1, 30))),
+                "2023-01-01T12:13:14.123+01:30", ChronoField.MILLI_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         EXTENDED_PRECISION_SECOND_WITH_OFFSET(
-                "2023-01-01T12:13:14+01:30",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 0, ZoneOffset.ofHoursMinutes(1, 30))),
+                "2023-01-01T12:13:14+01:30", ChronoField.SECOND_OF_MINUTE, ZoneOffset.ofHoursMinutes(1, 30)),
         EXTENDED_PRECISION_MINUTE_WITH_OFFSET(
-                "2023-01-01T12:13+01:30",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
+                "2023-01-01T12:13+01:30", ChronoField.MINUTE_OF_HOUR, ZoneOffset.ofHoursMinutes(1, 30)),
         EXTENDED_PRECISION_HOUR_WITH_OFFSET(
-                "2023-01-01T12+01:30", OffsetDateTime.of(2023, 1, 1, 12, 0, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
-        EXTENDED_PRECISION_NANOSECOND_POINT(
-                "2023-01-01T12:13:14.123456789", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123456789)),
-        EXTENDED_PRECISION_NANOSECOND_COMMA(
-                "2023-01-01T12:13:14,123456789", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123456789)),
-        EXTENDED_PRECISION_MILLISECOND_POINT(
-                "2023-01-01T12:13:14.123", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123000000)),
-        EXTENDED_PRECISION_MILLISECOND_COMMA(
-                "2023-01-01T12:13:14,123", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123000000)),
-        EXTENDED_PRECISION_SECOND("2023-01-01T12:13:14", LocalDateTime.of(2023, 1, 1, 12, 13, 14)),
-        EXTENDED_PRECISION_MINUTE("2023-01-01T12:13", LocalDateTime.of(2023, 1, 1, 12, 13, 0)),
-        EXTENDED_PRECISION_HOUR("2023-01-01T12", LocalDateTime.of(2023, 1, 1, 12, 0, 0)),
-        EXTENDED_PRECISION_DAY("2023-01-01", LocalDate.of(2023, 1, 1)),
-        EXTENDED_PRECISION_MONTH("2023-01", new PartialDateTime((YearMonth.of(2023, 1)))),
-        EXTENDED_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
+                "2023-01-01T12+01:30", ChronoField.HOUR_OF_DAY, ZoneOffset.ofHoursMinutes(1, 30)),
+        EXTENDED_PRECISION_NANOSECOND_POINT("2023-01-01T12:13:14.123456789", ChronoField.NANO_OF_SECOND),
+        EXTENDED_PRECISION_NANOSECOND_COMMA("2023-01-01T12:13:14,123456789", ChronoField.NANO_OF_SECOND),
+        EXTENDED_PRECISION_MILLISECOND_POINT("2023-01-01T12:13:14.123", ChronoField.MILLI_OF_SECOND),
+        EXTENDED_PRECISION_MILLISECOND_COMMA("2023-01-01T12:13:14,123", ChronoField.MILLI_OF_SECOND),
+        EXTENDED_PRECISION_SECOND("2023-01-01T12:13:14", ChronoField.SECOND_OF_MINUTE),
+        EXTENDED_PRECISION_MINUTE("2023-01-01T12:13", ChronoField.MINUTE_OF_HOUR),
+        EXTENDED_PRECISION_HOUR("2023-01-01T12", ChronoField.HOUR_OF_DAY),
+        EXTENDED_PRECISION_DAY("2023-01-01", ChronoField.DAY_OF_MONTH),
+        EXTENDED_PRECISION_MONTH("2023-01", ChronoField.MONTH_OF_YEAR),
+        EXTENDED_PRECISION_YEAR("2023", ChronoField.YEAR),
 
         // -------Extended valid format, invalid values
         EXTENDED_INVALID_NO_LEAP_YEAR(
                 "2023-02-29T12:13:14.123456789Z",
                 IllegalArgumentException.class,
-                "Text '2023-02-29T12:13:14.123456789Z' could not be parsed: Invalid date 'February 29' as '2023' is not a leap year:2023-02-29T12:13:14.123456789Z"),
+                "Invalid date 'February 29' as '2023' is not a leap year:2023-02-29T12:13:14.123456789Z"),
         EXTENDED_INVALID_OFFSET_LOWER(
                 "2023-01-01T12:13:14.123456789+18:01",
                 IllegalArgumentException.class,
-                "Text '2023-01-01T12:13:14.123456789+18:01' could not be parsed: Zone offset not in valid range: -18:00 to +18:00:2023-01-01T12:13:14.123456789+18:01"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): 64860:2023-01-01T12:13:14.123456789+18:01"),
         EXTENDED_INVALID_OFFSET_UPPER(
                 "2023-01-01T12:13:14.123456789-18:01",
                 IllegalArgumentException.class,
-                "Text '2023-01-01T12:13:14.123456789-18:01' could not be parsed: Zone offset not in valid range: -18:00 to +18:00:2023-01-01T12:13:14.123456789-18:01"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): -64860:2023-01-01T12:13:14.123456789-18:01"),
         EXTENDED_INVALID_SECONDS_UPPER(
                 "2023-01-01T12:13:60.000000000+01:30",
                 IllegalArgumentException.class,
-                "Text '2023-01-01T12:13:60.000000000+01:30' could not be parsed: Invalid value for SecondOfMinute (valid values 0 - 59): 60:2023-01-01T12:13:60.000000000+01:30"),
+                "Invalid value for SecondOfMinute (valid values 0 - 59): 60:2023-01-01T12:13:60.000000000+01:30"),
         EXTENDED_INVALID_MINUTES_UPPER(
                 "2023-01-01T12:60:00.000000000+01:30",
                 IllegalArgumentException.class,
-                "Text '2023-01-01T12:60:00.000000000+01:30' could not be parsed: Invalid value for MinuteOfHour (valid values 0 - 59): 60:2023-01-01T12:60:00.000000000+01:30"),
+                "Invalid value for MinuteOfHour (valid values 0 - 59): 60:2023-01-01T12:60:00.000000000+01:30"),
         EXTENDED_INVALID_HOURS_UPPER(
                 "2023-01-01T24:00:00.000000000+01:30",
                 IllegalArgumentException.class,
-                "Text '2023-01-01T24:00:00.000000000+01:30' could not be parsed: Invalid value for HourOfDay (valid values 0 - 23): 24:2023-01-01T24:00:00.000000000+01:30"),
+                "Invalid value for HourOfDay (valid values 0 - 23): 24:2023-01-01T24:00:00.000000000+01:30"),
         EXTENDED_INVALID_FRACTIONAL_MINUTES("2023-01-01T12:13.000000000+01:30", IllegalArgumentException.class),
         EXTENDED_INVALID_FRACTIONAL_HOURS("2023-01-01T12.000000000+01:30", IllegalArgumentException.class),
         EXTENDED_INVALID_DAY_LOWER(
                 "2023-01-00T12:13:14.123456789+01:30",
                 IllegalArgumentException.class,
-                "Text '2023-01-00T12:13:14.123456789+01:30' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00T12:13:14.123456789+01:30"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00T12:13:14.123456789+01:30"),
         EXTENDED_INVALID_DAY_UPPER(
                 "2023-01-32T12:13:14.123456789+01:30",
                 IllegalArgumentException.class,
-                "Text '2023-01-32T12:13:14.123456789+01:30' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 32:2023-01-32T12:13:14.123456789+01:30"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 32:2023-01-32T12:13:14.123456789+01:30"),
         EXTENDED_INVALID_MONTH_LOWER(
                 "2023-00-01T12:13:14.123456789+01:30",
                 IllegalArgumentException.class,
-                "Text '2023-00-01T12:13:14.123456789+01:30' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 0:2023-00-01T12:13:14.123456789+01:30"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 0:2023-00-01T12:13:14.123456789+01:30"),
         EXTENDED_INVALID_MONTH_UPPER(
                 "2023-13-01T12:13:14.123456789+01:30",
                 IllegalArgumentException.class,
-                "Text '2023-13-01T12:13:14.123456789+01:30' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 13:2023-13-01T12:13:14.123456789+01:30"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 13:2023-13-01T12:13:14.123456789+01:30"),
 
         // -------Extended invalid field width
         EXTENDED_INVALID_WIDTH_SMALLER_OFFSET_MINUTES(
@@ -431,76 +434,71 @@ class OpenEHRDateTimeParseUtilsTest {
 
         // -------Compact valid format and values
         COMPACT_PRECISION_NANOSECOND_ZULU_OFFSET(
-                "20230101T121314.123456789Z",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(0, 0))),
+                "20230101T121314.123456789Z", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(0, 0)),
         COMPACT_PRECISION_NANOSECOND_WITH_OFFSET(
-                "20230101T121314.123456789+0130",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(1, 30))),
+                "20230101T121314.123456789+0130", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         COMPACT_PRECISION_MILLISECOND_WITH_OFFSET(
-                "20230101T121314.123+0130",
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123000000, ZoneOffset.ofHoursMinutes(1, 30))),
+                "20230101T121314.123+0130", ChronoField.MILLI_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         COMPACT_PRECISION_SECOND_WITH_OFFSET(
-                "20230101T121314+0130", OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 0, ZoneOffset.ofHoursMinutes(1, 30))),
+                "20230101T121314+0130", ChronoField.SECOND_OF_MINUTE, ZoneOffset.ofHoursMinutes(1, 30)),
         COMPACT_PRECISION_MINUTE_WITH_OFFSET(
-                "20230101T1213+0130", OffsetDateTime.of(2023, 1, 1, 12, 13, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
+                "20230101T1213+0130", ChronoField.MINUTE_OF_HOUR, ZoneOffset.ofHoursMinutes(1, 30)),
         COMPACT_PRECISION_HOUR_WITH_OFFSET(
-                "20230101T12+0130", OffsetDateTime.of(2023, 1, 1, 12, 0, 0, 0, ZoneOffset.ofHoursMinutes(1, 30))),
-        COMPACT_PRECISION_NANOSECOND_POINT(
-                "20230101T121314.123456789", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123456789)),
-        COMPACT_PRECISION_NANOSECOND_COMMA(
-                "20230101T121314,123456789", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123456789)),
-        COMPACT_PRECISION_MILLISECOND_POINT("20230101T121314.123", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123000000)),
-        COMPACT_PRECISION_MILLISECOND_COMMA("20230101T121314,123", LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123000000)),
-        COMPACT_PRECISION_SECOND("20230101T121314", LocalDateTime.of(2023, 1, 1, 12, 13, 14)),
-        COMPACT_PRECISION_MINUTE("20230101T1213", LocalDateTime.of(2023, 1, 1, 12, 13, 0)),
-        COMPACT_PRECISION_HOUR("20230101T12", LocalDateTime.of(2023, 1, 1, 12, 0, 0)),
-        COMPACT_PRECISION_DAY("20230101", LocalDate.of(2023, 1, 1)),
-        COMPACT_PRECISION_MONTH("202301", new PartialDateTime(YearMonth.of(2023, 1))),
-        COMPACT_PRECISION_YEAR("2023", new PartialDateTime(Year.of(2023))),
+                "20230101T12+0130", ChronoField.HOUR_OF_DAY, ZoneOffset.ofHoursMinutes(1, 30)),
+        COMPACT_PRECISION_NANOSECOND_POINT("20230101T121314.123456789", ChronoField.NANO_OF_SECOND),
+        COMPACT_PRECISION_NANOSECOND_COMMA("20230101T121314,123456789", ChronoField.NANO_OF_SECOND),
+        COMPACT_PRECISION_MILLISECOND_POINT("20230101T121314.123", ChronoField.MILLI_OF_SECOND),
+        COMPACT_PRECISION_MILLISECOND_COMMA("20230101T121314,123", ChronoField.MILLI_OF_SECOND),
+        COMPACT_PRECISION_SECOND("20230101T121314", ChronoField.SECOND_OF_MINUTE),
+        COMPACT_PRECISION_MINUTE("20230101T1213", ChronoField.MINUTE_OF_HOUR),
+        COMPACT_PRECISION_HOUR("20230101T12", ChronoField.HOUR_OF_DAY),
+        COMPACT_PRECISION_DAY("20230101", ChronoField.DAY_OF_MONTH),
+        COMPACT_PRECISION_MONTH("202301", ChronoField.MONTH_OF_YEAR),
+        COMPACT_PRECISION_YEAR("2023", ChronoField.YEAR),
 
         // ------Compact valid format, invalid field values
         COMPACT_INVALID_NO_LEAP_YEAR(
                 "20230229T121314.123456789Z",
                 IllegalArgumentException.class,
-                "Text '20230229T121314.123456789Z' could not be parsed: Invalid date 'February 29' as '2023' is not a leap year:20230229T121314.123456789Z"),
+                "Invalid date 'February 29' as '2023' is not a leap year:20230229T121314.123456789Z"),
         COMPACT_INVALID_OFFSET_LOWER(
                 "20230101T121314.123456789+1801",
                 IllegalArgumentException.class,
-                "Text '20230101T121314.123456789+1801' could not be parsed: Zone offset not in valid range: -18:00 to +18:00:20230101T121314.123456789+1801"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): 64860:20230101T121314.123456789+1801"),
         COMPACT_INVALID_OFFSET_UPPER(
                 "20230101T121314.123456789-1801",
                 IllegalArgumentException.class,
-                "Text '20230101T121314.123456789-1801' could not be parsed: Zone offset not in valid range: -18:00 to +18:00:20230101T121314.123456789-1801"),
+                "Invalid value for OffsetSeconds (valid values -64800 - 64800): -64860:20230101T121314.123456789-1801"),
         COMPACT_INVALID_SECONDS_UPPER(
                 "20230101T121360.000000000+0130",
                 IllegalArgumentException.class,
-                "Text '20230101T121360.000000000+0130' could not be parsed: Invalid value for SecondOfMinute (valid values 0 - 59): 60:20230101T121360.000000000+0130"),
+                "Invalid value for SecondOfMinute (valid values 0 - 59): 60:20230101T121360.000000000+0130"),
         COMPACT_INVALID_MINUTES_UPPER(
                 "20230101T126000.000000000+0130",
                 IllegalArgumentException.class,
-                "Text '20230101T126000.000000000+0130' could not be parsed: Invalid value for MinuteOfHour (valid values 0 - 59): 60:20230101T126000.000000000+0130"),
+                "Invalid value for MinuteOfHour (valid values 0 - 59): 60:20230101T126000.000000000+0130"),
         COMPACT_INVALID_HOURS_UPPER(
                 "20230101T240000.000000000+0130",
                 IllegalArgumentException.class,
-                "Text '20230101T240000.000000000+0130' could not be parsed: Invalid value for HourOfDay (valid values 0 - 23): 24:20230101T240000.000000000+0130"),
+                "Invalid value for HourOfDay (valid values 0 - 23): 24:20230101T240000.000000000+0130"),
         COMPACT_INVALID_FRACTIONAL_MINUTES("20230101T1213.000000000+0130", IllegalArgumentException.class),
         COMPACT_INVALID_FRACTIONAL_HOURS("20230101T12.000000000+0130", IllegalArgumentException.class),
         COMPACT_INVALID_DAY_LOWER(
                 "20230100T121314.123456789+0130",
                 IllegalArgumentException.class,
-                "Text '20230100T121314.123456789+0130' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100T121314.123456789+0130"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100T121314.123456789+0130"),
         COMPACT_INVALID_DAY_UPPER(
                 "20230132T121314.123456789+0130",
                 IllegalArgumentException.class,
-                "Text '20230132T121314.123456789+0130' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 32:20230132T121314.123456789+0130"),
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 32:20230132T121314.123456789+0130"),
         COMPACT_INVALID_MONTH_LOWER(
                 "20230001T121314.123456789+0130",
                 IllegalArgumentException.class,
-                "Text '20230001T121314.123456789+0130' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 0:20230001T121314.123456789+0130"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 0:20230001T121314.123456789+0130"),
         COMPACT_INVALID_MONTH_UPPER(
                 "20231301T121314.123456789+0130",
                 IllegalArgumentException.class,
-                "Text '20231301T121314.123456789+0130' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 13:20231301T121314.123456789+0130"),
+                "Invalid value for MonthOfYear (valid values 1 - 12): 13:20231301T121314.123456789+0130"),
 
         // ------Compact width
         // checking width of individual fields is not possible in compact time format as there are no separators, so we
@@ -527,9 +525,13 @@ class OpenEHRDateTimeParseUtilsTest {
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
-        DateTimeTestData(String input, TemporalAccessor expected) {
+        DateTimeTestData(String input, ChronoField precision1) {
+            this(input, precision1, null);
+        }
+
+        DateTimeTestData(String input, ChronoField precision1, ZoneOffset offset) {
             this.input = input;
-            this.expected = expected;
+            this.expected = buildExpectedTemporal(precision1, offset, true);
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -558,6 +560,38 @@ class OpenEHRDateTimeParseUtilsTest {
             if (data.expectedExceptionMessage != null) {
                 assertThat(exception).hasMessage(data.expectedExceptionMessage, exception.getMessage());
             }
+        }
+    }
+
+    private static OpenEhrTemporal buildExpectedTemporal(
+            final ChronoField precision1, final ZoneOffset offset, boolean withDate) {
+        if (precision1 == null) {
+            return null;
+        } else {
+            int nanos;
+            ChronoField precision;
+            if (precision1 == ChronoField.MILLI_OF_SECOND) {
+                precision = ChronoField.NANO_OF_SECOND;
+                nanos = 123000000;
+            } else {
+                precision = precision1;
+                nanos = 123456789;
+            }
+            TemporalAccessor temporal;
+            if (withDate) {
+                if (offset == null) {
+                    temporal = LocalDateTime.of(2023, 1, 1, 12, 13, 14, nanos);
+                } else {
+                    temporal = OffsetDateTime.of(2023, 1, 1, 12, 13, 14, nanos, offset);
+                }
+            } else {
+                if (offset == null) {
+                    temporal = LocalTime.of(12, 13, 14, nanos);
+                } else {
+                    temporal = OffsetTime.of(12, 13, 14, nanos, offset);
+                }
+            }
+            return new OpenEhrTemporal(temporal, precision);
         }
     }
 }

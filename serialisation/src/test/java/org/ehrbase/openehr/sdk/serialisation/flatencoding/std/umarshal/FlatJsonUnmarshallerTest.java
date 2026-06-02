@@ -175,8 +175,8 @@ class FlatJsonUnmarshallerTest {
                         2022-11-01|2022-11-01
                         2022-11|2022-11
                         2022|2022
-                        2022-11-01T13|2022-11-01T13:00
-                        2022-11-01T13+02:00|2022-11-01T13:00+02:00
+                        2022-11-01T13|2022-11-01T13
+                        2022-11-01T13+02:00|2022-11-01T13+02:00
                     """, delimiterString = "|")
     void validDvDateTime(String input, String expected) throws Exception {
 
@@ -199,7 +199,7 @@ class FlatJsonUnmarshallerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"2022-11", "2022-11-01", "2022-11-01T13"})
+    @ValueSource(strings = {"2022-11-01", "2022-11-01T13"})
     void invalidDvTimeTest(String input) throws Exception {
 
         WebTemplate webTemplate = webTemplateFromOTP(OperationalTemplateTestData.CONFORMANCE);
@@ -221,8 +221,8 @@ class FlatJsonUnmarshallerTest {
     @CsvSource(textBlock = """
                 13:12:11|13:12:11
                 13:12|13:12
-                13|13:00
-                13+02:00|13:00+02:00
+                13|13
+                13+02:00|13+02:00
             """, delimiterString = "|")
     void validDvTimeTest(String input, String expected) throws Exception {
 

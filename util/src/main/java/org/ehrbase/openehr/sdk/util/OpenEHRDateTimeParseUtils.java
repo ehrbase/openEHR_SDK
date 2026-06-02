@@ -21,10 +21,12 @@ import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.function.Predicate;
 
 /**
  * This helper class is used to work around some Archie issues with date/time parsing accepting invalid years or not following the specified format fully (i.e. 2023-13, ignoring leap years)
@@ -186,22 +188,40 @@ public final class OpenEHRDateTimeParseUtils {
     }
 
     public static Temporal parseDate(String isoDate) {
+        return parseOpenEhrTemporal(
+                isoDate, OpenEHRDateTimeParseUtils::isCompactDate, ISO_8601_DATE_COMPACT_PARSER, ISO_8601_DATE_PARSER);
+    }
+
+    public static TemporalAccessor parseTime(String isoTime) {
+        return parseOpenEhrTemporal(
+                isoTime, OpenEHRDateTimeParseUtils::isCompactTime, ISO_8601_TIME_COMPACT_PARSER, ISO_8601_TIME_PARSER);
+    }
+
+    public static TemporalAccessor parseDateTime(String isoDateTime) {
+        return parseOpenEhrTemporal(
+                isoDateTime,
+                OpenEHRDateTimeParseUtils::isCompactDate,
+                ISO_8601_DATE_TIME_COMPACT_PARSER,
+                ISO_8601_DATE_TIME_PARSER);
+    }
+
+    private static OpenEhrTemporal parseOpenEhrTemporal(
+            final String isoDate,
+            final Predicate<String> isCompactPredicate,
+            final DateTimeFormatter compactParser,
+            final DateTimeFormatter extendedParser) {
         if (isoDate == null) {
             return null;
         }
         try {
-            final TemporalAccessor parsed;
-            if (isCompactDate(isoDate)) {
-                parsed = ISO_8601_DATE_COMPACT_PARSER.parse(isoDate);
+            final DateTimeFormatter parser;
+            if (isCompactPredicate.test(isoDate)) {
+                parser = compactParser;
             } else {
-                parsed = ISO_8601_DATE_PARSER.parse(isoDate);
+                parser = extendedParser;
             }
 
-            try {
-                return new PartialDateTime(parsed);
-            } catch (IllegalArgumentException e) {
-                throw requireTemporal(isoDate);
-            }
+            return parseOpenEhrTemporal(isoDate, parser);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
@@ -209,58 +229,33 @@ public final class OpenEHRDateTimeParseUtils {
         }
     }
 
-    public static TemporalAccessor parseTime(String isoTime) {
-        if (isoTime == null) {
-            return null;
+    private static OpenEhrTemporal parseOpenEhrTemporal(final CharSequence text, DateTimeFormatter parser) {
+        ParsePosition pos = new ParsePosition(0);
+        TemporalAccessor result = parser.parseUnresolved(text, pos);
+        if (pos.getErrorIndex() >= 0 || pos.getIndex() < text.length()) {
+            String abbr;
+            if (text.length() > 64) {
+                abbr = text.subSequence(0, 64) + "...";
+            } else {
+                abbr = text.toString();
+            }
+            if (pos.getErrorIndex() >= 0) {
+                throw new DateTimeParseException(
+                        "Text '" + abbr + "' could not be parsed at index " + pos.getErrorIndex(),
+                        text,
+                        pos.getErrorIndex());
+            } else {
+                throw new DateTimeParseException(
+                        "Text '" + abbr + "' could not be parsed, unparsed text found at index " + pos.getIndex(),
+                        text,
+                        pos.getIndex());
+            }
         }
         try {
-
-            final TemporalAccessor parsed;
-            if (isCompactTime(isoTime)) {
-                parsed = ISO_8601_TIME_COMPACT_PARSER.parseUnresolved(isoTime, new ParsePosition(0));
-            } else {
-                parsed = ISO_8601_TIME_PARSER.parseUnresolved(isoTime, new ParsePosition(0));
-            }
-
-            try {
-                return new PartialDateTime(parsed);
-            } catch (IllegalArgumentException e) {
-                throw requireTemporal(isoTime);
-            }
-        } catch (DateTimeException e) {
-            // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
-            // behaviour to avoid breaking stuff
-            throw new IllegalArgumentException(e.getMessage() + ":" + isoTime, e);
+            return new OpenEhrTemporal(result);
+        } catch (IllegalArgumentException e) {
+            throw new DateTimeException(
+                    "%s does not provide any field required for the possible precisions: %s".formatted(text, text));
         }
-    }
-
-    public static TemporalAccessor parseDateTime(String isoDateTime) {
-        if (isoDateTime == null) {
-            return null;
-        }
-        try {
-            final TemporalAccessor parsed;
-            // We can use the date predicate as a date-time will always start with a date
-            if (isCompactDate(isoDateTime)) {
-                parsed = ISO_8601_DATE_TIME_COMPACT_PARSER.parse(isoDateTime);
-            } else {
-                parsed = ISO_8601_DATE_TIME_PARSER.parse(isoDateTime);
-            }
-
-            try {
-                return new PartialDateTime(parsed);
-            } catch (IllegalArgumentException e) {
-                throw requireTemporal(isoDateTime);
-            }
-        } catch (DateTimeException e) {
-            // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
-            // behaviour
-            throw new IllegalArgumentException(e.getMessage() + ":" + isoDateTime, e);
-        }
-    }
-
-    private static DateTimeException requireTemporal(String str) {
-        return new DateTimeException(
-                "%s does not provide any field required for the possible precisions: %s".formatted(str, str));
     }
 }

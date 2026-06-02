@@ -41,13 +41,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class PartialDateTimeTest {
+class OpenEhrTemporalTest {
 
     @Test
     void checkFieldOrder() {
-        for (int i = 1; i < PartialDateTime.CHRONO_FIELDS.length - 1; i++) {
-            assertThat(PartialDateTime.CHRONO_FIELDS[i].ordinal())
-                    .isLessThan(PartialDateTime.CHRONO_FIELDS[i - 1].ordinal());
+        for (int i = 1; i < OpenEhrTemporal.CHRONO_FIELDS.length - 1; i++) {
+            assertThat(OpenEhrTemporal.CHRONO_FIELDS[i].ordinal())
+                    .isLessThan(OpenEhrTemporal.CHRONO_FIELDS[i - 1].ordinal());
         }
     }
 
@@ -55,7 +55,7 @@ class PartialDateTimeTest {
     void ofLocalDateTime() {
         var value = LocalDateTime.of(2024, 2, 3, 4, 5, 6, 7);
 
-        var c = new PartialDateTime(value);
+        var c = new OpenEhrTemporal(value);
 
         assertThat(LocalDateTime.from(c)).isEqualTo(value);
         assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 2, 3));
@@ -65,7 +65,7 @@ class PartialDateTimeTest {
     @Test
     void ofOffsetDateTime() {
         var value = OffsetDateTime.of(2024, 2, 3, 4, 5, 6, 7, ZoneOffset.ofHoursMinutes(8, 9));
-        var c = new PartialDateTime(value);
+        var c = new OpenEhrTemporal(value);
 
         assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 2, 3, 4, 5, 6, 7));
         assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 2, 3));
@@ -76,7 +76,7 @@ class PartialDateTimeTest {
     @Test
     void ofZonedDateTime() {
         var value = ZonedDateTime.of(2024, 2, 3, 4, 5, 6, 7, ZoneOffset.ofHoursMinutes(8, 9));
-        var c = new PartialDateTime(value);
+        var c = new OpenEhrTemporal(value);
 
         assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 2, 3, 4, 5, 6, 7));
         assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 2, 3));
@@ -86,7 +86,7 @@ class PartialDateTimeTest {
 
     @Test
     void ofYear() {
-        var c = new PartialDateTime(Year.of(2024));
+        var c = new OpenEhrTemporal(Year.of(2024));
 
         assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 1, 1, 0, 0));
         assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 1, 1));
@@ -95,7 +95,7 @@ class PartialDateTimeTest {
 
     @Test
     void ofYearMonth() {
-        var c = new PartialDateTime(YearMonth.of(2024, 3));
+        var c = new OpenEhrTemporal(YearMonth.of(2024, 3));
 
         assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 3, 1, 0, 0));
         assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 3, 1));
@@ -110,10 +110,10 @@ class PartialDateTimeTest {
     @ParameterizedTest
     @MethodSource
     void fieldsMatch(TemporalAccessor temporal) {
-        assertFieldsMatch(new PartialDateTime(temporal), temporal);
+        assertFieldsMatch(new OpenEhrTemporal(temporal), temporal);
     }
 
-    private void assertFieldsMatch(PartialDateTime from, TemporalAccessor expected) {
+    private void assertFieldsMatch(OpenEhrTemporal from, TemporalAccessor expected) {
         ChronoField[] relevantFields = new ChronoField[] {
             ChronoField.YEAR,
             ChronoField.MONTH_OF_YEAR,
@@ -137,15 +137,15 @@ class PartialDateTimeTest {
     @Test
     void to_string() {
         YearMonth yearMonth = YearMonth.of(2024, 3);
-        assertThat(new PartialDateTime(yearMonth)).hasToString(yearMonth.toString());
+        assertThat(new OpenEhrTemporal(yearMonth)).hasToString(yearMonth.toString());
 
         Year year = Year.of(2024);
-        assertThat(new PartialDateTime(year)).hasToString(year.toString());
+        assertThat(new OpenEhrTemporal(year)).hasToString(year.toString());
     }
 
     @Test
     void dvDateTimeMagnitude() {
-        PartialDateTime partialDate = new PartialDateTime(YearMonth.of(2024, 3));
+        OpenEhrTemporal partialDate = new OpenEhrTemporal(YearMonth.of(2024, 3));
         DvDateTime d = new DvDateTime(partialDate);
         assertThat(d.getMagnitude())
                 .isGreaterThan(DvDateTime.SECONDS_BETWEEN_0001_AND_1970 + 54 * 365 * 24 * 3600)
@@ -184,7 +184,7 @@ class PartialDateTimeTest {
             parsed = OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse(date + 'T' + time);
         }
 
-        var c = new PartialDateTime(parsed);
+        var c = new OpenEhrTemporal(parsed);
         assertFieldsMatch(c, parsed);
     }
 
@@ -192,7 +192,7 @@ class PartialDateTimeTest {
     void PartialDateTime_query() {
         // date-based with offset: all query types return non-null
         var dateTime = OffsetDateTime.of(2024, 2, 3, 4, 5, 6, 7, ZoneOffset.ofHoursMinutes(2, 30));
-        var c = new PartialDateTime(dateTime);
+        var c = new OpenEhrTemporal(dateTime);
 
         assertThat(c.query(TemporalQueries.localDate())).isEqualTo(LocalDate.of(2024, 2, 3));
         assertThat(c.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(4, 5, 6, 7));
@@ -203,7 +203,7 @@ class PartialDateTimeTest {
         assertThat(c.query(TemporalQueries.precision())).isEqualTo(ChronoUnit.NANOS);
 
         // year-only: month/day default to 1, time defaults to midnight, no offset
-        var year = new PartialDateTime(OpenEHRDateTimeParseUtils.ISO_8601_DATE_PARSER.parse("2024"));
+        var year = new OpenEhrTemporal(OpenEHRDateTimeParseUtils.ISO_8601_DATE_PARSER.parse("2024"));
         assertThat(year.query(TemporalQueries.localDate())).isEqualTo(LocalDate.of(2024, 1, 1));
         assertThat(year.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(0, 0));
         assertThat(year.query(TemporalQueries.offset())).isNull();
@@ -213,7 +213,7 @@ class PartialDateTimeTest {
         // time-only: localDate returns null, no offset
         TemporalAccessor parse =
                 OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parseUnresolved("04:05", new ParsePosition(0));
-        var timeOnly = new PartialDateTime(parse);
+        var timeOnly = new OpenEhrTemporal(parse);
         assertThat(timeOnly.query(TemporalQueries.localDate())).isNull();
         assertThat(timeOnly.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(4, 5));
         assertThat(timeOnly.query(TemporalQueries.offset())).isNull();
