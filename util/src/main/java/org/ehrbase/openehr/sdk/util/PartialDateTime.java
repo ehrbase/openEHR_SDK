@@ -57,13 +57,20 @@ public final class PartialDateTime implements Temporal {
     private final ChronoField resolution;
 
     public PartialDateTime(TemporalAccessor value) {
-        if (!value.isSupported(ChronoField.YEAR)) {
-            throw new IllegalArgumentException("Date must be year-based: " + value);
-        }
-        ChronoField res = ChronoField.YEAR;
-        fields[0] = value.get(res);
+        boolean dateBased = value.isSupported(ChronoField.YEAR);
 
-        int i = 1;
+        if (!dateBased
+                && (value.isSupported(ChronoField.MONTH_OF_YEAR)
+                        || value.isSupported(ChronoField.DAY_OF_MONTH)
+                        || !value.isSupported(ChronoField.HOUR_OF_DAY))) {
+            throw new IllegalArgumentException("Unsupported date format: " + value);
+        }
+
+        ChronoField res = dateBased ? ChronoField.YEAR : ChronoField.HOUR_OF_DAY;
+
+        int i = dateBased ? 0 : 3;
+        fields[i++] = value.get(res);
+
         for (; i < OFFSET_POS; i++) {
             ChronoField f = CHRONO_FIELDS[i];
             if (value.isSupported(f)) {
@@ -96,15 +103,20 @@ public final class PartialDateTime implements Temporal {
     public <R> R query(TemporalQuery<R> query) {
         Object result;
         if (TemporalQueries.localDate() == query) {
-            result = LocalDate.of(
-                    fields[0], ObjectUtils.firstNonNull(fields[1], 1), ObjectUtils.firstNonNull(fields[2], 1));
+            if (fields[0] == null) {
+                // time only
+                result = null;
+            } else {
+                result = LocalDate.of(
+                        fields[0], ObjectUtils.firstNonNull(fields[1], 1), ObjectUtils.firstNonNull(fields[2], 1));
+            }
         } else if (TemporalQueries.localTime() == query) {
             result = LocalTime.of(
                     ObjectUtils.firstNonNull(fields[3], 0),
                     ObjectUtils.firstNonNull(fields[4], 0),
                     ObjectUtils.firstNonNull(fields[5], 0),
                     ObjectUtils.firstNonNull(fields[6], 0));
-        } else if (TemporalQueries.zone() == query) {
+        } else if (TemporalQueries.zone() == query || TemporalQueries.zoneId() == query) {
             result = fields[7] == null ? null : ZoneOffset.ofTotalSeconds(fields[7]);
         } else if (TemporalQueries.chronology() == query) {
             result = IsoChronology.INSTANCE;
