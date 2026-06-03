@@ -134,13 +134,24 @@ class OpenEhrTemporalTest {
         }
     }
 
-    @Test
-    void to_string() {
-        YearMonth yearMonth = YearMonth.of(2024, 3);
-        assertThat(new OpenEhrTemporal(yearMonth)).hasToString(yearMonth.toString());
+    static Stream<Arguments> to_string() {
+        return Stream.of(
+                Arguments.of(Year.of(2024), "2024", null),
+                Arguments.of(YearMonth.of(2024, 3), "2024-03", null),
+                Arguments.of(LocalDate.of(2024, 3, 7), "2024-03-07", null),
+                Arguments.of(
+                        LocalDateTime.of(2021, 2, 3, 4, 5, 6), "2021-02-03T04:05:06", ChronoField.SECOND_OF_MINUTE),
+                Arguments.of(
+                        LocalDateTime.of(2021, 2, 3, 4, 5, 6, 78),
+                        "2021-02-03T04:05:06.000000078",
+                        ChronoField.NANO_OF_SECOND));
+    }
 
-        Year year = Year.of(2024);
-        assertThat(new OpenEhrTemporal(year)).hasToString(year.toString());
+    @ParameterizedTest
+    @MethodSource
+    void to_string(TemporalAccessor temporal, String expected, ChronoField maxResolution) {
+        assertThat(new OpenEhrTemporal(temporal, maxResolution == null ? ChronoField.NANO_OF_SECOND : maxResolution))
+                .hasToString(expected);
     }
 
     @Test
@@ -175,17 +186,31 @@ class OpenEhrTemporalTest {
                   ; 04Z
         """)
     void testPartials(String date, String time) {
+        String str;
         TemporalAccessor parsed;
+
+        // managing expectations
+        String expectedTime = time == null ? null : time.replace(',', '.').replaceAll("[+-]\\d{2}$", "$0:00");
+        String expectedToString;
+
         if (date == null) {
-            parsed = OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parse(time);
+            str = time;
+            parsed = OpenEHRDateTimeParseUtils.parseTime(str);
+            expectedToString = expectedTime;
         } else if (time == null) {
-            parsed = OpenEHRDateTimeParseUtils.ISO_8601_DATE_PARSER.parse(date);
+            str = date;
+            parsed = OpenEHRDateTimeParseUtils.parseDate(str);
+            expectedToString = date;
         } else {
-            parsed = OpenEHRDateTimeParseUtils.ISO_8601_DATE_TIME_PARSER.parse(date + 'T' + time);
+            str = date + 'T' + time;
+            parsed = OpenEHRDateTimeParseUtils.parseDateTime(str);
+            expectedToString = date + 'T' + expectedTime;
         }
 
         var c = new OpenEhrTemporal(parsed);
         assertFieldsMatch(c, parsed);
+
+        assertThat(c).hasToString(expectedToString);
     }
 
     @Test

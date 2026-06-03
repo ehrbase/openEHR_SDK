@@ -32,7 +32,6 @@ import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * Allows Year and YearMonth to behave like LocalDateTime
@@ -54,7 +53,8 @@ public final class OpenEhrTemporal implements Temporal {
 
     private static final int OFFSET_POS = 7;
 
-    private final Integer[] fields = new Integer[CHRONO_FIELDS.length];
+    private final boolean[] supported = new boolean[CHRONO_FIELDS.length];
+    private final int[] fields = new int[CHRONO_FIELDS.length];
 
     private final ChronoField resolution;
 
@@ -75,29 +75,40 @@ public final class OpenEhrTemporal implements Temporal {
         ChronoField res = dateBased ? ChronoField.YEAR : ChronoField.HOUR_OF_DAY;
 
         int i = dateBased ? 0 : 3;
-        fields[i++] = value.get(res);
+        set(i++, value.get(res));
 
         for (; i < OFFSET_POS; i++) {
             ChronoField f = CHRONO_FIELDS[i];
             if (f.ordinal() >= maxResolution.ordinal() && value.isSupported(f)) {
                 res = f;
-                fields[i] = value.get(f);
+                set(i, value.get(f));
             } else {
                 break;
             }
         }
         resolution = res;
 
-        if (fields[0] != null && fields[2] != null) {
+        if (supported[2]) {
             checkValidDate();
+        } else {
+            // set openehr defaults
+            fields[2] = 1;
+            if (!supported[1]) {
+                fields[1] = 1;
+            }
         }
 
         if (value.isSupported(ChronoField.OFFSET_SECONDS)) {
-            if (fields[3] == null) {
+            if (!supported[3]) {
                 throw new IllegalArgumentException("offset is not supported");
             }
-            fields[OFFSET_POS] = value.get(ChronoField.OFFSET_SECONDS);
+            set(OFFSET_POS, value.get(ChronoField.OFFSET_SECONDS));
         }
+    }
+
+    private void set(int pos, int value) {
+        supported[pos] = true;
+        fields[pos] = value;
     }
 
     /**
@@ -131,32 +142,29 @@ public final class OpenEhrTemporal implements Temporal {
         if (i < 0) {
             return false;
         }
-        return fields[i] != null;
+        return supported[i];
     }
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
         Object result;
         if (TemporalQueries.localDate() == query) {
-            if (fields[0] == null) {
+            if (!supported[0]) {
                 // time only
                 result = null;
             } else {
-                result = LocalDate.of(
-                        fields[0], ObjectUtils.firstNonNull(fields[1], 1), ObjectUtils.firstNonNull(fields[2], 1));
+                // missing fields default to 1 for archie magnitude calculation
+                result = LocalDate.of(fields[0], fields[1], fields[2]);
             }
         } else if (TemporalQueries.localTime() == query) {
-            result = LocalTime.of(
-                    ObjectUtils.firstNonNull(fields[3], 0),
-                    ObjectUtils.firstNonNull(fields[4], 0),
-                    ObjectUtils.firstNonNull(fields[5], 0),
-                    ObjectUtils.firstNonNull(fields[6], 0));
+            // missing fields default to 0 for archie magnitude calculation
+            result = LocalTime.of(fields[3], fields[4], fields[5], fields[6]);
         } else if (TemporalQueries.zone() == query || TemporalQueries.zoneId() == query) {
-            result = fields[7] == null ? null : ZoneOffset.ofTotalSeconds(fields[7]);
+            result = supported[7] ? ZoneOffset.ofTotalSeconds(fields[7]) : null;
         } else if (TemporalQueries.chronology() == query) {
             result = IsoChronology.INSTANCE;
         } else if (TemporalQueries.offset() == query) {
-            result = fields[7] == null ? null : ZoneOffset.ofTotalSeconds(fields[7]);
+            result = supported[7] ? ZoneOffset.ofTotalSeconds(fields[7]) : null;
         } else if (TemporalQueries.precision() == query) {
             result = resolution.getBaseUnit();
         } else {
@@ -168,7 +176,7 @@ public final class OpenEhrTemporal implements Temporal {
     @Override
     public int get(TemporalField field) {
         int i = ArrayUtils.indexOf(CHRONO_FIELDS, field);
-        if (i < 0) {
+        if (i < 0 || !supported[i]) {
             throw new IllegalArgumentException(field + " is not supported");
         }
         return fields[i];
@@ -181,14 +189,16 @@ public final class OpenEhrTemporal implements Temporal {
 
     @Override
     public String toString() {
-        return fields[0] == null
-                ? OpenEHRDateTimeSerializationUtils.formatTime(this)
-                : OpenEHRDateTimeSerializationUtils.formatDateTime(this);
+        return supported[0]
+                ? OpenEHRDateTimeSerializationUtils.formatDateTime(this)
+                : OpenEHRDateTimeSerializationUtils.formatTime(this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof OpenEhrTemporal pd && Arrays.equals(fields, pd.fields);
+        return obj instanceof OpenEhrTemporal pd
+                && Arrays.equals(fields, pd.fields)
+                && Arrays.equals(supported, pd.supported);
     }
 
     @Override
