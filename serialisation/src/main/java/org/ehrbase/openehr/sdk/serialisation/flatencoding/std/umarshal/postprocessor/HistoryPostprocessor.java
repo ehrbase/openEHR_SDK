@@ -63,7 +63,7 @@ public class HistoryPostprocessor extends AbstractUnmarshalPostprocessor<History
                             .filter(Objects::nonNull)
                             .sorted(Comparator.comparingDouble(DvDateTime::getMagnitude))
                             .findFirst()
-                    .map(DvDateTime::getValue);
+                            .map(DvDateTime::getValue);
             first.ifPresent(temporalAccessor ->
                     ((History<ItemStructure>) rmObject).setOrigin(new DvDateTime(temporalAccessor)));
         }

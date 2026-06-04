@@ -96,8 +96,7 @@ class CanonicalJsonTest {
     void unmarshalPartialDateTime() {
 
         assertThat(unmarshal("src/test/resources/sample_data/partialdvdatetime.json", DvDateTime.class))
-                .satisfies(dvDateTime1 ->
-                        assertThat(dvDateTime1.getValue()).hasToString("2020-08-01T10"));
+                .satisfies(dvDateTime1 -> assertThat(dvDateTime1.getValue()).hasToString("2020-08-01T10"));
     }
 
     private void assertDvMultimedia(DataValue dataValue) {

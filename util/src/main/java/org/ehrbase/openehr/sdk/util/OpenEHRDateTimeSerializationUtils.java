@@ -222,8 +222,6 @@ public final class OpenEHRDateTimeSerializationUtils {
             return Pair.of(odt.toLocalTime(), odt.getOffset());
         } else if (value instanceof LocalDateTime ldt) {
             return Pair.of(ldt.toLocalTime(), ZoneOffset.UTC);
-        } else if (value instanceof OpenEhrTemporal pd) {
-            return Pair.of(pd.query(TemporalQueries.localTime()), (ZoneOffset) pd.query(TemporalQueries.zone()));
         }
 
         // More exotic cases

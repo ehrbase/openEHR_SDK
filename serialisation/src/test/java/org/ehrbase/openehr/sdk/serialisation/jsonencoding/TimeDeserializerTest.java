@@ -141,7 +141,7 @@ class TimeDeserializerTest {
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION_WITH_OFFSET(
                 new DvTime(
                         List.of(new ReferenceRange<>(new DvText("meaning"), new DvInterval<DvTime>(null, null))),
-                        new DvInterval<>(new DvTime(new OpenEhrTemporal(LocalTime.of(20, 0,0))), null),
+                        new DvInterval<>(new DvTime(new OpenEhrTemporal(LocalTime.of(20, 0, 0))), null),
                         new CodePhrase(),
                         "magStat",
                         new DvDuration(),

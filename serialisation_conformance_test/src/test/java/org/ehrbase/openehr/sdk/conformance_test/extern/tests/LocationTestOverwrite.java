@@ -24,11 +24,8 @@ import com.google.common.collect.ImmutableMap;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.composition.Section;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.ehrbase.openehr.sdk.conformance_test.extern.Helper;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
@@ -43,8 +40,8 @@ public class LocationTestOverwrite extends LocationTest {
     @Test
     public void location() throws Exception {
         String template = this.getFileContent("/res/Demo Vitals.opt");
-        OpenEhrTemporal dateTime = new OpenEhrTemporal(ZonedDateTime.of(2015, 1, 1, 10, 31, 16, 0, ZoneOffset.UTC)
-                .toOffsetDateTime());
+        OpenEhrTemporal dateTime = new OpenEhrTemporal(
+                ZonedDateTime.of(2015, 1, 1, 10, 31, 16, 0, ZoneOffset.UTC).toOffsetDateTime());
         Map<Object, Object> flatComposition = ImmutableMap.builder()
                 .put("ctx/language", "sl")
                 .put("ctx/territory", "SI")

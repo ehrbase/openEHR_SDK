@@ -40,8 +40,8 @@ public class EndTimeTestOverwrite extends EndTimeTest {
     @Test
     public void endTimeTest() throws Exception {
         String template = this.getFileContent("/res/Demo Vitals.opt");
-        OpenEhrTemporal dateTime = new OpenEhrTemporal(ZonedDateTime.of(2015, 1, 1, 10, 31, 16, 0, ZoneOffset.UTC)
-                .toOffsetDateTime());
+        OpenEhrTemporal dateTime = new OpenEhrTemporal(
+                ZonedDateTime.of(2015, 1, 1, 10, 31, 16, 0, ZoneOffset.UTC).toOffsetDateTime());
         Map<Object, Object> flatComposition = ImmutableMap.builder()
                 .put("ctx/language", "sl")
                 .put("ctx/territory", "SI")

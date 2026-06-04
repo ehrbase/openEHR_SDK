@@ -563,7 +563,7 @@ class OpenEHRDateTimeParseUtilsTest {
         }
     }
 
-    private static OpenEhrTemporal buildExpectedTemporal(
+    static OpenEhrTemporal buildExpectedTemporal(
             final ChronoField precision1, final ZoneOffset offset, boolean withDate) {
         if (precision1 == null) {
             return null;
