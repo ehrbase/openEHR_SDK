@@ -18,6 +18,9 @@
 package org.ehrbase.openehr.sdk.conformance_test.extern.tests;
 
 import care.better.platform.web.template.InstructionActionTest;
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Collections;
+import org.assertj.core.api.Assertions;
 
 public class InstructionActionTestOverwrite extends InstructionActionTest {
 
@@ -99,5 +102,21 @@ public class InstructionActionTestOverwrite extends InstructionActionTest {
     */
     public void emptyInstruction() throws Exception {
         super.emptyInstruction();
+    }
+
+    @Override
+    public void emptyActivity() throws Exception {
+        String template = this.getFileContent("/res/ZN - Restraint.opt");
+        JsonNode structuredComposition =
+                this.getObjectMapper().readTree(this.getFileContent("/res/restraint-fixed.json"));
+        JsonNode rawComposition = this.getCompositionConverter()
+                .convertStructuredToRaw(
+                        template,
+                        "sl",
+                        structuredComposition.toString(),
+                        Collections.emptyMap(),
+                        this.getObjectMapper());
+        Assertions.assertThat(this.getCompositionValidator().validate(template, rawComposition.toString()))
+                .isEmpty();
     }
 }

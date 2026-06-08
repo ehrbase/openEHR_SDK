@@ -47,6 +47,7 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpress
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservationContainment;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.junit.jupiter.api.Test;
 
 class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
@@ -146,10 +147,10 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 .containsExactlyInAnyOrder(
                         new Tuple(
                                 comp1.getVersionUid().toString(),
-                                OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)),
+                                OpenEHRDateTimeParseUtils.parseDateTime("2019-04-03T22:00:00Z")),
                         new Tuple(
                                 comp2.getVersionUid().toString(),
-                                OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC)));
+                                OpenEHRDateTimeParseUtils.parseDateTime("2019-04-03T22:00:00Z")));
     }
 
     @Test
@@ -186,7 +187,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
         assertThat(actual).size().isEqualTo(2);
 
         Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningCode> record1 = actual.get(0);
-        assertThat(record1.value1()).isEqualTo(OffsetDateTime.of(2019, 04, 03, 22, 00, 00, 00, ZoneOffset.UTC));
+        assertThat(record1.value1()).isEqualTo(OpenEHRDateTimeParseUtils.parseDateTime("2019-04-03T22:00:00Z"));
         assertThat(record1.value2().getKorotkoffSoundsDefiningCode())
                 .isEqualTo(KorotkoffSoundsDefiningCode.FIFTH_SOUND);
         assertThat(record1.value3()).isEqualTo(CuffSizeDefiningCode.ADULT);

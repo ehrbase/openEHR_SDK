@@ -94,7 +94,7 @@
                         <include>TermMappingTestOverwritten</include>
                         <include>TimeZoneTestOverwrite</include>
                         <include>UidTest</include>
-                        <include>WebTemplateContentTest.java</include>
+                        <include>WebTemplateContentTestOverwrite.java</include>
                         <include>WorkflowIdTestOverwrite</include>
                         <include>XdsBuilderTest</include>
                         <include>DbConformanceTest</include>

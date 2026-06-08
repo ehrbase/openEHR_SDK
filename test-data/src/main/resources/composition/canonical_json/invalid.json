@@ -72,7 +72,7 @@
         "archetype_node_id": "at0001",
         "origin": {
           "_type": "DV_DATE_TIME",
-          "value": "2019-01-28T21:22:19,552+0000"
+          "value": "2019-01-28T21:22:19,552+00:00"
         },
         "events": [
           {
@@ -84,7 +84,7 @@
             "archetype_node_id": "at0002",
             "time": {
               "_type": "DV_DATE_TIME",
-              "value": "2019-01-28T21:22:19,562+0000"
+              "value": "2019-01-28T21:22:19,562+00:00"
             },
             "data": {
               "_type": "ITEM_TREE",

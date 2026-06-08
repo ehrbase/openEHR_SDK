@@ -17,12 +17,31 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.jsonencoding;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.nedap.archie.json.JacksonUtil;
+import java.io.IOException;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 
 public final class ArchieObjectMapperProvider {
 
-    private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.getObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER =
+            JacksonUtil.getObjectMapper().copy();
+
+    static {
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(OpenEhrTemporal.class, new JsonSerializer<OpenEhrTemporal>() {
+            @Override
+            public void serialize(OpenEhrTemporal value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException {
+                gen.writeString(value.toString());
+            }
+        });
+        OBJECT_MAPPER.registerModule(module);
+    }
 
     private ArchieObjectMapperProvider() {
         // NOOP
