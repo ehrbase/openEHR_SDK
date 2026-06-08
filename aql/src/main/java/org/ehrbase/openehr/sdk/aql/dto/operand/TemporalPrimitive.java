@@ -76,7 +76,7 @@ public final class TemporalPrimitive extends StringPrimitive {
         if (TIME_REGEX.matcher(value).matches()) {
             return OpenEHRDateTimeParseUtils.parseTime(value);
         }
-        if (value.indexOf('T') > 0) {
+        if (value.indexOf('T') >= 0) {
             return OpenEHRDateTimeParseUtils.parseDateTime(value);
         } else {
             return OpenEHRDateTimeParseUtils.parseDate(value);
