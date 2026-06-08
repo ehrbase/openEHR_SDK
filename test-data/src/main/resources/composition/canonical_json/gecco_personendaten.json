@@ -49,7 +49,7 @@
   },
   "context": {
     "start_time": {
-      "value": "2021-09-15T22:10:00.335-0300"
+      "value": "2021-09-15T22:10:00.335-03:00"
     },
     "setting": {
       "value": "emergency care",
@@ -239,11 +239,11 @@
                   "upper_unbounded": true,
                   "lower": {
                     "_type": "DV_DATE_TIME",
-                    "value": "2021-09-15T22:10:00.586-0300"
+                    "value": "2021-09-15T22:10:00.586-03:00"
                   },
                   "upper": {
                     "_type": "DV_DATE_TIME",
-                    "value": "2021-09-15T22:10:00.587-0300"
+                    "value": "2021-09-15T22:10:00.587-03:00"
                   }
                 }
               }
@@ -338,7 +338,7 @@
                     "archetype_node_id": "at0001",
                     "value": {
                       "_type": "DV_DATE_TIME",
-                      "value": "2021-09-15T22:10:00.615-0300"
+                      "value": "2021-09-15T22:10:00.615-03:00"
                     }
                   }
                 ]
@@ -476,7 +476,7 @@
                 "archetype_node_id": "at0016",
                 "value": {
                   "_type": "DV_DATE_TIME",
-                  "value": "2021-09-15T22:10:00.658-0300"
+                  "value": "2021-09-15T22:10:00.658-03:00"
                 }
               },
               {
@@ -488,7 +488,7 @@
                 "archetype_node_id": "at0017",
                 "value": {
                   "_type": "DV_DATE_TIME",
-                  "value": "2021-09-15T22:10:00.659-0300"
+                  "value": "2021-09-15T22:10:00.659-03:00"
                 }
               }
             ]
@@ -742,7 +742,7 @@
         "archetype_node_id": "at0001",
         "origin": {
           "_type": "DV_DATE_TIME",
-          "value": "2021-09-15T22:10:00.726-0300"
+          "value": "2021-09-15T22:10:00.726-03:00"
         },
         "events": [
           {
@@ -754,7 +754,7 @@
             "archetype_node_id": "at0002",
             "time": {
               "_type": "DV_DATE_TIME",
-              "value": "2021-09-15T22:10:00.732-0300"
+              "value": "2021-09-15T22:10:00.732-03:00"
             },
             "data": {
               "_type": "ITEM_TREE",
