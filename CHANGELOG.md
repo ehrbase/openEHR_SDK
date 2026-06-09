@@ -2,7 +2,7 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## [unreleased]
+## [2.32.0]
  ### Added
 - Support for partial time [#747](https://github.dev/ehrbase/openEHR_SDK/pull/747)
  ### Changed
@@ -545,4 +545,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.29.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.28.0...v2.29.0
 [2.30.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.29.0...v2.30.0
 [2.31.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.30.0...v2.31.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v2.31.0...HEAD
+[2.32.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.31.0...v2.32.0
