@@ -37,7 +37,7 @@ class DvOrdinalValidatorTest extends AbstractRMObjectValidatorTest {
     void testValidate() throws Exception {
         var node = parseNode("/webtemplate_nodes/dv_ordinal.json");
 
-        var symbol = new DvCodedText("Test", new CodePhrase(new TerminologyId("local"), "at0010"));
+        var symbol = new DvCodedText("Test", new CodePhrase(new TerminologyId("any-terminology"), "any-code"));
         var result = validator.validate(new DvOrdinal(1L, symbol), node);
         assertTrue(result.isEmpty());
     }
@@ -50,11 +50,17 @@ class DvOrdinalValidatorTest extends AbstractRMObjectValidatorTest {
         var result = validator.validate(new DvOrdinal(1L, symbol), node);
         assertTrue(result.isEmpty());
 
+        // wrong code
         symbol = new DvCodedText("First", new CodePhrase(new TerminologyId("local"), "at0001"));
         result = validator.validate(new DvOrdinal(1L, symbol), node);
         assertEquals(1, result.size());
+        // Wrong value
         symbol = new DvCodedText("First", new CodePhrase(new TerminologyId("local"), "at0043"));
         result = validator.validate(new DvOrdinal(2L, symbol), node);
+        assertEquals(1, result.size());
+        // wrong terminology
+        symbol = new DvCodedText("First", new CodePhrase(new TerminologyId("other"), "at0043"));
+        result = validator.validate(new DvOrdinal(1L, symbol), node);
         assertEquals(1, result.size());
     }
 }

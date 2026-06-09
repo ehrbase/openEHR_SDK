@@ -32,6 +32,7 @@ import java.time.OffsetTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -47,6 +48,10 @@ class OpenEHRDateTimeSerializationUtilsTest {
         PRECISION_MONTH(YearMonth.of(2023, 1), "2023-01"),
         PRECISION_YEAR(Year.of(2023), "2023"),
 
+        // ------partial precisions, as created by the parser
+        PRECISION_PARTIAL_MONTH(new OpenEhrTemporal(YearMonth.of(2023, 1)), "2023-01"),
+        PRECISION_PARTIAL_YEAR(new OpenEhrTemporal(Year.of(2023)), "2023"),
+
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
                 LocalTime.of(0, 0),
@@ -55,14 +60,12 @@ class OpenEHRDateTimeSerializationUtilsTest {
 
         private final TemporalAccessor input;
         private final String expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
         DateTestData(TemporalAccessor input, String expected) {
             this.input = input;
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -73,7 +76,6 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -82,14 +84,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
     @ParameterizedTest
     @EnumSource(DateTestData.class)
     void formatDate(DateTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDate(data.input));
+        } else {
             Exception exception = assertThrows(
                     data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.formatDate(data.input));
             if (data.expectedExceptionMessage != null) {
                 Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDate(data.input));
         }
     }
 
@@ -98,19 +100,19 @@ class OpenEHRDateTimeSerializationUtilsTest {
 
         // ------Extended valid format and values
         PRECISION_NANOSECOND_ZULU_OFFSET(
-                OffsetTime.of(12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(0, 0)), "12:13:14.123456789Z"),
+                "12:13:14.123456789Z", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(0, 0)),
         PRECISION_NANOSECOND_WITH_OFFSET(
-                OffsetTime.of(12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(1, 30)), "12:13:14.123456789+01:30"),
+                "12:13:14.123456789+01:30", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         PRECISION_MILLISECOND_WITH_OFFSET(
-                OffsetTime.of(12, 13, 14, 123000000, ZoneOffset.ofHoursMinutes(1, 30)), "12:13:14.123+01:30"),
-        PRECISION_SECOND_WITH_OFFSET(OffsetTime.of(12, 13, 14, 0, ZoneOffset.ofHoursMinutes(1, 30)), "12:13:14+01:30"),
-        PRECISION_MINUTE_WITH_OFFSET(OffsetTime.of(12, 13, 0, 0, ZoneOffset.ofHoursMinutes(1, 30)), "12:13:00+01:30"),
-        PRECISION_HOUR_WITH_OFFSET(OffsetTime.of(12, 0, 0, 0, ZoneOffset.ofHoursMinutes(1, 30)), "12:00:00+01:30"),
-        PRECISION_NANOSECOND(LocalTime.of(12, 13, 14, 123456789), "12:13:14.123456789"),
-        PRECISION_MILLISECOND(LocalTime.of(12, 13, 14, 123000000), "12:13:14.123"),
-        PRECISION_SECOND(LocalTime.of(12, 13, 14), "12:13:14"),
-        PRECISION_MINUTE(LocalTime.of(12, 13, 0), "12:13:00"),
-        PRECISION_HOUR(LocalTime.of(12, 0, 0), "12:00:00"),
+                "12:13:14.123+01:30", ChronoField.MILLI_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
+        PRECISION_SECOND_WITH_OFFSET("12:13:14+01:30", ChronoField.SECOND_OF_MINUTE, ZoneOffset.ofHoursMinutes(1, 30)),
+        PRECISION_MINUTE_WITH_OFFSET("12:13+01:30", ChronoField.MINUTE_OF_HOUR, ZoneOffset.ofHoursMinutes(1, 30)),
+        PRECISION_HOUR_WITH_OFFSET("12+01:30", ChronoField.HOUR_OF_DAY, ZoneOffset.ofHoursMinutes(1, 30)),
+        PRECISION_NANOSECOND_POINT("12:13:14.123456789", ChronoField.NANO_OF_SECOND),
+        PRECISION_MILLISECOND_POINT("12:13:14.123", ChronoField.MILLI_OF_SECOND),
+        PRECISION_SECOND("12:13:14", ChronoField.SECOND_OF_MINUTE),
+        PRECISION_MINUTE("12:13", ChronoField.MINUTE_OF_HOUR),
+        PRECISION_HOUR("12", ChronoField.HOUR_OF_DAY),
 
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
@@ -120,14 +122,16 @@ class OpenEHRDateTimeSerializationUtilsTest {
 
         private final TemporalAccessor input;
         private final String expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
-        TimeTestData(TemporalAccessor input, String expected) {
-            this.input = input;
+        TimeTestData(String expected, ChronoField precision) {
+            this(expected, precision, null);
+        }
+
+        TimeTestData(String expected, ChronoField precision, final ZoneOffset offset) {
+            this.input = OpenEHRDateTimeParseUtilsTest.buildExpectedTemporal(precision, offset, false);
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -138,7 +142,6 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -147,14 +150,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
     @ParameterizedTest
     @EnumSource(TimeTestData.class)
     void formatTime(TimeTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatTime(data.input));
+        } else {
             Exception exception = assertThrows(
                     data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.formatTime(data.input));
             if (data.expectedExceptionMessage != null) {
                 Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatTime(data.input));
         }
     }
 
@@ -162,32 +165,24 @@ class OpenEHRDateTimeSerializationUtilsTest {
         NULL_INPUT(null, null),
 
         // Extended valid format and values
-        PRECISION_NANOSECOND_ZULU_OFFSET(
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(0, 0)),
-                "2023-01-01T12:13:14.123456789Z"),
+        PRECISION_NANOSECOND_ZULU_OFFSET("2023-01-01T12:13:14.123456789Z", ChronoField.NANO_OF_SECOND, ZoneOffset.UTC),
         PRECISION_NANOSECOND_WITH_OFFSET(
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123456789, ZoneOffset.ofHoursMinutes(1, 30)),
-                "2023-01-01T12:13:14.123456789+01:30"),
+                "2023-01-01T12:13:14.123456789+01:30", ChronoField.NANO_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         PRECISION_MILLISECOND_WITH_OFFSET(
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 123000000, ZoneOffset.ofHoursMinutes(1, 30)),
-                "2023-01-01T12:13:14.123+01:30"),
+                "2023-01-01T12:13:14.123+01:30", ChronoField.MILLI_OF_SECOND, ZoneOffset.ofHoursMinutes(1, 30)),
         PRECISION_SECOND_WITH_OFFSET(
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 14, 0, ZoneOffset.ofHoursMinutes(1, 30)),
-                "2023-01-01T12:13:14+01:30"),
+                "2023-01-01T12:13:14+01:30", ChronoField.SECOND_OF_MINUTE, ZoneOffset.ofHoursMinutes(1, 30)),
         PRECISION_MINUTE_WITH_OFFSET(
-                OffsetDateTime.of(2023, 1, 1, 12, 13, 0, 0, ZoneOffset.ofHoursMinutes(1, 30)),
-                "2023-01-01T12:13:00+01:30"),
-        PRECISION_HOUR_WITH_OFFSET(
-                OffsetDateTime.of(2023, 1, 1, 12, 0, 0, 0, ZoneOffset.ofHoursMinutes(1, 30)),
-                "2023-01-01T12:00:00+01:30"),
-        PRECISION_NANOSECOND(LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123456789), "2023-01-01T12:13:14.123456789"),
-        PRECISION_MILLISECOND(LocalDateTime.of(2023, 1, 1, 12, 13, 14, 123000000), "2023-01-01T12:13:14.123"),
-        PRECISION_SECOND(LocalDateTime.of(2023, 1, 1, 12, 13, 14), "2023-01-01T12:13:14"),
-        PRECISION_MINUTE(LocalDateTime.of(2023, 1, 1, 12, 13, 0), "2023-01-01T12:13:00"),
-        PRECISION_HOUR(LocalDateTime.of(2023, 1, 1, 12, 0, 0), "2023-01-01T12:00:00"),
-        PRECISION_DAY(LocalDate.of(2023, 1, 1), "2023-01-01"),
-        PRECISION_MONTH(YearMonth.of(2023, 1), "2023-01"),
-        PRECISION_YEAR(Year.of(2023), "2023"),
+                "2023-01-01T12:13+01:30", ChronoField.MINUTE_OF_HOUR, ZoneOffset.ofHoursMinutes(1, 30)),
+        PRECISION_HOUR_WITH_OFFSET("2023-01-01T12+01:30", ChronoField.HOUR_OF_DAY, ZoneOffset.ofHoursMinutes(1, 30)),
+        PRECISION_NANOSECOND_POINT("2023-01-01T12:13:14.123456789", ChronoField.NANO_OF_SECOND),
+        PRECISION_MILLISECOND_POINT("2023-01-01T12:13:14.123", ChronoField.MILLI_OF_SECOND),
+        PRECISION_SECOND("2023-01-01T12:13:14", ChronoField.SECOND_OF_MINUTE),
+        PRECISION_MINUTE("2023-01-01T12:13", ChronoField.MINUTE_OF_HOUR),
+        PRECISION_HOUR("2023-01-01T12", ChronoField.HOUR_OF_DAY),
+        PRECISION_DAY("2023-01-01", ChronoField.DAY_OF_MONTH),
+        PRECISION_MONTH("2023-01", ChronoField.MONTH_OF_YEAR),
+        PRECISION_YEAR("2023", ChronoField.YEAR),
 
         // -------invalid precision
         MIN_PRECISION_NOT_PRESENT(
@@ -197,14 +192,16 @@ class OpenEHRDateTimeSerializationUtilsTest {
 
         private final TemporalAccessor input;
         private final String expected;
-        private final boolean shouldThrowException;
         private final Class<? extends Exception> expectedExceptionType;
         private final String expectedExceptionMessage;
 
-        DateTimeTestData(TemporalAccessor input, String expected) {
-            this.input = input;
+        DateTimeTestData(String expected, ChronoField precision) {
+            this(expected, precision, null);
+        }
+
+        DateTimeTestData(String expected, ChronoField precision, final ZoneOffset offset) {
+            this.input = OpenEHRDateTimeParseUtilsTest.buildExpectedTemporal(precision, offset, true);
             this.expected = expected;
-            this.shouldThrowException = false;
             this.expectedExceptionType = null;
             this.expectedExceptionMessage = null;
         }
@@ -215,7 +212,6 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 String expectedExceptionMessage) {
             this.input = input;
             this.expected = null;
-            this.shouldThrowException = true;
             this.expectedExceptionType = expectedExceptionType;
             this.expectedExceptionMessage = expectedExceptionMessage;
         }
@@ -224,14 +220,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
     @ParameterizedTest
     @EnumSource(DateTimeTestData.class)
     void formatDateTime(DateTimeTestData data) {
-        if (data.shouldThrowException) {
+        if (data.expectedExceptionType == null) {
+            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDateTime(data.input));
+        } else {
             Exception exception = assertThrows(
                     data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.formatDateTime(data.input));
             if (data.expectedExceptionMessage != null) {
                 Assertions.assertEquals(data.expectedExceptionMessage, exception.getMessage());
             }
-        } else {
-            Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.formatDateTime(data.input));
         }
     }
 
@@ -247,6 +243,12 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 LocalDate.of(2023, 3, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
         PRECISION_YEAR(
                 new DvDate(Year.of(2023)), LocalDate.of(2023, 1, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_MONTH(
+                new DvDate(new OpenEhrTemporal(YearMonth.of(2023, 3))),
+                LocalDate.of(2023, 3, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_YEAR(
+                new DvDate(new OpenEhrTemporal(Year.of(2023))),
+                LocalDate.of(2023, 1, 1).toEpochDay() + DvDate.DAYS_BETWEEN_0001_AND_1970),
         MISSING_YEAR(new DvDate(Instant.ofEpochSecond(0)), DateTimeException.class);
 
         private final DvDate input;
@@ -264,19 +266,15 @@ class OpenEHRDateTimeSerializationUtilsTest {
             this.expected = null;
             this.expectedExceptionType = expectedExceptionType;
         }
-
-        boolean shouldThrowException() {
-            return this.expectedExceptionType != null;
-        }
     }
 
     @ParameterizedTest
     @EnumSource(DvDateMagnitudeTestData.class)
     void testToMagnitudeDvDate(DvDateMagnitudeTestData data) {
-        if (data.shouldThrowException()) {
-            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
-        } else {
+        if (data.expectedExceptionType == null) {
             Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
         }
     }
 
@@ -337,6 +335,14 @@ class OpenEHRDateTimeSerializationUtilsTest {
                 LocalDate.of(2023, 3, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
                         + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
         PRECISION_YEAR(
+                new DvDateTime(new OpenEhrTemporal(Year.of(2023))),
+                LocalDate.of(2023, 1, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_MONTH(
+                new DvDateTime(new OpenEhrTemporal(YearMonth.of(2023, 3))),
+                LocalDate.of(2023, 3, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
+                        + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
+        PRECISION_PARTIAL_YEAR(
                 new DvDateTime(Year.of(2023)),
                 LocalDate.of(2023, 1, 1).toEpochSecond(LocalTime.of(0, 0, 0), ZoneOffset.UTC)
                         + DvDateTime.SECONDS_BETWEEN_0001_AND_1970),
@@ -357,19 +363,15 @@ class OpenEHRDateTimeSerializationUtilsTest {
             this.expected = null;
             this.expectedExceptionType = expectedExceptionType;
         }
-
-        boolean shouldThrowException() {
-            return this.expectedExceptionType != null;
-        }
     }
 
     @ParameterizedTest
     @EnumSource(DvDateTimeMagnitudeTestData.class)
     void testToMagnitudeDvDateTime(DvDateTimeMagnitudeTestData data) {
-        if (data.shouldThrowException()) {
-            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
-        } else {
+        if (data.expectedExceptionType == null) {
             Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
         }
     }
 
@@ -419,19 +421,15 @@ class OpenEHRDateTimeSerializationUtilsTest {
             this.expected = null;
             this.expectedExceptionType = expectedExceptionType;
         }
-
-        boolean shouldThrowException() {
-            return this.expectedExceptionType != null;
-        }
     }
 
     @ParameterizedTest
     @EnumSource(DvTimeMagnitudeTestData.class)
     void testToMagnitudeDvTime(DvTimeMagnitudeTestData data) {
-        if (data.shouldThrowException()) {
-            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
-        } else {
+        if (data.expectedExceptionType == null) {
             Assertions.assertEquals(data.expected, OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
+        } else {
+            assertThrows(data.expectedExceptionType, () -> OpenEHRDateTimeSerializationUtils.toMagnitude(data.input));
         }
     }
 }

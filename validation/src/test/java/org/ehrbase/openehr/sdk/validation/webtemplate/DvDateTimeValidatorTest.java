@@ -42,7 +42,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void testValidate_Range() throws Exception {
+    void testValidate_Range() {
         var node = parseNode("/webtemplate_nodes/dv_datetime_range.json");
         OffsetDateTime value;
 
@@ -65,7 +65,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void testValidate_Pattern() throws Exception {
+    void testValidate_Pattern() {
         var node = parseNode("/webtemplate_nodes/dv_datetime_pattern.json");
         var value = OffsetDateTime.of(2022, 1, 10, 12, 0, 0, 0, ZoneOffset.UTC);
 

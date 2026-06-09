@@ -63,7 +63,7 @@ public final class OpenEHRDateTimeSerializationUtils {
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
@@ -92,7 +92,7 @@ public final class OpenEHRDateTimeSerializationUtils {
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
@@ -161,7 +161,7 @@ public final class OpenEHRDateTimeSerializationUtils {
 
         TemporalAccessor value = dateTime.getValue();
         LocalDate date = toLocalDate(value);
-        final Long epochSecond;
+        final long epochSecond;
         if (value.isSupported(ChronoField.HOUR_OF_DAY)) {
             Pair<LocalTime, ZoneOffset> localTimeWithTz = toLocalTimeAndTz(value);
             epochSecond = date.toEpochSecond(localTimeWithTz.getLeft(), localTimeWithTz.getRight());
@@ -191,16 +191,14 @@ public final class OpenEHRDateTimeSerializationUtils {
 
         // Most common cases (the ones we parse ISO strings with a date component to) where creating a new LocalDate is
         // not necessary
-        if (value instanceof OffsetDateTime) {
-            return ((OffsetDateTime) value).toLocalDate();
-        }
-
-        if (value instanceof LocalDateTime) {
-            return ((LocalDateTime) value).toLocalDate();
-        }
-
-        if (value instanceof LocalDate) {
-            return (LocalDate) value;
+        if (value instanceof OffsetDateTime odt) {
+            return odt.toLocalDate();
+        } else if (value instanceof LocalDateTime ldt) {
+            return ldt.toLocalDate();
+        } else if (value instanceof LocalDate ld) {
+            return ld;
+        } else if (value instanceof OpenEhrTemporal pdt) {
+            return pdt.query(TemporalQueries.localDate());
         }
 
         // more exotic cases
@@ -216,20 +214,14 @@ public final class OpenEHRDateTimeSerializationUtils {
 
         // Most common cases (the ones we parse ISO strings with a time component to) where creating a new LocalTime is
         // not necessary
-        if (value instanceof OffsetTime) {
-            return Pair.of(((OffsetTime) value).toLocalTime(), ((OffsetTime) value).getOffset());
-        }
-
-        if (value instanceof LocalTime) {
-            return Pair.of((LocalTime) value, ZoneOffset.UTC);
-        }
-
-        if (value instanceof OffsetDateTime) {
-            return Pair.of(((OffsetDateTime) value).toLocalTime(), ((OffsetDateTime) value).getOffset());
-        }
-
-        if (value instanceof LocalDateTime) {
-            return Pair.of(((LocalDateTime) value).toLocalTime(), ZoneOffset.UTC);
+        if (value instanceof OffsetTime ot) {
+            return Pair.of(ot.toLocalTime(), ot.getOffset());
+        } else if (value instanceof LocalTime lt) {
+            return Pair.of(lt, ZoneOffset.UTC);
+        } else if (value instanceof OffsetDateTime odt) {
+            return Pair.of(odt.toLocalTime(), odt.getOffset());
+        } else if (value instanceof LocalDateTime ldt) {
+            return Pair.of(ldt.toLocalTime(), ZoneOffset.UTC);
         }
 
         // More exotic cases

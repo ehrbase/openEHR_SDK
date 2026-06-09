@@ -189,7 +189,7 @@ class FlatValidationTest {
         var json = IOUtils.toString(testData.getStream(), StandardCharsets.UTF_8);
         var composition = unmarshaller.unmarshal(json);
 
-        var existingTemplate = templateProvider.find(templateId);
+        var existingTemplate = templateProvider.buildIntrospect(templateId);
         assertTrue(existingTemplate.isPresent());
 
         var result = validator.validate(composition, existingTemplate.get());

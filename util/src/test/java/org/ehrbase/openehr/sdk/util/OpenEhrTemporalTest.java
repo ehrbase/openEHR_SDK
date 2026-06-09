@@ -1,0 +1,250 @@
+/*
+ * Copyright (c) 2026 vitasystems GmbH and Hannover Medical School.
+ *
+ * This file is part of project openEHR_SDK
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.ehrbase.openehr.sdk.util;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import java.text.ParsePosition;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.chrono.IsoChronology;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class OpenEhrTemporalTest {
+
+    @Test
+    void checkFieldOrder() {
+        for (int i = 1; i < OpenEhrTemporal.CHRONO_FIELDS.length - 1; i++) {
+            assertThat(OpenEhrTemporal.CHRONO_FIELDS[i].ordinal())
+                    .isLessThan(OpenEhrTemporal.CHRONO_FIELDS[i - 1].ordinal());
+        }
+    }
+
+    @Test
+    void ofLocalDateTime() {
+        var value = LocalDateTime.of(2024, 2, 3, 4, 5, 6, 7);
+
+        var c = new OpenEhrTemporal(value);
+
+        assertThat(LocalDateTime.from(c)).isEqualTo(value);
+        assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 2, 3));
+        assertThat(LocalTime.from(c)).isEqualTo(LocalTime.of(4, 5, 6, 7));
+    }
+
+    @Test
+    void ofOffsetDateTime() {
+        var value = OffsetDateTime.of(2024, 2, 3, 4, 5, 6, 7, ZoneOffset.ofHoursMinutes(8, 9));
+        var c = new OpenEhrTemporal(value);
+
+        assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 2, 3, 4, 5, 6, 7));
+        assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 2, 3));
+        assertThat(LocalTime.from(c)).isEqualTo(LocalTime.of(4, 5, 6, 7));
+        assertThat(ZoneOffset.from(c)).isEqualTo(ZoneOffset.ofHoursMinutes(8, 9));
+    }
+
+    @Test
+    void ofZonedDateTime() {
+        var value = ZonedDateTime.of(2024, 2, 3, 4, 5, 6, 7, ZoneOffset.ofHoursMinutes(8, 9));
+        var c = new OpenEhrTemporal(value);
+
+        assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 2, 3, 4, 5, 6, 7));
+        assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 2, 3));
+        assertThat(LocalTime.from(c)).isEqualTo(LocalTime.of(4, 5, 6, 7));
+        assertThat(ZoneOffset.from(c)).isEqualTo(ZoneOffset.ofHoursMinutes(8, 9));
+    }
+
+    @Test
+    void ofYear() {
+        var c = new OpenEhrTemporal(Year.of(2024));
+
+        assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 1, 1, 0, 0));
+        assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 1, 1));
+        assertThat(LocalTime.from(c)).isEqualTo(LocalTime.of(0, 0));
+    }
+
+    @Test
+    void ofYearMonth() {
+        var c = new OpenEhrTemporal(YearMonth.of(2024, 3));
+
+        assertThat(LocalDateTime.from(c)).isEqualTo(LocalDateTime.of(2024, 3, 1, 0, 0));
+        assertThat(LocalDate.from(c)).isEqualTo(LocalDate.of(2024, 3, 1));
+        assertThat(LocalTime.from(c)).isEqualTo(LocalTime.of(0, 0));
+    }
+
+    public static Stream<Arguments> fieldsMatch() {
+        return Stream.of(LocalDateTime.of(2024, 3, 7, 1, 2, 3), YearMonth.of(2024, 3), Year.of(2024))
+                .map(Arguments::of);
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void fieldsMatch(TemporalAccessor temporal) {
+        assertFieldsMatch(new OpenEhrTemporal(temporal), temporal);
+    }
+
+    private void assertFieldsMatch(OpenEhrTemporal from, TemporalAccessor expected) {
+        ChronoField[] relevantFields = new ChronoField[] {
+            ChronoField.YEAR,
+            ChronoField.MONTH_OF_YEAR,
+            ChronoField.DAY_OF_MONTH,
+            ChronoField.HOUR_OF_DAY,
+            ChronoField.MINUTE_OF_HOUR,
+            ChronoField.SECOND_OF_MINUTE,
+            ChronoField.NANO_OF_SECOND,
+            ChronoField.OFFSET_SECONDS
+        };
+
+        for (ChronoField field : relevantFields) {
+            if (expected.isSupported(field)) {
+                assertThat(from.get(field)).isEqualTo(expected.get(field));
+            } else {
+                assertThat(from.isSupported(field)).isFalse();
+            }
+        }
+    }
+
+    static Stream<Arguments> to_string() {
+        return Stream.of(
+                Arguments.of(Year.of(2024), "2024", null),
+                Arguments.of(YearMonth.of(2024, 3), "2024-03", null),
+                Arguments.of(LocalDate.of(2024, 3, 7), "2024-03-07", null),
+                Arguments.of(
+                        LocalDateTime.of(2021, 2, 3, 4, 5, 6), "2021-02-03T04:05:06", ChronoField.SECOND_OF_MINUTE),
+                Arguments.of(
+                        LocalDateTime.of(2021, 2, 3, 4, 5, 6, 78),
+                        "2021-02-03T04:05:06.000000078",
+                        ChronoField.NANO_OF_SECOND));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void to_string(TemporalAccessor temporal, String expected, ChronoField maxResolution) {
+        assertThat(new OpenEhrTemporal(temporal, maxResolution == null ? ChronoField.NANO_OF_SECOND : maxResolution))
+                .hasToString(expected);
+    }
+
+    @Test
+    void dvDateTimeMagnitude() {
+        OpenEhrTemporal partialDate = new OpenEhrTemporal(YearMonth.of(2024, 3));
+        DvDateTime d = new DvDateTime(partialDate);
+        assertThat(d.getMagnitude())
+                .isGreaterThan(DvDateTime.SECONDS_BETWEEN_0001_AND_1970 + 54 * 365 * 24 * 3600)
+                .isLessThan(DvDateTime.SECONDS_BETWEEN_0001_AND_1970 + 55 * 365 * 24 * 3600);
+    }
+
+    @ParameterizedTest
+    @CsvSource(delimiter = ';', textBlock = """
+        2024-02-03; 04:05:06.7
+        2024-02-03; 04:05:06
+        2024-02-03; 04:05
+        2024-02-03; 04
+                  ; 04:05:06,7
+                  ; 04:05:06
+                  ; 04:05
+                  ; 04
+        2024-02-03;
+        2024-02;
+        2024;
+        2024-02-03; 04:05:06.7+02
+        2024-02-03; 04:05:06+02:30
+        2024-02-03; 04:05-02
+        2024-02-03; 04Z
+                  ; 04:05:06.7+02
+                  ; 04:05:06+02:30
+                  ; 04:05-02
+                  ; 04Z
+        """)
+    void testPartials(String date, String time) {
+        String str;
+        TemporalAccessor parsed;
+
+        // managing expectations
+        String expectedTime = time == null ? null : time.replace(',', '.').replaceAll("[+-]\\d{2}$", "$0:00");
+        String expectedToString;
+
+        if (date == null) {
+            str = time;
+            parsed = OpenEHRDateTimeParseUtils.parseTime(str);
+            expectedToString = expectedTime;
+        } else if (time == null) {
+            str = date;
+            parsed = OpenEHRDateTimeParseUtils.parseDate(str);
+            expectedToString = date;
+        } else {
+            str = date + 'T' + time;
+            parsed = OpenEHRDateTimeParseUtils.parseDateTime(str);
+            expectedToString = date + 'T' + expectedTime;
+        }
+
+        var c = new OpenEhrTemporal(parsed);
+        assertFieldsMatch(c, parsed);
+
+        assertThat(c).hasToString(expectedToString);
+    }
+
+    @Test
+    void PartialDateTime_query() {
+        // date-based with offset: all query types return non-null
+        var dateTime = OffsetDateTime.of(2024, 2, 3, 4, 5, 6, 7, ZoneOffset.ofHoursMinutes(2, 30));
+        var c = new OpenEhrTemporal(dateTime);
+
+        assertThat(c.query(TemporalQueries.localDate())).isEqualTo(LocalDate.of(2024, 2, 3));
+        assertThat(c.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(4, 5, 6, 7));
+        assertThat(c.query(TemporalQueries.offset())).isEqualTo(ZoneOffset.ofHoursMinutes(2, 30));
+        assertThat(c.query(TemporalQueries.zone())).isEqualTo(ZoneOffset.ofHoursMinutes(2, 30));
+        assertThat(c.query(TemporalQueries.zoneId())).isEqualTo(ZoneOffset.ofHoursMinutes(2, 30));
+        assertThat(c.query(TemporalQueries.chronology())).isEqualTo(IsoChronology.INSTANCE);
+        assertThat(c.query(TemporalQueries.precision())).isEqualTo(ChronoUnit.NANOS);
+
+        // year-only: month/day default to 1, time defaults to midnight, no offset
+        var year = new OpenEhrTemporal(OpenEHRDateTimeParseUtils.ISO_8601_DATE_PARSER.parse("2024"));
+        assertThat(year.query(TemporalQueries.localDate())).isEqualTo(LocalDate.of(2024, 1, 1));
+        assertThat(year.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(0, 0));
+        assertThat(year.query(TemporalQueries.offset())).isNull();
+        assertThat(year.query(TemporalQueries.zone())).isNull();
+        assertThat(year.query(TemporalQueries.precision())).isEqualTo(ChronoUnit.YEARS);
+
+        // time-only: localDate returns null, no offset
+        TemporalAccessor parse =
+                OpenEHRDateTimeParseUtils.ISO_8601_TIME_PARSER.parseUnresolved("04:05", new ParsePosition(0));
+        var timeOnly = new OpenEhrTemporal(parse);
+        assertThat(timeOnly.query(TemporalQueries.localDate())).isNull();
+        assertThat(timeOnly.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(4, 5));
+        assertThat(timeOnly.query(TemporalQueries.offset())).isNull();
+        assertThat(timeOnly.query(TemporalQueries.precision())).isEqualTo(ChronoUnit.MINUTES);
+
+        // unknown query returns null
+        assertThat(c.<Object>query(temporal -> null)).isNull();
+    }
+}

@@ -17,7 +17,9 @@
  */
 package org.ehrbase.openehr.sdk.serialisation.flatencoding.std.umarshal.postprocessor;
 
-import static org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper.*;
+import static org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper.consumeAllMatching;
+import static org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper.convertAttributeToFlat;
+import static org.ehrbase.openehr.sdk.serialisation.walker.FlatHelper.extractMultiValued;
 import static org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser.PATH_DIVIDER;
 
 import com.nedap.archie.rm.composition.EventContext;
@@ -29,6 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
 import org.ehrbase.openehr.sdk.serialisation.walker.defaultvalues.DefaultValues;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.webtemplate.path.flat.FlatPathDto;
 
 public class EventContextUnmarshalPostprocessor extends AbstractUnmarshalPostprocessor<EventContext> {
@@ -49,7 +52,7 @@ public class EventContextUnmarshalPostprocessor extends AbstractUnmarshalPostpro
                 values,
                 s -> {
                     if (s != null) {
-                        rmObject.setEndTime(new DvDateTime(s));
+                        rmObject.setEndTime(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime(s)));
                     }
                 },
                 String.class,

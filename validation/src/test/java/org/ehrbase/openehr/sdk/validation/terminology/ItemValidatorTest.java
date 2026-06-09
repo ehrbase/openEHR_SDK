@@ -17,39 +17,48 @@
  */
 package org.ehrbase.openehr.sdk.validation.terminology;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static com.nedap.archie.rmutil.InvariantUtil.ENGLISH;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.ehrbase.openehr.sdk.terminology.TerminologyProvider.OPENEHR;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.TerminologyId;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.AttributeCodesetMapping;
-import org.ehrbase.openehr.sdk.terminology.openehr.implementation.LocalizedTerminologies;
-import org.junit.Test;
+import org.ehrbase.openehr.sdk.validation.terminology.check.DvCodedTextCheck;
+import org.junit.jupiter.api.Test;
 
-public class ItemValidatorTest {
+class ItemValidatorTest {
 
     @Test
-    public void matchValidator() throws NoSuchMethodException, IllegalAccessException, ClassNotFoundException {
-
-        ItemValidator itemValidator = new ItemValidator();
-
-        itemValidator.add(new org.ehrbase.openehr.sdk.validation.terminology.validator.DvCodedText());
+    void validate_valid() {
+        ItemValidator itemValidator = new ItemValidator(new DvCodedTextCheck());
 
         DvCodedText dvCodedText =
-                new DvCodedText("secondary allied health care", new CodePhrase(new TerminologyId("openehr"), "234"));
+                new DvCodedText("secondary allied health care", new CodePhrase(new TerminologyId(OPENEHR), "234"));
 
-        assertTrue(itemValidator.isValidatedRmObjectType(dvCodedText));
+        assertThat(itemValidator.isValidatedRmObjectType(dvCodedText)).isTrue();
 
-        try {
-            itemValidator.validate(
-                    new LocalizedTerminologies().locale("en"),
-                    AttributeCodesetMapping.getInstance(),
-                    "setting",
-                    dvCodedText,
-                    "en");
-        } catch (Throwable throwable) {
-            fail();
-        }
+        assertDoesNotThrow(() -> itemValidator.validate("setting", dvCodedText, ENGLISH));
+    }
+
+    @Test
+    void validate_invalid() {
+        ItemValidator itemValidator = new ItemValidator(new DvCodedTextCheck());
+
+        // unknown code: not present in the openehr terminology group for "setting"
+        DvCodedText unknownCode = new DvCodedText("whatever", new CodePhrase(new TerminologyId(OPENEHR), "99999"));
+
+        assertThatThrownBy(() -> itemValidator.validate("setting", unknownCode, ENGLISH))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("99999");
+
+        // valid code but mismatched value text
+        DvCodedText wrongValue = new DvCodedText("wrong label", new CodePhrase(new TerminologyId(OPENEHR), "234"));
+
+        assertThatThrownBy(() -> itemValidator.validate("setting", wrongValue, ENGLISH))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("wrong label");
     }
 }

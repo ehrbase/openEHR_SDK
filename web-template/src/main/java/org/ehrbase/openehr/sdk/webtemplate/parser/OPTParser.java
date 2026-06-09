@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
@@ -62,6 +61,7 @@ import org.ehrbase.openehr.sdk.aql.webtemplatepath.AqlPath;
 import org.ehrbase.openehr.sdk.terminology.TermDefinition;
 import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.terminology.ValueSet;
+import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
@@ -85,7 +85,6 @@ import org.openehr.schemas.v1.CCOMPLEXOBJECT;
 import org.openehr.schemas.v1.CDOMAINTYPE;
 import org.openehr.schemas.v1.CDVORDINAL;
 import org.openehr.schemas.v1.CDVQUANTITY;
-import org.openehr.schemas.v1.CDVSTATE;
 import org.openehr.schemas.v1.CMULTIPLEATTRIBUTE;
 import org.openehr.schemas.v1.COBJECT;
 import org.openehr.schemas.v1.CODEPHRASE;
@@ -103,6 +102,7 @@ import org.openehr.schemas.v1.StringDictionaryItem;
 import org.openehr.schemas.v1.TATTRIBUTE;
 import org.openehr.schemas.v1.TCOMPLEXOBJECT;
 import org.openehr.schemas.v1.TCONSTRAINT;
+import org.openehr.schemas.v1.TERMINOLOGYID;
 import org.openehr.schemas.v1.TemplateDocument;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -117,6 +117,7 @@ public class OPTParser {
     public static final String CODED_TEXT = "CODED_TEXT";
     public static final String OPENEHR = "openehr";
     public static final String CURRENT_STATE = "current_state";
+    private static final String LOCAL_TERMINOLOGY = "local";
 
     private static final Set<String> LOCATABLE_TYPES =
             ArchieRMInfoLookup.getInstance().getTypeInfo(Locatable.class).getAllDescendantClasses().stream()
@@ -250,7 +251,7 @@ public class OPTParser {
 
     private WebTemplateNode[] parseCARCHETYPEROOT(CARCHETYPEROOT carchetyperoot, AqlPath aqlPath) {
 
-        // extract local Terminologies
+        // extract local Terminologies code -> language -> TermDefinition
         Map<String, Map<String, TermDefinition>> termDefinitionMap = new HashMap<>();
         for (ARCHETYPETERM term : carchetyperoot.getTermDefinitionsArray()) {
             String code = term.getCode();
@@ -469,85 +470,7 @@ public class OPTParser {
                 }
             }
 
-            WebTemplateNode[] ismTransitions = newChildren.stream()
-                    .flatMap(Arrays::stream)
-                    .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
-                    .toArray(WebTemplateNode[]::new);
-            if (ismTransitions.length > 0) {
-                WebTemplateNode firstChild = ismTransitions[0];
-                WebTemplateNode ismTransition = new WebTemplateNode();
-                ismTransition.setName(cattribute.getRmAttributeName());
-                ismTransition.setId(buildId(cattribute.getRmAttributeName()));
-                ismTransition.setMin(firstChild.getMin());
-                ismTransition.setMax(firstChild.getMax());
-                ismTransition.setRmType(RmConstants.ISM_TRANSITION);
-                ismTransition.setInContext(true);
-                ismTransition.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName()));
-
-                WebTemplateNode careflowStep = new WebTemplateNode();
-                WebTemplateNode careflowStepProto = firstChild
-                        .findChildById(CAREFLOW_STEP)
-                        .orElseThrow(() -> new SdkException(String.format("Missing node: %s", CAREFLOW_STEP)));
-                careflowStep.setMin(careflowStepProto.getMin());
-                careflowStep.setMax(careflowStepProto.getMin());
-                careflowStep.setName("Careflow_step");
-                careflowStep.setId(CAREFLOW_STEP);
-                careflowStep.setRmType(RmConstants.DV_CODED_TEXT);
-                careflowStep.setInContext(true);
-                careflowStep.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), CAREFLOW_STEP));
-                WebTemplateInput code = new WebTemplateInput();
-                code.setSuffix("code");
-                code.setType(CODED_TEXT);
-                code.setTerminology("local");
-
-                for (WebTemplateNode i : ismTransitions) {
-                    WebTemplateInputValue value = i.findChildById(CAREFLOW_STEP)
-                            .orElseThrow()
-                            .getInputs()
-                            .get(0)
-                            .getList()
-                            .get(0);
-                    value.getCurrentStates()
-                            .addAll(i.findChildById(CURRENT_STATE).orElseThrow().getInputs().get(0).getList().stream()
-                                    .map(WebTemplateInputValue::getValue)
-                                    .toList());
-                    code.getList().add(value);
-                }
-                careflowStep.getInputs().add(code);
-                ismTransition.getChildren().add(careflowStep);
-
-                WebTemplateNode currentState = new WebTemplateNode();
-                WebTemplateNode currentStateProto =
-                        firstChild.findChildById(CURRENT_STATE).orElseThrow();
-                currentState.setMin(currentStateProto.getMin());
-                currentState.setMax(currentStateProto.getMin());
-                currentState.setRmType(RmConstants.DV_CODED_TEXT);
-                currentState.setName("Current_state");
-                currentState.setId(CURRENT_STATE);
-                currentState.setInContext(true);
-                currentState.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), CURRENT_STATE));
-                WebTemplateInput code2 = new WebTemplateInput();
-                code2.setSuffix("code");
-                code2.setType(CODED_TEXT);
-                code2.setTerminology(OPENEHR);
-
-                Arrays.stream(ismTransitions)
-                        .flatMap(n -> n.findChildById(CURRENT_STATE).stream())
-                        .map(WebTemplateNode::getInputs)
-                        .flatMap(List::stream)
-                        .map(WebTemplateInput::getList)
-                        .flatMap(List::stream)
-                        .forEach(code2.getList()::add);
-
-                currentState.getInputs().add(code2);
-                ismTransition.getChildren().add(currentState);
-                WebTemplateNode transition =
-                        firstChild.findChildById("transition").orElseThrow();
-                transition.setAqlPath(aqlPath.addEnd(cattribute.getRmAttributeName(), "transition"));
-                transition.setInContext(true);
-                ismTransition.getChildren().add(transition);
-                node.getChildren().add(ismTransition);
-            }
+            handleActionIsmTransitions(aqlPath, node, cattribute, newChildren);
 
             Optional.of(cattribute)
                     .filter(CMULTIPLEATTRIBUTE.class::isInstance)
@@ -671,6 +594,110 @@ public class OPTParser {
         });
 
         node.getChildren().forEach(child -> addInContext(node, child));
+    }
+
+    private static void handleActionIsmTransitions(
+            AqlPath aqlPath, WebTemplateNode node, CATTRIBUTE cattribute, List<WebTemplateNode[]> newChildren) {
+        if (!RmConstants.ACTION.equals(node.getRmType())) {
+            return;
+        }
+
+        WebTemplateNode[] ismTransitionNodes = newChildren.stream()
+                .flatMap(Arrays::stream)
+                .filter(n -> RmConstants.ISM_TRANSITION.equals(n.getRmType()))
+                .toArray(WebTemplateNode[]::new);
+
+        if (ismTransitionNodes.length == 0) {
+            return;
+        }
+
+        WebTemplateNode firstChild = ismTransitionNodes[0];
+        String rmAttributeName = cattribute.getRmAttributeName();
+
+        WebTemplateNode ismTransition = new WebTemplateNode();
+        {
+            ismTransition.setName(rmAttributeName);
+            ismTransition.setId(buildId(rmAttributeName));
+            ismTransition.setMin(firstChild.getMin());
+            ismTransition.setMax(firstChild.getMax());
+            ismTransition.setRmType(RmConstants.ISM_TRANSITION);
+            ismTransition.setInContext(true);
+            ismTransition.setAqlPath(aqlPath.addEnd(rmAttributeName));
+        }
+
+        WebTemplateNode careflowStep = new WebTemplateNode();
+        {
+            WebTemplateNode careflowStepProto = firstChild
+                    .findChildById(CAREFLOW_STEP)
+                    .orElseThrow(() -> new SdkException(String.format("Missing node: %s", CAREFLOW_STEP)));
+            careflowStep.setMin(careflowStepProto.getMin());
+            careflowStep.setMax(careflowStepProto.getMin());
+            careflowStep.setName("Careflow_step");
+            careflowStep.setId(CAREFLOW_STEP);
+            careflowStep.setRmType(RmConstants.DV_CODED_TEXT);
+            careflowStep.setInContext(true);
+            careflowStep.setAqlPath(aqlPath.addEnd(rmAttributeName, CAREFLOW_STEP));
+        }
+
+        WebTemplateInput code = new WebTemplateInput();
+        {
+            code.setSuffix("code");
+            code.setType(CODED_TEXT);
+            code.setTerminology("local");
+        }
+
+        for (WebTemplateNode itNode : ismTransitionNodes) {
+            // expectation: only one careflow step
+            WebTemplateInputValue value = itNode.findChildById(CAREFLOW_STEP)
+                    .orElseThrow()
+                    .getInputs()
+                    .get(0)
+                    .getList()
+                    .get(0);
+
+            // add current states of ism transition to careflow step
+            value.getCurrentStates()
+                    .addAll(itNode.findChildById(CURRENT_STATE).orElseThrow().getInputs().get(0).getList().stream()
+                            .map(WebTemplateInputValue::getValue)
+                            .toList());
+
+            code.getList().add(value);
+        }
+        careflowStep.getInputs().add(code);
+
+        ismTransition.getChildren().add(careflowStep);
+
+        WebTemplateNode currentState = new WebTemplateNode();
+        WebTemplateNode currentStateProto =
+                firstChild.findChildById(CURRENT_STATE).orElseThrow();
+        currentState.setMin(currentStateProto.getMin());
+        currentState.setMax(currentStateProto.getMin());
+        currentState.setRmType(RmConstants.DV_CODED_TEXT);
+        currentState.setName("Current_state");
+        currentState.setId(CURRENT_STATE);
+        currentState.setInContext(true);
+        currentState.setAqlPath(aqlPath.addEnd(rmAttributeName, CURRENT_STATE));
+        WebTemplateInput code2 = new WebTemplateInput();
+        code2.setSuffix("code");
+        code2.setType(CODED_TEXT);
+        code2.setTerminology(OPENEHR);
+
+        Arrays.stream(ismTransitionNodes)
+                .flatMap(n -> n.findChildById(CURRENT_STATE).stream())
+                .map(WebTemplateNode::getInputs)
+                .flatMap(List::stream)
+                .map(WebTemplateInput::getList)
+                .flatMap(List::stream)
+                .forEach(code2.getList()::add);
+
+        currentState.getInputs().add(code2);
+        ismTransition.getChildren().add(currentState);
+        WebTemplateNode transition = firstChild.findChildById("transition").orElseThrow();
+        transition.setAqlPath(aqlPath.addEnd(rmAttributeName, "transition"));
+        transition.setInContext(true);
+        ismTransition.getChildren().add(transition);
+
+        node.getChildren().add(ismTransition);
     }
 
     private void replaceParentAql(WebTemplateNode node, AqlPath oldBase, AqlPath newBase) {
@@ -949,205 +976,263 @@ public class OPTParser {
 
         WebTemplateNode node = buildNode(cdomaintype, rmAttributeName, termDefinitionMap, null);
         node.setAqlPath(aqlPath);
-        if (cdomaintype instanceof CDVSTATE) {
-            throw new SdkException(
-                    String.format("Unexpected class: %s", cdomaintype.getClass().getSimpleName()));
-        } else if (cdomaintype instanceof CDVQUANTITY cdvquantity) {
 
-            WebTemplateInput magnitude = new WebTemplateInput();
-            magnitude.setSuffix("magnitude");
-            magnitude.setType("DECIMAL");
-            Optional.of(cdvquantity)
-                    .map(CDVQUANTITY::getAssumedValue)
-                    .map(DVQUANTITY::getMagnitude)
-                    .map(d -> Double.toString(d))
-                    .ifPresent(magnitude::setDefaultValue);
-            inputHandler.findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
-            node.getInputs().add(magnitude);
-
-            WebTemplateInput unit = new WebTemplateInput();
-            unit.setSuffix("unit");
-            unit.setType(CODED_TEXT);
-            Optional.of(cdvquantity)
-                    .map(CDVQUANTITY::getAssumedValue)
-                    .map(DVQUANTITY::getUnits)
-                    .ifPresent(unit::setDefaultValue);
-            inputHandler.findDefaultValue(node, "units").ifPresent(unit::setDefaultValue);
-            node.getInputs().add(unit);
-
-            Arrays.stream(cdvquantity.getListArray()).forEach(o -> {
-                WebTemplateInputValue value = new WebTemplateInputValue();
-                value.setLabel(o.getUnits());
-                value.setValue(o.getUnits());
-
-                WebTemplateValidation validation = new WebTemplateValidation();
-                boolean addValidation = false;
-                if (o.getMagnitude() != null) {
-                    addValidation = true;
-                    validation.setRange(inputHandler.extractInterval(o.getMagnitude()));
-                }
-                if (o.getPrecision() != null) {
-                    addValidation = true;
-                    validation.setPrecision(inputHandler.extractInterval(o.getPrecision()));
-                }
-                if (addValidation) {
-                    value.setValidation(validation);
-                }
-                value.getLocalizedLabels()
-                        .putAll(termDefinitionMap.getOrDefault(o.getUnits(), Collections.emptyMap()).entrySet().stream()
-                                .collect(Collectors.toMap(
-                                        Map.Entry::getKey, e -> e.getValue().getValue())));
-                unit.getList().add(value);
-            });
-            if (unit.getList().size() == 1) {
-                magnitude.setValidation(unit.getList().get(0).getValidation());
-            }
+        if (cdomaintype instanceof CDVQUANTITY cdvquantity) {
+            parseCDVQUANTITY(termDefinitionMap, cdvquantity, node);
         } else if (cdomaintype instanceof CDVORDINAL cdvordinal) {
-            WebTemplateInput code = new WebTemplateInput();
-            inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
-            code.setType(CODED_TEXT);
-            node.getInputs().add(code);
-            Optional.of(cdvordinal)
-                    .map(CDVORDINAL::getAssumedValue)
-                    .map(DVORDINAL::getSymbol)
-                    .map(DVCODEDTEXT::getDefiningCode)
-                    .map(CODEPHRASE::getCodeString)
-                    .ifPresent(code::setDefaultValue);
-            Arrays.stream((cdvordinal).getListArray()).forEach(o -> {
+            parseCDVORDINAL(termDefinitionMap, cdvordinal, node);
+        } else if (cdomaintype instanceof CCODEPHRASE ccodephrase) {
+            parseCCODEPHRASE(aqlPath, termDefinitionMap, rmAttributeName, ccodephrase, node);
+        } else /* if (cdomaintype instanceof CDVSTATE) */ {
+            throw new SdkException(
+                    "Unexpected class: %s".formatted(cdomaintype.getClass().getSimpleName()));
+        }
+        return node;
+    }
+
+    private void parseCDVQUANTITY(
+            Map<String, Map<String, TermDefinition>> termDefinitionMap, CDVQUANTITY cdvquantity, WebTemplateNode node) {
+        WebTemplateInput magnitude = new WebTemplateInput();
+        magnitude.setSuffix("magnitude");
+        magnitude.setType("DECIMAL");
+        Optional.of(cdvquantity)
+                .map(CDVQUANTITY::getAssumedValue)
+                .map(DVQUANTITY::getMagnitude)
+                .map(d -> Double.toString(d))
+                .ifPresent(magnitude::setDefaultValue);
+        inputHandler.findDefaultValue(node, "magnitude").ifPresent(magnitude::setDefaultValue);
+        node.getInputs().add(magnitude);
+
+        WebTemplateInput unit = new WebTemplateInput();
+        unit.setSuffix("unit");
+        unit.setType(CODED_TEXT);
+        Optional.of(cdvquantity)
+                .map(CDVQUANTITY::getAssumedValue)
+                .map(DVQUANTITY::getUnits)
+                .ifPresent(unit::setDefaultValue);
+        inputHandler.findDefaultValue(node, "units").ifPresent(unit::setDefaultValue);
+        node.getInputs().add(unit);
+
+        Arrays.stream(cdvquantity.getListArray()).forEach(o -> {
+            WebTemplateInputValue value = new WebTemplateInputValue();
+            value.setLabel(o.getUnits());
+            value.setValue(o.getUnits());
+
+            WebTemplateValidation validation = new WebTemplateValidation();
+            boolean addValidation = false;
+            if (o.getMagnitude() != null) {
+                addValidation = true;
+                validation.setRange(inputHandler.extractInterval(o.getMagnitude()));
+            }
+            if (o.getPrecision() != null) {
+                addValidation = true;
+                validation.setPrecision(inputHandler.extractInterval(o.getPrecision()));
+            }
+            if (addValidation) {
+                value.setValidation(validation);
+            }
+            value.getLocalizedLabels()
+                    .putAll(termDefinitionMap.getOrDefault(o.getUnits(), Collections.emptyMap()).entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey, e -> e.getValue().getValue())));
+            unit.getList().add(value);
+        });
+        if (unit.getList().size() == 1) {
+            magnitude.setValidation(unit.getList().get(0).getValidation());
+        }
+    }
+
+    private void parseCDVORDINAL(
+            Map<String, Map<String, TermDefinition>> termDefinitionMap, CDVORDINAL cdvordinal, WebTemplateNode node) {
+        WebTemplateInput code = new WebTemplateInput();
+        inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
+        code.setType(CODED_TEXT);
+        Optional<CODEPHRASE> codephrase = Optional.of(cdvordinal)
+                .map(CDVORDINAL::getAssumedValue)
+                .map(DVORDINAL::getSymbol)
+                .map(DVCODEDTEXT::getDefiningCode);
+        codephrase
+                .map(CODEPHRASE::getTerminologyId)
+                .map(TERMINOLOGYID::getValue)
+                .ifPresent(code::setTerminology);
+        codephrase.map(CODEPHRASE::getCodeString).ifPresent(code::setDefaultValue);
+        node.getInputs().add(code);
+        Arrays.stream(cdvordinal.getListArray())
+                .map(o -> {
+                    WebTemplateInputValue value = new WebTemplateInputValue();
+                    value.setOrdinal(o.getValue());
+                    value.setValue(o.getSymbol().getDefiningCode().getCodeString());
+                    value.getLocalizedLabels()
+                            .putAll(
+                                    Optional.ofNullable(termDefinitionMap.get(value.getValue()))
+                                            .map(Map::entrySet)
+                                            .stream()
+                                            .flatMap(Set::stream)
+                                            .collect(Collectors.toMap(
+                                                    Map.Entry::getKey,
+                                                    e -> e.getValue().getValue())));
+                    value.getLocalizedDescriptions()
+                            .putAll(
+                                    Optional.ofNullable(termDefinitionMap.get(value.getValue()))
+                                            .map(Map::entrySet)
+                                            .stream()
+                                            .flatMap(Set::stream)
+                                            .collect(Collectors.toMap(
+                                                    Map.Entry::getKey,
+                                                    e -> e.getValue().getDescription())));
+                    value.setLabel(value.getLocalizedLabels().get(defaultLanguage));
+                    value.getLocalizedDescriptions().putIfAbsent(defaultLanguage, "");
+                    return value;
+                })
+                .forEach(code.getList()::add);
+    }
+
+    private void parseCCODEPHRASE(
+            AqlPath aqlPath,
+            Map<String, Map<String, TermDefinition>> termDefinitionMap,
+            String rmAttributeName,
+            CCODEPHRASE ccodephrase,
+            WebTemplateNode node) {
+        WebTemplateInput code = new WebTemplateInput();
+        inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
+        code.setSuffix("code");
+        node.getInputs().add(code);
+        Optional.of(ccodephrase)
+                .map(CCODEPHRASE::getAssumedValue)
+                .map(CODEPHRASE::getCodeString)
+                .ifPresent(code::setDefaultValue);
+
+        Optional<String> terminology;
+        if (ccodephrase instanceof CCODEREFERENCE ccodereference) {
+            terminology = Optional.of(ccodereference)
+                    .map(CCODEREFERENCE::getReferenceSetUri)
+                    .map(OPTParser::removeSchema);
+        } else {
+            terminology =
+                    Optional.of(ccodephrase).map(CCODEPHRASE::getTerminologyId).map(OBJECTID::getValue);
+        }
+        terminology.ifPresent(code::setTerminology);
+
+        if (code.getTerminology().equals(OPENEHR)) {
+            // TODO CDR-2273 cleanup: determine terminologyAttribute + provide AttributeCodesets
+            // to findOpenEhrValueSet (etc)
+            // Resolve the terminology group for rubric lookups with the group.
+
+            AttributeCodesets.TerminologyContainer rmConstrainedTerminologyContainer = Optional.of(rmAttributeName)
+                    .map(AttributeCodesets::get)
+                    .orElseGet(() -> {
+                        if (aqlPath.getNodeCount() < 2) {
+                            return null;
+                        }
+                        // CDR-2273 Sometimes the parent attribute is relevant (e.g. for DV_CODED_TEXT.defining_code),
+                        // unlike DV_MULTIMEDIA.media_type: take its attribute
+                        // TODO CDR-2273 we need to make sure the whole RM model is covered in AttributeCodesets without
+                        // conflicts.
+                        String terminologyAttribute =
+                                aqlPath.getNode(aqlPath.getNodeCount() - 2).getName();
+                        return AttributeCodesets.get(terminologyAttribute);
+                    });
+
+            ValueSet defaultValueset = TerminologyProvider.findOpenEhrValueSet(
+                    code.getTerminology(),
+                    ccodephrase.getCodeListArray(),
+                    defaultLanguage,
+                    rmConstrainedTerminologyContainer);
+
+            Map<String, ValueSet> valuesetByLanguage = languages.stream()
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            l -> TerminologyProvider.findOpenEhrValueSet(
+                                    code.getTerminology(),
+                                    ccodephrase.getCodeListArray(),
+                                    l,
+                                    rmConstrainedTerminologyContainer)));
+
+            defaultValueset.getTerms().forEach(t -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();
-                value.setOrdinal(o.getValue());
-                value.setValue(o.getSymbol().getDefiningCode().getCodeString());
+                value.setValue(t.getCode());
+                value.setLabel(t.getValue());
                 value.getLocalizedLabels()
-                        .putAll(Optional.ofNullable(termDefinitionMap.get(value.getValue())).map(Map::entrySet).stream()
-                                .flatMap(Set::stream)
+                        .putAll(valuesetByLanguage.entrySet().stream()
                                 .collect(Collectors.toMap(
-                                        Map.Entry::getKey, e -> e.getValue().getValue())));
-                value.getLocalizedDescriptions()
-                        .putAll(Optional.ofNullable(termDefinitionMap.get(value.getValue())).map(Map::entrySet).stream()
-                                .flatMap(Set::stream)
-                                .collect(Collectors.toMap(
-                                        Map.Entry::getKey, e -> e.getValue().getDescription())));
-                value.setLabel(value.getLocalizedLabels().get(defaultLanguage));
-                if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
-                    value.getLocalizedDescriptions().put(defaultLanguage, "");
-                }
+                                        Map.Entry::getKey,
+                                        e -> e.getValue().getTerms().stream()
+                                                .filter(x -> x.getCode().equals(t.getCode()))
+                                                .findAny()
+                                                .map(TermDefinition::getValue)
+                                                .orElse(""))));
                 code.getList().add(value);
             });
 
-        } else if (cdomaintype instanceof CCODEPHRASE ccodephrase) {
-            WebTemplateInput code = new WebTemplateInput();
-            inputHandler.findDefaultValue(node, "defining_code").ifPresent(code::setDefaultValue);
-            code.setSuffix("code");
-            node.getInputs().add(code);
-            Optional.of(ccodephrase)
-                    .map(CCODEPHRASE::getAssumedValue)
-                    .map(CODEPHRASE::getCodeString)
-                    .ifPresent(code::setDefaultValue);
-
-            if (ccodephrase instanceof CCODEREFERENCE ccodereference) {
-                code.setTerminology(Optional.of(ccodereference)
-                        .map(CCODEREFERENCE::getReferenceSetUri)
-                        .map(s -> Strings.CS.removeStart(s, "terminology:"))
-                        .orElse(null));
-            } else {
-                code.setTerminology(Optional.of(ccodephrase)
-                        .map(CCODEPHRASE::getTerminologyId)
-                        .map(OBJECTID::getValue)
-                        .orElse(null));
-            }
-
-            if (code.getTerminology().equals(OPENEHR)) {
-                ValueSet valueSet = TerminologyProvider.findOpenEhrValueSet(
-                        code.getTerminology(), ccodephrase.getCodeListArray(), defaultLanguage);
-
-                Map<String, ValueSet> collect = languages.stream()
-                        .collect(Collectors.toMap(
-                                Function.identity(),
-                                l -> TerminologyProvider.findOpenEhrValueSet(
-                                        code.getTerminology(), ccodephrase.getCodeListArray(), l)));
-
-                valueSet.getTherms().forEach(t -> {
-                    WebTemplateInputValue value = new WebTemplateInputValue();
-                    value.setValue(t.getCode());
-                    value.setLabel(t.getValue());
-                    value.getLocalizedLabels()
-                            .putAll(collect.entrySet().stream()
-                                    .collect(Collectors.toMap(
-                                            Map.Entry::getKey,
-                                            e -> e.getValue().getTherms().stream()
-                                                    .filter(x -> x.getCode().equals(t.getCode()))
-                                                    .findAny()
-                                                    .map(TermDefinition::getValue)
-                                                    .orElse(""))));
-                    code.getList().add(value);
-                });
-
-            } else {
-                Arrays.stream(ccodephrase.getCodeListArray())
-                        .map(o -> StringUtils.isBlank(code.getTerminology()) || "local".equals(code.getTerminology())
-                                ? o
-                                : code.getTerminology() + "::" + o)
-                        .forEach(o -> {
-                            WebTemplateInputValue value = new WebTemplateInputValue();
-                            Optional<TermDefinition> termDefinition = Optional.ofNullable(termDefinitionMap.get(o))
-                                    .map(e -> e.get(defaultLanguage));
-                            if (termDefinition.isEmpty()) {
-                                o = o.replace(code.getTerminology() + "::", "");
-                                termDefinition = Optional.ofNullable(termDefinitionMap.get(o))
-                                        .map(e -> e.get(defaultLanguage));
-                            }
-
-                            if (termDefinition.isPresent()) {
-                                value.setValue(termDefinition.get().getCode());
-                                if (StringUtils.isNotBlank((code.getTerminology()))) {
-                                    value.setValue(value.getValue().replace(code.getTerminology() + "::", ""));
-                                }
-                                value.setLabel(termDefinition.get().getValue());
-
-                                value.getLocalizedLabels()
-                                        .putAll(
-                                                termDefinitionMap
-                                                        .getOrDefault(o, Collections.emptyMap())
-                                                        .entrySet()
-                                                        .stream()
-                                                        .collect(Collectors.toMap(
-                                                                Map.Entry::getKey,
-                                                                e -> e.getValue()
-                                                                        .getValue())));
-                                value.getLocalizedDescriptions()
-                                        .putAll(
-                                                termDefinitionMap
-                                                        .getOrDefault(o, Collections.emptyMap())
-                                                        .entrySet()
-                                                        .stream()
-                                                        .filter(e -> StringUtils.isNotBlank(
-                                                                e.getValue().getDescription()))
-                                                        .collect(Collectors.toMap(
-                                                                Map.Entry::getKey,
-                                                                e -> e.getValue()
-                                                                        .getDescription())));
-                                if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
-                                    value.getLocalizedDescriptions().put(defaultLanguage, "");
-                                }
-                                code.getList().add(value);
-                            }
-                        });
-            }
-
-            if (code.getList().isEmpty()) {
-                code.setType("TEXT");
-                WebTemplateInput value = InputHandler.buildWebTemplateInput("value", "TEXT");
-                value.setTerminology(code.getTerminology());
-                node.getInputs().add(value);
-            } else {
-                code.setType(CODED_TEXT);
-            }
-
         } else {
-            throw new SdkException(
-                    String.format("Unexpected class: %s", cdomaintype.getClass().getSimpleName()));
+            Arrays.stream(ccodephrase.getCodeListArray())
+                    .map(o -> StringUtils.isBlank(code.getTerminology()) || "local".equals(code.getTerminology())
+                            ? o
+                            : code.getTerminology() + "::" + o)
+                    .forEach(o -> {
+                        WebTemplateInputValue value = new WebTemplateInputValue();
+                        Optional<TermDefinition> termDefinition =
+                                Optional.ofNullable(termDefinitionMap.get(o)).map(e -> e.get(defaultLanguage));
+                        if (termDefinition.isEmpty()) {
+                            o = o.replace(code.getTerminology() + "::", "");
+                            termDefinition = Optional.ofNullable(termDefinitionMap.get(o))
+                                    .map(e -> e.get(defaultLanguage));
+                        }
+
+                        if (termDefinition.isPresent()) {
+                            value.setValue(termDefinition.get().getCode());
+                            if (StringUtils.isNotBlank((code.getTerminology()))) {
+                                value.setValue(value.getValue().replace(code.getTerminology() + "::", ""));
+                            }
+                            value.setLabel(termDefinition.get().getValue());
+
+                            value.getLocalizedLabels()
+                                    .putAll(
+                                            termDefinitionMap
+                                                    .getOrDefault(o, Collections.emptyMap())
+                                                    .entrySet()
+                                                    .stream()
+                                                    .collect(Collectors.toMap(
+                                                            Map.Entry::getKey,
+                                                            e -> e.getValue().getValue())));
+                            value.getLocalizedDescriptions()
+                                    .putAll(
+                                            termDefinitionMap
+                                                    .getOrDefault(o, Collections.emptyMap())
+                                                    .entrySet()
+                                                    .stream()
+                                                    .filter(e -> StringUtils.isNotBlank(
+                                                            e.getValue().getDescription()))
+                                                    .collect(Collectors.toMap(
+                                                            Map.Entry::getKey,
+                                                            e -> e.getValue().getDescription())));
+                            if (!value.getLocalizedDescriptions().containsKey(defaultLanguage)) {
+                                value.getLocalizedDescriptions().put(defaultLanguage, "");
+                            }
+                            code.getList().add(value);
+                        }
+                    });
         }
-        return node;
+
+        if (code.getList().isEmpty()) {
+            code.setType("TEXT");
+            WebTemplateInput value = InputHandler.buildWebTemplateInput("value", "TEXT");
+            value.setTerminology(code.getTerminology());
+            node.getInputs().add(value);
+        } else {
+            code.setType(CODED_TEXT);
+        }
+    }
+
+    static String removeSchema(String uri) {
+        if (uri == null) {
+            return null;
+        }
+        int sep = uri.indexOf(':');
+        if (sep < 0) {
+            return uri;
+        }
+        return uri.substring(sep + 1);
     }
 
     private WebTemplateNode buildNode(
@@ -1220,7 +1305,7 @@ public class OPTParser {
 
         String alnumsCleaned = NON_ALNUM.matcher(term).replaceAll(" ");
         String normalTerm =
-                StringUtils.normalizeSpace(alnumsCleaned).replace(" ", "_").toLowerCase();
+                StringUtils.normalizeSpace(alnumsCleaned).replace(' ', '_').toLowerCase();
 
         if (Character.isDigit(normalTerm.charAt(0))) {
             return "a" + normalTerm;

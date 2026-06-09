@@ -24,12 +24,12 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.IOException;
 import java.util.Map;
 import org.assertj.core.groups.Tuple;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ClassGeneratorConfigTest {
+class ClassGeneratorConfigTest {
 
     @Test
-    public void testParse() throws IOException {
+    void testParse() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         objectMapper.findAndRegisterModules();
 
@@ -54,7 +54,7 @@ public class ClassGeneratorConfigTest {
     }
 
     @Test
-    public void testParseLegacy() throws IOException {
+    void testParseLegacy() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         objectMapper.findAndRegisterModules();
 

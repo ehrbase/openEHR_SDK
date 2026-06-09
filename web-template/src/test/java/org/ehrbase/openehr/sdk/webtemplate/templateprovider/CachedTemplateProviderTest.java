@@ -17,19 +17,19 @@
  */
 package org.ehrbase.openehr.sdk.webtemplate.templateprovider;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import javax.cache.Cache;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 
-public class CachedTemplateProviderTest {
+class CachedTemplateProviderTest {
 
     @Test
-    public void find() {
+    void find() {
         OPERATIONALTEMPLATE template = Mockito.mock(OPERATIONALTEMPLATE.class);
         Cache<String, OPERATIONALTEMPLATE> cache = Mockito.mock(Cache.class);
         TemplateProvider templateProvider = Mockito.mock(TemplateProvider.class);
@@ -37,11 +37,11 @@ public class CachedTemplateProviderTest {
         Mockito.when(templateProvider.find(ArgumentMatchers.anyString()))
                 .thenReturn(Optional.of(template), Optional.empty());
         CachedTemplateProvider cut = new CachedTemplateProvider(templateProvider, cache);
-        assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
+        assertThat(cut.find("ehrbase_blood_pressure_simple.de.v0")).isPresent();
         Mockito.verify(templateProvider).find(ArgumentMatchers.anyString());
         Mockito.verify(cache).put(ArgumentMatchers.anyString(), ArgumentMatchers.eq(template));
         // read from Cache
         Mockito.when(cache.get(ArgumentMatchers.anyString())).thenReturn(template);
-        assertTrue(cut.find("ehrbase_blood_pressure_simple.de.v0").isPresent());
+        assertThat(cut.find("ehrbase_blood_pressure_simple.de.v0")).isPresent();
     }
 }
