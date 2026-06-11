@@ -81,7 +81,7 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
                                 definingCode.getTerminologyId().getValue()))
                 .map(i -> new ConstraintViolation(
                         aqlPath,
-                        "CodePhrase terminology does not match, expected: %s, found: %s"
+                        "DV_CODED_TEXT/defining_code/terminology_id does not match. expected: %s; found: %s"
                                 .formatted(
                                         input.getTerminology(),
                                         definingCode.getTerminologyId().getValue())));
@@ -96,17 +96,15 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
                     if (matching.isEmpty()) {
                         return new ConstraintViolation(
                                 aqlPath,
-                                "CodePhrase codeString does not match any option, found: %s"
+                                "DV_CODED_TEXT/defining_code/code_string does not match any option. found: %s"
                                         .formatted(definingCode.getCodeString()));
                     } else if (definingCode.getTerminologyId().getName().equals("local")
                             // TODO CDR-2273 check matching->getLocalizedLabels?
                             && !matching.get().getLabel().equals(dvCodedText.getValue())) {
                         return new ConstraintViolation(
                                 aqlPath,
-                                "Dv_Coded_Text value does not match. found: %s expected: %s"
-                                        .formatted(
-                                                dvCodedText.getValue(),
-                                                matching.get().getLabel()));
+                                "DV_CODED_TEXT/value does not match. expected: %s; found: %s"
+                                        .formatted(matching.get().getLabel(), dvCodedText.getValue()));
                     } else {
                         return null;
                     }
@@ -126,8 +124,9 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
             String expectedUrl = tp.getParam(URL_PARAM);
             String termId = definingCode.getTerminologyId().getValue();
             if (!Objects.equals(expectedUrl, termId)) {
-                return List.of(
-                        new ConstraintViolation("CodePhrase terminology_id does not match, expected: %s, found: %s"
+                return List.of(new ConstraintViolation(
+                        aqlPath,
+                        "DV_CODED_TEXT/defining_code/terminology_id does not match. expected: %s; found: %s"
                                 .formatted(expectedUrl, termId)));
             }
         }
