@@ -20,6 +20,8 @@ package org.ehrbase.openehr.sdk.validation.terminology;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class TerminologyParamTest {
 
@@ -59,5 +61,25 @@ class TerminologyParamTest {
     void createInvalid() {
         TerminologyParam tp = TerminologyParam.ofFhir("//fhir.hl7.org/Observation", null);
         assertThat(tp).isNull();
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+        url=http://hl7.org/fhir/observation-status, http://hl7.org/fhir/observation-status
+        ,
+        url=, ''
+        curl=http://hl7.org/fhir/observation-status,
+        curl=a&url=b&foo=bar,b
+        url=foo%20bar%20b%C3%A4z,foo bar bäz
+        url=https%3A%2F%2Flocalhost,https://localhost
+        """)
+    void getParam(String query, String param) {
+        String fullUrl = "//fhir.hl7.org/ValueSet/$expand";
+        if (query != null) {
+            fullUrl = fullUrl + '?' + query;
+        }
+
+        TerminologyParam tp = TerminologyParam.ofFhir(fullUrl, null);
+        assertThat(tp.getParam("url")).isEqualTo(param);
     }
 }
