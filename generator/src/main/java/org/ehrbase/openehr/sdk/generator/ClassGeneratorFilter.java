@@ -137,7 +137,7 @@ public class ClassGeneratorFilter extends Filter {
     }
 
     @Override
-    protected void preHandle(WebTemplateNode node) {
+    protected void preHandle(final WebTemplate context, WebTemplateNode node) {
 
         if (node.getAqlPathDto().getLastNode().getName().equals("null_flavour")) {
             node.setName("null_flavour");

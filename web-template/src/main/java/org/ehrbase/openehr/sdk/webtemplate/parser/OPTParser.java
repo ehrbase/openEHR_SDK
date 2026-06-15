@@ -1149,6 +1149,15 @@ public class OPTParser {
                                     l,
                                     rmConstrainedTerminologyContainer)));
 
+            // english is allowed as fallback
+            valuesetByLanguage.putIfAbsent(
+                    "en",
+                    TerminologyProvider.findOpenEhrValueSet(
+                            code.getTerminology(),
+                            ccodephrase.getCodeListArray(),
+                            "en",
+                            rmConstrainedTerminologyContainer));
+
             defaultValueset.getTerms().forEach(t -> {
                 WebTemplateInputValue value = new WebTemplateInputValue();
                 value.setValue(t.getCode());

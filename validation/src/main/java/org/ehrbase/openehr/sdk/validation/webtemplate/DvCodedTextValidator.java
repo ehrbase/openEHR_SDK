@@ -26,7 +26,10 @@ import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.validation.terminology.TerminologyParam;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
+import org.jspecify.annotations.Nullable;
 
 /**
  * {@link ConstraintValidator} that validates a <code>DV_CODED_TEXT</code> object.
@@ -89,7 +92,7 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
         Optional<ConstraintViolation> otherViolation = Optional.of(input)
                 .filter(WebTemplateValidationUtils::hasList)
                 .map(i -> {
-                    var matching = i.getList().stream()
+                    Optional<WebTemplateInputValue> matching = i.getList().stream()
                             .filter(inputValue -> Objects.equals(inputValue.getValue(), definingCode.getCodeString()))
                             .findFirst();
 
@@ -102,18 +105,36 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
                                 aqlPath,
                                 "DV_CODED_TEXT/defining_code/code_string does not match any option. found: %s"
                                         .formatted(definingCode.getCodeString()));
-                        // TODO CDR-2273 check matching->getLocalizedLabels?
-                    } else if (!Objects.equals(matching.get().getLabel(), dvCodedText.getValue())) {
-                        return new ConstraintViolation(
-                                aqlPath,
-                                "DV_CODED_TEXT/value does not match. expected: %s; found: %s"
-                                        .formatted(matching.get().getLabel(), dvCodedText.getValue()));
                     } else {
-                        return null;
+                        return validateValue(aqlPath, input, matching.get(), dvCodedText.getValue());
                     }
                 });
 
         return ConstraintValidator.concat(terminologyViolation, otherViolation);
+    }
+
+    private @Nullable ConstraintViolation validateValue(
+            final String aqlPath,
+            final WebTemplateInput input,
+            final WebTemplateInputValue matchingInputValue,
+            final String dvCodedTextValue) {
+
+        // TODO CDR-2273 check matching->getLocalizedLabels (using language for this part of the composition)
+        if (!Objects.equals(matchingInputValue.getLabel(), dvCodedTextValue)) {
+            if (OPTParser.OPENEHR.equals(input.getTerminology())
+                    && matchingInputValue.getLocalizedLabels().size() > 1
+                    && Objects.equals(matchingInputValue.getLocalizedLabels().get("en"), dvCodedTextValue)) {
+                // for openEHR terminologies we allow falling back to english, regardless of languages
+                // specified in the template
+                return null;
+            }
+            return new ConstraintViolation(
+                    aqlPath,
+                    "DV_CODED_TEXT/value does not match. expected: %s; found: %s"
+                            .formatted(matchingInputValue.getLabel(), dvCodedTextValue));
+        } else {
+            return null;
+        }
     }
 
     private List<ConstraintViolation> validateExternalTerminology(
