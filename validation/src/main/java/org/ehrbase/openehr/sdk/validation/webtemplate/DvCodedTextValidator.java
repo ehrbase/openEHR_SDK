@@ -94,13 +94,16 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
                             .findFirst();
 
                     if (matching.isEmpty()) {
+                        if (Boolean.TRUE.equals(i.getListOpen())) {
+                            return null;
+                        }
+
                         return new ConstraintViolation(
                                 aqlPath,
                                 "DV_CODED_TEXT/defining_code/code_string does not match any option. found: %s"
                                         .formatted(definingCode.getCodeString()));
-                    } else if (definingCode.getTerminologyId().getName().equals("local")
-                            // TODO CDR-2273 check matching->getLocalizedLabels?
-                            && !matching.get().getLabel().equals(dvCodedText.getValue())) {
+                        // TODO CDR-2273 check matching->getLocalizedLabels?
+                    } else if (!Objects.equals(matching.get().getLabel(), dvCodedText.getValue())) {
                         return new ConstraintViolation(
                                 aqlPath,
                                 "DV_CODED_TEXT/value does not match. expected: %s; found: %s"
@@ -119,7 +122,7 @@ public class DvCodedTextValidator implements ConstraintValidator<DvCodedText> {
         CodePhrase definingCode = dvCodedText.getDefiningCode();
         TerminologyParam tp = TerminologyParam.ofFhir(input.getTerminology(), definingCode);
 
-        // for fhir CodeSystems chack that the terminology_id matches that from the template
+        // for fhir CodeSystems check that the terminology_id matches that from the template
         if (tp != null && tp.resouceType() == TerminologyParam.ResouceType.CODE_SYSTEM) {
             String expectedUrl = tp.getParam(URL_PARAM);
             String termId = definingCode.getTerminologyId().getValue();
