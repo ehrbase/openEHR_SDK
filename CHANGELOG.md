@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+ - Validation of DV_CODED_TEXT.value for template-defined terminologies [#750](https://github.com/ehrbase/openEHR_SDK/pull/750)
 
 ## [2.32.0]
  ### Added
