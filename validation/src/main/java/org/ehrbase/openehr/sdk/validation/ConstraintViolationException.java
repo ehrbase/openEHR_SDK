@@ -49,7 +49,9 @@ public class ConstraintViolationException extends ValidationException {
 
     private static String toString(List<ConstraintViolation> errors) {
         return errors.stream()
-                .map(error -> error.getAqlPath() + ": " + error.getMessage())
+                .map(error -> error.getAqlPath() == null
+                        ? error.getMessage()
+                        : (error.getAqlPath() + ": " + error.getMessage()))
                 .collect(Collectors.joining(", "));
     }
 }
