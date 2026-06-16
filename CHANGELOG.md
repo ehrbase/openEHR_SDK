@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+ - Retain original string when parsing temporals in AQL [#752](https://github.com/ehrbase/openEHR_SDK/pull/752)
 
 ## [2.33.0]
  ### Added 
