@@ -27,6 +27,10 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Validation of limits of intervals with partial dates [#747](https://github.dev/ehrbase/openEHR_SDK/pull/747)
 - Prevent mixing of long and short time format [#747](https://github.dev/ehrbase/openEHR_SDK/pull/747)
 
+## [2.31.1]
+ ### Fixed
+- Retain original string when parsing temporals in AQL (backport) [#752](https://github.com/ehrbase/openEHR_SDK/pull/752)
+
 ## [2.31.0]
  ### Added 
  ### Fixed 
