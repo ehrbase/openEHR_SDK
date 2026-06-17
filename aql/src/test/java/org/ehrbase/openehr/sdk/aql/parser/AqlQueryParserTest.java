@@ -503,6 +503,13 @@ class AqlQueryParserTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {"20200412", "112233", "20200412T112233"})
+    void testCompactDateStringPreserved(String s) {
+        String aql = "SELECT '%s' FROM EHR".formatted(s);
+        testAql(aql, aql);
+    }
+
+    @ParameterizedTest
     @ValueSource(
             strings = {
                 "1",

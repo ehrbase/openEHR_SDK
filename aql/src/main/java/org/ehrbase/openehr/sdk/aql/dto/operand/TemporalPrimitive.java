@@ -34,6 +34,11 @@ public final class TemporalPrimitive extends StringPrimitive {
 
     public TemporalPrimitive() {}
 
+    private TemporalPrimitive(String value, TemporalAccessor temporal) {
+        super(value);
+        this.temporal = temporal;
+    }
+
     public static StringPrimitive fromString(String value) {
         TemporalAccessor temporal;
         try {
@@ -42,10 +47,7 @@ public final class TemporalPrimitive extends StringPrimitive {
             return new StringPrimitive(value);
         }
 
-        TemporalPrimitive temporalPrimitive = new TemporalPrimitive();
-        temporalPrimitive.setTemporal(temporal);
-
-        return temporalPrimitive;
+        return new TemporalPrimitive(value, temporal);
     }
 
     @JsonProperty
