@@ -20,7 +20,6 @@ package org.ehrbase.openehr.sdk.serialisation.jsonencoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nedap.archie.datetime.DateTimeParsers;
 import com.nedap.archie.rm.datatypes.CodePhrase;
 import com.nedap.archie.rm.datavalues.DvText;
 import com.nedap.archie.rm.datavalues.quantity.DvInterval;
@@ -30,6 +29,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDuration;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -88,31 +88,31 @@ class DateTimeSerializerTest {
     enum DateTimeSerializerTestData {
         EMPTY(new DvDateTime(), "{\"_type\":\"DV_DATE_TIME\"}"),
         TIME_ONLY_RESOLUTION_FULL_WITH_OFFSET(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123456789+01:00")),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02T20:15:10.123456789+01:00")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123456789+01:00\"}"),
         TIME_ONLY_RESOLUTION_FULL(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123456789")),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02T20:15:10.123456789")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123456789\"}"),
         TIME_ONLY_RESOLUTION_MILLISECONDS(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123")),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02T20:15:10.123")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123\"}"),
         TIME_ONLY_RESOLUTION_SECONDS(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10")),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02T20:15:10")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10\"}"),
         TIME_ONLY_RESOLUTION_MINUTES(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20:15")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:00\"}"),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02T20:15")),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15\"}"),
         TIME_ONLY_RESOLUTION_HOURS(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02T20")),
-                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:00:00\"}"),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02T20")),
+                "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20\"}"),
         TIME_ONLY_RESOLUTION_DAY(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01-02")),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02\"}"),
         TIME_ONLY_RESOLUTION_MONTH(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023-01")),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023-01")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01\"}"),
         TIME_ONLY_RESOLUTION_YEAR(
-                new DvDateTime(DateTimeParsers.parseDateTimeValue("2023")),
+                new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2023")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023\"}"),
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION_WITH_OFFSET(
                 new DvDateTime(
@@ -121,7 +121,7 @@ class DateTimeSerializerTest {
                         new CodePhrase(),
                         "magStat",
                         new DvDuration(),
-                        DateTimeParsers.parseDateTimeValue("2023-01-02T20:15:10.123456789+01:00")),
+                        OpenEHRDateTimeParseUtils.parseDateTime("2023-01-02T20:15:10.123456789+01:00")),
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-02T20:15:10.123456789+01:00\",\"normal_status\":{\"_type\":\"CODE_PHRASE\"},\"normal_range\":{\"_type\":\"DV_INTERVAL\",\"lower_included\":true,\"lower_unbounded\":false,\"upper_unbounded\":false,\"upper_included\":true},\"other_reference_ranges\":[{\"_type\":\"REFERENCE_RANGE\",\"range\":{\"_type\":\"DV_INTERVAL\",\"lower_included\":false,\"lower_unbounded\":true,\"upper_unbounded\":true,\"upper_included\":false},\"meaning\":{\"_type\":\"DV_TEXT\",\"value\":\"meaning\"}}],\"magnitude_status\":\"magStat\",\"accuracy\":{\"_type\":\"DV_DURATION\"}}");
 
         private final DvDateTime testData;

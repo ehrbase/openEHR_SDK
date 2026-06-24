@@ -22,6 +22,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.util.Map;
 import java.util.Set;
 import org.ehrbase.openehr.sdk.serialisation.walker.Context;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.webtemplate.path.flat.FlatPathDto;
 
 public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<FeederAuditDetails> {
@@ -50,7 +51,7 @@ public class FeederAuditDetailsRMUnmarshaller extends AbstractRMUnmarshaller<Fee
                 currentValues,
                 s -> {
                     if (s != null) {
-                        rmObject.setTime(new DvDateTime(s));
+                        rmObject.setTime(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime(s)));
                     }
                 },
                 String.class,

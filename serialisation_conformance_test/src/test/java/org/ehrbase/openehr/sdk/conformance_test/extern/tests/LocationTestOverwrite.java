@@ -24,14 +24,14 @@ import com.google.common.collect.ImmutableMap;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.composition.Observation;
 import com.nedap.archie.rm.composition.Section;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.ehrbase.openehr.sdk.conformance_test.extern.Helper;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeSerializationUtils;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 import org.junit.Test;
 
 public class LocationTestOverwrite extends LocationTest {
@@ -40,8 +40,8 @@ public class LocationTestOverwrite extends LocationTest {
     @Test
     public void location() throws Exception {
         String template = this.getFileContent("/res/Demo Vitals.opt");
-        OffsetDateTime dateTime = ZonedDateTime.of(2015, 1, 1, 10, 31, 16, 0, ZoneId.systemDefault())
-                .toOffsetDateTime();
+        OpenEhrTemporal dateTime = new OpenEhrTemporal(
+                ZonedDateTime.of(2015, 1, 1, 10, 31, 16, 0, ZoneOffset.UTC).toOffsetDateTime());
         Map<Object, Object> flatComposition = ImmutableMap.builder()
                 .put("ctx/language", "sl")
                 .put("ctx/territory", "SI")
@@ -52,7 +52,7 @@ public class LocationTestOverwrite extends LocationTest {
                 .put("ctx/location", "1234 Best Exotic Marigold Hotel")
                 .put(
                         "vitals/vitals/haemoglobin_a1c/history_origin",
-                        DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime))
+                        OpenEHRDateTimeSerializationUtils.ISO_8601_DATE_TIME_FORMATTER.format(dateTime))
                 .put("vitals/vitals/haemoglobin_a1c/any_event/test_status|terminology", "local")
                 .put("vitals/vitals/haemoglobin_a1c/any_event/test_status|code", "at0037")
                 .build();

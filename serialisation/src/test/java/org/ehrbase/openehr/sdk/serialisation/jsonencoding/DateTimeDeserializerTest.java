@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -168,7 +169,7 @@ class DateTimeDeserializerTest {
         ALL_ATTRIBUTES_SET_FULL_RESOLUTION_WITH_OFFSET(
                 new DvDateTime(
                         List.of(new ReferenceRange<>(new DvText("meaning"), new DvInterval<DvDateTime>(null, null))),
-                        new DvInterval<>(new DvDateTime(LocalDate.of(2023, 1, 1)), null),
+                        new DvInterval<>(new DvDateTime(new OpenEhrTemporal(LocalDate.of(2023, 1, 1))), null),
                         new CodePhrase(),
                         "magStat",
                         new DvDuration(),
@@ -179,13 +180,13 @@ class DateTimeDeserializerTest {
         INVALID(
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"2023-01-00T20:15:10.123456789+01:00\"}",
                 JsonMappingException.class,
-                "Text '2023-01-00T20:15:10.123456789+01:00' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00T20:15:10.123456789+01:00 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime[\"value\"])",
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:2023-01-00T20:15:10.123456789+01:00 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime[\"value\"])",
                 1),
 
         INVALID_COMPACT(
                 "{\"_type\":\"DV_DATE_TIME\",\"value\":\"20230100T201510.123456789+0100\"}",
                 JsonMappingException.class,
-                "Text '20230100T201510.123456789+0100' could not be parsed: Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100T201510.123456789+0100 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime[\"value\"])",
+                "Invalid value for DayOfMonth (valid values 1 - 28/31): 0:20230100T201510.123456789+0100 (through reference chain: com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime[\"value\"])",
                 1);
 
         private final DvDateTime pojo;

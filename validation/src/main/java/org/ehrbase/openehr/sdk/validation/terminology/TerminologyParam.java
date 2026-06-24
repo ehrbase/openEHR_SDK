@@ -18,6 +18,8 @@
 package org.ehrbase.openehr.sdk.validation.terminology;
 
 import com.nedap.archie.rm.datatypes.CodePhrase;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,5 +57,37 @@ public record TerminologyParam(
                 "ValueSet".equals(matcher.group("type")) ? ResouceType.VALUE_SET : ResouceType.CODE_SYSTEM;
         return new TerminologyParam(
                 matcher.group("api"), resouceType, definingCode, matcher.group("op"), matcher.group("param"));
+    }
+
+    public String getParam(String paramName) {
+        if (parameter == null) {
+            return null;
+        }
+
+        int paramLen = paramName.length();
+        int pos = 0;
+        for (; ; ) {
+            int i = parameter.indexOf(paramName, pos);
+            if (i < 0) {
+                return null;
+            }
+            if (i != 0 && parameter.charAt(i - 1) != '&') {
+                pos = i + paramLen;
+                continue;
+            }
+            int eqPos = i + paramLen;
+            if (eqPos + 1 > parameter.length()) {
+                return null;
+            }
+            if (parameter.charAt(eqPos) == '=') {
+                int nextAmpPos = parameter.indexOf('&', eqPos + 1);
+                if (nextAmpPos < 0) {
+                    nextAmpPos = parameter.length();
+                }
+                String param = parameter.substring(eqPos + 1, nextAmpPos);
+                return URLDecoder.decode(param, StandardCharsets.UTF_8);
+            }
+            pos += paramLen;
+        }
     }
 }

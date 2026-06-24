@@ -17,18 +17,11 @@
  */
 package org.ehrbase.openehr.sdk.util;
 
-import com.nedap.archie.datetime.DateTimeFormatters;
+import java.text.ParsePosition;
 import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.Year;
-import java.time.YearMonth;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
@@ -39,6 +32,33 @@ import java.util.function.Predicate;
  * This helper class is used to work around some Archie issues with date/time parsing accepting invalid years or not following the specified format fully (i.e. 2023-13, ignoring leap years)
  */
 public final class OpenEHRDateTimeParseUtils {
+
+    // archie version allows comma without specifying fraction
+    public static final DateTimeFormatter ISO8601_OPTIONAL_NANOSECONDS = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            // nanoseconds, decimal fraction, ISO 31-0: comma [,] or full stop [.]
+            .optionalStart() // nano seconds ,
+            .appendLiteral(',')
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, false)
+            .optionalEnd() // nano seconds ,
+            .optionalStart() // nano seconds .
+            .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
+            .optionalEnd() // nano seconds .
+            .toFormatter();
+
+    public static final DateTimeFormatter ISO8601_TIME_ZONE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .optionalStart()
+            .appendOffset("+HH:mm", "Z")
+            .optionalEnd()
+            .toFormatter();
+
+    public static final DateTimeFormatter ISO8601_COMPACT_TIME_ZONE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .optionalStart()
+            .appendOffset("+HHmm", "Z")
+            .optionalEnd()
+            .toFormatter();
 
     // archie version does not specify width of YEAR field (YYYY)
     public static final DateTimeFormatter ISO_8601_DATE_PARSER = new DateTimeFormatterBuilder()
@@ -64,10 +84,10 @@ public final class OpenEHRDateTimeParseUtils {
             .optionalStart()
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
+            .append(ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
+            .append(ISO8601_TIME_ZONE)
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
     public static final DateTimeFormatter ISO_8601_DATE_TIME_PARSER = new DateTimeFormatterBuilder()
@@ -88,10 +108,10 @@ public final class OpenEHRDateTimeParseUtils {
             .optionalStart()
             .appendLiteral(':')
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
+            .append(ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
+            .append(ISO8601_TIME_ZONE)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
@@ -117,10 +137,10 @@ public final class OpenEHRDateTimeParseUtils {
             .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
             .optionalStart()
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
+            .append(ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
+            .append(ISO8601_COMPACT_TIME_ZONE)
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
     // partial date-times are allowed in compact format but archie does not implement that
@@ -138,46 +158,70 @@ public final class OpenEHRDateTimeParseUtils {
             .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
             .optionalStart()
             .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .append(DateTimeFormatters.ISO8601_OPTIONAL_NANOSECONDS)
+            .append(ISO8601_OPTIONAL_NANOSECONDS)
             .optionalEnd()
             .optionalEnd()
-            .append(DateTimeFormatters.ISO8601_TIME_ZONE)
+            .append(ISO8601_COMPACT_TIME_ZONE)
             .optionalEnd()
             .optionalEnd()
             .optionalEnd()
             .toFormatter()
             .withResolverStyle(ResolverStyle.STRICT);
 
-    private static final Predicate<String> COMPACT_DATE_PREDICATE = s -> s.length() > 4 && s.charAt(4) != '-';
-    private static final Predicate<String> COMPACT_TIME_PREDICATE = s -> s.length() > 2 && s.charAt(2) != ':';
-
     private OpenEHRDateTimeParseUtils() {}
 
+    private static boolean isCompactDate(String s) {
+        return s.length() > 4 && s.charAt(4) != '-';
+    }
+
+    private static boolean isCompactTime(String s) {
+        if (s.length() <= 2) {
+            return false;
+        }
+        char ch = s.charAt(2);
+        return switch (ch) {
+            case ':' -> false;
+            // '12+02:00' vs. '12+0200'
+            case '+', '-' -> s.length() > 5 && s.charAt(5) != ':';
+            default -> true;
+        };
+    }
+
     public static Temporal parseDate(String isoDate) {
+        return parseOpenEhrTemporal(
+                isoDate, OpenEHRDateTimeParseUtils::isCompactDate, ISO_8601_DATE_COMPACT_PARSER, ISO_8601_DATE_PARSER);
+    }
+
+    public static TemporalAccessor parseTime(String isoTime) {
+        return parseOpenEhrTemporal(
+                isoTime, OpenEHRDateTimeParseUtils::isCompactTime, ISO_8601_TIME_COMPACT_PARSER, ISO_8601_TIME_PARSER);
+    }
+
+    public static TemporalAccessor parseDateTime(String isoDateTime) {
+        return parseOpenEhrTemporal(
+                isoDateTime,
+                OpenEHRDateTimeParseUtils::isCompactDate,
+                ISO_8601_DATE_TIME_COMPACT_PARSER,
+                ISO_8601_DATE_TIME_PARSER);
+    }
+
+    private static OpenEhrTemporal parseOpenEhrTemporal(
+            final String isoDate,
+            final Predicate<String> isCompactPredicate,
+            final DateTimeFormatter compactParser,
+            final DateTimeFormatter extendedParser) {
         if (isoDate == null) {
             return null;
         }
         try {
-            final TemporalAccessor parsed;
-            if (COMPACT_DATE_PREDICATE.test(isoDate)) {
-                parsed = ISO_8601_DATE_COMPACT_PARSER.parse(isoDate);
+            final DateTimeFormatter parser;
+            if (isCompactPredicate.test(isoDate)) {
+                parser = compactParser;
             } else {
-                parsed = ISO_8601_DATE_PARSER.parse(isoDate);
+                parser = extendedParser;
             }
 
-            if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
-                return LocalDate.from(parsed);
-            }
-
-            if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
-                return YearMonth.from(parsed);
-            }
-
-            if (parsed.isSupported(ChronoField.YEAR)) {
-                return Year.from(parsed);
-            }
-            throw new DateTimeException(
-                    isoDate + " does not provide any field required for the possible precisions:" + isoDate);
+            return parseOpenEhrTemporal(isoDate, parser);
         } catch (DateTimeException e) {
             // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
             // behaviour
@@ -185,75 +229,33 @@ public final class OpenEHRDateTimeParseUtils {
         }
     }
 
-    public static TemporalAccessor parseTime(String isoTime) {
-        if (isoTime == null) {
-            return null;
+    private static OpenEhrTemporal parseOpenEhrTemporal(final CharSequence text, DateTimeFormatter parser) {
+        ParsePosition pos = new ParsePosition(0);
+        TemporalAccessor result = parser.parseUnresolved(text, pos);
+        if (pos.getErrorIndex() >= 0 || pos.getIndex() < text.length()) {
+            String abbr;
+            if (text.length() > 64) {
+                abbr = text.subSequence(0, 64) + "...";
+            } else {
+                abbr = text.toString();
+            }
+            if (pos.getErrorIndex() >= 0) {
+                throw new DateTimeParseException(
+                        "Text '" + abbr + "' could not be parsed at index " + pos.getErrorIndex(),
+                        text,
+                        pos.getErrorIndex());
+            } else {
+                throw new DateTimeParseException(
+                        "Text '" + abbr + "' could not be parsed, unparsed text found at index " + pos.getIndex(),
+                        text,
+                        pos.getIndex());
+            }
         }
         try {
-
-            final TemporalAccessor parsed;
-            if (COMPACT_TIME_PREDICATE.test(isoTime)) {
-                parsed = ISO_8601_TIME_COMPACT_PARSER.parse(isoTime);
-            } else {
-                parsed = ISO_8601_TIME_PARSER.parse(isoTime);
-            }
-
-            if (parsed.isSupported(ChronoField.HOUR_OF_DAY) && parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
-                // Do not use OffsetTime::from, so we do not have to unwrap exceptions to get meaningful messages
-                return OffsetTime.of(LocalTime.from(parsed), ZoneOffset.from(parsed));
-            }
-
-            if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
-                return LocalTime.from(parsed);
-            }
+            return new OpenEhrTemporal(result);
+        } catch (IllegalArgumentException e) {
             throw new DateTimeException(
-                    isoTime + " does not provide any field required for the possible precisions:" + isoTime);
-        } catch (DateTimeException e) {
-            // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
-            // behaviour to avoid breaking stuff
-            throw new IllegalArgumentException(e.getMessage() + ":" + isoTime, e);
-        }
-    }
-
-    public static TemporalAccessor parseDateTime(String isoDateTime) {
-        if (isoDateTime == null) {
-            return null;
-        }
-        try {
-            final TemporalAccessor parsed;
-            // We can use the date predicate as a date-time will always start with a date
-            if (COMPACT_DATE_PREDICATE.test(isoDateTime)) {
-                parsed = ISO_8601_DATE_TIME_COMPACT_PARSER.parse(isoDateTime);
-            } else {
-                parsed = ISO_8601_DATE_TIME_PARSER.parse(isoDateTime);
-            }
-
-            if (parsed.isSupported(ChronoField.HOUR_OF_DAY)) {
-                // Do not use OffsetTime::from, so we do not have to unwrap exceptions to get meaningful messages
-                if (parsed.isSupported(ChronoField.OFFSET_SECONDS)) {
-                    return OffsetDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed), ZoneOffset.from(parsed));
-                } else {
-                    return LocalDateTime.of(LocalDate.from(parsed), LocalTime.from(parsed));
-                }
-            }
-
-            if (parsed.isSupported(ChronoField.DAY_OF_MONTH)) {
-                return LocalDate.from(parsed);
-            }
-
-            if (parsed.isSupported(ChronoField.MONTH_OF_YEAR)) {
-                return YearMonth.from(parsed);
-            }
-
-            if (parsed.isSupported(ChronoField.YEAR)) {
-                return Year.from(parsed);
-            }
-            throw new DateTimeException(
-                    isoDateTime + " does not provide any field required for the possible precisions:" + isoDateTime);
-        } catch (DateTimeException e) {
-            // This wrapping does not necessarily make sense, but since this is a workaround we keep the archie
-            // behaviour
-            throw new IllegalArgumentException(e.getMessage() + ":" + isoDateTime, e);
+                    "%s does not provide any field required for the possible precisions: %s".formatted(text, text));
         }
     }
 }

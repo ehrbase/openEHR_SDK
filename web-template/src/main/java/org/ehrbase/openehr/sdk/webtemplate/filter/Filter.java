@@ -61,7 +61,7 @@ public class Filter implements WebTemplateFilter {
             WebTemplateNode node, WebTemplate context, Deque<WebTemplateNode> deque) {
 
         WebTemplateNode oldNode = new WebTemplateNode(node);
-        preHandle(node);
+        preHandle(context, node);
         List<WebTemplateNode> nodes;
         List<WebTemplateNode> filteredChildren = new ArrayList<>();
         Map<Pair<String, String>, Deque<WebTemplateNode>> nodeMap = new HashMap<>();
@@ -93,7 +93,7 @@ public class Filter implements WebTemplateFilter {
         return new ImmutablePair<>(nodes, nodeMap);
     }
 
-    protected void preHandle(WebTemplateNode node) {
+    protected void preHandle(final WebTemplate context, WebTemplateNode node) {
 
         switch (node.getRmType()) {
             case RmConstants.ACTION -> {
@@ -125,6 +125,19 @@ public class Filter implements WebTemplateFilter {
                 node.getInputs().stream()
                         .filter(ip -> OPTParser.CODED_TEXT.equals(ip.getType()))
                         .forEach(ip -> ip.setTerminology(null));
+            }
+            case RmConstants.DV_CODED_TEXT -> {
+                if (!context.getLanguages().contains("en")) {
+                    // remove english "fallback" labels for openEHR terminologies
+                    // see OPTParser::parseCCODEPHRASE
+                    node.getInputs().forEach(input -> {
+                        if ("CODED_TEXT".equals(input.getType()) && OPTParser.OPENEHR.equals(input.getTerminology())) {
+                            input.getList()
+                                    .forEach(inputValue ->
+                                            inputValue.getLocalizedLabels().remove("en"));
+                        }
+                    });
+                }
             }
             default -> {
                 /*NOOP*/

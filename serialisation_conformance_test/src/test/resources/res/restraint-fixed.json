@@ -1,0 +1,182 @@
+// Copyright 2020-2021 Better Ltd (www.better.care)
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{
+  "restraint_of_patient": {
+    "_uid": [
+      "7231add2-d142-4340-98b0-7cc1e490ad7f::default::1"
+    ],
+    "language": [
+      {
+        "|code": "sl",
+        "|terminology": "ISO_639-1"
+      }
+    ],
+    "territory": [
+      {
+        "|code": "SI",
+        "|terminology": "ISO_3166-1"
+      }
+    ],
+    "context": [
+      {
+        "start_time": [
+          "2017-08-11T15:04:10.000+02:00"
+        ],
+        "setting": [
+          {
+            "|code": "238",
+            "|value": "other care",
+            "|terminology": "openehr"
+          }
+        ]
+      }
+    ],
+    "restraint": [
+      {
+        "restraint_mnd": [
+          {
+            "start_date_and_time": [
+              "2017-08-02T00:00:00.000+02:00"
+            ],
+            "end_date_and_time": [
+              "2017-08-22T00:00:00.000+02:00"
+            ],
+            "category": [
+              {
+                "|code": "at0012",
+                "|value": "Oviranje oz. omejevanje gibanja zaradi nasilnega in/ali samodestruktivnega vedenja",
+                "|terminology": "local"
+              }
+            ],
+            "type": [
+              {
+                "|code": "at0014",
+                "|value": "Fizično oviranje/fiksacija"
+              },
+              {
+                "|code": "at0015",
+                "|value": "Medikamentozno oviranje"
+              }
+            ],
+            "time": [
+              "2017-08-11T15:04:10.000+02:00"
+            ],
+            "language": [
+              {
+                "|code": "sl",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ],
+            "physical_restraint_details": [
+              {
+                "type": [],
+                "used_restraint_devices": [],
+                "body_part": [],
+                "description": []
+              }
+            ],
+            "name_of_the_physician": [],
+            "id_of_physician": [],
+            "name_of_nurse": [],
+            "id_of_nurse": [],
+            "way_of_order": [],
+            "confirmation": [],
+            "relatives": [
+              {
+                "informed": [],
+                "reason_way_relatives_are_not_informed": []
+              }
+            ],
+            "complications": [
+              {
+                "complication": [],
+                "type": [],
+                "description": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "restraint_medication": [
+      {
+        "medication_order": [
+          {
+            "_uid": [
+              "1fcb05bb-1770-4563-a55e-1e092658ba94"
+            ],
+            "order": [
+              {
+                "medication_item": [],
+                "timing": [
+                  {
+                    "|value": "R1",
+                    "|formalism": "timing"
+                  }
+                ],
+                "route": [],
+                "therapeutic_direction": [
+                  {
+                    "dosage_administration": [
+                      {
+                        "dose_amount": [
+                          {
+                            "value": []
+                          }
+                        ],
+                        "dose_unit": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "narrative": [
+              "<none>"
+            ],
+            "language": [
+              {
+                "|code": "sl",
+                "|terminology": "ISO_639-1"
+              }
+            ],
+            "encoding": [
+              {
+                "|code": "UTF-8",
+                "|terminology": "IANA_character-sets"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "composer": [
+      {
+        "|id": "6127355",
+        "|id_scheme": "ispek_scheme",
+        "|id_namespace": "ispek",
+        "|name": "ighorv"
+      }
+    ]
+  },
+  "generic-field-16220": {},
+  "ctx": {}
+}
