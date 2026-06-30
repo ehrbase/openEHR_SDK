@@ -63,10 +63,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
-        <skipTests>false</skipTests>
-        <skipITs>false</skipITs>
+        <skipTests>${isEhrbaseBuild}</skipTests>
+        <skipITs>${isEhrbaseBuild}</skipITs>
         <failsafeArgLine/>
         <surefireArgLine/>
+
 
         <license-header.dir>./</license-header.dir>
     </properties>
@@ -87,6 +88,9 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <skipSource>${isEhrbaseBuild}</skipSource>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -102,6 +106,9 @@
                                 </configuration>
                             </execution>
                         </executions>
+                        <configuration>
+                            <skip>${isEhrbaseBuild}</skip>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -113,6 +120,9 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <skip>${isEhrbaseBuild}</skip>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -146,6 +156,7 @@
                         </requireMavenVersion>
                     </rules>
                     <fail>true</fail>
+                    <skip>${isEhrbaseBuild}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -181,6 +192,9 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <skip>${isEhrbaseBuild}</skip>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -220,6 +234,7 @@
                 <artifactId>central-publishing-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
+                    <skipPublishing>${isEhrbaseBuild}</skipPublishing>
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                 </configuration>
@@ -228,6 +243,7 @@
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <configuration>
+                    <skip>${isEhrbaseBuild}</skip>
                     <java>
                         <toggleOffOn>
                             <off>@format:off</off>
