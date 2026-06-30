@@ -404,7 +404,7 @@
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
                     <configuration>
-                        <skip>${isEhrbaseBuild}</skip>
+                        <skipSource>${isEhrbaseBuild}</skipSource>
                     </configuration>
                 </plugin>
                 <plugin>
