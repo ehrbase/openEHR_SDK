@@ -20,8 +20,6 @@ package org.ehrbase.openehr.sdk.response.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import java.util.List;
-import java.util.Map;
 
 @JacksonXmlRootElement
 public class StoredQueryResponseData {
@@ -41,16 +39,12 @@ public class StoredQueryResponseData {
     @JsonProperty(value = "q")
     private String aqlQuery;
 
-    // TODO: the answer is returning colums & rows which is not valid according to spec
-    @JsonProperty(value = "columns")
-    private List<Map<String, String>> columns;
-
-    // TODO: the answer is returning colums & rows which is not valid according to spec
-    @JsonProperty(value = "rows")
-    private List<List<Object>> rows;
-
     public String getName() {
         return name;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public String getVersion() {
@@ -59,5 +53,9 @@ public class StoredQueryResponseData {
 
     public String getAqlQuery() {
         return aqlQuery;
+    }
+
+    public DvDateTime getSaved() {
+        return saved;
     }
 }

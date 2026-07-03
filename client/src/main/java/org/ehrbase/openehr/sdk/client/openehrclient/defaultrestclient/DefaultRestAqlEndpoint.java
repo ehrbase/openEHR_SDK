@@ -240,29 +240,6 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         }
     }
 
-    @Override
-    public StoredQueryResponseData getStoredAqlQuery(StoredQueryParameter queryParameter) {
-        if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException(INVALID_QUERY_ERROR_STRING);
-        }
-
-        URIBuilder uriBuilder = getBaseUriBuilder()
-                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
-                        + AQL_STORED_QUERY_PATH
-                        + queryParameter.getPath());
-
-        try {
-            HttpResponse response = defaultRestClient.internalGet(
-                    uriBuilder.build(), Collections.emptyMap(), ContentType.APPLICATION_JSON.getMimeType());
-
-            String responseJson = EntityUtils.toString(response.getEntity());
-
-            return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, StoredQueryResponseData.class);
-        } catch (IOException | URISyntaxException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-    }
-
     private static JsonNode toValueNode(Object rawValue, JsonNodeCreator creator) {
         JsonNode valueNode;
         if (rawValue instanceof BigInteger value) {
@@ -300,6 +277,29 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             valueNode = creator.textNode(rawValue.toString());
         }
         return valueNode;
+    }
+
+    @Override
+    public StoredQueryResponseData getStoredAqlQuery(StoredQueryParameter queryParameter) {
+        if (queryParameter == null || !queryParameter.isValid()) {
+            throw new ClientException(INVALID_QUERY_ERROR_STRING);
+        }
+
+        URIBuilder uriBuilder = getBaseUriBuilder()
+                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
+                        + STORE_AQL_QUERY_PATH
+                        + queryParameter.getPath());
+
+        try {
+            HttpResponse response = defaultRestClient.internalGet(
+                    uriBuilder.build(), Collections.emptyMap(), ContentType.APPLICATION_JSON.getMimeType());
+
+            String responseJson = EntityUtils.toString(response.getEntity());
+
+            return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, StoredQueryResponseData.class);
+        } catch (IOException | URISyntaxException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
     }
 
     @Override

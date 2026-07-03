@@ -34,6 +34,7 @@ import org.ehrbase.openehr.sdk.generator.commons.aql.field.EhrFields;
 import org.ehrbase.openehr.sdk.generator.commons.aql.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.Parameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.ParameterValue;
+import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryParameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.EntityQuery;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.Query;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.Record1;
@@ -47,6 +48,7 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpress
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservationContainment;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
+import org.ehrbase.openehr.sdk.response.dto.StoredQueryResponseData;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.junit.jupiter.api.Test;
 
@@ -448,5 +450,25 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
         Record2<String, String> row = result.get(0);
         assertThat(row.value1()).isEqualTo("9a0e5173-07c8-443d-b414-24432b9d95ca");
         assertThat(row.value2()).isEqualTo("inject$var1ant");
+    }
+
+    @Test
+    void testStoredQuery() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        Query<Record1<UUID>> query = Query.buildNativeQuery("""
+            SELECT e/ehr_id/value
+            FROM EHR e
+            WHERE e/ehr_id/value = $ehr_id
+        """, UUID.class);
+
+        StoredQueryParameter param = new StoredQueryParameter("my::query", "1.2.3");
+        openEhrClient.aqlEndpoint().storeAqlQuery(query, param);
+
+        StoredQueryResponseData storedAqlQuery = openEhrClient.aqlEndpoint().getStoredAqlQuery(param);
+        assertThat(storedAqlQuery.getName()).isEqualTo("my::query");
+        assertThat(storedAqlQuery.getVersion()).isEqualTo("1.2.3");
+        assertThat(storedAqlQuery.getAqlQuery()).isEqualTo(query.buildAql());
     }
 }
