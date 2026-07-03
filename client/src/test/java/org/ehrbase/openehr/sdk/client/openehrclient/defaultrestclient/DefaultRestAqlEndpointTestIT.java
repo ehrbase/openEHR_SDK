@@ -48,6 +48,7 @@ import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpress
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.BloodPressureTrainingSampleObservationContainment;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.CuffSizeDefiningCode;
 import org.ehrbase.openehr.sdk.generator.commons.test_data.dto.ehrbasebloodpressuresimpledev0composition.definition.KorotkoffSoundsDefiningCode;
+import org.ehrbase.openehr.sdk.response.dto.QueryResponseData;
 import org.ehrbase.openehr.sdk.response.dto.StoredQueryResponseData;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.junit.jupiter.api.Test;
@@ -470,5 +471,49 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
         assertThat(storedAqlQuery.getName()).isEqualTo("my::query");
         assertThat(storedAqlQuery.getVersion()).isEqualTo("1.2.3");
         assertThat(storedAqlQuery.getAqlQuery()).isEqualTo(query.buildAql());
+
+        StoredQueryParameter sqp = new StoredQueryParameter("my::query", "1.2.3");
+        sqp.addQueryParam("ehr_id", ehr.toString());
+
+        QueryResponseData result = openEhrClient.aqlEndpoint().executeStoredQuery(sqp);
+        assertThat(result.getRows()).hasSize(1);
+        assertThat(result.getRows().get(0).get(0)).isEqualTo(ehr.toString());
+    }
+
+    @Test
+    void testStoredQueryParamInjection() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        openEhrClient
+                .compositionEndpoint(ehr)
+                .mergeCompositionEntity(TestData.buildTestVirologischerBefundComposition());
+
+        Query<Record2<String, String>> query = Query.buildNativeQuery("""
+            SELECT cl/items[at0026]/value/id, 'inject$var1ant'
+            FROM EHR e
+              CONTAINS COMPOSITION
+              CONTAINS CLUSTER cl [openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]
+            WHERE e/ehr_id/value = $ehr_id
+              AND cl/items[at0024]/value/value = $var1
+              AND cl/items[at0027]/value/magnitude = $var11
+              AND cl/items[at0026]/value/type = $var111
+        """, String.class, String.class);
+
+        StoredQueryParameter param = new StoredQueryParameter("my::inject", "1.0.0");
+        openEhrClient.aqlEndpoint().storeAqlQuery(query, param);
+
+        param.addQueryParam("ehr_id", ehr);
+        param.addQueryParam("var1", "SARS-Cov-2");
+        param.addQueryParam("var111", "Prescription");
+        param.addQueryParam("var11", 32);
+
+        List<List<Object>> result =
+                openEhrClient.aqlEndpoint().executeStoredQuery(param).getRows();
+        assertThat(result).hasSize(1);
+
+        List<Object> row = result.get(0);
+        assertThat(row.get(0)).isEqualTo("9a0e5173-07c8-443d-b414-24432b9d95ca");
+        assertThat(row.get(1)).isEqualTo("inject$var1ant");
     }
 }

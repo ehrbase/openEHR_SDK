@@ -17,8 +17,8 @@
  */
 package org.ehrbase.openehr.sdk.generator.commons.aql.parameter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,7 +29,7 @@ public class StoredQueryParameter {
     private Integer offset;
     private Integer fetch;
     private String type;
-    private final Map<String, String> parameterMap = new HashMap<>();
+    private final List<ParameterValue> parameters = new ArrayList<>();
 
     public StoredQueryParameter(String qualifiedQueryName, String version) {
         this.qualifiedQueryName = qualifiedQueryName;
@@ -51,8 +51,8 @@ public class StoredQueryParameter {
         return this;
     }
 
-    public StoredQueryParameter addQueryParam(String parameterName, String value) {
-        parameterMap.put(parameterName, value);
+    public StoredQueryParameter addQueryParam(String parameterName, Object value) {
+        parameters.add(new ParameterValue(parameterName, value));
         return this;
     }
 
@@ -76,7 +76,7 @@ public class StoredQueryParameter {
         return qualifiedQueryName + "/" + version;
     }
 
-    public Map<String, String> getQueryParams() {
-        return parameterMap;
+    public List<ParameterValue> getQueryParams() {
+        return parameters;
     }
 }
