@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,10 +35,11 @@ import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.utils.URIBuilder;
@@ -87,92 +89,74 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     @Override
     public <T extends Record> List<T> execute(Query<T> query, ParameterValue... parameterValues) {
-        List<T> result = new ArrayList<>();
-        Map<String, String> qMap = new HashMap<>();
-        String aql = query.buildAql();
-        for (ParameterValue v : parameterValues) {
-            aql = aql.replace(v.getParameter().getAqlParameter(), v.buildAql());
+
+        QueryResponseData queryResponseData = executeRaw(query, parameterValues);
+
+        List<List<Object>> dataRows = queryResponseData.getRows();
+        if (CollectionUtils.isEmpty(dataRows)) {
+            return new ArrayList<>();
         }
 
-        qMap.put(QUERY_MAP_KEY, aql);
-        URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
-        try {
+        return dataRows.stream()
+                .map(row -> {
+                    AqlField<Object>[] fields = query.fields();
+                    RecordImp record = new RecordImp(fields);
+                    try {
+                        for (int i = 0; i < fields.length; i++) {
+                            AqlField<?> aqlField = fields[i];
+                            Object cell = row.get(i);
+                            var valueAsString = AQL_OBJECT_MAPPER.writeValueAsString(cell);
+                            final Object object;
 
-            HttpResponse response = defaultRestClient.internalPost(
-                    uri,
-                    null,
-                    DefaultRestClient.OBJECT_MAPPER.writeValueAsString(qMap),
-                    ContentType.APPLICATION_JSON,
-                    ContentType.APPLICATION_JSON.getMimeType());
-            String value = EntityUtils.toString(response.getEntity());
-            QueryResponseData queryResponseData = AQL_OBJECT_MAPPER.readValue(value, QueryResponseData.class);
-            List<List<Object>> dataRows = queryResponseData.getRows();
+                            if (aqlField instanceof ListSelectAqlField<?> listField) {
+                                List<Object> list = new ArrayList<>();
+                                list.add(extractValue(valueAsString, listField.getInnerClass()));
+                                object = list;
 
-            if (Objects.nonNull(dataRows)) {
-                for (List<Object> jresult : dataRows) {
-                    RecordImp record = new RecordImp(query.fields());
-                    int i = 0;
-                    for (AqlField<?> aqlField : query.fields()) {
-                        String valueAsString = AQL_OBJECT_MAPPER.writeValueAsString(jresult.get(i));
-                        final Object object;
-
-                        Class<?> aClass = aqlField.getValueClass();
-                        if (ListSelectAqlField.class.isAssignableFrom(aqlField.getClass())) {
-                            List list = new ArrayList();
-                            object = list;
-                            // @TODO how to handle list values results like
-                            // content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
-                            //      for (JsonElement element :
-                            // JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
-                            list.add(extractValue(valueAsString, ((ListSelectAqlField) aqlField).getInnerClass()));
-                            //    }
-
-                        } else {
-                            object = extractValue(valueAsString, aClass);
+                            } else {
+                                object = extractValue(valueAsString, aqlField.getValueClass());
+                            }
+                            record.putValue(i, object);
                         }
-
-                        record.putValue(i, object);
-                        i++;
+                    } catch (JacksonException e) {
+                        throw new ClientException(e.getMessage(), e);
                     }
-                    result.add((T) record);
-                }
-            }
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-
-        return result;
+                    return (T) record;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    public QueryResponseData executeRaw(Query query, ParameterValue... parameters) {
+    public QueryResponseData executeRaw(Query query, ParameterValue... parameterValues) {
 
         if (query == null) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
-        if (parameters == null) {
+        if (parameterValues == null) {
             throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
-        String queryString = query.buildAql();
+        String aql = query.buildAql();
 
-        if (StringUtils.isEmpty(queryString)) {
+        if (StringUtils.isEmpty(aql)) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
-        for (ParameterValue v : parameters) {
-            queryString = queryString.replace(v.getParameter().getAqlParameter(), v.buildAql());
+        for (ParameterValue<?> v : parameterValues) {
+            aql = aql.replace(v.getParameter().getAqlParameter(), v.buildAql());
         }
 
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
 
+        Map<String, String> qMap = new LinkedHashMap<>();
+        qMap.put(QUERY_MAP_KEY, aql);
+
         try {
-            String body = DefaultRestClient.OBJECT_MAPPER.writeValueAsString(Map.of(QUERY_MAP_KEY, queryString));
             HttpResponse response = defaultRestClient.internalPost(
                     uri,
                     Collections.emptyMap(),
-                    body,
+                    DefaultRestClient.OBJECT_MAPPER.writeValueAsString(qMap),
                     ContentType.APPLICATION_JSON,
                     ContentType.APPLICATION_JSON.getMimeType());
 
@@ -286,8 +270,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                 .setPort(baseUri.getPort());
     }
 
-    private Object extractValue(String valueAsString, Class<?> aClass)
-            throws com.fasterxml.jackson.core.JsonProcessingException {
+    private Object extractValue(String valueAsString, Class<?> aClass) throws JsonProcessingException {
         Object object;
 
         if (StringUtils.isBlank(valueAsString) || "null".equals(valueAsString)) {
@@ -295,16 +278,15 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         } else if (aClass.isAnnotationPresent(Entity.class)) {
             RMObject locatable = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
             object = createFlattener(defaultRestClient.getTemplateProvider()).toGeneratedDto(locatable, aClass);
-            if (locatable instanceof Composition) {
+            if (locatable instanceof Composition comp) {
                 RmToGeneratedDtoConverter.addVersion(
-                        object,
-                        new ObjectVersionId(((Composition) locatable).getUid().getValue()));
+                        object, new ObjectVersionId(comp.getUid().getValue()));
             }
         } else if (EnumValueSet.class.isAssignableFrom(aClass)) {
             RMObject rmObject = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
             final String codeString;
-            if (CodePhrase.class.isAssignableFrom(rmObject.getClass())) {
-                codeString = ((CodePhrase) rmObject).getCodeString();
+            if (rmObject instanceof CodePhrase codePhrase) {
+                codeString = codePhrase.getCodeString();
             } else {
                 codeString = ((DvCodedText) rmObject).getDefiningCode().getCodeString();
             }
