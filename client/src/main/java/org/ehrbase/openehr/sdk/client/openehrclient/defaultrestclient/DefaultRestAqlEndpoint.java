@@ -20,8 +20,12 @@ package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
@@ -29,13 +33,15 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,7 +73,8 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     public static final String AQL_PATH = "rest/openehr/v1/query/aql/";
     public static final String AQL_STORED_QUERY_PATH = "rest/openehr/v1/query/";
     public static final String STORE_AQL_QUERY_PATH = "rest/openehr/v1/definition/query/";
-    public static final String QUERY_MAP_KEY = "q";
+    public static final String QUERY_KEY = "q";
+    public static final String PARAMETERS_KEY = "query_parameters";
     public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
 
     private final DefaultRestClient defaultRestClient;
@@ -143,20 +150,18 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
-        for (ParameterValue<?> v : parameterValues) {
-            aql = aql.replace(v.getParameter().getAqlParameter(), v.buildAql());
-        }
-
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
 
-        Map<String, String> qMap = new LinkedHashMap<>();
-        qMap.put(QUERY_MAP_KEY, aql);
+        ObjectNode reqBody = DefaultRestClient.OBJECT_MAPPER.createObjectNode();
+        reqBody.put(QUERY_KEY, aql);
+
+        addQueryParameters(reqBody, parameterValues);
 
         try {
             HttpResponse response = defaultRestClient.internalPost(
                     uri,
                     Collections.emptyMap(),
-                    DefaultRestClient.OBJECT_MAPPER.writeValueAsString(qMap),
+                    DefaultRestClient.OBJECT_MAPPER.writeValueAsString(reqBody),
                     ContentType.APPLICATION_JSON,
                     ContentType.APPLICATION_JSON.getMimeType());
 
@@ -166,6 +171,40 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
+        }
+    }
+
+    private static void addQueryParameters(ObjectNode reqBody, ParameterValue<?>... parameterValues) {
+        if (parameterValues.length > 0) {
+            ObjectNode params = (ObjectNode) reqBody.get(PARAMETERS_KEY);
+            if (params == null) {
+                params = reqBody.objectNode();
+                reqBody.set(PARAMETERS_KEY, params);
+            }
+
+            JsonNode valueNode;
+            for (ParameterValue<?> parameterValue : parameterValues) {
+                Object rawValue = parameterValue.getValue();
+
+                valueNode = toValueNode(rawValue, params);
+
+                String name = parameterValue.getParameter().getAqlParameter().substring(1);
+                JsonNode existingParamValue = params.get(name);
+                if (existingParamValue == null) {
+                    params.set(name, valueNode);
+                } else {
+                    // duplicate param: add as list
+                    ArrayNode list;
+                    if (existingParamValue.isArray()) {
+                        list = (ArrayNode) existingParamValue;
+                    } else {
+                        list = params.arrayNode();
+                        list.add(existingParamValue);
+                        params.set(name, list);
+                    }
+                    list.add(valueNode);
+                }
+            }
         }
     }
 
@@ -222,6 +261,45 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         } catch (IOException | URISyntaxException e) {
             throw new ClientException(e.getMessage(), e);
         }
+    }
+
+    private static JsonNode toValueNode(Object rawValue, JsonNodeCreator creator) {
+        JsonNode valueNode;
+        if (rawValue instanceof BigInteger value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof BigDecimal value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Byte value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Short value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Integer value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Long value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Float value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Double value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof String value) {
+            valueNode = creator.textNode(value);
+        } else if (rawValue instanceof Collection<?> values) {
+            ArrayNode list = creator.arrayNode();
+            for (Object value : values) {
+                JsonNode node = toValueNode(value, creator);
+                if (node.isArray()) {
+                    list.addAll((ArrayNode) node);
+                } else {
+                    list.add(node);
+                }
+            }
+            valueNode = list;
+        } else if (rawValue.getClass().isArray()) {
+            valueNode = toValueNode(Arrays.asList((Object[]) rawValue), creator);
+        } else {
+            valueNode = creator.textNode(rawValue.toString());
+        }
+        return valueNode;
     }
 
     @Override

@@ -66,7 +66,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 DvDateTime.class);
 
         List<Record2<String, DvDateTime>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
     }
 
@@ -84,7 +84,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 BloodPressureTrainingSampleObservationProxy.class);
 
         List<Record2<String, BloodPressureTrainingSampleObservationProxy>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
 
         assertThat(result.get(0).value2().dummy).isNull();
@@ -108,7 +108,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 OffsetDateTime.class);
 
         List<Record2<Double, OffsetDateTime>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
         assertThat(result)
                 .extracting(
@@ -137,7 +137,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 TemporalAccessor.class);
 
         List<Record2<ObjectVersionId, TemporalAccessor>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
         assertThat(result)
                 .extracting(
@@ -413,5 +413,40 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
 
         result = openEhrClient.aqlEndpoint().execute(query);
         assertThat(result).isNotNull().hasSize(1);
+    }
+
+    @Test
+    void testParamInjection() {
+
+        ehr = openEhrClient.ehrEndpoint().createEhr();
+
+        openEhrClient
+                .compositionEndpoint(ehr)
+                .mergeCompositionEntity(TestData.buildTestVirologischerBefundComposition());
+
+        Query<Record2<String, String>> query = Query.buildNativeQuery("""
+            SELECT cl/items[at0026]/value/id, 'inject$var1ant'
+            FROM EHR e
+              CONTAINS COMPOSITION
+              CONTAINS CLUSTER cl [openEHR-EHR-CLUSTER.laboratory_test_analyte.v1]
+            WHERE e/ehr_id/value = $ehr_id
+              AND cl/items[at0024]/value/value = $var1
+              AND cl/items[at0027]/value/magnitude = $var11
+              AND cl/items[at0026]/value/type = $var111
+        """, String.class, String.class);
+
+        List<Record2<String, String>> result = openEhrClient
+                .aqlEndpoint()
+                .execute(
+                        query,
+                        new ParameterValue<>("ehr_id", ehr),
+                        new ParameterValue<>("var1", "SARS-Cov-2"),
+                        new ParameterValue<>("var111", "Prescription"),
+                        new ParameterValue<>("var11", 32));
+        assertThat(result).hasSize(1);
+
+        Record2<String, String> row = result.get(0);
+        assertThat(row.value1()).isEqualTo("9a0e5173-07c8-443d-b414-24432b9d95ca");
+        assertThat(row.value2()).isEqualTo("inject$var1ant");
     }
 }

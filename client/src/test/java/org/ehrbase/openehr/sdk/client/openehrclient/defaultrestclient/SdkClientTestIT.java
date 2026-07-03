@@ -63,7 +63,7 @@ public class SdkClientTestIT {
         openEhrClient = setupDefaultRestClient();
     }
 
-    public static DefaultRestClient setupDefaultRestClient() throws URISyntaxException {
+    public static DefaultRestClient setupDefaultRestClient() {
         TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
         DefaultRestClient client =
                 new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()), templateProvider);
@@ -72,7 +72,7 @@ public class SdkClientTestIT {
         return client;
     }
 
-    public static DefaultRestClient setupRestClientWithDefaultTemplateProvider() throws URISyntaxException {
+    public static DefaultRestClient setupRestClientWithDefaultTemplateProvider() {
         return new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()));
     }
 
