@@ -4,7 +4,15 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
- ### Fixed 
+ ### Changed
+- AQL Client adjustments [#755](https://github.com/ehrbase/openEHR_SDK/pull/755)
+  - For ad-hoc queries parameters are no longer inlined into the query by the client
+  - Executing stored queries now relies on POST instead of GET
+  - The parameter format for stored queries has been aligned to the ad-hoc endpoints
+### Fixed
+- AQL Client fixes
+  - Resolved injection issues due to inlined query parameters [#755](https://github.com/ehrbase/openEHR_SDK/pull/755)
+  - Retrieving stored query definitions now relies on the correct endpoint [#755](https://github.com/ehrbase/openEHR_SDK/pull/755)
 
 ## [2.33.1]
  ### Added 

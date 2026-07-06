@@ -17,10 +17,15 @@
  */
 package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datatypes.CodePhrase;
@@ -28,16 +33,19 @@ import com.nedap.archie.rm.datavalues.DvCodedText;
 import com.nedap.archie.rm.support.identification.ObjectVersionId;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.utils.URIBuilder;
@@ -48,7 +56,6 @@ import org.ehrbase.openehr.sdk.generator.commons.annotations.Entity;
 import org.ehrbase.openehr.sdk.generator.commons.aql.field.AqlField;
 import org.ehrbase.openehr.sdk.generator.commons.aql.field.ListSelectAqlField;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.ParameterValue;
-import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryParameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.Query;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.Record;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.RecordImp;
@@ -59,19 +66,20 @@ import org.ehrbase.openehr.sdk.serialisation.dto.RmToGeneratedDtoConverter;
 import org.ehrbase.openehr.sdk.serialisation.jsonencoding.ArchieObjectMapperProvider;
 import org.ehrbase.openehr.sdk.util.exception.ClientException;
 import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
+import org.jspecify.annotations.NonNull;
 
 public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
     public static final String AQL_PATH = "rest/openehr/v1/query/aql/";
     public static final String AQL_STORED_QUERY_PATH = "rest/openehr/v1/query/";
     public static final String STORE_AQL_QUERY_PATH = "rest/openehr/v1/definition/query/";
-    public static final String QUERY_MAP_KEY = "q";
+    public static final String QUERY_KEY = "q";
+    public static final String PARAMETERS_KEY = "query_parameters";
     public static final ObjectMapper AQL_OBJECT_MAPPER = buildAqlObjectMapper();
 
     private final DefaultRestClient defaultRestClient;
 
     private static final String INVALID_QUERY_ERROR_STRING = "Invalid query";
-    private static final String INVALID_PARAMETERS_ERROR_STRING = "Invalid parameters";
 
     public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
         this.defaultRestClient = defaultRestClient;
@@ -86,147 +94,187 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public <T extends Record> List<T> execute(Query<T> query, ParameterValue... parameterValues) {
-        List<T> result = new ArrayList<>();
-        Map<String, String> qMap = new HashMap<>();
-        String aql = query.buildAql();
-        for (ParameterValue v : parameterValues) {
-            aql = aql.replace(v.getParameter().getAqlParameter(), v.buildAql());
-        }
-
-        qMap.put(QUERY_MAP_KEY, aql);
-        URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
-        try {
-
-            HttpResponse response = defaultRestClient.internalPost(
-                    uri,
-                    null,
-                    DefaultRestClient.OBJECT_MAPPER.writeValueAsString(qMap),
-                    ContentType.APPLICATION_JSON,
-                    ContentType.APPLICATION_JSON.getMimeType());
-            String value = EntityUtils.toString(response.getEntity());
-            QueryResponseData queryResponseData = AQL_OBJECT_MAPPER.readValue(value, QueryResponseData.class);
-            List<List<Object>> dataRows = queryResponseData.getRows();
-
-            if (Objects.nonNull(dataRows)) {
-                for (List<Object> jresult : dataRows) {
-                    RecordImp record = new RecordImp(query.fields());
-                    int i = 0;
-                    for (AqlField<?> aqlField : query.fields()) {
-                        String valueAsString = AQL_OBJECT_MAPPER.writeValueAsString(jresult.get(i));
-                        final Object object;
-
-                        Class<?> aClass = aqlField.getValueClass();
-                        if (ListSelectAqlField.class.isAssignableFrom(aqlField.getClass())) {
-                            List list = new ArrayList();
-                            object = list;
-                            // @TODO how to handle list values results like
-                            // content[openEHR-EHR-OBSERVATION.sample_blood_pressure.v1]
-                            //      for (JsonElement element :
-                            // JsonParser.parseString(valueAsString).getAsJsonObject().get("items").getAsJsonArray()) {
-                            list.add(extractValue(valueAsString, ((ListSelectAqlField) aqlField).getInnerClass()));
-                            //    }
-
-                        } else {
-                            object = extractValue(valueAsString, aClass);
-                        }
-
-                        record.putValue(i, object);
-                        i++;
-                    }
-                    result.add((T) record);
-                }
-            }
-        } catch (IOException e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-
-        return result;
+    public <T extends Record> List<T> execute(Query<T> query, ParameterValue<?>... parameterValues) {
+        return toRecords(query, executeRaw(query, parameterValues));
     }
 
     @Override
-    public QueryResponseData executeRaw(Query query, ParameterValue... parameters) {
-
+    public QueryResponseData executeRaw(Query<?> query, ParameterValue<?>... parameterValues) {
         if (query == null) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
 
-        if (parameters == null) {
-            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
-        }
+        String aql = query.buildAql();
 
-        String queryString = query.buildAql();
-
-        if (StringUtils.isEmpty(queryString)) {
+        if (StringUtils.isEmpty(aql)) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
-        }
-
-        for (ParameterValue v : parameters) {
-            queryString = queryString.replace(v.getParameter().getAqlParameter(), v.buildAql());
         }
 
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_PATH);
 
+        ObjectNode reqBody = DefaultRestClient.OBJECT_MAPPER.createObjectNode();
+        reqBody.put(QUERY_KEY, aql);
+
+        addQueryParameters(reqBody, parameterValues);
+
+        return postQuery(uri, reqBody);
+    }
+
+    @Override
+    public QueryResponseData executeStoredQuery(
+            String qualifiedQueryName, String version, Integer offset, Integer fetch, ParameterValue<?>... parameters) {
+
+        URI uri = defaultRestClient
+                .getConfig()
+                .getBaseUri()
+                .resolve(AQL_STORED_QUERY_PATH + qualifiedQueryName + '/' + version);
+
+        ObjectNode reqBody = DefaultRestClient.OBJECT_MAPPER.createObjectNode();
+
+        if (offset != null) {
+            reqBody.put("offset", offset);
+        }
+        if (fetch != null) {
+            reqBody.put("fetch", fetch);
+        }
+
+        addQueryParameters(reqBody, parameters);
+
+        return postQuery(uri, reqBody);
+    }
+
+    private QueryResponseData postQuery(URI uri, ObjectNode body) {
         try {
-            String body = DefaultRestClient.OBJECT_MAPPER.writeValueAsString(Map.of(QUERY_MAP_KEY, queryString));
             HttpResponse response = defaultRestClient.internalPost(
                     uri,
                     Collections.emptyMap(),
-                    body,
+                    DefaultRestClient.OBJECT_MAPPER.writeValueAsString(body),
                     ContentType.APPLICATION_JSON,
                     ContentType.APPLICATION_JSON.getMimeType());
 
             String responseJson = EntityUtils.toString(response.getEntity());
 
             return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, QueryResponseData.class);
-
         } catch (IOException e) {
             throw new ClientException(e.getMessage(), e);
         }
     }
 
-    @Override
-    public QueryResponseData executeStoredQuery(StoredQueryParameter queryParameter) {
-
-        if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException(INVALID_QUERY_ERROR_STRING);
+    public <T extends Record> @NonNull List<T> toRecords(Query<T> query, QueryResponseData queryResponseData) {
+        List<List<Object>> dataRows = queryResponseData.getRows();
+        if (CollectionUtils.isEmpty(dataRows)) {
+            return new ArrayList<>();
         }
 
-        URIBuilder uriBuilder = getBaseUriBuilder()
-                .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
-                        + AQL_STORED_QUERY_PATH
-                        + queryParameter.getPath());
+        return dataRows.stream()
+                .map(row -> {
+                    AqlField<Object>[] fields = query.fields();
+                    RecordImp rec = new RecordImp(fields);
+                    try {
+                        for (int i = 0; i < fields.length; i++) {
+                            AqlField<?> aqlField = fields[i];
+                            Object cell = row.get(i);
+                            var valueAsString = AQL_OBJECT_MAPPER.writeValueAsString(cell);
+                            final Object object;
 
-        queryParameter.getOffset().ifPresent(value -> uriBuilder.addParameter("offset", value.toString()));
+                            if (aqlField instanceof ListSelectAqlField<?> listField) {
+                                List<Object> list = new ArrayList<>();
+                                list.add(extractValue(valueAsString, listField.getInnerClass()));
+                                object = list;
 
-        queryParameter.getFetch().ifPresent(value -> uriBuilder.addParameter("fetch", value.toString()));
+                            } else {
+                                object = extractValue(valueAsString, aqlField.getValueClass());
+                            }
+                            rec.putValue(i, object);
+                        }
+                    } catch (JacksonException e) {
+                        throw new ClientException(e.getMessage(), e);
+                    }
+                    return (T) rec;
+                })
+                .collect(Collectors.toList());
+    }
 
-        for (Map.Entry<String, String> param : queryParameter.getQueryParams().entrySet()) {
-            uriBuilder.addParameter(param.getKey(), param.getValue());
+    private static void addQueryParameters(ObjectNode reqBody, ParameterValue<?>... parameterValues) {
+        if (parameterValues.length == 0) {
+            return;
         }
 
-        try {
-            HttpResponse response = defaultRestClient.internalGet(
-                    uriBuilder.build(), Collections.emptyMap(), ContentType.APPLICATION_JSON.getMimeType());
+        ObjectNode params = reqBody.withObjectProperty(PARAMETERS_KEY);
 
-            String responseJson = EntityUtils.toString(response.getEntity());
+        JsonNode valueNode;
+        for (ParameterValue<?> parameterValue : parameterValues) {
+            Object rawValue = parameterValue.getValue();
 
-            return DefaultRestClient.OBJECT_MAPPER.readValue(responseJson, QueryResponseData.class);
-        } catch (IOException | URISyntaxException e) {
-            throw new ClientException(e.getMessage(), e);
+            valueNode = toValueNode(rawValue, params);
+
+            String name = parameterValue.getName();
+            JsonNode existingParamValue = params.get(name);
+            if (existingParamValue == null) {
+                params.set(name, valueNode);
+            } else {
+                // duplicate param: add as list
+                ArrayNode list;
+                if (existingParamValue.isArray()) {
+                    list = (ArrayNode) existingParamValue;
+                } else {
+                    list = params.arrayNode();
+                    list.add(existingParamValue);
+                    params.set(name, list);
+                }
+                list.add(valueNode);
+            }
         }
     }
 
-    @Override
-    public StoredQueryResponseData getStoredAqlQuery(StoredQueryParameter queryParameter) {
-        if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException(INVALID_QUERY_ERROR_STRING);
+    private static JsonNode toValueNode(Object rawValue, JsonNodeCreator creator) {
+        JsonNode valueNode;
+        if (rawValue instanceof BigInteger value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof BigDecimal value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Byte value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Short value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Integer value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Long value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Float value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof Double value) {
+            valueNode = creator.numberNode(value);
+        } else if (rawValue instanceof String value) {
+            valueNode = creator.textNode(value);
+        } else if (rawValue instanceof Collection<?> values) {
+            ArrayNode list = creator.arrayNode();
+            for (Object value : values) {
+                JsonNode node = toValueNode(value, creator);
+                if (node.isArray()) {
+                    list.addAll((ArrayNode) node);
+                } else {
+                    list.add(node);
+                }
+            }
+            valueNode = list;
+        } else if (rawValue.getClass().isArray()) {
+            valueNode = toValueNode(Arrays.asList((Object[]) rawValue), creator);
+        } else {
+            valueNode = creator.textNode(rawValue.toString());
         }
+        return valueNode;
+    }
+
+    @Override
+    public StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName, String version) {
 
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
-                        + AQL_STORED_QUERY_PATH
-                        + queryParameter.getPath());
+                        + STORE_AQL_QUERY_PATH
+                        + qualifiedQueryName
+                        + '/'
+                        + version);
 
         try {
             HttpResponse response = defaultRestClient.internalGet(
@@ -241,14 +289,10 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public void storeAqlQuery(Query query, StoredQueryParameter queryParameter) {
+    public void storeAqlQuery(String qualifiedQueryName, String version, Query<?> query, String type) {
 
         if (query == null) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
-        }
-
-        if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
         String body;
@@ -260,9 +304,13 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + STORE_AQL_QUERY_PATH
-                        + queryParameter.getPath());
+                        + qualifiedQueryName
+                        + '/'
+                        + version);
 
-        queryParameter.getType().ifPresent(type -> uriBuilder.addParameter("type", type));
+        if (type != null) {
+            uriBuilder.addParameter("type", type);
+        }
 
         try {
             defaultRestClient.internalPut(
@@ -286,8 +334,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                 .setPort(baseUri.getPort());
     }
 
-    private Object extractValue(String valueAsString, Class<?> aClass)
-            throws com.fasterxml.jackson.core.JsonProcessingException {
+    private Object extractValue(String valueAsString, Class<?> aClass) throws JsonProcessingException {
         Object object;
 
         if (StringUtils.isBlank(valueAsString) || "null".equals(valueAsString)) {
@@ -295,16 +342,15 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         } else if (aClass.isAnnotationPresent(Entity.class)) {
             RMObject locatable = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
             object = createFlattener(defaultRestClient.getTemplateProvider()).toGeneratedDto(locatable, aClass);
-            if (locatable instanceof Composition) {
+            if (locatable instanceof Composition comp) {
                 RmToGeneratedDtoConverter.addVersion(
-                        object,
-                        new ObjectVersionId(((Composition) locatable).getUid().getValue()));
+                        object, new ObjectVersionId(comp.getUid().getValue()));
             }
         } else if (EnumValueSet.class.isAssignableFrom(aClass)) {
             RMObject rmObject = AQL_OBJECT_MAPPER.readValue(valueAsString, RMObject.class);
             final String codeString;
-            if (CodePhrase.class.isAssignableFrom(rmObject.getClass())) {
-                codeString = ((CodePhrase) rmObject).getCodeString();
+            if (rmObject instanceof CodePhrase codePhrase) {
+                codeString = codePhrase.getCodeString();
             } else {
                 codeString = ((DvCodedText) rmObject).getDefiningCode().getCodeString();
             }

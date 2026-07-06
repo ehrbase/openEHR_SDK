@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,7 +46,7 @@ public class DefaultRestTemplateEndpointIT extends SdkClientTestIT {
     private String templateId = null; // global used for teardown
 
     @BeforeAll
-    public static void setup() throws URISyntaxException {
+    public static void setup() {
         restClient = SdkClientTestIT.setupDefaultRestClient();
         restClientWithDefaultTemplateProvider = SdkClientTestIT.setupRestClientWithDefaultTemplateProvider();
     }

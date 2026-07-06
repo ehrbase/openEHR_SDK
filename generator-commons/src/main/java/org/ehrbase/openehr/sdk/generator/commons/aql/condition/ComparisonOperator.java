@@ -76,7 +76,7 @@ public class ComparisonOperator<T> implements Condition {
         if (value != null) {
             sb.append(value.buildAql());
         } else if (parameter != null) {
-            sb.append(parameter.getAqlParameter());
+            sb.append('$').append(parameter.getName());
         } else {
             sb.append(compareField.buildAQL(ehrContainment));
         }

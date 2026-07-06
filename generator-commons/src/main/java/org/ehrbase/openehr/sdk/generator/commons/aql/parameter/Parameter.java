@@ -17,7 +17,6 @@
  */
 package org.ehrbase.openehr.sdk.generator.commons.aql.parameter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.EntityQuery;
 
 public class Parameter<T> {
@@ -25,18 +24,28 @@ public class Parameter<T> {
     private final String name;
 
     public Parameter(String name) {
-        this.name = name;
+        this.name = ParameterValue.normalizeName(name);
     }
 
     public Parameter(EntityQuery<?> query) {
-        name = query.buildParameterName();
+        name = ParameterValue.normalizeName(query.buildParameterName());
     }
 
-    public String getAqlParameter() {
-        return "$" + StringUtils.normalizeSpace(name).replace(" ", "_");
+    public String getName() {
+        return name;
     }
 
-    public ParameterValue<T> setValue(T value) {
+    public ParameterValue<T> withValue(T value) {
         return new ParameterValue<>(this, value);
+    }
+
+    /**
+     * @deprecated renamed to withValue
+     * @param value
+     * @return
+     */
+    @Deprecated(forRemoval = true)
+    public ParameterValue<T> setValue(T value) {
+        return withValue(value);
     }
 }

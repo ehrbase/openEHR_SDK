@@ -3,11 +3,16 @@
 This file documents any backwards-incompatible changes in SDK and
 assists users migrating to a new version.
 
+## SDK 2.34.0
+
+- Manual sanitization of AQL parameters for `AqlEndpoint::execute` and `AqlEndpoint::executeRaw` is no longer needed
+- The specification of AQL parameters for `AqlEndpoint::executeStoredQuery` has been aligned with `AqlEndpoint::executeRaw`
+
 ## SDK 2.0.0
 
 ## Major overhaul of AQL DTO model and parser
 
-The Model was changed quit significantly so code wich manipulates ot introspects them will be needed to be
+The Model was changed quite significantly so code which manipulates or introspects it will be needed to be
 reimplemented:
 
 * AQL is parsed via `AqlQueryParser::parse`
