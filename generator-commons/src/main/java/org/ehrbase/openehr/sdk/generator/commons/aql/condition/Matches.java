@@ -50,7 +50,10 @@ public class Matches<T> implements Condition {
         if (values != null) {
             sb.append(Arrays.stream(values).map(AqlValue::buildAql).collect(Collectors.joining(",")));
         } else {
-            sb.append(Arrays.stream(parameters).map(Parameter::getAqlParameter).collect(Collectors.joining(",")));
+            sb.append(Arrays.stream(parameters)
+                    .map(Parameter::getName)
+                    .map(n -> '$' + n)
+                    .collect(Collectors.joining(",")));
         }
         sb.append("}");
 
