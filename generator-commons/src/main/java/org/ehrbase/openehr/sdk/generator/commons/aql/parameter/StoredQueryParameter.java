@@ -20,34 +20,24 @@ package org.ehrbase.openehr.sdk.generator.commons.aql.parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.lang3.StringUtils;
 
-public class StoredQueryParameter {
+public class StoredQueryParameter extends StoredQueryDefinition {
 
-    private final String qualifiedQueryName;
-    private final String version;
     private Integer offset;
     private Integer fetch;
-    private String type;
     private final List<ParameterValue> parameters = new ArrayList<>();
 
     public StoredQueryParameter(String qualifiedQueryName, String version) {
-        this.qualifiedQueryName = qualifiedQueryName;
-        this.version = version;
+        super(qualifiedQueryName, version);
     }
 
-    public StoredQueryParameter offset(int value) {
+    public StoredQueryParameter offset(Integer value) {
         this.offset = value;
         return this;
     }
 
-    public StoredQueryParameter fetch(int value) {
+    public StoredQueryParameter fetch(Integer value) {
         this.fetch = value;
-        return this;
-    }
-
-    public StoredQueryParameter type(String value) {
-        this.type = value;
         return this;
     }
 
@@ -62,18 +52,6 @@ public class StoredQueryParameter {
 
     public Optional<Integer> getFetch() {
         return Optional.ofNullable(this.fetch);
-    }
-
-    public Optional<String> getType() {
-        return Optional.ofNullable(this.type);
-    }
-
-    public boolean isValid() {
-        return !StringUtils.isEmpty(qualifiedQueryName) && !StringUtils.isEmpty(version);
-    }
-
-    public String getPath() {
-        return qualifiedQueryName + "/" + version;
     }
 
     public List<ParameterValue> getQueryParams() {

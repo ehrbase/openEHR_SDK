@@ -18,10 +18,8 @@
 package org.ehrbase.openehr.sdk.response.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 
-@JacksonXmlRootElement
 public class StoredQueryResponseData {
 
     @JsonProperty

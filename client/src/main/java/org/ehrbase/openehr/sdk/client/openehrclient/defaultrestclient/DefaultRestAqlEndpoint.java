@@ -57,6 +57,7 @@ import org.ehrbase.openehr.sdk.generator.commons.annotations.Entity;
 import org.ehrbase.openehr.sdk.generator.commons.aql.field.AqlField;
 import org.ehrbase.openehr.sdk.generator.commons.aql.field.ListSelectAqlField;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.ParameterValue;
+import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryDefinition;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryParameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.Query;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.Record;
@@ -97,12 +98,12 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public <T extends Record> List<T> execute(Query<T> query, ParameterValue... parameterValues) {
+    public <T extends Record> List<T> execute(Query<T> query, ParameterValue<?>... parameterValues) {
         return toRecords(query, executeRaw(query, parameterValues));
     }
 
     @Override
-    public QueryResponseData executeRaw(Query query, ParameterValue... parameterValues) {
+    public QueryResponseData executeRaw(Query<?> query, ParameterValue<?>... parameterValues) {
         if (query == null) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
@@ -272,7 +273,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public StoredQueryResponseData getStoredAqlQuery(StoredQueryParameter queryParameter) {
+    public StoredQueryResponseData getStoredAqlQuery(StoredQueryDefinition queryParameter) {
         if (queryParameter == null || !queryParameter.isValid()) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
@@ -295,7 +296,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public void storeAqlQuery(Query query, StoredQueryParameter queryParameter) {
+    public void storeAqlQuery(Query<?> query, StoredQueryDefinition queryParameter) {
 
         if (query == null) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
