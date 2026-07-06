@@ -38,6 +38,8 @@
     </developers>
 
     <properties>
+        <sdkSubmoduleBuild>false</sdkSubmoduleBuild>
+
         <antlr4.version>4.13.2</antlr4.version>
         <archie.version>3.13.0</archie.version>
         <assertj.version>3.27.7</assertj.version>
@@ -336,6 +338,9 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <skip>${sdkSubmoduleBuild}</skip>
+                    </configuration>
                 </plugin>
             </plugins>
         </build>
@@ -348,6 +353,9 @@
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
                 <version>${maven-central-publishing-plugin.version}</version>
+                <configuration>
+                    <skipPublishing>${sdkSubmoduleBuild}</skipPublishing>
+                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -366,6 +374,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>${maven-enforcer-plugin.version}</version>
+                    <configuration>
+                        <skip>${sdkSubmoduleBuild}</skip>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -376,16 +387,25 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>${maven-gpg-plugin.version}</version>
+                    <configuration>
+                        <skip>${sdkSubmoduleBuild}</skip>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <skip>${sdkSubmoduleBuild}</skip>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
+                    <configuration>
+                        <skipSource>${sdkSubmoduleBuild}</skipSource>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -401,11 +421,26 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>${nexus-staging-maven-plugin.version}</version>
+                    <configuration>
+                        <skipStaging>${sdkSubmoduleBuild}</skipStaging>
+                        <skipNexusStagingDeployMojo>${sdkSubmoduleBuild}</skipNexusStagingDeployMojo>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>${sonar.scanner.version}</version>
+                    <configuration>
+                        <skip>${sdkSubmoduleBuild}</skip>
+                        <sonar.skip>${sdkSubmoduleBuild}</sonar.skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <configuration>
+                        <skip>${sdkSubmoduleBuild}</skip>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
