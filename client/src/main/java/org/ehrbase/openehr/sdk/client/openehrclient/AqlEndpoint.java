@@ -19,8 +19,6 @@ package org.ehrbase.openehr.sdk.client.openehrclient;
 
 import java.util.List;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.ParameterValue;
-import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryDefinition;
-import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryParameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.Query;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.Record;
 import org.ehrbase.openehr.sdk.response.dto.QueryResponseData;
@@ -32,9 +30,14 @@ public interface AqlEndpoint {
 
     QueryResponseData executeRaw(Query<?> query, ParameterValue<?>... parameterValues);
 
-    QueryResponseData executeStoredQuery(StoredQueryParameter queryParameter);
+    QueryResponseData executeStoredQuery(
+            String qualifiedQueryName, String version, Integer offset, Integer fetch, ParameterValue<?>... parameters);
 
-    StoredQueryResponseData getStoredAqlQuery(StoredQueryDefinition queryParameter);
+    StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName, String version);
 
-    void storeAqlQuery(Query<?> query, StoredQueryDefinition queryParameter);
+    default void storeAqlQuery(String qualifiedQueryName, String version, Query<?> query) {
+        storeAqlQuery(qualifiedQueryName, version, query, null);
+    }
+
+    void storeAqlQuery(String qualifiedQueryName, String version, Query<?> query, String type);
 }

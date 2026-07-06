@@ -34,7 +34,6 @@ import org.ehrbase.openehr.sdk.generator.commons.aql.field.EhrFields;
 import org.ehrbase.openehr.sdk.generator.commons.aql.orderby.OrderByExpression;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.Parameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.ParameterValue;
-import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryParameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.EntityQuery;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.Query;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.Record1;
@@ -69,7 +68,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 DvDateTime.class);
 
         List<Record2<String, DvDateTime>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, ParameterValue.of("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
     }
 
@@ -87,7 +86,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 BloodPressureTrainingSampleObservationProxy.class);
 
         List<Record2<String, BloodPressureTrainingSampleObservationProxy>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, ParameterValue.of("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
 
         assertThat(result.get(0).value2().dummy).isNull();
@@ -111,7 +110,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 OffsetDateTime.class);
 
         List<Record2<Double, OffsetDateTime>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, ParameterValue.of("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
         assertThat(result)
                 .extracting(
@@ -140,7 +139,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 TemporalAccessor.class);
 
         List<Record2<ObjectVersionId, TemporalAccessor>> result =
-                openEhrClient.aqlEndpoint().execute(query, new ParameterValue<>("ehr_id", ehr));
+                openEhrClient.aqlEndpoint().execute(query, ParameterValue.of("ehr_id", ehr));
         assertThat(result).isNotNull().hasSize(2);
         assertThat(result)
                 .extracting(
@@ -186,7 +185,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
         entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
         List<Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningCode>> actual =
-                openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+                openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.withValue(ehr));
         assertThat(actual).size().isEqualTo(2);
 
         Record3<TemporalAccessor, BloodPressureTrainingSampleObservation, CuffSizeDefiningCode> record1 = actual.get(0);
@@ -257,7 +256,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                     Condition.equal(EhrFields.EHR_ID(), ehrIdParameter).and(t.otherCondition);
             entityQuery.where(where);
 
-            assertThat(openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr)))
+            assertThat(openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.withValue(ehr)))
                     .extracting(Record1::value1)
                     .extracting(EhrbaseBloodPressureSimpleDeV0Composition::getVersionUid)
                     .extracting(ObjectVersionId::getObjectId)
@@ -359,7 +358,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
             Condition where = Condition.equal(EhrFields.EHR_ID(), ehrIdParameter);
             entityQuery.where(where).orderBy(t.orderBy);
 
-            assertThat(openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr)))
+            assertThat(openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.withValue(ehr)))
                     .extracting(Record3::value1)
                     .extracting(EhrbaseBloodPressureSimpleDeV0Composition::getVersionUid)
                     .extracting(ObjectVersionId::getObjectId)
@@ -394,7 +393,7 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
         entityQuery.where(Condition.equal(EhrFields.EHR_ID(), ehrIdParameter));
 
         List<Record2<TemporalAccessor, List<BloodPressureTrainingSampleObservation>>> actual =
-                openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.setValue(ehr));
+                openEhrClient.aqlEndpoint().execute(entityQuery, ehrIdParameter.withValue(ehr));
         assertThat(actual).size().isEqualTo(2);
     }
 
@@ -442,10 +441,10 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
                 .aqlEndpoint()
                 .execute(
                         query,
-                        new ParameterValue<>("ehr_id", ehr),
-                        new ParameterValue<>("var1", "SARS-Cov-2"),
-                        new ParameterValue<>("var111", "Prescription"),
-                        new ParameterValue<>("var11", 32));
+                        ParameterValue.of("ehr_id", ehr),
+                        ParameterValue.of("var1", "SARS-Cov-2"),
+                        ParameterValue.of("var111", "Prescription"),
+                        ParameterValue.of("var11", 32));
         assertThat(result).hasSize(1);
 
         Record2<String, String> row = result.get(0);
@@ -464,18 +463,19 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
             WHERE e/ehr_id/value = $ehr_id
         """, UUID.class);
 
-        StoredQueryParameter param = new StoredQueryParameter("my::query", "1.2.3");
-        openEhrClient.aqlEndpoint().storeAqlQuery(query, param);
+        String qualifiedQueryName = "my::query";
+        String version = "1.2.3";
+        openEhrClient.aqlEndpoint().storeAqlQuery(qualifiedQueryName, version, query);
 
-        StoredQueryResponseData storedAqlQuery = openEhrClient.aqlEndpoint().getStoredAqlQuery(param);
-        assertThat(storedAqlQuery.getName()).isEqualTo("my::query");
-        assertThat(storedAqlQuery.getVersion()).isEqualTo("1.2.3");
+        StoredQueryResponseData storedAqlQuery =
+                openEhrClient.aqlEndpoint().getStoredAqlQuery(qualifiedQueryName, version);
+        assertThat(storedAqlQuery.getName()).isEqualTo(qualifiedQueryName);
+        assertThat(storedAqlQuery.getVersion()).isEqualTo(version);
         assertThat(storedAqlQuery.getAqlQuery()).isEqualTo(query.buildAql());
 
-        StoredQueryParameter sqp = new StoredQueryParameter("my::query", "1.2.3");
-        sqp.addQueryParam("ehr_id", ehr.toString());
-
-        QueryResponseData result = openEhrClient.aqlEndpoint().executeStoredQuery(sqp);
+        QueryResponseData result = openEhrClient
+                .aqlEndpoint()
+                .executeStoredQuery(qualifiedQueryName, version, null, null, ParameterValue.of("ehr_id", ehr));
         assertThat(result.getRows()).hasSize(1);
         assertThat(result.getRows().get(0).get(0)).isEqualTo(ehr.toString());
     }
@@ -500,16 +500,22 @@ class DefaultRestAqlEndpointTestIT extends SdkClientTestIT {
               AND cl/items[at0026]/value/type = $var111
         """, String.class, String.class);
 
-        StoredQueryParameter param = new StoredQueryParameter("my::inject", "1.0.0");
-        openEhrClient.aqlEndpoint().storeAqlQuery(query, param);
+        String qualifiedQueryName = "my::inject";
+        String version = "1.0.0";
+        openEhrClient.aqlEndpoint().storeAqlQuery(qualifiedQueryName, version, query);
 
-        param.addQueryParam("ehr_id", ehr);
-        param.addQueryParam("var1", "SARS-Cov-2");
-        param.addQueryParam("var111", "Prescription");
-        param.addQueryParam("var11", 32);
-
-        List<List<Object>> result =
-                openEhrClient.aqlEndpoint().executeStoredQuery(param).getRows();
+        List<List<Object>> result = openEhrClient
+                .aqlEndpoint()
+                .executeStoredQuery(
+                        qualifiedQueryName,
+                        version,
+                        null,
+                        null,
+                        ParameterValue.of("ehr_id", ehr),
+                        ParameterValue.of("var1", "SARS-Cov-2"),
+                        ParameterValue.of("var111", "Prescription"),
+                        ParameterValue.of("var11", 32))
+                .getRows();
         assertThat(result).hasSize(1);
 
         List<Object> row = result.get(0);

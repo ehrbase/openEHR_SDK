@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.utils.URIBuilder;
@@ -57,8 +56,6 @@ import org.ehrbase.openehr.sdk.generator.commons.annotations.Entity;
 import org.ehrbase.openehr.sdk.generator.commons.aql.field.AqlField;
 import org.ehrbase.openehr.sdk.generator.commons.aql.field.ListSelectAqlField;
 import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.ParameterValue;
-import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryDefinition;
-import org.ehrbase.openehr.sdk.generator.commons.aql.parameter.StoredQueryParameter;
 import org.ehrbase.openehr.sdk.generator.commons.aql.query.Query;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.Record;
 import org.ehrbase.openehr.sdk.generator.commons.aql.record.RecordImp;
@@ -83,7 +80,6 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     private final DefaultRestClient defaultRestClient;
 
     private static final String INVALID_QUERY_ERROR_STRING = "Invalid query";
-    private static final String INVALID_PARAMETERS_ERROR_STRING = "Invalid parameters";
 
     public DefaultRestAqlEndpoint(DefaultRestClient defaultRestClient) {
         this.defaultRestClient = defaultRestClient;
@@ -107,9 +103,6 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         if (query == null) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
         }
-        if (parameterValues == null) {
-            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
-        }
 
         String aql = query.buildAql();
 
@@ -122,29 +115,30 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         ObjectNode reqBody = DefaultRestClient.OBJECT_MAPPER.createObjectNode();
         reqBody.put(QUERY_KEY, aql);
 
-        if (ArrayUtils.isNotEmpty(parameterValues)) {
-            addQueryParameters(reqBody, parameterValues);
-        }
+        addQueryParameters(reqBody, parameterValues);
 
         return postQuery(uri, reqBody);
     }
 
     @Override
-    public QueryResponseData executeStoredQuery(StoredQueryParameter queryParameter) {
-        if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException(INVALID_QUERY_ERROR_STRING);
-        }
+    public QueryResponseData executeStoredQuery(
+            String qualifiedQueryName, String version, Integer offset, Integer fetch, ParameterValue<?>... parameters) {
 
-        URI uri = defaultRestClient.getConfig().getBaseUri().resolve(AQL_STORED_QUERY_PATH + queryParameter.getPath());
+        URI uri = defaultRestClient
+                .getConfig()
+                .getBaseUri()
+                .resolve(AQL_STORED_QUERY_PATH + qualifiedQueryName + '/' + version);
 
         ObjectNode reqBody = DefaultRestClient.OBJECT_MAPPER.createObjectNode();
 
-        queryParameter.getOffset().ifPresent(value -> reqBody.put("offset", value));
-        queryParameter.getFetch().ifPresent(value -> reqBody.put("fetch", value));
-
-        if (CollectionUtils.isNotEmpty(queryParameter.getQueryParams())) {
-            addQueryParameters(reqBody, queryParameter.getQueryParams().toArray(ParameterValue[]::new));
+        if (offset != null) {
+            reqBody.put("offset", offset);
         }
+        if (fetch != null) {
+            reqBody.put("fetch", fetch);
+        }
+
+        addQueryParameters(reqBody, parameters);
 
         return postQuery(uri, reqBody);
     }
@@ -202,6 +196,10 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     private static void addQueryParameters(ObjectNode reqBody, ParameterValue<?>... parameterValues) {
+        if (parameterValues.length == 0) {
+            return;
+        }
+
         ObjectNode params = (ObjectNode) reqBody.get(PARAMETERS_KEY);
         if (params == null) {
             params = reqBody.objectNode();
@@ -214,7 +212,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
 
             valueNode = toValueNode(rawValue, params);
 
-            String name = parameterValue.getParameter().getAqlParameter().substring(1);
+            String name = parameterValue.getName();
             JsonNode existingParamValue = params.get(name);
             if (existingParamValue == null) {
                 params.set(name, valueNode);
@@ -273,15 +271,14 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public StoredQueryResponseData getStoredAqlQuery(StoredQueryDefinition queryParameter) {
-        if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException(INVALID_QUERY_ERROR_STRING);
-        }
+    public StoredQueryResponseData getStoredAqlQuery(String qualifiedQueryName, String version) {
 
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + STORE_AQL_QUERY_PATH
-                        + queryParameter.getPath());
+                        + qualifiedQueryName
+                        + '/'
+                        + version);
 
         try {
             HttpResponse response = defaultRestClient.internalGet(
@@ -296,14 +293,10 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
     }
 
     @Override
-    public void storeAqlQuery(Query<?> query, StoredQueryDefinition queryParameter) {
+    public void storeAqlQuery(String qualifiedQueryName, String version, Query<?> query, String type) {
 
         if (query == null) {
             throw new ClientException(INVALID_QUERY_ERROR_STRING);
-        }
-
-        if (queryParameter == null || !queryParameter.isValid()) {
-            throw new ClientException(INVALID_PARAMETERS_ERROR_STRING);
         }
 
         String body;
@@ -315,9 +308,13 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         URIBuilder uriBuilder = getBaseUriBuilder()
                 .setPath(defaultRestClient.getConfig().getBaseUri().getPath()
                         + STORE_AQL_QUERY_PATH
-                        + queryParameter.getPath());
+                        + qualifiedQueryName
+                        + '/'
+                        + version);
 
-        queryParameter.getType().ifPresent(type -> uriBuilder.addParameter("type", type));
+        if (type != null) {
+            uriBuilder.addParameter("type", type);
+        }
 
         try {
             defaultRestClient.internalPut(
