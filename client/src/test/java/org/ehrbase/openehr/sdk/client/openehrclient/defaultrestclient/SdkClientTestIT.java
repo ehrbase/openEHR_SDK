@@ -18,7 +18,6 @@
 package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
@@ -59,7 +58,7 @@ public class SdkClientTestIT {
     }
 
     @BeforeAll
-    public static void setup() throws URISyntaxException {
+    public static void setup() {
         openEhrClient = setupDefaultRestClient();
     }
 
@@ -82,7 +81,8 @@ public class SdkClientTestIT {
         OpenEhrClientConfig config = new OpenEhrClientConfig(ehrBaseAPIEndpoint());
         config.setDefaultValuesProvider(defaultValuesProvider);
         DefaultRestClient client = new DefaultRestClient(config, templateProvider);
-        templateProvider.listTemplateIds().stream()
+        templateProvider
+                .listTemplateIds()
                 .forEach(t -> client.templateEndpoint().ensureExistence(t));
         return client;
     }

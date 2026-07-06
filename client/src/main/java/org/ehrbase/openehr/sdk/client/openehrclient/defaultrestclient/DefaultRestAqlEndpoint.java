@@ -175,7 +175,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
         return dataRows.stream()
                 .map(row -> {
                     AqlField<Object>[] fields = query.fields();
-                    RecordImp record = new RecordImp(fields);
+                    RecordImp rec = new RecordImp(fields);
                     try {
                         for (int i = 0; i < fields.length; i++) {
                             AqlField<?> aqlField = fields[i];
@@ -191,12 +191,12 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
                             } else {
                                 object = extractValue(valueAsString, aqlField.getValueClass());
                             }
-                            record.putValue(i, object);
+                            rec.putValue(i, object);
                         }
                     } catch (JacksonException e) {
                         throw new ClientException(e.getMessage(), e);
                     }
-                    return (T) record;
+                    return (T) rec;
                 })
                 .collect(Collectors.toList());
     }
