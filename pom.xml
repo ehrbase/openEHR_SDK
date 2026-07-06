@@ -63,8 +63,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
-        <skipTests>${sdkSubmoduleBuild}</skipTests>
-        <skipITs>${sdkSubmoduleBuild}</skipITs>
+        <skipTests>false</skipTests>
+        <skipITs>false</skipITs>
         <failsafeArgLine/>
         <surefireArgLine/>
 
@@ -192,9 +192,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <skip>${sdkSubmoduleBuild}</skip>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
