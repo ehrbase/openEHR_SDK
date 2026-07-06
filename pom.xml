@@ -63,8 +63,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <web-template-tests.version>8f3381a37d</web-template-tests.version>
 
-        <skipTests>${isEhrbaseBuild}</skipTests>
-        <skipITs>${isEhrbaseBuild}</skipITs>
+        <skipTests>${sdkSubmoduleBuild}</skipTests>
+        <skipITs>${sdkSubmoduleBuild}</skipITs>
         <failsafeArgLine/>
         <surefireArgLine/>
 
@@ -89,7 +89,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <skipSource>${isEhrbaseBuild}</skipSource>
+                            <skipSource>${sdkSubmoduleBuild}</skipSource>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -107,7 +107,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <skip>${isEhrbaseBuild}</skip>
+                            <skip>${sdkSubmoduleBuild}</skip>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -121,7 +121,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <skip>${isEhrbaseBuild}</skip>
+                            <skip>${sdkSubmoduleBuild}</skip>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -156,7 +156,7 @@
                         </requireMavenVersion>
                     </rules>
                     <fail>true</fail>
-                    <skip>${isEhrbaseBuild}</skip>
+                    <skip>${sdkSubmoduleBuild}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -193,7 +193,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <skip>${isEhrbaseBuild}</skip>
+                    <skip>${sdkSubmoduleBuild}</skip>
                 </configuration>
             </plugin>
             <plugin>
@@ -234,7 +234,7 @@
                 <artifactId>central-publishing-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <skipPublishing>${isEhrbaseBuild}</skipPublishing>
+                    <skipPublishing>${sdkSubmoduleBuild}</skipPublishing>
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                 </configuration>
@@ -243,7 +243,7 @@
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <configuration>
-                    <skip>${isEhrbaseBuild}</skip>
+                    <skip>${sdkSubmoduleBuild}</skip>
                     <java>
                         <toggleOffOn>
                             <off>@format:off</off>
