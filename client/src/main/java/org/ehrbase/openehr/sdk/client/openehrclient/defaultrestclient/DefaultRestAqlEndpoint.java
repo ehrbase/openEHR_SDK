@@ -200,11 +200,7 @@ public class DefaultRestAqlEndpoint implements AqlEndpoint {
             return;
         }
 
-        ObjectNode params = (ObjectNode) reqBody.get(PARAMETERS_KEY);
-        if (params == null) {
-            params = reqBody.objectNode();
-            reqBody.set(PARAMETERS_KEY, params);
-        }
+        ObjectNode params = reqBody.withObjectProperty(PARAMETERS_KEY);
 
         JsonNode valueNode;
         for (ParameterValue<?> parameterValue : parameterValues) {
