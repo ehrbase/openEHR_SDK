@@ -11,7 +11,7 @@
     <version>2.34.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>openEHR SDK</name>
+    <name>openEHR SDK ${project.artifactId}</name>
     <description>EHRbase openEHR SDK</description>
     <url>https://github.com/ehrbase/openEHR_SDK</url>
 

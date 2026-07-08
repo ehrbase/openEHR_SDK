@@ -11,7 +11,7 @@
 
     <artifactId>generator-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>openEHR SDK ${project.artifactId}</name>
 
     <properties>
         <maven.plugin.skipErrorNoDescriptorsFound>true</maven.plugin.skipErrorNoDescriptorsFound>

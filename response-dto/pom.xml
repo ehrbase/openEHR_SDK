@@ -30,7 +30,7 @@
     </parent>
 
     <artifactId>response-dto</artifactId>
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>openEHR SDK ${project.artifactId}</name>
 
     <properties>
         <license-header.dir>../</license-header.dir>
