@@ -2,6 +2,18 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.34.0]
+ ### Added 
+ ### Changed
+- AQL Client adjustments [#755](https://github.com/ehrbase/openEHR_SDK/pull/755)
+  - For ad-hoc queries parameters are no longer inlined into the query by the client
+  - Executing stored queries now relies on POST instead of GET
+  - The parameter format for stored queries has been aligned to the ad-hoc endpoints
+### Fixed
+- AQL Client fixes
+  - Resolved injection issues due to inlined query parameters [#755](https://github.com/ehrbase/openEHR_SDK/pull/755)
+  - Retrieving stored query definitions now relies on the correct endpoint [#755](https://github.com/ehrbase/openEHR_SDK/pull/755)
+
 ## [2.33.1]
  ### Added 
  ### Fixed 
@@ -22,6 +34,10 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 - Regardless of the composition language, the English terms of openehr terminologies are now always accepted [#735](https://github.com/ehrbase/openEHR_SDK/pull/735)
 - Validation of limits of intervals with partial dates [#747](https://github.dev/ehrbase/openEHR_SDK/pull/747)
 - Prevent mixing of long and short time format [#747](https://github.dev/ehrbase/openEHR_SDK/pull/747)
+
+## [2.31.1]
+ ### Fixed
+- Retain original string when parsing temporals in AQL (backport) [#752](https://github.com/ehrbase/openEHR_SDK/pull/752)
 
 ## [2.31.0]
  ### Added 
@@ -558,3 +574,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.32.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.31.0...v2.32.0
 [2.33.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.32.0...v2.33.0
 [2.33.1]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.0...v2.33.1
+[2.34.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.1...v2.34.0

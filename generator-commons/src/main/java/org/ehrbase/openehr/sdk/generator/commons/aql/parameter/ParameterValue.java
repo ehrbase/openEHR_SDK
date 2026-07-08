@@ -17,24 +17,34 @@
  */
 package org.ehrbase.openehr.sdk.generator.commons.aql.parameter;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ParameterValue<T> {
-    private final Parameter<T> parameter;
+    private final String name;
     private final T value;
 
     public ParameterValue(Parameter<T> parameter, T value) {
-        this.parameter = parameter;
+        this.name = parameter.getName();
         this.value = value;
     }
 
     public ParameterValue(String parameterName, T value) {
-        this.parameter = new Parameter(parameterName);
+        this.name = normalizeName(parameterName);
         this.value = value;
         // check that is valid AQl value
         buildAql();
     }
 
-    public Parameter<T> getParameter() {
-        return parameter;
+    public static <U> ParameterValue<U> of(String parameterName, U value) {
+        return new ParameterValue<>(parameterName, value);
+    }
+
+    static String normalizeName(String name) {
+        return StringUtils.normalizeSpace(name).replace(' ', '_');
+    }
+
+    public String getName() {
+        return name;
     }
 
     public T getValue() {
