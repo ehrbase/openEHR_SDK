@@ -2,7 +2,7 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## [unreleased]
+## [2.34.0]
  ### Added 
  ### Changed
 - AQL Client adjustments [#755](https://github.com/ehrbase/openEHR_SDK/pull/755)
@@ -574,4 +574,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.32.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.31.0...v2.32.0
 [2.33.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.32.0...v2.33.0
 [2.33.1]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.0...v2.33.1
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.1...HEAD
+[2.34.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.1...v2.34.0
