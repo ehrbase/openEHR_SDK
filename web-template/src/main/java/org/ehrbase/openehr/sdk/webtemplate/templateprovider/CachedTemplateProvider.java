@@ -62,23 +62,29 @@ public class CachedTemplateProvider implements TemplateProvider {
 
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
-
-        Optional<OPERATIONALTEMPLATE> operationaltemplate = Optional.ofNullable(templateCache.get(templateId));
-
-        if (!operationaltemplate.isPresent()) {
-            operationaltemplate = rootTemplateProvider.find(templateId);
-            operationaltemplate.ifPresent(o -> templateCache.put(templateId, o));
+        OPERATIONALTEMPLATE tpl = templateCache.get(templateId);
+        if (tpl != null) {
+            return Optional.of(tpl);
         }
-        return operationaltemplate;
+        var opt = rootTemplateProvider.find(templateId);
+        opt.ifPresent(o -> templateCache.put(templateId, o));
+        return opt;
     }
 
     @Override
     public Optional<WebTemplate> buildIntrospect(String templateId) {
-        WebTemplate templateIntrospect = introspectCache.get(templateId);
-        if (templateIntrospect == null) {
-            templateIntrospect = find(templateId).map(OPTParser::parse).orElse(null);
+        if (introspectCache != null) {
+            WebTemplate wtp = introspectCache.get(templateId);
+            if (wtp != null) {
+                return Optional.of(wtp);
+            }
+        }
+        Optional<WebTemplate> parsed = find(templateId).map(OPTParser::parse);
+
+        if (introspectCache != null) {
+            parsed.ifPresent(t -> introspectCache.put(templateId, t));
         }
 
-        return Optional.ofNullable(templateIntrospect);
+        return parsed;
     }
 }
