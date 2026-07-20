@@ -64,32 +64,14 @@ public class SdkClientTestIT {
 
     @BeforeAll
     public static void setup() {
-        openEhrClient = setupDefaultRestClient();
-    }
-
-    public static DefaultRestClient setupDefaultRestClient() {
-        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
-        DefaultRestClient client =
-                new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()), templateProvider);
-        Set<String> knownTemplatesIds = client.templateEndpoint().findAllTemplates().get().stream()
-                .map(TemplateMetaDataDto::getTemplateId)
-                .collect(Collectors.toSet());
-        List<OPERATIONALTEMPLATE> missingOpts = templateProvider.listTemplateIds().stream()
-                .distinct()
-                .filter(tid -> !knownTemplatesIds.contains(tid))
-                .map(templateProvider::find)
-                .flatMap(Optional::stream)
-                .toList();
-        missingOpts.stream().parallel().forEach(opt -> client.templateEndpoint().upload(opt));
-        return client;
+        openEhrClient = setupDefaultRestClient(null);
     }
 
     public static DefaultRestClient setupRestClientWithDefaultTemplateProvider() {
         return new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()));
     }
 
-    public static DefaultRestClient setupDefaultRestClientWithDefaultProvider(
-            DefaultValuesProvider defaultValuesProvider) {
+    public static DefaultRestClient setupDefaultRestClient(DefaultValuesProvider defaultValuesProvider) {
         TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
         OpenEhrClientConfig config = new OpenEhrClientConfig(ehrBaseAPIEndpoint());
         config.setDefaultValuesProvider(defaultValuesProvider);
