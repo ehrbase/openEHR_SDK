@@ -47,7 +47,7 @@ public class DefaultRestTemplateEndpointIT extends SdkClientTestIT {
 
     @BeforeAll
     public static void setup() {
-        restClient = SdkClientTestIT.setupDefaultRestClient();
+        restClient = setupDefaultRestClient(null);
         restClientWithDefaultTemplateProvider = SdkClientTestIT.setupRestClientWithDefaultTemplateProvider();
     }
 

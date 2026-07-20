@@ -61,7 +61,6 @@ import org.ehrbase.openehr.sdk.client.openehrclient.ContributionEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.DirectoryCrudEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
-import org.ehrbase.openehr.sdk.client.openehrclient.TemplateEndpoint;
 import org.ehrbase.openehr.sdk.client.openehrclient.VersionedCompositionEndpoint;
 import org.ehrbase.openehr.sdk.client.templateprovider.ClientTemplateProvider;
 import org.ehrbase.openehr.sdk.serialisation.RMDataFormat;
@@ -330,7 +329,7 @@ public class DefaultRestClient implements OpenEhrClient {
     }
 
     @Override
-    public TemplateEndpoint templateEndpoint() {
+    public DefaultRestTemplateEndpoint templateEndpoint() {
         return new DefaultRestTemplateEndpoint(this);
     }
 

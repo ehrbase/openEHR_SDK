@@ -19,13 +19,18 @@ package org.ehrbase.openehr.sdk.client.openehrclient.defaultrestclient;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClient;
 import org.ehrbase.openehr.sdk.client.openehrclient.OpenEhrClientConfig;
 import org.ehrbase.openehr.sdk.client.templateprovider.TestDataTemplateProvider;
+import org.ehrbase.openehr.sdk.response.dto.ehrscape.TemplateMetaDataDto;
 import org.ehrbase.openehr.sdk.serialisation.dto.DefaultValuesProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
@@ -59,31 +64,28 @@ public class SdkClientTestIT {
 
     @BeforeAll
     public static void setup() {
-        openEhrClient = setupDefaultRestClient();
-    }
-
-    public static DefaultRestClient setupDefaultRestClient() {
-        TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
-        DefaultRestClient client =
-                new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()), templateProvider);
-        templateProvider.listTemplateIds().stream()
-                .forEach(t -> client.templateEndpoint().ensureExistence(t));
-        return client;
+        openEhrClient = setupDefaultRestClient(null);
     }
 
     public static DefaultRestClient setupRestClientWithDefaultTemplateProvider() {
         return new DefaultRestClient(new OpenEhrClientConfig(ehrBaseAPIEndpoint()));
     }
 
-    public static DefaultRestClient setupDefaultRestClientWithDefaultProvider(
-            DefaultValuesProvider defaultValuesProvider) {
+    public static DefaultRestClient setupDefaultRestClient(DefaultValuesProvider defaultValuesProvider) {
         TestDataTemplateProvider templateProvider = new TestDataTemplateProvider();
         OpenEhrClientConfig config = new OpenEhrClientConfig(ehrBaseAPIEndpoint());
         config.setDefaultValuesProvider(defaultValuesProvider);
         DefaultRestClient client = new DefaultRestClient(config, templateProvider);
-        templateProvider
-                .listTemplateIds()
-                .forEach(t -> client.templateEndpoint().ensureExistence(t));
+        Set<String> knownTemplatesIds = client.templateEndpoint().findAllTemplates().get().stream()
+                .map(TemplateMetaDataDto::getTemplateId)
+                .collect(Collectors.toSet());
+        List<OPERATIONALTEMPLATE> missingOpts = templateProvider.listTemplateIds().stream()
+                .distinct()
+                .filter(tid -> !knownTemplatesIds.contains(tid))
+                .map(templateProvider::find)
+                .flatMap(Optional::stream)
+                .toList();
+        missingOpts.stream().parallel().forEach(opt -> client.templateEndpoint().upload(opt));
         return client;
     }
 

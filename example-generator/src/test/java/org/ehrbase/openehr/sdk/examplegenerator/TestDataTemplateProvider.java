@@ -19,33 +19,47 @@ package org.ehrbase.openehr.sdk.examplegenerator;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.xmlbeans.XmlException;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.templateprovider.TemplateProvider;
 import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 import org.openehr.schemas.v1.TemplateDocument;
 
 public class TestDataTemplateProvider implements TemplateProvider {
+
+    private static final Map<String, Optional<OPERATIONALTEMPLATE>> OPT_CACHE = new HashMap<>();
+    private static final Map<String, Optional<WebTemplate>> WEB_TEMPLATE_CACHE = new HashMap<>();
+
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
-        return Optional.ofNullable(OperationalTemplateTestData.findByTemplateId(templateId))
-                .map(OperationalTemplateTestData::getStream)
-                .map(s -> {
-                    try {
-                        return TemplateDocument.Factory.parse(s);
-                    } catch (XmlException | IOException e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                })
-                .map(TemplateDocument::getTemplate);
+        return OPT_CACHE.computeIfAbsent(
+                templateId,
+                tid -> Optional.of(tid)
+                        .map(OperationalTemplateTestData::findByTemplateId)
+                        .map(OperationalTemplateTestData::getStream)
+                        .map(s -> {
+                            try {
+                                return TemplateDocument.Factory.parse(s);
+                            } catch (XmlException | IOException e) {
+                                throw new RuntimeException(e.getMessage(), e);
+                            }
+                        })
+                        .map(TemplateDocument::getTemplate));
+    }
+
+    @Override
+    public Optional<WebTemplate> buildIntrospect(String templateId) {
+        return WEB_TEMPLATE_CACHE.computeIfAbsent(templateId, TemplateProvider.super::buildIntrospect);
     }
 
     public List<String> listTemplateIds() {
         return Arrays.stream(OperationalTemplateTestData.values())
                 .map(OperationalTemplateTestData::getTemplateId)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
