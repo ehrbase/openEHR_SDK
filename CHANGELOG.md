@@ -2,7 +2,7 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
-## [unreleased]
+## [2.35.0]
  ### Added 
  ### Fixed 
 
@@ -579,4 +579,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.33.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.32.0...v2.33.0
 [2.33.1]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.0...v2.33.1
 [2.34.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.1...v2.34.0
-[unreleased]: https://github.com/ehrbase/openEHR_SDK/compare/v2.34.0...HEAD
+[2.35.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.34.0...v2.35.0
