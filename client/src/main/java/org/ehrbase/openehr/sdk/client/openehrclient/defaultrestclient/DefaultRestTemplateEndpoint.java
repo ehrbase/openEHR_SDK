@@ -110,10 +110,10 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
     public void ensureExistence(String templateId) {
         Optional<OPERATIONALTEMPLATE> operationalTemplate =
                 defaultRestClient.getTemplateProvider().find(templateId);
-        if (!operationalTemplate.isPresent()) {
+        if (operationalTemplate.isEmpty()) {
             throw new ClientException(String.format("Unknown Template with Id %s", templateId));
         }
-        if (!findTemplate(templateId).isPresent()) {
+        if (findTemplate(templateId).isEmpty()) {
             upload(operationalTemplate.get());
         }
     }
@@ -126,7 +126,7 @@ public class DefaultRestTemplateEndpoint implements TemplateEndpoint {
      * @throws ClientException
      * @throws WrongStatusCodeException
      */
-    String upload(OPERATIONALTEMPLATE operationaltemplate) {
+    public String upload(OPERATIONALTEMPLATE operationaltemplate) {
         URI uri = defaultRestClient.getConfig().getBaseUri().resolve(DEFINITION_TEMPLATE_ADL_1_4_PATH);
         XmlOptions opts = new XmlOptions();
         opts.setSaveSyntheticDocumentElement(new QName("http://schemas.openehr.org/v1", "template"));

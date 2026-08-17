@@ -32,26 +32,29 @@ import org.openehr.schemas.v1.TemplateDocument;
 
 public class TestDataTemplateProvider implements TemplateProvider {
 
-    private final Map<String, Optional<WebTemplate>> webTemplateMap = new HashMap<>();
+    private static final Map<String, Optional<OPERATIONALTEMPLATE>> OPT_CACHE = new HashMap<>();
+    private static final Map<String, Optional<WebTemplate>> WEB_TEMPLATE_CACHE = new HashMap<>();
 
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
-        return Optional.ofNullable(OperationalTemplateTestData.findByTemplateId(templateId))
-                .map(OperationalTemplateTestData::getStream)
-                .map(s -> {
-                    try {
-                        return TemplateDocument.Factory.parse(s);
-                    } catch (XmlException | IOException e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                })
-                .map(TemplateDocument::getTemplate);
+        return OPT_CACHE.computeIfAbsent(
+                templateId,
+                tid -> Optional.of(tid)
+                        .map(OperationalTemplateTestData::findByTemplateId)
+                        .map(OperationalTemplateTestData::getStream)
+                        .map(s -> {
+                            try {
+                                return TemplateDocument.Factory.parse(s);
+                            } catch (XmlException | IOException e) {
+                                throw new RuntimeException(e.getMessage(), e);
+                            }
+                        })
+                        .map(TemplateDocument::getTemplate));
     }
 
     @Override
     public Optional<WebTemplate> buildIntrospect(String templateId) {
-
-        return webTemplateMap.computeIfAbsent(templateId, TemplateProvider.super::buildIntrospect);
+        return WEB_TEMPLATE_CACHE.computeIfAbsent(templateId, TemplateProvider.super::buildIntrospect);
     }
 
     public List<String> listTemplateIds() {

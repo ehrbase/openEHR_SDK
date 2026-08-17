@@ -371,7 +371,7 @@ class DefaultRestCompositionEndpointIT extends SdkClientTestIT {
     @Test
     void testSaveCompositionWithDefaultEntity() throws URISyntaxException {
 
-        openEhrClient = SdkClientTestIT.setupDefaultRestClientWithDefaultProvider(o -> {
+        openEhrClient = SdkClientTestIT.setupDefaultRestClient(o -> {
             DefaultValues defaultValues = new DefaultValues();
             defaultValues.addDefaultValue(
                     DefaultValuePath.END_TIME, OffsetDateTime.of(2019, 05, 03, 22, 00, 00, 00, ZoneOffset.UTC));
