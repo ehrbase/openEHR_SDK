@@ -94,7 +94,7 @@ public class FastRMObjectValidator extends RMObjectValidator {
      */
     @Deprecated
     public FastRMObjectValidator(ModelInfoLookup lookup, OperationalTemplateProvider provider) {
-        super(null, null, new ValidationConfiguration.Builder().build());
+        super(lookup, null, new ValidationConfiguration.Builder().build());
         this.lookup = lookup;
         this.metaModel = new MetaModel(lookup, null);
         constraintImposer = new ReflectionConstraintImposer(lookup);
@@ -120,7 +120,7 @@ public class FastRMObjectValidator extends RMObjectValidator {
             ModelInfoLookup lookup,
             OperationalTemplateProvider provider,
             ValidationConfiguration validationConfiguration) {
-        super(null, null, new ValidationConfiguration.Builder().build());
+        super(lookup, null, new ValidationConfiguration.Builder().build());
         this.lookup = lookup;
         this.metaModel = new MetaModel(lookup, null);
         constraintImposer = new ReflectionConstraintImposer(lookup);
