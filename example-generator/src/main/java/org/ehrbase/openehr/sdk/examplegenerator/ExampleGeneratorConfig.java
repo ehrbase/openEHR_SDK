@@ -69,7 +69,9 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,6 +79,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,6 +96,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.State;
 import org.ehrbase.openehr.sdk.generator.commons.shareddefinition.Transition;
+import org.ehrbase.openehr.sdk.util.OpenEhrTemporal;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.ProportionType;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateComparisonSymbol;
@@ -105,15 +109,32 @@ import org.threeten.extra.PeriodDuration;
 
 public class ExampleGeneratorConfig {
 
-    private static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+    public static final String LANGUAGE = "language";
 
     static final Set<String> UNSUPPORTED = Stream.of(
                     Archetyped.class, FeederAudit.class, Link.class, Participation.class)
             .map(ExampleGeneratorConfig::getRmType)
             .collect(Collectors.toSet());
 
+    private static final ArchieRMInfoLookup ARCHIE_RM_INFO_LOOKUP = ArchieRMInfoLookup.getInstance();
+
     private static final Map<ChronoUnit, String> DURATION_CHRONO_UNITS;
-    public static final String LANGUAGE = "language";
+
+    private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(2022, 2, 3, 4, 5, 6);
+
+    private static final List<ChronoField> DATE_FIELDS =
+            List.of(ChronoField.YEAR, ChronoField.MONTH_OF_YEAR, ChronoField.DAY_OF_MONTH);
+
+    private static final List<ChronoField> TIME_FIELDS =
+            List.of(ChronoField.HOUR_OF_DAY, ChronoField.MINUTE_OF_HOUR, ChronoField.SECOND_OF_MINUTE);
+
+    private static final List<ChronoField> DATE_TIME_FIELDS = List.of(
+            ChronoField.YEAR,
+            ChronoField.MONTH_OF_YEAR,
+            ChronoField.DAY_OF_MONTH,
+            ChronoField.HOUR_OF_DAY,
+            ChronoField.MINUTE_OF_HOUR,
+            ChronoField.SECOND_OF_MINUTE);
 
     static {
         Map<ChronoUnit, String> chronoUnits = new EnumMap<>(ChronoUnit.class);
@@ -208,8 +229,6 @@ public class ExampleGeneratorConfig {
                 .filter(e -> Objects.equals(suffix, e.getSuffix()))
                 .findFirst();
     }
-
-    private static final LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(2022, 2, 3, 4, 5, 6);
 
     public static class Handlers {
 
@@ -488,11 +507,11 @@ public class ExampleGeneratorConfig {
         }
 
         static void handleDvDate(DvDate value, WebTemplateNode node) {
-            value.setValue(DEFAULT_DATE_TIME.toLocalDate());
+            value.setValue(truncateToPattern(node, DEFAULT_DATE_TIME.toLocalDate()));
         }
 
         static void handleDvDateTime(DvDateTime value, WebTemplateNode node) {
-            value.setValue(DEFAULT_DATE_TIME);
+            value.setValue(truncateToPattern(node, DEFAULT_DATE_TIME));
         }
 
         static void handleDvDuration(DvDuration value, WebTemplateNode node) {
@@ -730,7 +749,7 @@ public class ExampleGeneratorConfig {
         }
 
         static void handleDvTime(DvTime value, WebTemplateNode node) {
-            value.setValue(DEFAULT_DATE_TIME.toLocalTime());
+            value.setValue(truncateToPattern(node, DEFAULT_DATE_TIME.toLocalTime()));
         }
 
         static void handleDvURI(DvURI value, WebTemplateNode node) {
@@ -1030,5 +1049,39 @@ public class ExampleGeneratorConfig {
                 return terminology.getTermsByOpenEHRGroup(this.openEHRGroup, InvariantUtil.ENGLISH);
             }
         }
+    }
+
+    /// Truncates the value to the fields the C_DATE/C_TIME/C_DATE_TIME pattern of the node allows
+    /// - When a field is prohibited so is everything after it
+    /// - Without a pattern, or without any prohibited fields, the value is returned as is.
+    private static Temporal truncateToPattern(WebTemplateNode node, Temporal value) {
+        Optional<String> pattern =
+                getInput(node, null).map(WebTemplateInput::getValidation).map(WebTemplateValidation::getPattern);
+
+        if (pattern.isEmpty()) {
+            return value;
+        }
+
+        String normalized = pattern.get().strip().toUpperCase(Locale.ROOT);
+        String[] tokens = normalized.split("[-:T]");
+
+        // the fields before the first "XX"
+        int allowed = Arrays.asList(tokens).indexOf("XX");
+        if (allowed < 0) {
+            return value;
+        }
+        List<ChronoField> fields;
+        // yyyy-mm-ddThh:mm:ss => 'T' as a separator in date-time; ':' as a separator for time
+        if (normalized.contains("T")) {
+            fields = DATE_TIME_FIELDS;
+        } else if (normalized.contains(":")) {
+            fields = TIME_FIELDS;
+        } else {
+            fields = DATE_FIELDS;
+        }
+        // at least the first one, at most all of them
+        int keptFields = Math.min(Math.max(allowed, 1), fields.size());
+        // last kept field is the maximum resolution the truncated value has
+        return new OpenEhrTemporal(value, fields.get(keptFields - 1));
     }
 }

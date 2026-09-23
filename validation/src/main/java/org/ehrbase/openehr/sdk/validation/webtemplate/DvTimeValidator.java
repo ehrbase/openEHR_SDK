@@ -48,6 +48,8 @@ public class DvTimeValidator implements ConstraintValidator<DvTime> {
         }
 
         var input = WebTemplateValidationUtils.getInputWithType(node, "TIME");
-        return PrimitiveConstraintValidator.validate(node.getAqlPath(), dvTime.getValue(), input);
+        return ConstraintValidator.concat(
+                TemporalPattern.validate(node.getAqlPath(), dvTime.getValue(), input),
+                PrimitiveConstraintValidator.validate(node.getAqlPath(), dvTime.getValue(), input));
     }
 }
