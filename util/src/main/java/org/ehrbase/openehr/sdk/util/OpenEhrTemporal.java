@@ -62,7 +62,7 @@ public final class OpenEhrTemporal implements Temporal {
         this(value, ChronoField.NANO_OF_SECOND);
     }
 
-    OpenEhrTemporal(TemporalAccessor value, ChronoField maxResolution) {
+    public OpenEhrTemporal(TemporalAccessor value, ChronoField maxResolution) {
         boolean dateBased = value.isSupported(ChronoField.YEAR);
 
         if (!dateBased

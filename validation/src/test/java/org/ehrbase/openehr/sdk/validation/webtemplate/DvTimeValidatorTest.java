@@ -17,13 +17,17 @@
  */
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  *
@@ -54,11 +58,50 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    void testValidate_Pattern() throws Exception {
-        var node = parseNode("/webtemplate_nodes/dv_time_pattern.json");
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "HH:MM:SS, 10:30:47",
+        "HH:MM:??, 10:30",
+        "HH:MM:??, 10:30:47",
+        "HH:MM:XX, 10:30",
+        "HH:??:??, 10",
+        "HH:??:??, 10:30",
+        "HH:??:??, 10:30:47",
+        "HH:??:XX, 10",
+        "HH:??:XX, 10:30",
+        "HH:XX:XX, 10",
+        "HH:MM:SS, 10:30:47.5Z",
+        "HH:??:XX, 10:30+02:00",
+        "hh:mm:ss, 10:30:47",
+        "HH:MM:SS+HH:MM, 10:30:47",
+        "HH:MM,    10",
+    })
+    void validateAcceptedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);
+        var result = validator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime(value)), node);
 
-        var result = validator.validate(new DvTime(LocalTime.of(11, 30)), node);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "HH:MM:SS, 10",
+        "HH:MM:SS, 10:30",
+        "HH:MM:??, 10",
+        "HH:MM:XX, 10",
+        "HH:MM:XX, 10:30:47",
+        "HH:??:XX, 10:30:47",
+        "HH:XX:XX, 10:30",
+        "HH:XX:XX, 10:30:47",
+        "HH:MM:XX, 10:30:47.5",
+        "HH:??:xx, 10:30:47",
+        "HH:MM:SSZ, 10:30",
+    })
+    void validateRejectedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);
+        var result = validator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime(value)), node);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getMessage()).contains(pattern);
     }
 }

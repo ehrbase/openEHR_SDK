@@ -17,12 +17,16 @@
  */
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import java.time.LocalDate;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  *
@@ -52,11 +56,45 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    void testValidate_Pattern() throws Exception {
-        var node = parseNode("/webtemplate_nodes/dv_date_pattern.json");
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "yyyy-mm-dd, 2022-10-24",
+        "yyyy-mm-??, 2022-10",
+        "yyyy-mm-??, 2022-10-24",
+        "yyyy-mm-XX, 2022-10",
+        "yyyy-??-??, 2022",
+        "yyyy-??-??, 2022-10",
+        "yyyy-??-??, 2022-10-24",
+        "yyyy-??-XX, 2022",
+        "yyyy-??-XX, 2022-10",
+        "yyyy-XX-XX, 2022",
+        "yyyy-mm,    2022",
+        "yyyy-mm-dd, 20221024",
+    })
+    void validateAcceptedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_DATE", "DATE", pattern);
+        var result = validator.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate(value)), node);
 
-        var result = validator.validate(new DvDate(LocalDate.of(2022, 1, 10)), node);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "yyyy-mm-dd, 2022",
+        "yyyy-mm-dd, 2022-10",
+        "yyyy-mm-??, 2022",
+        "yyyy-mm-XX, 2022",
+        "yyyy-mm-XX, 2022-10-24",
+        "yyyy-??-XX, 2022-10-24",
+        "yyyy-XX-XX, 2022-10",
+        "yyyy-XX-XX, 2022-10-24",
+        "yyyy-??-XX, 20221024",
+    })
+    void validateRejectedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_DATE", "DATE", pattern);
+        var result = validator.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate(value)), node);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getMessage()).contains(pattern);
     }
 }

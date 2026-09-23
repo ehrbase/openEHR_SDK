@@ -17,14 +17,19 @@
  */
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  *
@@ -64,12 +69,68 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    void testValidate_Pattern() {
-        var node = parseNode("/webtemplate_nodes/dv_datetime_pattern.json");
-        var value = OffsetDateTime.of(2022, 1, 10, 12, 0, 0, 0, ZoneOffset.UTC);
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30:47.5Z",
+        "yyyy-XX-XXTXX:XX:XX, 2022",
+        "yyyy-??-??T??:??:??, 2022",
+        "yyyy-??-??T??:??:??, 2022-10-24",
+        "yyyy-??-??T??:??:??, 2022-10-24T10:30:47",
+        "yyyy-mm-??TXX:XX:XX, 2022-10",
+        "yyyy-mm-ddTXX:XX:XX, 2022-10-24",
+        "yyyy-mm-ddT??:XX:XX, 2022-10-24",
+        "yyyy-mm-ddT??:XX:XX, 2022-10-24T10",
+        "yyyy-??-??T??:??:XX, 2022",
+        "yyyy-??-??T??:??:XX, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:??:??, 2022-10-24T10",
+        "yyyy-mm-ddThh:??:??, 2022-10-24T10:30:47.5Z",
+        "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30",
+        "YYYY-MM-DDT??:??:??, 2022-10-24T10",
+    })
+    void validateAcceptedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime(value)), node);
 
-        var result = validator.validate(new DvDateTime(value), node);
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "yyyy-mm-ddThh:mm:ss, 2022",
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24",
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30",
+        "yyyy-XX-XXTXX:XX:XX, 2022-10",
+        "yyyy-XX-XXTXX:XX:XX, 2022-10-24T10",
+        "yyyy-mm-??TXX:XX:XX, 2022",
+        "yyyy-mm-??TXX:XX:XX, 2022-10-24T10",
+        "yyyy-mm-ddTXX:XX:XX, 2022-10",
+        "yyyy-mm-ddTXX:XX:XX, 2022-10-24T10",
+        "yyyy-mm-ddT??:XX:XX, 2022-10-24T10:30",
+        "yyyy-??-??T??:??:XX, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:??:??, 2022-10-24",
+        "yyyy-mm-ddThh:mm:XX, 2022-10-24T10",
+        "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30:47",
+        "yyyy-mm-ddTHH:MM:SS, 2022-10-24T10:30",
+    })
+    void validateRejectedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime(value)), node);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getMessage()).contains(pattern);
+    }
+
+    @Test
+    void checkCompleteErrorMessageOnRejectedPatternValidation() {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", "yyyy-mm-ddThh:mm:ss");
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022-10")), node);
+
+        assertThat(result)
+                .singleElement()
+                .extracting(ConstraintViolation::getMessage)
+                .isEqualTo("""
+                    The value 2022-10 does not conform to the pattern yyyy-mm-ddThh:mm:ss \
+                    (day is mandatory, hour is mandatory, minute is mandatory, second is mandatory)""");
     }
 }
