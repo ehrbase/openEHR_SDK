@@ -31,19 +31,20 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/// Pattern used by C_DATE, C_TIME, C_DATE_TIME constraints.
-/// Example shape: yyyy-mm-?? | letters mean mandatory fields; ?? means optional fields; XX means prohibited fields
-/// - The year of a date, the hour of a time are always present.
-/// - Date patterns constrain months and days
-/// - Time patterns constrain minutes and seconds
-/// - Date-time patterns constrain months, days, hours, minutes and seconds
-/// - Timezones are accepted, not enforced
-/// - Values are checked by the fields they carry, so both compact (dashless) and extended forms are accepted
-/// - Patterns are case-insensitive when matched
-/// - Patterns that do not match any accepted format (date, time, datetime) are ignored and logged.
-/// Note: archie keeps the pattern but does not evaluate it, see
-/// `com.nedap.archie.aom.primitives.CTemporal#isValidValue`.
-
+/**
+ *  Pattern used by C_DATE, C_TIME, C_DATE_TIME constraints.
+ *  <p>Example shape: yyyy-mm-?? | letters mean mandatory fields; ?? means optional fields; XX means prohibited fields</p>
+ *  <li>The year of a date, the hour of a time are always present.</li>
+ *  <li>Date patterns constrain months and days</li>
+ *  <li>Time patterns constrain minutes and seconds</li>
+ *  <li>Date-time patterns constrain months, days, hours, minutes and seconds</li>
+ *  <li>Timezones are accepted, not enforced</li>
+ *  <li>Values are checked by the fields they carry, so both compact (dashless) and extended forms are accepted</li>
+ *  <li>Patterns are case-insensitive when matched</li>
+ *  <li>Patterns that do not match any accepted format (date, time, datetime) are ignored and logged.</li>
+ *  <p>Note: archie keeps the pattern but does not evaluate it, see
+ *  `com.nedap.archie.aom.primitives.CTemporal#isValidValue`.</p>
+ */
 public final class TemporalPattern {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemporalPattern.class);
@@ -96,8 +97,8 @@ public final class TemporalPattern {
         }
     }
 
-    /// Validates the value against the input pattern (if exists)
-    /// Returns the violation with the value, pattern and fields (if present)
+    // Validates the value against the input pattern (if exists)
+    // Returns the violation with the value, pattern and fields (if present)
     public static List<ConstraintViolation> validate(String aqlPath, TemporalAccessor value, WebTemplateInput input) {
         if (value == null || input == null || !WebTemplateValidationUtils.hasValidationPattern(input)) {
             return List.of();
@@ -139,9 +140,9 @@ public final class TemporalPattern {
         return null;
     }
 
-    /// Checks through the fields and validities of the temporal pattern against this value.
-    /// If a field is mandatory, it must be present; if it is prohibited, it must not be present.
-    /// Returns the fields of the value which do not respect the pattern (shape ex: "month is mandatory") (if any)
+    // Checks through the fields and validities of the temporal pattern against this value.
+    // If a field is mandatory, it must be present; if it is prohibited, it must not be present.
+    // Returns the fields of the value which do not respect the pattern (ex: "month is mandatory") (if any)
     private List<String> violations(TemporalAccessor value) {
         List<String> result = new ArrayList<>();
         validities.forEach((field, validity) -> {
