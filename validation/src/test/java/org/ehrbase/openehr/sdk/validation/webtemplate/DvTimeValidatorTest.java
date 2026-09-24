@@ -73,7 +73,12 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "HH:MM:SS, 10:30:47.5Z",
         "HH:??:XX, 10:30+02:00",
         "hh:mm:ss, 10:30:47",
-        "HH:MM:SS+HH:MM, 10:30:47",
+        "HH:MM:SSZ, 10:30:47Z",
+        "HH:MM:SSZ, 10:30:47+00:00",
+        "HH:MM:SS+hh:mm, 10:30:47+01:30",
+        "HH:MM:SS+hh, 10:30:47Z",
+        "HH:MM:SS+hh, 10:30:47+01:00",
+        "HH:MM:SS+hhmm, 10:30:47-05:30",
         "HH:MM,    10",
     })
     void validateAcceptedPatternValues(String pattern, String value) {
@@ -96,6 +101,11 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "HH:MM:XX, 10:30:47.5",
         "HH:??:xx, 10:30:47",
         "HH:MM:SSZ, 10:30",
+        "HH:MM:SSZ, 10:30:47",
+        "HH:MM:SSZ, 10:30:47+01:00",
+        "HH:MM:SS+HH:MM, 10:30:47",
+        "HH:MM:SS+hh, 10:30:47",
+        "HH:MM:SS+hh, 10:30:47+01:30",
     })
     void validateRejectedPatternValues(String pattern, String value) {
         var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);

@@ -87,6 +87,10 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "yyyy-mm-ddThh:??:??, 2022-10-24T10:30:47.5Z",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30",
         "YYYY-MM-DDT??:??:??, 2022-10-24T10",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47Z",
+        "yyyy-mm-ddThh:mm:ss+hh:mm, 2022-10-24T10:30:47+01:00",
+        "yyyy-mm-ddThh:??:??+hh, 2022-10-24T10:30:47-03:00",
+        "yyyy-mm-ddT??:??:??+hh:mm, 2022-10-24T10+01:00",
     })
     void validateAcceptedPatternValues(String pattern, String value) {
         var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
@@ -112,6 +116,11 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30:47",
         "yyyy-mm-ddTHH:MM:SS, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47+01:00",
+        "yyyy-mm-ddThh:??:??+hh, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:??:??+hh, 2022-10-24T10:30:47+05:30",
+        "yyyy-mm-ddT??:??:??+hh:mm, 2022-10-24",
     })
     void validateRejectedPatternValues(String pattern, String value) {
         var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
@@ -129,8 +138,6 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         assertThat(result)
                 .singleElement()
                 .extracting(ConstraintViolation::getMessage)
-                .isEqualTo("""
-                    The value 2022-10 does not conform to the pattern yyyy-mm-ddThh:mm:ss \
-                    (day is mandatory, hour is mandatory, minute is mandatory, second is mandatory)""");
+                .isEqualTo("The value 2022-10 does not match the pattern yyyy-mm-ddThh:mm:ss");
     }
 }

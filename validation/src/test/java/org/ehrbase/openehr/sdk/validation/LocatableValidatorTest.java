@@ -202,7 +202,7 @@ class LocatableValidatorTest {
         partialDateTime.setValue(OpenEHRDateTimeParseUtils.parseDateTime("2019-01-28"));
         assertThat(validator.validate(composition, template)).singleElement().satisfies(violation -> {
             assertThat(violation.getAqlPath()).isEqualTo(path);
-            assertThat(violation.getMessage()).contains("yyyy-mm-ddTHH:??:??", "hour is mandatory");
+            assertThat(violation.getMessage()).contains("does not match the pattern yyyy-mm-ddTHH:??:??");
         });
     }
 

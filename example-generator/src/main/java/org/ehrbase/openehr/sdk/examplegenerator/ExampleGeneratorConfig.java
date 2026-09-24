@@ -755,6 +755,42 @@ public class ExampleGeneratorConfig {
         static void handleDvURI(DvURI value, WebTemplateNode node) {
             value.setValue(URI.create("https://www.example.com/sample"));
         }
+
+        /**
+         * Truncates the value to the fields the C_DATE/C_TIME/C_DATE_TIME pattern of the node allows
+         * <li>When a field is prohibited so is everything after it</li>
+         * <li>Without a pattern, or without any prohibited fields, the value is returned as is.</li>
+         */
+        private static Temporal truncateToPattern(WebTemplateNode node, Temporal value) {
+            Optional<String> pattern =
+                    getInput(node, null).map(WebTemplateInput::getValidation).map(WebTemplateValidation::getPattern);
+
+            if (pattern.isEmpty()) {
+                return value;
+            }
+
+            String normalized = pattern.get().strip().toUpperCase(Locale.ROOT);
+            String[] tokens = normalized.split("[-:T]");
+
+            // the fields before the first "XX"
+            int allowed = Arrays.asList(tokens).indexOf("XX");
+            if (allowed < 0) {
+                return value;
+            }
+            List<ChronoField> fields;
+            // yyyy-mm-ddThh:mm:ss => 'T' as a separator in date-time; ':' as a separator for time
+            if (normalized.contains("T")) {
+                fields = DATE_TIME_FIELDS;
+            } else if (normalized.contains(":")) {
+                fields = TIME_FIELDS;
+            } else {
+                fields = DATE_FIELDS;
+            }
+            // at least the first one, at most all of them
+            int keptFields = Math.min(Math.max(allowed, 1), fields.size());
+            // last kept field is the maximum resolution the truncated value has
+            return new OpenEhrTemporal(value, fields.get(keptFields - 1));
+        }
     }
 
     private static UUID generateUuid(WebTemplateNode node) {
@@ -1049,39 +1085,5 @@ public class ExampleGeneratorConfig {
                 return terminology.getTermsByOpenEHRGroup(this.openEHRGroup, InvariantUtil.ENGLISH);
             }
         }
-    }
-
-    /// Truncates the value to the fields the C_DATE/C_TIME/C_DATE_TIME pattern of the node allows
-    /// - When a field is prohibited so is everything after it
-    /// - Without a pattern, or without any prohibited fields, the value is returned as is.
-    private static Temporal truncateToPattern(WebTemplateNode node, Temporal value) {
-        Optional<String> pattern =
-                getInput(node, null).map(WebTemplateInput::getValidation).map(WebTemplateValidation::getPattern);
-
-        if (pattern.isEmpty()) {
-            return value;
-        }
-
-        String normalized = pattern.get().strip().toUpperCase(Locale.ROOT);
-        String[] tokens = normalized.split("[-:T]");
-
-        // the fields before the first "XX"
-        int allowed = Arrays.asList(tokens).indexOf("XX");
-        if (allowed < 0) {
-            return value;
-        }
-        List<ChronoField> fields;
-        // yyyy-mm-ddThh:mm:ss => 'T' as a separator in date-time; ':' as a separator for time
-        if (normalized.contains("T")) {
-            fields = DATE_TIME_FIELDS;
-        } else if (normalized.contains(":")) {
-            fields = TIME_FIELDS;
-        } else {
-            fields = DATE_FIELDS;
-        }
-        // at least the first one, at most all of them
-        int keptFields = Math.min(Math.max(allowed, 1), fields.size());
-        // last kept field is the maximum resolution the truncated value has
-        return new OpenEhrTemporal(value, fields.get(keptFields - 1));
     }
 }

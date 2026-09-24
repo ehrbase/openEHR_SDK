@@ -19,140 +19,175 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/// Pattern used by C_DATE, C_TIME, C_DATE_TIME constraints.
-/// Example shape: yyyy-mm-?? | letters mean mandatory fields; ?? means optional fields; XX means prohibited fields
-/// - The year of a date, the hour of a time are always present.
-/// - Date patterns constrain months and days
-/// - Time patterns constrain minutes and seconds
-/// - Date-time patterns constrain months, days, hours, minutes and seconds
-/// - Timezones are accepted, not enforced
-/// - Values are checked by the fields they carry, so both compact (dashless) and extended forms are accepted
-/// - Patterns are case-insensitive when matched
-/// - Patterns that do not match any accepted format (date, time, datetime) are ignored and logged.
-/// Note: archie keeps the pattern but does not evaluate it, see
-/// `com.nedap.archie.aom.primitives.CTemporal#isValidValue`.
-
+/**
+ *  Pattern used by C_DATE, C_TIME, C_DATE_TIME constraints.
+ *  <p>Example shape: yyyy-mm-?? | letters mean mandatory fields; ?? means optional fields; XX means prohibited fields</p>
+ *  <ul>
+ *  <li>The year of a date, the hour of a time are always present.</li>
+ *  <li>Date patterns constrain months and days</li>
+ *  <li>Time patterns constrain minutes and seconds</li>
+ *  <li>Date-time patterns constrain months, days, hours, minutes and seconds</li>
+ *  <li>A timezone suffix on a time or date-time pattern requires an offset: Z a zero offset (the spec equates Z with
+ *  +00:00), ±hh a whole number of hours, ±hh:mm and ±hhmm any offset. The text form of the offset is not checked.
+ *  An offset needs a time part, so a required offset also makes the hour mandatory</li>
+ *  <li>Values are checked by the fields they carry, so both compact (dashless) and extended forms are accepted</li>
+ *  <li>Patterns are case-insensitive when matched</li>
+ *  <li>Patterns that do not match any accepted format (date, time, datetime) are ignored and logged.</li>
+ *  </ul>
+ *  <p>Note: archie keeps the pattern but does not evaluate it, see
+ *  {@code com.nedap.archie.aom.primitives.CTemporal#isValidValue}.</p>
+ */
 public final class TemporalPattern {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemporalPattern.class);
 
-    private static final String MONTH_OR_MINUTE = "(MM|\\?\\?|XX)";
-    private static final String DAY = "(DD|\\?\\?|XX)";
-    private static final String HOUR = "(HH|\\?\\?|XX)";
-    private static final String SECOND = "(SS|\\?\\?|XX)";
-    private static final String TIMEZONE = "(?:Z|[+-]HH(?::?MM)?)?";
+    private static final String MM = "(MM|\\?\\?|XX)";
+    private static final String DD = "(DD|\\?\\?|XX)";
+    private static final String HH = "(HH|\\?\\?|XX)";
+    private static final String SS = "(SS|\\?\\?|XX)";
 
-    private static final Pattern DATE = Pattern.compile("YYYY-" + MONTH_OR_MINUTE + "-" + DAY);
-    private static final Pattern TIME = Pattern.compile("HH:" + MONTH_OR_MINUTE + ":" + SECOND + TIMEZONE);
+    // HH and MM here spell the offset suffix (+hh:mm), they are not the field tokens above; captured as the last group
+    private static final String TIMEZONE = "(Z|[+-]HH(?::?MM)?)?";
+    // the hours-only form of the suffix (+hh), which requires a whole-hours offset
+    private static final Pattern TIMEZONE_HOUR_SUFFIX = Pattern.compile("[+-]HH", Pattern.CASE_INSENSITIVE);
+
     private static final Pattern DATE_TIME = Pattern.compile(
-            "YYYY-" + MONTH_OR_MINUTE + "-" + DAY + "T" + HOUR + ":" + MONTH_OR_MINUTE + ":" + SECOND + TIMEZONE);
+            "YYYY-" + MM + "-" + DD + "(?:T" + HH + ":" + MM + ":" + SS + TIMEZONE + ")?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern TIME = Pattern.compile("HH:" + MM + ":" + SS + TIMEZONE, Pattern.CASE_INSENSITIVE);
 
-    // Associates, labels and orders the ChronoFields
-    private enum Field {
+    // Maps the pattern fields to their ChronoField
+    private enum TemporalPatternField {
         MONTH(ChronoField.MONTH_OF_YEAR),
         DAY(ChronoField.DAY_OF_MONTH),
         HOUR(ChronoField.HOUR_OF_DAY),
         MINUTE(ChronoField.MINUTE_OF_HOUR),
-        SECOND(ChronoField.SECOND_OF_MINUTE);
+        SECOND(ChronoField.SECOND_OF_MINUTE),
+        // a timezone suffix in the pattern makes the offset mandatory
+        OFFSET(ChronoField.OFFSET_SECONDS);
 
         private final ChronoField chronoField;
 
-        Field(ChronoField chronoField) {
+        TemporalPatternField(ChronoField chronoField) {
             this.chronoField = chronoField;
         }
     }
 
-    private enum Validity {
+    private enum TemporalPatternValidity {
         MANDATORY,
         OPTIONAL,
-        PROHIBITED;
+        PROHIBITED,
+        // offset only: Z requires a zero offset, ±hh a whole number of hours
+        MANDATORY_UTC,
+        MANDATORY_HOURS;
 
-        static Validity of(String input) {
-            return switch (input) {
-                case "??" -> OPTIONAL;
-                case "XX" -> PROHIBITED;
-                default -> MANDATORY;
-            };
+        static TemporalPatternValidity of(String input) {
+            if ("??".equals(input)) {
+                return OPTIONAL;
+            }
+            if ("XX".equalsIgnoreCase(input)) {
+                return PROHIBITED;
+            }
+            if ("Z".equalsIgnoreCase(input)) {
+                return MANDATORY_UTC;
+            }
+            return TIMEZONE_HOUR_SUFFIX.matcher(input).matches() ? MANDATORY_HOURS : MANDATORY;
         }
     }
 
-    private final Map<Field, Validity> validities = new EnumMap<>(Field.class);
+    private static final List<TemporalPatternField> DATE_TIME_FIELDS = List.of(
+            TemporalPatternField.MONTH,
+            TemporalPatternField.DAY,
+            TemporalPatternField.HOUR,
+            TemporalPatternField.MINUTE,
+            TemporalPatternField.SECOND,
+            TemporalPatternField.OFFSET);
+    private static final List<TemporalPatternField> TIME_FIELDS =
+            List.of(TemporalPatternField.MINUTE, TemporalPatternField.SECOND, TemporalPatternField.OFFSET);
 
-    private TemporalPattern(Matcher matcher, Field... fields) {
-        for (int i = 0; i < fields.length; i++) {
-            validities.put(fields[i], Validity.of(matcher.group(i + 1)));
+    private final Map<TemporalPatternField, TemporalPatternValidity> validities =
+            new EnumMap<>(TemporalPatternField.class);
+
+    private TemporalPattern(Matcher matcher, List<TemporalPatternField> fields) {
+        for (int i = 0; i < fields.size(); i++) {
+            String group = matcher.group(i + 1);
+            // a null group is a part the pattern does not have: the time part of a date pattern, or the timezone suffix
+            if (group != null) {
+                validities.put(fields.get(i), TemporalPatternValidity.of(group));
+            }
         }
     }
 
-    /// Validates the value against the input pattern (if exists)
-    /// Returns the violation with the value, pattern and fields (if present)
-    public static List<ConstraintViolation> validate(String aqlPath, TemporalAccessor value, WebTemplateInput input) {
+    // Validates the value against the input pattern (if any)
+    // Returns the violation with the value and the pattern, or null when the value conforms or nothing is to check
+    public static @Nullable ConstraintViolation validate(
+            String aqlPath, TemporalAccessor value, WebTemplateInput input) {
         if (value == null || input == null || !WebTemplateValidationUtils.hasValidationPattern(input)) {
-            return List.of();
+            return null;
         }
+
         String pattern = input.getValidation().getPattern();
         TemporalPattern temporalPattern = parse(pattern);
         // pattern does not match any accepted patterns
         if (temporalPattern == null) {
             LOGGER.debug("Ignoring unsupported date/time pattern '{}' at {}", pattern, aqlPath);
-            return List.of();
+            return null;
         }
-
-        List<String> violations = temporalPattern.violations(value);
-        if (violations.isEmpty()) {
-            return List.of();
+        if (temporalPattern.conforms(value)) {
+            return null;
         }
-        return List.of(new ConstraintViolation(
-                aqlPath,
-                "The value %s does not conform to the pattern %s (%s)"
-                        .formatted(value, pattern, String.join(", ", violations))));
+        return new ConstraintViolation(aqlPath, "The value %s does not match the pattern %s".formatted(value, pattern));
     }
 
     // Parses the received pattern into a TemporalPattern, or null if not supported.
+    // The first char decides the format: y for a date (with an optional time part), h for a time.
     private static TemporalPattern parse(String pattern) {
-        String normalized = pattern.strip().toUpperCase(Locale.ROOT);
+        if (StringUtils.isBlank(pattern)) {
+            return null;
+        }
+        String normalized = pattern.strip();
+        char first = Character.toUpperCase(normalized.charAt(0));
 
-        Matcher date = DATE.matcher(normalized);
-        if (date.matches()) {
-            return new TemporalPattern(date, Field.MONTH, Field.DAY);
+        if (first == 'Y') {
+            Matcher dateTime = DATE_TIME.matcher(normalized);
+            return dateTime.matches() ? new TemporalPattern(dateTime, DATE_TIME_FIELDS) : null;
         }
-        Matcher time = TIME.matcher(normalized);
-        if (time.matches()) {
-            return new TemporalPattern(time, Field.MINUTE, Field.SECOND);
-        }
-        Matcher dateTime = DATE_TIME.matcher(normalized);
-        if (dateTime.matches()) {
-            return new TemporalPattern(dateTime, Field.MONTH, Field.DAY, Field.HOUR, Field.MINUTE, Field.SECOND);
+        if (first == 'H') {
+            Matcher time = TIME.matcher(normalized);
+            return time.matches() ? new TemporalPattern(time, TIME_FIELDS) : null;
         }
         return null;
     }
 
-    /// Checks through the fields and validities of the temporal pattern against this value.
-    /// If a field is mandatory, it must be present; if it is prohibited, it must not be present.
-    /// Returns the fields of the value which do not respect the pattern (shape ex: "month is mandatory") (if any)
-    private List<String> violations(TemporalAccessor value) {
-        List<String> result = new ArrayList<>();
-        validities.forEach((field, validity) -> {
-            boolean present = value.isSupported(field.chronoField);
-            String name = field.name().toLowerCase(Locale.ROOT);
-            if (validity == Validity.MANDATORY && !present) {
-                result.add(name + " is mandatory");
-            } else if (validity == Validity.PROHIBITED && present) {
-                result.add(name + " is prohibited");
+    // Checks the fields of the value against the validities of the temporal pattern.
+    // A mandatory field must be present, a prohibited one must not; optional fields are not checked.
+    private boolean conforms(TemporalAccessor value) {
+        for (Map.Entry<TemporalPatternField, TemporalPatternValidity> entry : validities.entrySet()) {
+            ChronoField field = entry.getKey().chronoField;
+            boolean present = value.isSupported(field);
+            boolean valid =
+                    switch (entry.getValue()) {
+                        case MANDATORY -> present;
+                        case PROHIBITED -> !present;
+                        case MANDATORY_UTC -> present && value.getLong(field) == 0;
+                        case MANDATORY_HOURS -> present && value.getLong(field) % 3600 == 0;
+                        case OPTIONAL -> true;
+                    };
+            if (!valid) {
+                return false;
             }
-        });
-        return result;
+        }
+        return true;
     }
 }
