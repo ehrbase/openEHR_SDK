@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import java.time.LocalDate;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -54,6 +55,24 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
         assertEquals(1, result.size());
         result = validator.validate(new DvDate(LocalDate.of(2022, 2, 1)), node);
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void validatesRangeAndPatternIndependently() throws Exception {
+        var node = parseNode("/webtemplate_nodes/dv_date_pattern_range.json");
+
+        // in range, pattern violation, days not allowed
+        var result = validator.validate(new DvDate(LocalDate.of(2022, 1, 10)), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly("The value 2022-01-10 does not match the pattern yyyy-mm-XX");
+
+        result = validator.validate(new DvDate(LocalDate.of(2021, 12, 31)), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly(
+                        "The value 2021-12-31 does not match the pattern yyyy-mm-XX",
+                        "The value 2021-12-31 must be at least 2022-01-01 and at most 2022-01-31");
     }
 
     @ParameterizedTest(name = "{0} / {1}")

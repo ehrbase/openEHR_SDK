@@ -50,8 +50,9 @@ public class DvDateValidator implements ConstraintValidator<DvDate> {
         }
 
         var input = WebTemplateValidationUtils.getInputWithType(node, "DATE");
+        var value = dvDate.getValue();
         return ConstraintValidator.concat(
-                Stream.ofNullable(TemporalPattern.validate(node.getAqlPath(), dvDate.getValue(), input)),
-                PrimitiveConstraintValidator.validate(node.getAqlPath(), dvDate.getValue(), input).stream());
+                Stream.ofNullable(TemporalPatternValidator.validate(node.getAqlPath(), value, input)),
+                PrimitiveConstraintValidator.validate(node.getAqlPath(), value, input).stream());
     }
 }

@@ -142,11 +142,7 @@ public class PrimitiveConstraintMapper {
             cDate.addConstraint(interval);
         }
 
-        if (WebTemplateValidationUtils.hasValidationPattern(input)) {
-
-            cDate.setPatternConstraint(input.getValidation().getPattern());
-        }
-
+        // pattern is checked by TemporalPatternValidator
         return cDate;
     }
 
@@ -161,10 +157,7 @@ public class PrimitiveConstraintMapper {
             cDateTime.addConstraint(interval);
         }
 
-        if (WebTemplateValidationUtils.hasValidationPattern(input)) {
-            cDateTime.setPatternConstraint(input.getValidation().getPattern());
-        }
-
+        // pattern is checked by TemporalPatternValidator
         return cDateTime;
     }
 
@@ -179,10 +172,7 @@ public class PrimitiveConstraintMapper {
             cTime.addConstraint(interval);
         }
 
-        if (WebTemplateValidationUtils.hasValidationPattern(input)) {
-            cTime.setPatternConstraint(input.getValidation().getPattern());
-        }
-
+        // pattern is checked by TemporalPatternValidator
         return cTime;
     }
 
