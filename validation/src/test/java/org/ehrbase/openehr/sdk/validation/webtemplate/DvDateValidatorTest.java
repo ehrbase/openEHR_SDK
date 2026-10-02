@@ -25,6 +25,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import java.time.LocalDate;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -73,6 +74,15 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
                 .containsExactly(
                         "The value 2021-12-31 does not match the pattern yyyy-mm-XX",
                         "The value 2021-12-31 must be at least 2022-01-01 and at most 2022-01-31");
+    }
+
+    @Test
+    void disabledModeSkipsThePattern() {
+        var node = nodeWithValidationPattern("DV_DATE", "DATE", "yyyy-mm-dd");
+        var disabled = new DvDateValidator(TemporalPatternMode.DISABLED);
+
+        var result = disabled.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate("2022")), node);
+        assertThat(result).isEmpty();
     }
 
     @ParameterizedTest(name = "{0} / {1}")

@@ -104,10 +104,15 @@ import org.openehr.schemas.v1.TCOMPLEXOBJECT;
 import org.openehr.schemas.v1.TCONSTRAINT;
 import org.openehr.schemas.v1.TERMINOLOGYID;
 import org.openehr.schemas.v1.TemplateDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class OPTParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OPTParser.class);
+    private static final Set<String> TEMPORAL_INPUT_TYPES = Set.of("DATE", "TIME", "DATETIME");
 
     private record Name(String label, Map<String, String> localizedLabels) {}
 
@@ -130,6 +135,7 @@ public class OPTParser {
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
     private final InputHandler inputHandler;
+    private final TemporalPatternMode temporalPatternMode;
     private final Map<String, Map<String, String>> annotationMap = new HashMap<>();
     private List<String> languages;
 
@@ -145,8 +151,21 @@ public class OPTParser {
         }
     }
 
+    /**
+     * Parses with {@link TemporalPatternMode#LENIENT}, as do the static {@code parse} methods; use
+     * {@link #OPTParser(OPERATIONALTEMPLATE, TemporalPatternMode)} for another mode.
+     */
     public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
+        this(operationaltemplate, TemporalPatternMode.LENIENT);
+    }
+
+    /**
+     * @param operationaltemplate the template to parse
+     * @param temporalPatternMode how the patterns of C_DATE, C_TIME and C_DATE_TIME constraints are treated while parsing
+     */
+    public OPTParser(OPERATIONALTEMPLATE operationaltemplate, TemporalPatternMode temporalPatternMode) {
         this.operationaltemplate = operationaltemplate;
+        this.temporalPatternMode = temporalPatternMode;
         defaultLanguage = operationaltemplate.getLanguage().getCodeString();
 
         Map<String, String> defaultValues =
@@ -165,6 +184,24 @@ public class OPTParser {
         try (in) {
             return parse(TemplateDocument.Factory.parse(in).getTemplate());
         }
+    }
+
+    // Parses the pattern of a date, time or date-time input here, with the template, and reports an unsupported
+    // one according to the mode: ignored (DISABLED), logged (LENIENT) or rejected (STRICT)
+    private void checkTemporalPattern(WebTemplateInput input, AqlPath path) {
+        if (temporalPatternMode == TemporalPatternMode.DISABLED || !TEMPORAL_INPUT_TYPES.contains(input.getType())) {
+            return;
+        }
+        WebTemplateValidation validation = input.getValidation();
+        if (validation == null || validation.getPattern() == null || validation.getTemporalPattern() != null) {
+            return;
+        }
+        String message =
+                "Unsupported date/time pattern '%s' at %s".formatted(validation.getPattern(), path.format(true));
+        if (temporalPatternMode == TemporalPatternMode.STRICT) {
+            throw new IllegalArgumentException(message);
+        }
+        LOGGER.warn(message);
     }
 
     public WebTemplate parse() {
@@ -441,7 +478,9 @@ public class OPTParser {
             for (COBJECT cobject : cattribute.getChildrenArray()) {
 
                 if (cobject instanceof CPRIMITIVEOBJECT cprimitiveobject) {
-                    inputMap.put(cattribute.getRmAttributeName(), inputHandler.extractInput(cprimitiveobject));
+                    WebTemplateInput input = inputHandler.extractInput(cprimitiveobject);
+                    checkTemporalPattern(input, pathLoop);
+                    inputMap.put(cattribute.getRmAttributeName(), input);
                 } else {
                     WebTemplateNode[] childNode =
                             parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());

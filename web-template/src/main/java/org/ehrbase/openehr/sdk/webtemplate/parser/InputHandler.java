@@ -120,10 +120,6 @@ public class InputHandler {
         if (StringUtils.isNotBlank(pattern)) {
             validation.setPattern(pattern);
             addValidation = true;
-            // parsed once here, with the template, and kept with the validation
-            if (item instanceof CDATETIME || item instanceof CTIME || item instanceof CDATE) {
-                validation.getTemporalPattern();
-            }
         }
 
         if (range != null) {

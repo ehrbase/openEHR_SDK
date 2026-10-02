@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.groups.Tuple;
@@ -83,16 +84,62 @@ class OPTParserTest {
     void temporalPatternsAreParsedWithTheTemplate() throws XmlException, IOException {
         WebTemplate actual = getWebTemplate(OperationalTemplateTestData.ALL_TYPES);
 
-        List<WebTemplateValidation> temporalValidations = actual.getTree().findMatching(n -> true).stream()
+        assertThat(temporalValidations(actual))
+                .isNotEmpty()
+                .allSatisfy(v -> assertThat(v.getTemporalPattern()).isNotNull());
+    }
+
+    @Test
+    void strictModeRejectsAnUnsupportedTemporalPattern() throws XmlException, IOException {
+        OPERATIONALTEMPLATE template = withUnsupportedTemporalPattern(OperationalTemplateTestData.ALL_TYPES);
+
+        assertThatThrownBy(() -> new OPTParser(template, TemporalPatternMode.STRICT).parse())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("yyyy-mm-dd-XX")
+                .hasMessageContaining("at0003");
+    }
+
+    @Test
+    void lenientModeIgnoresAnUnsupportedTemporalPattern() throws XmlException, IOException {
+        OPERATIONALTEMPLATE template = withUnsupportedTemporalPattern(OperationalTemplateTestData.ALL_TYPES);
+
+        WebTemplate actual = new OPTParser(template, TemporalPatternMode.LENIENT).parse();
+
+        assertThat(temporalValidations(actual))
+                .filteredOn(v -> v.getTemporalPattern() == null)
+                .singleElement()
+                .satisfies(v -> assertThat(v.getPattern()).isEqualTo("yyyy-mm-dd-XX"));
+    }
+
+    private static List<WebTemplateValidation> temporalValidations(WebTemplate webTemplate) {
+        return webTemplate.getTree().findMatching(n -> true).stream()
                 .flatMap(n -> n.getInputs().stream())
                 .filter(i -> Set.of("DATE", "TIME", "DATETIME").contains(i.getType()))
                 .map(WebTemplateInput::getValidation)
                 .filter(v -> v != null && v.getPattern() != null)
                 .toList();
+    }
 
-        assertThat(temporalValidations)
-                .isNotEmpty()
-                .allSatisfy(v -> assertThat(v.getTemporalPattern()).isNotNull());
+    // the all-types template with its C_DATE pattern yyyy-??-XX replaced by one the parser does not support
+    private static OPERATIONALTEMPLATE withUnsupportedTemporalPattern(OperationalTemplateTestData optTestData)
+            throws XmlException, IOException {
+        OPERATIONALTEMPLATE template =
+                TemplateDocument.Factory.parse(optTestData.getStream()).getTemplate();
+        XmlCursor cursor = template.newCursor();
+        try {
+            while (cursor.hasNextToken()) {
+                if (cursor.isStart()
+                        && "pattern".equals(cursor.getName().getLocalPart())
+                        && "yyyy-??-XX".equals(cursor.getTextValue())) {
+                    cursor.setTextValue("yyyy-mm-dd-XX");
+                    return template;
+                }
+                cursor.toNextToken();
+            }
+        } finally {
+            cursor.dispose();
+        }
+        throw new AssertionError("pattern yyyy-??-XX not found in " + optTestData);
     }
 
     private static WebTemplate getWebTemplate(OperationalTemplateTestData optTestData)

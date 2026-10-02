@@ -47,6 +47,7 @@ import org.ehrbase.openehr.sdk.validation.terminology.TerminologyValidationVisit
 import org.ehrbase.openehr.sdk.validation.webtemplate.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -204,6 +205,21 @@ class LocatableValidatorTest {
             assertThat(violation.getAqlPath()).isEqualTo(path);
             assertThat(violation.getMessage()).contains("does not match the pattern yyyy-mm-ddTHH:??:??");
         });
+    }
+
+    @Test
+    void temporalPatternDisabled() throws Exception {
+        var template = getInternalTemplate(OperationalTemplateTestData.ALL_TYPES);
+        var composition = getComposition(CompositionTestDataCanonicalJson.ALL_TYPES);
+        var path = """
+            /content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]\
+            /items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/description[at0002]/items[at0004]/value""";
+        var partialDateTime = (DvDateTime) composition.itemAtPath(path);
+        // violates the pattern yyyy-mm-ddTHH:??:?? of test_all_types.opt
+        partialDateTime.setValue(OpenEHRDateTimeParseUtils.parseDateTime("2019-01-28"));
+
+        var disabled = new LocatableValidator(null, true, true, null, TemporalPatternMode.DISABLED);
+        assertThat(disabled.validate(composition, template)).isEmpty();
     }
 
     @Test

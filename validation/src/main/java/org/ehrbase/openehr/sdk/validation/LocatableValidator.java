@@ -31,6 +31,7 @@ import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidat
 import org.ehrbase.openehr.sdk.validation.webtemplate.FastRMObjectValidator;
 import org.ehrbase.openehr.sdk.validation.webtemplate.ValidationWalker;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -40,6 +41,7 @@ import org.jspecify.annotations.NonNull;
 public class LocatableValidator {
 
     private final boolean checkForChildrenNotInTemplate;
+    private final TemporalPatternMode temporalPatternMode;
 
     private final RMObjectValidator rmObjectValidator;
 
@@ -61,7 +63,22 @@ public class LocatableValidator {
             boolean checkForChildrenNotInTemplate,
             boolean validateInvariants,
             OperationalTemplateProvider archetypeProvider) {
+        this(
+                externalTerminologyValidation,
+                checkForChildrenNotInTemplate,
+                validateInvariants,
+                archetypeProvider,
+                TemporalPatternMode.LENIENT);
+    }
+
+    public LocatableValidator(
+            ExternalTerminologyValidation externalTerminologyValidation,
+            boolean checkForChildrenNotInTemplate,
+            boolean validateInvariants,
+            OperationalTemplateProvider archetypeProvider,
+            TemporalPatternMode temporalPatternMode) {
         this.externalTerminologyValidation = externalTerminologyValidation;
+        this.temporalPatternMode = temporalPatternMode;
         this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
 
         ValidationConfiguration validationCfg = new ValidationConfiguration.Builder()
@@ -89,7 +106,7 @@ public class LocatableValidator {
         List<RMObjectValidationMessage> messages = rmObjectValidator.validate(composition);
         if (messages.isEmpty()) {
             List<ConstraintViolation> result = new ArrayList<>();
-            new ValidationWalker(externalTerminologyValidation, checkForChildrenNotInTemplate)
+            new ValidationWalker(externalTerminologyValidation, checkForChildrenNotInTemplate, temporalPatternMode)
                     .walk(composition, result, template.getTree(), template.getTemplateId());
             return result;
         } else {

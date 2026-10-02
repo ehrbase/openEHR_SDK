@@ -27,8 +27,6 @@ import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern.TemporalPattern
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateValidation;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Validates DV_DATE, DV_TIME and DV_DATE_TIME values against the {@link TemporalPattern} of their input.
@@ -37,8 +35,6 @@ import org.slf4j.LoggerFactory;
  * requires an offset, Z a zero offset, ±hh a whole number of hours.</p>
  */
 final class TemporalPatternValidator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TemporalPatternValidator.class);
 
     private TemporalPatternValidator() {}
 
@@ -52,7 +48,6 @@ final class TemporalPatternValidator {
         WebTemplateValidation validation = input.getValidation();
         TemporalPattern temporalPattern = validation.getTemporalPattern();
         if (temporalPattern == null) {
-            LOGGER.debug("Ignoring unsupported date/time pattern '{}' at {}", validation.getPattern(), aqlPath);
             return null;
         }
         if (conforms(temporalPattern, value)) {
