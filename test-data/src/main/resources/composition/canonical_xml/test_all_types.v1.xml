@@ -438,7 +438,7 @@
                                     <value>partial date</value>
                                 </name>
                                 <value xsi:type="DV_DATE">
-                                    <value>20190114</value>
+                                    <value>2019-01</value>
                                 </value>
                             </items>
                             <items archetype_node_id="at0004" xsi:type="ELEMENT">

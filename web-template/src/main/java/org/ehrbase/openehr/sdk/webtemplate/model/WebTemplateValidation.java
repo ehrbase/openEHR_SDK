@@ -17,9 +17,11 @@
  */
 package org.ehrbase.openehr.sdk.webtemplate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Objects;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternParser;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WebTemplateValidation implements Serializable {
@@ -27,6 +29,9 @@ public class WebTemplateValidation implements Serializable {
     private WebTemplateInterval precision;
     private WebTemplateInterval range;
     private String pattern;
+
+    // derived from the pattern, not part of the JSON or Java serialized form, not part of equality
+    private transient TemporalPattern temporalPattern;
 
     public WebTemplateValidation() {}
 
@@ -64,6 +69,16 @@ public class WebTemplateValidation implements Serializable {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
+        this.temporalPattern = null;
+    }
+
+    // Parsed form of a C_DATE, C_TIME or C_DATE_TIME pattern, or null when the pattern is absent or not supported.
+    @JsonIgnore
+    public TemporalPattern getTemporalPattern() {
+        if (temporalPattern == null) {
+            temporalPattern = TemporalPatternParser.parse(pattern);
+        }
+        return temporalPattern;
     }
 
     @Override

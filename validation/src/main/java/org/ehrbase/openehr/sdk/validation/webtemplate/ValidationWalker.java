@@ -20,6 +20,9 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -36,6 +39,7 @@ import org.ehrbase.openehr.sdk.util.reflection.ReflectionHelper;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +60,20 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     public ValidationWalker(
             ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate) {
+        this(externalTerminologyValidation, checkForChildrenNotInTemplate, TemporalPatternMode.LENIENT);
+    }
+
+    public ValidationWalker(
+            ExternalTerminologyValidation externalTerminologyValidation,
+            boolean checkForChildrenNotInTemplate,
+            TemporalPatternMode temporalPatternMode) {
         if (externalTerminologyValidation != null) {
             VALIDATORS.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
         }
+
+        VALIDATORS.put(DvDate.class, new DvDateValidator(temporalPatternMode));
+        VALIDATORS.put(DvTime.class, new DvTimeValidator(temporalPatternMode));
+        VALIDATORS.put(DvDateTime.class, new DvDateTimeValidator(temporalPatternMode));
 
         this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
     }

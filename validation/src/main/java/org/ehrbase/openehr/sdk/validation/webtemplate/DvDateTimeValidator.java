@@ -19,8 +19,10 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 
 /**
  * {@link ConstraintValidator} that validates a <code>DV_DATE_TIME</code> object.
@@ -30,6 +32,16 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
  */
 @SuppressWarnings("unused")
 public class DvDateTimeValidator implements ConstraintValidator<DvDateTime> {
+
+    private final boolean validatePattern;
+
+    public DvDateTimeValidator() {
+        this(TemporalPatternMode.LENIENT);
+    }
+
+    public DvDateTimeValidator(TemporalPatternMode temporalPatternMode) {
+        this.validatePattern = temporalPatternMode != TemporalPatternMode.DISABLED;
+    }
 
     /**
      * {@inheritDoc}
@@ -49,6 +61,11 @@ public class DvDateTimeValidator implements ConstraintValidator<DvDateTime> {
         }
 
         var input = WebTemplateValidationUtils.getInputWithType(node, "DATETIME");
-        return PrimitiveConstraintValidator.validate(node.getAqlPath(), dvDateTime.getValue(), input);
+        var value = dvDateTime.getValue();
+        return ConstraintValidator.concat(
+                validatePattern
+                        ? Stream.ofNullable(TemporalPatternValidator.validate(node.getAqlPath(), value, input))
+                        : Stream.empty(),
+                PrimitiveConstraintValidator.validate(node.getAqlPath(), value, input).stream());
     }
 }
