@@ -3,6 +3,20 @@
 This file documents any backwards-incompatible changes in SDK and
 assists users migrating to a new version.
 
+## SDK 2.36.0
+
+- `LocatableValidator` now rejects compositions whose DV_DATE, DV_TIME or DV_DATE_TIME values do not match the
+  `pattern` of their C_DATE, C_TIME or C_DATE_TIME constraint.
+- The behaviour is selected with `TemporalPatternMode` through the new constructors
+  `OPTParser(OPERATIONALTEMPLATE, TemporalPatternMode)` and
+  `LocatableValidator(..., TemporalPatternMode)`. The existing constructors and the static `OPTParser.parse`
+  methods use `LENIENT`, which validates values and logs a warning for a pattern the parser does not support;
+  `STRICT` makes `OPTParser` throw an `IllegalArgumentException` for such a template; `DISABLED` restores the
+  previous behaviour.
+- `PrimitiveConstraintMapper` no longer copies the pattern onto archie's `CDate`, `CTime` and `CDateTime`
+  objects. A temporal `range` on the same input is therefore evaluated by archie instead of being skipped; archie's
+  range check does not support `OpenEhrTemporal` values and throws for them.
+
 ## SDK 2.34.0
 
 - Manual sanitization of AQL parameters for `AqlEndpoint::execute` and `AqlEndpoint::executeRaw` is no longer needed

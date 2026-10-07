@@ -4,6 +4,9 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- Validation of DV_DATE, DV_TIME and DV_DATE_TIME values against the `pattern` of their C_DATE, C_TIME and C_DATE_TIME constraint.
+ ### Changed
+- The pattern is no longer copied onto archie's C_DATE, C_TIME and C_DATE_TIME objects, so a temporal `range` is checked alongside the pattern instead of being skipped
  ### Fixed 
 
 ## [2.35.0]
