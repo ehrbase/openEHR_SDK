@@ -79,9 +79,9 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
     @Test
     void disabledModeSkipsThePattern() {
         var node = nodeWithValidationPattern("DV_DATE", "DATE", "yyyy-mm-dd");
-        var disabled = new DvDateValidator(TemporalPatternMode.DISABLED);
+        var disabledValidator = new DvDateValidator(TemporalPatternMode.DISABLED);
 
-        var result = disabled.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate("2022")), node);
+        var result = disabledValidator.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate("2022")), node);
         assertThat(result).isEmpty();
     }
 

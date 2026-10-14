@@ -15,14 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ehrbase.openehr.sdk.webtemplate.parser;
+package org.ehrbase.openehr.sdk.webtemplate.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern.TemporalPatternField.*;
 import static org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern.TemporalPatternValidity.*;
 
 import java.util.Map;
-import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern;
 import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern.TemporalPatternValidity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,15 +29,15 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class TemporalPatternParserTest {
+class TemporalPatternTest {
 
     @Test
     void parsesTheValidityOfEachField() {
-        assertThat(TemporalPatternParser.parse("yyyy-mm-XX"))
+        assertThat(TemporalPattern.parse("yyyy-mm-XX"))
                 .isEqualTo(new TemporalPattern(Map.of(MONTH, MANDATORY, DAY, PROHIBITED)));
-        assertThat(TemporalPatternParser.parse("HH:??:xxZ"))
+        assertThat(TemporalPattern.parse("HH:??:xxZ"))
                 .isEqualTo(new TemporalPattern(Map.of(MINUTE, OPTIONAL, SECOND, PROHIBITED, OFFSET, MANDATORY_UTC)));
-        assertThat(TemporalPatternParser.parse(" yyyy-mm-ddThh:mm:ss+hh "))
+        assertThat(TemporalPattern.parse(" yyyy-mm-ddThh:mm:ss+hh "))
                 .isEqualTo(new TemporalPattern(Map.of(
                         MONTH, MANDATORY,
                         DAY, MANDATORY,
@@ -46,6 +45,13 @@ class TemporalPatternParserTest {
                         MINUTE, MANDATORY,
                         SECOND, MANDATORY,
                         OFFSET, MANDATORY_HOURS)));
+        assertThat(TemporalPattern.parse("yyyy-??-??THH:??:??"))
+                .isEqualTo(new TemporalPattern(Map.of(
+                        MONTH, OPTIONAL,
+                        DAY, OPTIONAL,
+                        HOUR, MANDATORY,
+                        MINUTE, OPTIONAL,
+                        SECOND, OPTIONAL)));
     }
 
     @ParameterizedTest
@@ -54,17 +60,30 @@ class TemporalPatternParserTest {
         "HH:MM:SS+hh, MANDATORY_HOURS",
         "HH:MM:SS+hh:mm, MANDATORY",
         "hh:mm:ss-hhmm, MANDATORY",
+        "HH:XX:XXZ, MANDATORY_UTC",
         "HH:MM:SS,",
     })
     void parsesTheTimezoneSuffix(String pattern, TemporalPatternValidity offset) {
-        assertThat(TemporalPatternParser.parse(pattern).validities().get(OFFSET))
-                .isEqualTo(offset);
+        assertThat(TemporalPattern.parse(pattern).validities().get(OFFSET)).isEqualTo(offset);
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "dd/mm/yyyy", "yyyy-mm-ddZ", "1995-??-XX", "yyyy-mm-dd-XX", "??:??:??"})
-    void ignoresUnsupportedPatterns(String pattern) {
-        assertThat(TemporalPatternParser.parse(pattern)).isNull();
+    @ValueSource(
+            strings = {
+                "  ",
+                "dd/mm/yyyy",
+                "yyyy-mm-ddZ",
+                "1995-??-XX",
+                "yyyy-mm-dd-XX",
+                "??:??:??",
+                "HH:XX:??",
+                "HH:XX:SS",
+                "yyyy-XX-dd",
+                "yyyy-mm-XXTHH:MM:SS",
+                "yyyy-??-XXT??:??:??"
+            })
+    void unsupportedPatternReturnsNull(String pattern) {
+        assertThat(TemporalPattern.parse(pattern)).isNull();
     }
 }

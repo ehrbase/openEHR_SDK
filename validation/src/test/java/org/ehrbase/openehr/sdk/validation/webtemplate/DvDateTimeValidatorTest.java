@@ -26,6 +26,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -69,6 +70,36 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         assertEquals(1, result.size());
     }
 
+    @Test
+    void validatesRangeAndPatternIndependently() {
+        var node = parseNode("/webtemplate_nodes/dv_datetime_pattern_range.json");
+
+        // in range, pattern violation, seconds not allowed
+        var value = OffsetDateTime.of(2022, 1, 1, 12, 0, 30, 0, ZoneOffset.UTC);
+        var result = validator.validate(new DvDateTime(value), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly("The value 2022-01-01T12:00:30Z does not match the pattern yyyy-mm-ddTHH:MM:XX");
+
+        value = OffsetDateTime.of(2022, 1, 10, 12, 0, 30, 0, ZoneOffset.UTC);
+        result = validator.validate(new DvDateTime(value), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly(
+                        "The value 2022-01-10T12:00:30Z does not match the pattern yyyy-mm-ddTHH:MM:XX",
+                        "The value 2022-01-10T12:00:30Z must be at least 2022-01-01T10:00Z"
+                                + " and at most 2022-01-01T18:30Z");
+    }
+
+    @Test
+    void disabledModeSkipsThePattern() {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", "yyyy-mm-ddTHH:MM:SS");
+        var disabledValidator = new DvDateTimeValidator(TemporalPatternMode.DISABLED);
+
+        var result = disabledValidator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022")), node);
+        assertThat(result).isEmpty();
+    }
+
     @ParameterizedTest(name = "{0} / {1}")
     @CsvSource({
         "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30:47",
@@ -83,12 +114,15 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "yyyy-mm-ddT??:XX:XX, 2022-10-24T10",
         "yyyy-??-??T??:??:XX, 2022",
         "yyyy-??-??T??:??:XX, 2022-10-24T10:30",
+        "yyyy-??-??THH:??:??, 2022-10-24T10",
         "yyyy-mm-ddThh:??:??, 2022-10-24T10",
         "yyyy-mm-ddThh:??:??, 2022-10-24T10:30:47.5Z",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30",
         "YYYY-MM-DDT??:??:??, 2022-10-24T10",
         "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47Z",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47+00:00",
         "yyyy-mm-ddThh:mm:ss+hh:mm, 2022-10-24T10:30:47+01:00",
+        "yyyy-mm-ddThh:mm:ss+hh:mm, 2022-10-24T10:30:47Z",
         "yyyy-mm-ddThh:??:??+hh, 2022-10-24T10:30:47-03:00",
         "yyyy-mm-ddT??:??:??+hh:mm, 2022-10-24T10+01:00",
     })
@@ -112,6 +146,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "yyyy-mm-ddTXX:XX:XX, 2022-10-24T10",
         "yyyy-mm-ddT??:XX:XX, 2022-10-24T10:30",
         "yyyy-??-??T??:??:XX, 2022-10-24T10:30:47",
+        "yyyy-??-??THH:??:??, 2022-10-24",
         "yyyy-mm-ddThh:??:??, 2022-10-24",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30:47",

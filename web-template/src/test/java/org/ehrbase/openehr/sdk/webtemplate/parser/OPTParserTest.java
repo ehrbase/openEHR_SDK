@@ -80,35 +80,35 @@ class OPTParserTest {
         checkErrors(errors);
     }
 
-    @Test
-    void temporalPatternsAreParsedWithTheTemplate() throws XmlException, IOException {
-        WebTemplate actual = getWebTemplate(OperationalTemplateTestData.ALL_TYPES);
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "DISABLED, yyyy-mm-dd, PARSED",
+        "DISABLED, yyyy-mm-dd-XX, IGNORED",
+        "LENIENT, yyyy-mm-dd, PARSED",
+        "LENIENT, yyyy-mm-dd-XX, IGNORED",
+        "STRICT, yyyy-mm-dd, PARSED",
+        "STRICT, yyyy-mm-dd-XX, REJECTED",
+    })
+    void temporalPatternsAreCheckedWithTheTemplate(TemporalPatternMode mode, String pattern, String outcome)
+            throws XmlException, IOException {
+        OPTParser parser = new OPTParser(withTemporalPattern(OperationalTemplateTestData.ALL_TYPES, pattern), mode);
 
-        assertThat(temporalValidations(actual))
-                .isNotEmpty()
-                .allSatisfy(v -> assertThat(v.getTemporalPattern()).isNotNull());
-    }
-
-    @Test
-    void strictModeRejectsAnUnsupportedTemporalPattern() throws XmlException, IOException {
-        OPERATIONALTEMPLATE template = withUnsupportedTemporalPattern(OperationalTemplateTestData.ALL_TYPES);
-
-        assertThatThrownBy(() -> new OPTParser(template, TemporalPatternMode.STRICT).parse())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("yyyy-mm-dd-XX")
-                .hasMessageContaining("at0003");
-    }
-
-    @Test
-    void lenientModeIgnoresAnUnsupportedTemporalPattern() throws XmlException, IOException {
-        OPERATIONALTEMPLATE template = withUnsupportedTemporalPattern(OperationalTemplateTestData.ALL_TYPES);
-
-        WebTemplate actual = new OPTParser(template, TemporalPatternMode.LENIENT).parse();
-
-        assertThat(temporalValidations(actual))
-                .filteredOn(v -> v.getTemporalPattern() == null)
-                .singleElement()
-                .satisfies(v -> assertThat(v.getPattern()).isEqualTo("yyyy-mm-dd-XX"));
+        switch (outcome) {
+            case "PARSED" ->
+                assertThat(temporalValidations(parser.parse()))
+                        .isNotEmpty()
+                        .allSatisfy(v -> assertThat(v.getTemporalPattern()).isNotNull());
+            case "IGNORED" ->
+                assertThat(temporalValidations(parser.parse()))
+                        .filteredOn(v -> v.getTemporalPattern() == null)
+                        .extracting(WebTemplateValidation::getPattern)
+                        .containsExactly(pattern);
+            case "REJECTED" ->
+                assertThatThrownBy(parser::parse)
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessageContaining(pattern)
+                        .hasMessageContaining("at0003");
+        }
     }
 
     private static List<WebTemplateValidation> temporalValidations(WebTemplate webTemplate) {
@@ -120,8 +120,8 @@ class OPTParserTest {
                 .toList();
     }
 
-    // the all-types template with its C_DATE pattern yyyy-??-XX replaced by one the parser does not support
-    private static OPERATIONALTEMPLATE withUnsupportedTemporalPattern(OperationalTemplateTestData optTestData)
+    // the all-types template with the C_DATE pattern yyyy-??-XX of at0003 replaced by the given one
+    private static OPERATIONALTEMPLATE withTemporalPattern(OperationalTemplateTestData optTestData, String pattern)
             throws XmlException, IOException {
         OPERATIONALTEMPLATE template =
                 TemplateDocument.Factory.parse(optTestData.getStream()).getTemplate();
@@ -131,7 +131,7 @@ class OPTParserTest {
                 if (cursor.isStart()
                         && "pattern".equals(cursor.getName().getLocalPart())
                         && "yyyy-??-XX".equals(cursor.getTextValue())) {
-                    cursor.setTextValue("yyyy-mm-dd-XX");
+                    cursor.setTextValue(pattern);
                     return template;
                 }
                 cursor.toNextToken();

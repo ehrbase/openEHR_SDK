@@ -46,6 +46,7 @@ class WebTemplateValidationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         WebTemplateValidation validation = new WebTemplateValidation();
         validation.setPattern("yyyy-mm-dd");
+        assertThat(validation.getTemporalPattern()).isNotNull();
 
         String json = objectMapper.writeValueAsString(validation);
         assertThat(json).contains("\"pattern\":\"yyyy-mm-dd\"").doesNotContain("temporalPattern");

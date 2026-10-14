@@ -25,6 +25,8 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -58,6 +60,33 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
         assertEquals(1, result.size());
     }
 
+    @Test
+    void validatesRangeAndPatternIndependently() {
+        var node = parseNode("/webtemplate_nodes/dv_time_pattern_range.json");
+
+        // in range, pattern violation, seconds not allowed
+        var result = validator.validate(new DvTime(LocalTime.of(11, 30, 15)), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly("The value 11:30:15 does not match the pattern HH:MM:XX");
+
+        result = validator.validate(new DvTime(LocalTime.of(8, 30, 15)), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly(
+                        "The value 08:30:15 does not match the pattern HH:MM:XX",
+                        "The value 08:30:15 must be at least 10:00 and at most 12:00");
+    }
+
+    @Test
+    void disabledModeSkipsThePattern() {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", "HH:MM:SS");
+        var disabledValidator = new DvTimeValidator(TemporalPatternMode.DISABLED);
+
+        var result = disabledValidator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime("10")), node);
+        assertThat(result).isEmpty();
+    }
+
     @ParameterizedTest(name = "{0} / {1}")
     @CsvSource({
         "HH:MM:SS, 10:30:47",
@@ -76,9 +105,11 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "HH:MM:SSZ, 10:30:47Z",
         "HH:MM:SSZ, 10:30:47+00:00",
         "HH:MM:SS+hh:mm, 10:30:47+01:30",
+        "HH:MM:SS+hh:mm, 10:30:47Z",
         "HH:MM:SS+hh, 10:30:47Z",
         "HH:MM:SS+hh, 10:30:47+01:00",
         "HH:MM:SS+hhmm, 10:30:47-05:30",
+        "HH:MM:SS+hhmm, 10:30:47Z",
         "HH:MM,    10",
     })
     void validateAcceptedPatternValues(String pattern, String value) {

@@ -26,6 +26,7 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,6 +55,10 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     private static final Map<Class<? extends RMObject>, ConstraintValidator> VALIDATORS =
             ReflectionHelper.buildMap(ConstraintValidator.class);
 
+    // the validators of this walker: the defaults above plus the ones configured in the constructor
+    @SuppressWarnings("rawtypes")
+    private final Map<Class<? extends RMObject>, ConstraintValidator> validators = new HashMap<>(VALIDATORS);
+
     private final DefaultValidator defaultValidator = new DefaultValidator();
 
     private final boolean checkForChildrenNotInTemplate;
@@ -68,12 +73,12 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
             boolean checkForChildrenNotInTemplate,
             TemporalPatternMode temporalPatternMode) {
         if (externalTerminologyValidation != null) {
-            VALIDATORS.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
+            validators.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
         }
 
-        VALIDATORS.put(DvDate.class, new DvDateValidator(temporalPatternMode));
-        VALIDATORS.put(DvTime.class, new DvTimeValidator(temporalPatternMode));
-        VALIDATORS.put(DvDateTime.class, new DvDateTimeValidator(temporalPatternMode));
+        validators.put(DvDate.class, new DvDateValidator(temporalPatternMode));
+        validators.put(DvTime.class, new DvTimeValidator(temporalPatternMode));
+        validators.put(DvDateTime.class, new DvDateTimeValidator(temporalPatternMode));
 
         this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
     }
@@ -133,7 +138,7 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     @SuppressWarnings("unchecked")
     private <T extends RMObject> ConstraintValidator<T> getValidator(RMObject object) {
-        return VALIDATORS.getOrDefault(object.getClass(), defaultValidator);
+        return validators.getOrDefault(object.getClass(), defaultValidator);
     }
 
     @Override

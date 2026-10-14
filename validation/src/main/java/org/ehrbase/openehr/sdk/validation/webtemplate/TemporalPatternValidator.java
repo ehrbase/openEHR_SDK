@@ -30,16 +30,17 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Validates DV_DATE, DV_TIME and DV_DATE_TIME values against the {@link TemporalPattern} of their input.
- * <p>Values are checked by the fields they carry, so both compact (dashless) and extended forms are accepted:
- * a mandatory field must be present, a prohibited one must not, optional fields are not checked; a timezone suffix
- * requires an offset, Z a zero offset, ±hh a whole number of hours.</p>
+ * <p>Values are checked using ChronoFields: a mandatory field must be present, a prohibited one must not, optional
+ * fields are not checked; a timezone suffix requires an offset, Z a zero offset, ±hh a whole number of hours.</p>
  */
 final class TemporalPatternValidator {
 
     private TemporalPatternValidator() {}
 
-    // Validates the value against the pattern of the input (if any)
-    // Returns the violation with the value and the pattern, or null when the value conforms or nothing is to check
+    /**
+     * Validates the value against the pattern of the input (if any)
+     * Returns the violation with the value and the pattern, or null when the value conforms or nothing is to check
+     */
     public static @Nullable ConstraintViolation validate(
             String aqlPath, TemporalAccessor value, WebTemplateInput input) {
         if (value == null || input == null || !WebTemplateValidationUtils.hasValidationPattern(input)) {

@@ -186,8 +186,10 @@ public class OPTParser {
         }
     }
 
-    // Parses the pattern of a date, time or date-time input here, with the template, and reports an unsupported
-    // one according to the mode: ignored (DISABLED), logged (LENIENT) or rejected (STRICT)
+    /**
+     * Parses the pattern of a date, time or date-time input here, with the template, and reports an unsupported
+     * one according to the mode: ignored (DISABLED), logged (LENIENT) or rejected (STRICT)
+     */
     private void checkTemporalPattern(WebTemplateInput input, AqlPath path) {
         if (temporalPatternMode == TemporalPatternMode.DISABLED || !TEMPORAL_INPUT_TYPES.contains(input.getType())) {
             return;
