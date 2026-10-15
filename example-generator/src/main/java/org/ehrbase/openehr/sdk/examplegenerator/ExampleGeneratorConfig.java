@@ -214,7 +214,7 @@ public class ExampleGeneratorConfig {
                     } else {
                         maxVal = minVal + defaultValue;
                     }
-                    return Math.max(minVal, Math.min(maxVal, Math.round(t * maxVal + (1 - t) * minVal)));
+                    return Math.max(minVal, Math.min(maxVal, (double) Math.round(t * maxVal + (1 - t) * minVal)));
                 })
                 .orElse(defaultValue);
     }

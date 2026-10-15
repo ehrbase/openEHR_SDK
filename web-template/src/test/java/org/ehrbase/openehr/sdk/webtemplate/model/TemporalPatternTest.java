@@ -37,6 +37,8 @@ class TemporalPatternTest {
                 .isEqualTo(new TemporalPattern(Map.of(MONTH, MANDATORY, DAY, PROHIBITED)));
         assertThat(TemporalPattern.parse("HH:??:xxZ"))
                 .isEqualTo(new TemporalPattern(Map.of(MINUTE, OPTIONAL, SECOND, PROHIBITED, OFFSET, MANDATORY_UTC)));
+        assertThat(TemporalPattern.parse("HH:MM:SS"))
+                .isEqualTo(new TemporalPattern(Map.of(MINUTE, MANDATORY, SECOND, MANDATORY)));
         assertThat(TemporalPattern.parse(" yyyy-mm-ddThh:mm:ss+hh "))
                 .isEqualTo(new TemporalPattern(Map.of(
                         MONTH, MANDATORY,
@@ -61,10 +63,9 @@ class TemporalPatternTest {
         "HH:MM:SS+hh:mm, MANDATORY",
         "hh:mm:ss-hhmm, MANDATORY",
         "HH:XX:XXZ, MANDATORY_UTC",
-        "HH:MM:SS,",
     })
     void parsesTheTimezoneSuffix(String pattern, TemporalPatternValidity offset) {
-        assertThat(TemporalPattern.parse(pattern).validities().get(OFFSET)).isEqualTo(offset);
+        assertThat(TemporalPattern.parse(pattern).validities()).containsEntry(OFFSET, offset);
     }
 
     @ParameterizedTest

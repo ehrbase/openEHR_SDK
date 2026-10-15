@@ -46,7 +46,7 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void testValidate_Range() throws Exception {
+    void testValidate_Range() {
         var node = parseNode("/webtemplate_nodes/dv_date_range.json");
 
         var result = validator.validate(new DvDate(LocalDate.of(2022, 1, 10)), node);

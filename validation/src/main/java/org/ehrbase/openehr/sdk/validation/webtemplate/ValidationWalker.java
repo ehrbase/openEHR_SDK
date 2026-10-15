@@ -52,12 +52,12 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static final Map<Class<? extends RMObject>, ConstraintValidator> VALIDATORS =
+    private static final Map<Class<? extends RMObject>, ConstraintValidator> DEFAULT_VALIDATORS =
             ReflectionHelper.buildMap(ConstraintValidator.class);
 
     // the validators of this walker: the defaults above plus the ones configured in the constructor
     @SuppressWarnings("rawtypes")
-    private final Map<Class<? extends RMObject>, ConstraintValidator> validators = new HashMap<>(VALIDATORS);
+    private final Map<Class<? extends RMObject>, ConstraintValidator> validators = new HashMap<>(DEFAULT_VALIDATORS);
 
     private final DefaultValidator defaultValidator = new DefaultValidator();
 

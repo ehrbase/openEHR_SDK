@@ -103,7 +103,7 @@ class OPTParserTest {
                         .filteredOn(v -> v.getTemporalPattern() == null)
                         .extracting(WebTemplateValidation::getPattern)
                         .containsExactly(pattern);
-            case "REJECTED" ->
+            default ->
                 assertThatThrownBy(parser::parse)
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining(pattern)
