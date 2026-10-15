@@ -59,7 +59,7 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void validatesRangeAndPatternIndependently() throws Exception {
+    void validatesRangeAndPatternIndependently() {
         var node = parseNode("/webtemplate_nodes/dv_date_pattern_range.json");
 
         // in range, pattern violation, days not allowed
