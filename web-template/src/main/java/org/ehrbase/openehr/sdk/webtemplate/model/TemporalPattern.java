@@ -27,19 +27,23 @@ import java.util.regex.Pattern;
 
 /**
  * Parsed form of a C_DATE, C_TIME or C_DATE_TIME pattern: the validity of each field the pattern mentions.
- * <p>Example shape: yyyy-mm-?? | letters mean mandatory fields; ?? means optional fields; XX means prohibited
- * fields</p>
+ * <p>Example: yyyy-mm-ddThh:??:XX, a date-time with mandatory date and hour, optional minutes and no seconds.</p>
  * <ul>
- * <li>The year of a date, the hour of a time are always present.</li>
- * <li>Date patterns constrain months and days</li>
- * <li>Time patterns constrain minutes and seconds</li>
- * <li>Date-time patterns constrain months, days, hours, minutes and seconds</li>
- * <li>A prohibited field is only followed by prohibited fields: HH:XX:?? or yyyy-mm-XXTHH:MM:SS are not supported</li>
- * <li>A timezone suffix on a time or date-time pattern requires an offset: Z a zero offset (the spec equates Z with
- * +00:00), ±hh a whole number of hours, ±hh:mm and ±hhmm any offset. The text form of the offset is not checked.
- * An offset needs a time part, so a required offset also makes the hour mandatory</li>
- * <li>Patterns are case-insensitive when matched</li>
- * <li>Patterns that do not match any accepted format (date, time, datetime) are not supported and yield null.</li>
+ *     <li>Mandatory fields are marked by letters, optional fields by ??, prohibited fields by XX.</li>
+ *     <li>Patterns are case insensitive when matched.</li>
+ *     <li>Date patterns constrain months and days, time patterns constrain minutes and seconds, and date-time
+ *     patterns can constrain months, days, hours, minutes and seconds.</li>
+ *     <li>The year of a date must be present. The hour of a time must be present.</li>
+ *     <li>An optional field is followed only by optional or prohibited fields.</li>
+ *     <li>A prohibited field is followed only by other prohibited fields.</li>
+ *     <li>A timezone suffix on a time or date-time pattern requires an offset: Z a zero offset (the spec equates Z with
+ *     +00:00), ±hh a whole number of hours, ±hh:mm and ±hhmm any offset; the text form of the offset is not checked.
+ *     The suffix is not subject to the ordering rules (HH:XX:XXZ is supported). An offset needs a time part, so
+ *     with an optional hour only values with a time pass, and a prohibited hour is not supported
+ *     (yyyy-mm-ddTXX:XX:XXZ).</li>
+ *     <li>A pattern applies only to an input of its own kind: a date pattern to DATE, a time pattern to TIME, a
+ *     date-time pattern to DATETIME. Parsing does not know the input, see {@link #isOfInputType(String)}.</li>
+ *     <li>{@link #parse(String)} returns null for any other pattern.</li>
  * </ul>
  * <p>Created by {@link #parse} when the template is parsed and kept on {@link WebTemplateValidation} next to the
  * pattern string; enforced by the validation module.</p>
@@ -127,6 +131,18 @@ public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity>
         };
     }
 
+    /** Whether this is a pattern of the web template input type DATE, TIME or DATETIME */
+    public boolean isOfInputType(String inputType) {
+        boolean date = validities.containsKey(TemporalPatternField.DAY);
+        boolean time = validities.containsKey(TemporalPatternField.MINUTE);
+        return switch (inputType) {
+            case "DATE" -> date && !time;
+            case "TIME" -> time && !date;
+            case "DATETIME" -> date && time;
+            default -> false;
+        };
+    }
+
     private static TemporalPattern parse(Matcher matcher, List<TemporalPatternField> fields) {
         if (!matcher.matches()) {
             return null;
@@ -139,7 +155,9 @@ public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity>
                 validities.put(fields.get(i), validityOf(group));
             }
         }
-        return hasFieldAfterProhibitedField(validities) ? null : new TemporalPattern(validities);
+        return hasFieldOutOfOrder(validities) || hasOffsetWithProhibitedHour(validities)
+                ? null
+                : new TemporalPattern(validities);
     }
 
     private static TemporalPatternValidity validityOf(String token) {
@@ -154,20 +172,27 @@ public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity>
         };
     }
 
-    // A field after a prohibited one is not supported (HH:XX:??); the offset is not a precision field.
-    private static boolean hasFieldAfterProhibitedField(
-            EnumMap<TemporalPatternField, TemporalPatternValidity> validities) {
-        boolean prohibited = false;
+    private static boolean hasFieldOutOfOrder(EnumMap<TemporalPatternField, TemporalPatternValidity> validities) {
+        TemporalPatternValidity previous = TemporalPatternValidity.MANDATORY;
         for (Map.Entry<TemporalPatternField, TemporalPatternValidity> entry : validities.entrySet()) {
             if (entry.getKey() == TemporalPatternField.OFFSET) {
                 continue;
             }
-            if (entry.getValue() == TemporalPatternValidity.PROHIBITED) {
-                prohibited = true;
-            } else if (prohibited) {
+            TemporalPatternValidity current = entry.getValue();
+            if ((previous == TemporalPatternValidity.OPTIONAL && current == TemporalPatternValidity.MANDATORY)
+                    || (previous == TemporalPatternValidity.PROHIBITED
+                            && current != TemporalPatternValidity.PROHIBITED)) {
                 return true;
             }
+            previous = current;
         }
         return false;
+    }
+
+    /** An offset needs a time part, so no value can satisfy a timezone suffix with a prohibited hour */
+    private static boolean hasOffsetWithProhibitedHour(
+            EnumMap<TemporalPatternField, TemporalPatternValidity> validities) {
+        return validities.containsKey(TemporalPatternField.OFFSET)
+                && validities.get(TemporalPatternField.HOUR) == TemporalPatternValidity.PROHIBITED;
     }
 }

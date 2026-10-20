@@ -47,22 +47,17 @@ class TemporalPatternTest {
                         MINUTE, MANDATORY,
                         SECOND, MANDATORY,
                         OFFSET, MANDATORY_HOURS)));
-        assertThat(TemporalPattern.parse("yyyy-??-??THH:??:??"))
-                .isEqualTo(new TemporalPattern(Map.of(
-                        MONTH, OPTIONAL,
-                        DAY, OPTIONAL,
-                        HOUR, MANDATORY,
-                        MINUTE, OPTIONAL,
-                        SECOND, OPTIONAL)));
     }
 
     @ParameterizedTest
     @CsvSource({
         "HH:MM:SSZ, MANDATORY_UTC",
+        "HH:MM:SSz, MANDATORY_UTC",
         "HH:MM:SS+hh, MANDATORY_HOURS",
         "HH:MM:SS+hh:mm, MANDATORY",
         "hh:mm:ss-hhmm, MANDATORY",
         "HH:XX:XXZ, MANDATORY_UTC",
+        "yyyy-??-??T??:??:??Z, MANDATORY_UTC",
     })
     void parsesTheTimezoneSuffix(String pattern, TemporalPatternValidity offset) {
         assertThat(TemporalPattern.parse(pattern).validities()).containsEntry(OFFSET, offset);
@@ -80,11 +75,31 @@ class TemporalPatternTest {
                 "??:??:??",
                 "HH:XX:??",
                 "HH:XX:SS",
+                "HH:??:SS",
                 "yyyy-XX-dd",
+                "yyyy-??-dd",
                 "yyyy-mm-XXTHH:MM:SS",
-                "yyyy-??-XXT??:??:??"
+                "yyyy-??-XXT??:??:??",
+                "yyyy-??-??THH:??:??",
+                "yyyy-mm-ddTXX:XX:XX+hh"
             })
     void unsupportedPatternReturnsNull(String pattern) {
         assertThat(TemporalPattern.parse(pattern)).isNull();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "yyyy-mm-dd, DATE, true",
+        "yyyy-mm-dd, TIME, false",
+        "yyyy-mm-dd, DATETIME, false",
+        "HH:MM:SS, DATE, false",
+        "HH:MM:SS, TIME, true",
+        "HH:MM:SS, DATETIME, false",
+        "yyyy-mm-ddTHH:MM:SS, DATE, false",
+        "yyyy-mm-ddTHH:MM:SS, TIME, false",
+        "yyyy-mm-ddTHH:MM:SS, DATETIME, true",
+    })
+    void isOfTheInputTypeOfItsKind(String pattern, String inputType, boolean ofInputType) {
+        assertThat(TemporalPattern.parse(pattern).isOfInputType(inputType)).isEqualTo(ofInputType);
     }
 }

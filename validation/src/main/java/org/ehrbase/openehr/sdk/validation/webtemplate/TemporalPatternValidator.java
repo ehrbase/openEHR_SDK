@@ -48,7 +48,7 @@ final class TemporalPatternValidator {
         }
         WebTemplateValidation validation = input.getValidation();
         TemporalPattern temporalPattern = validation.getTemporalPattern();
-        if (temporalPattern == null) {
+        if (temporalPattern == null || !temporalPattern.isOfInputType(input.getType())) {
             return null;
         }
         if (conforms(temporalPattern, value)) {

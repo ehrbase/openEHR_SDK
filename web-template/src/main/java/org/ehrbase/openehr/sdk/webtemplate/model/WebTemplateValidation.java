@@ -75,7 +75,8 @@ public class WebTemplateValidation implements Serializable {
 
     /**
      * Parsed form of a C_DATE, C_TIME or C_DATE_TIME pattern, or null when the pattern is absent or not supported.
-     * Parsed once per pattern, so an unsupported one is not retried for every validated value.
+     * Parsed once per pattern, so an unsupported one is not retried for every validated value. The pattern may be of
+     * another kind than its input, see {@link TemporalPattern#isOfInputType(String)}.
      */
     @JsonIgnore
     public TemporalPattern getTemporalPattern() {

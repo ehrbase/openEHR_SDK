@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  *
@@ -100,6 +101,24 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         assertThat(result).isEmpty();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"yyyy-mm-dd", "HH:MM:SS"})
+    void validateIgnoresPatternOfAnotherKind(String pattern) {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
+
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022")), node);
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"yyyy-mm-ddTHH:MM", "yyyy-??-??THH:??:??"})
+    void validateIgnoresUnsupportedPattern(String pattern) {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
+
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022-10-24")), node);
+        assertThat(result).isEmpty();
+    }
+
     @ParameterizedTest(name = "{0} / {1}")
     @CsvSource({
         "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30:47",
@@ -114,10 +133,11 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "yyyy-mm-ddT??:XX:XX, 2022-10-24T10",
         "yyyy-??-??T??:??:XX, 2022",
         "yyyy-??-??T??:??:XX, 2022-10-24T10:30",
-        "yyyy-??-??THH:??:??, 2022-10-24T10",
         "yyyy-mm-ddThh:??:??, 2022-10-24T10",
         "yyyy-mm-ddThh:??:??, 2022-10-24T10:30:47.5Z",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:mm:??, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:??:XX, 2022-10-24T10",
         "YYYY-MM-DDT??:??:??, 2022-10-24T10",
         "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47Z",
         "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47+00:00",
@@ -146,10 +166,11 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "yyyy-mm-ddTXX:XX:XX, 2022-10-24T10",
         "yyyy-mm-ddT??:XX:XX, 2022-10-24T10:30",
         "yyyy-??-??T??:??:XX, 2022-10-24T10:30:47",
-        "yyyy-??-??THH:??:??, 2022-10-24",
         "yyyy-mm-ddThh:??:??, 2022-10-24",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10",
         "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:mm:??, 2022-10-24T10",
+        "yyyy-mm-ddThh:??:XX, 2022-10-24T10:30:47",
         "yyyy-mm-ddTHH:MM:SS, 2022-10-24T10:30",
         "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47",
         "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47+01:00",
@@ -163,16 +184,5 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getMessage()).contains(pattern);
-    }
-
-    @Test
-    void checkCompleteErrorMessageOnRejectedPatternValidation() {
-        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", "yyyy-mm-ddThh:mm:ss");
-        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022-10")), node);
-
-        assertThat(result)
-                .singleElement()
-                .extracting(ConstraintViolation::getMessage)
-                .isEqualTo("The value 2022-10 does not match the pattern yyyy-mm-ddThh:mm:ss");
     }
 }

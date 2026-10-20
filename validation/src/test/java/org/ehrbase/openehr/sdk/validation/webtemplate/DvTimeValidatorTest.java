@@ -30,6 +30,7 @@ import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  *
@@ -87,6 +88,24 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
         assertThat(result).isEmpty();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"yyyy-mm-dd", "yyyy-mm-ddTHH:MM:SS"})
+    void validateIgnoresPatternOfAnotherKind(String pattern) {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);
+
+        var result = validator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime("10:30")), node);
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"HH:MM", "HH:??:SS"})
+    void validateIgnoresUnsupportedPattern(String pattern) {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);
+
+        var result = validator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime("10")), node);
+        assertThat(result).isEmpty();
+    }
+
     @ParameterizedTest(name = "{0} / {1}")
     @CsvSource({
         "HH:MM:SS, 10:30:47",
@@ -110,7 +129,6 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
         "HH:MM:SS+hh, 10:30:47+01:00",
         "HH:MM:SS+hhmm, 10:30:47-05:30",
         "HH:MM:SS+hhmm, 10:30:47Z",
-        "HH:MM,    10",
     })
     void validateAcceptedPatternValues(String pattern, String value) {
         var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);

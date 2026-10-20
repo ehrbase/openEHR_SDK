@@ -64,6 +64,7 @@ import org.ehrbase.openehr.sdk.terminology.ValueSet;
 import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
+import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
@@ -195,11 +196,15 @@ public class OPTParser {
             return;
         }
         WebTemplateValidation validation = input.getValidation();
-        if (validation == null || validation.getPattern() == null || validation.getTemporalPattern() != null) {
+        if (validation == null || validation.getPattern() == null) {
             return;
         }
-        String message =
-                "Unsupported date/time pattern '%s' at %s".formatted(validation.getPattern(), path.format(true));
+        TemporalPattern temporalPattern = validation.getTemporalPattern();
+        if (temporalPattern != null && temporalPattern.isOfInputType(input.getType())) {
+            return;
+        }
+        String message = "Unsupported %s pattern '%s' at %s"
+                .formatted(input.getType(), validation.getPattern(), path.format(true));
         if (temporalPatternMode == TemporalPatternMode.STRICT) {
             throw new IllegalArgumentException(message);
         }

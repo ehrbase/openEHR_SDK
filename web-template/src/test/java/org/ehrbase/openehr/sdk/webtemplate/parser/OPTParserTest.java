@@ -88,6 +88,7 @@ class OPTParserTest {
         "LENIENT, yyyy-mm-dd-XX, IGNORED",
         "STRICT, yyyy-mm-dd, PARSED",
         "STRICT, yyyy-mm-dd-XX, REJECTED",
+        "STRICT, HH:MM:SS, REJECTED",
     })
     void temporalPatternsAreCheckedWithTheTemplate(TemporalPatternMode mode, String pattern, String outcome)
             throws XmlException, IOException {
