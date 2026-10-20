@@ -111,16 +111,18 @@ public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity>
         MANDATORY_HOURS
     }
 
-    // Parses the received pattern into a TemporalPattern, or null if blank or not supported.
-    // The first char decides the format: y for a date (with an optional time part), h for a time.
+    /**
+     * Parses the received pattern into a TemporalPattern, or null if blank or not supported.
+     * The first char decides the format: y for a date (with an optional time part), h for a time.
+     */
     public static TemporalPattern parse(String pattern) {
         if (pattern == null || pattern.isBlank()) {
             return null;
         }
         String normalized = pattern.strip();
-        return switch (Character.toUpperCase(normalized.charAt(0))) {
-            case 'Y' -> parse(DATE_TIME.matcher(normalized), DATE_TIME_FIELDS);
-            case 'H' -> parse(TIME.matcher(normalized), TIME_FIELDS);
+        return switch (normalized.charAt(0)) {
+            case 'y', 'Y' -> parse(DATE_TIME.matcher(normalized), DATE_TIME_FIELDS);
+            case 'h', 'H' -> parse(TIME.matcher(normalized), TIME_FIELDS);
             default -> null;
         };
     }
@@ -141,10 +143,10 @@ public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity>
     }
 
     private static TemporalPatternValidity validityOf(String token) {
-        return switch (Character.toUpperCase(token.charAt(0))) {
+        return switch (token.charAt(0)) {
             case '?' -> TemporalPatternValidity.OPTIONAL;
-            case 'X' -> TemporalPatternValidity.PROHIBITED;
-            case 'Z' -> TemporalPatternValidity.MANDATORY_UTC;
+            case 'x', 'X' -> TemporalPatternValidity.PROHIBITED;
+            case 'z', 'Z' -> TemporalPatternValidity.MANDATORY_UTC;
             // +hh requires whole hours, +hh:mm and +hhmm any offset
             case '+', '-' ->
                 token.length() == 3 ? TemporalPatternValidity.MANDATORY_HOURS : TemporalPatternValidity.MANDATORY;

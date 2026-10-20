@@ -73,8 +73,10 @@ public class WebTemplateValidation implements Serializable {
         this.temporalPatternParsed = false;
     }
 
-    // Parsed form of a C_DATE, C_TIME or C_DATE_TIME pattern, or null when the pattern is absent or not supported.
-    // Parsed once per pattern, so an unsupported one is not retried for every validated value.
+    /**
+     * Parsed form of a C_DATE, C_TIME or C_DATE_TIME pattern, or null when the pattern is absent or not supported.
+     * Parsed once per pattern, so an unsupported one is not retried for every validated value.
+     */
     @JsonIgnore
     public TemporalPattern getTemporalPattern() {
         if (pattern != null && !temporalPatternParsed) {

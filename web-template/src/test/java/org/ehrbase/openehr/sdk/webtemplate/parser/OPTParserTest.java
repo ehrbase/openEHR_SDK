@@ -103,11 +103,12 @@ class OPTParserTest {
                         .filteredOn(v -> v.getTemporalPattern() == null)
                         .extracting(WebTemplateValidation::getPattern)
                         .containsExactly(pattern);
-            default ->
+            case "REJECTED" ->
                 assertThatThrownBy(parser::parse)
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining(pattern)
                         .hasMessageContaining("at0003");
+            default -> fail("Unknown outcome " + outcome);
         }
     }
 
@@ -120,7 +121,7 @@ class OPTParserTest {
                 .toList();
     }
 
-    // the all-types template with the C_DATE pattern yyyy-??-XX of at0003 replaced by the given one
+    /** The all-types template with the C_DATE pattern yyyy-??-XX of at0003 replaced by the given one */
     private static OPERATIONALTEMPLATE withTemporalPattern(OperationalTemplateTestData optTestData, String pattern)
             throws XmlException, IOException {
         OPERATIONALTEMPLATE template =
