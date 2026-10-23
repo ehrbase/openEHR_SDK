@@ -20,9 +20,13 @@ package org.ehrbase.openehr.sdk.validation.webtemplate;
 import com.nedap.archie.rm.RMObject;
 import com.nedap.archie.rm.archetyped.Locatable;
 import com.nedap.archie.rm.datavalues.DvCodedText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import com.nedap.archie.rminfo.ArchieRMInfoLookup;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +40,7 @@ import org.ehrbase.openehr.sdk.util.reflection.ReflectionHelper;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +52,12 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static final Map<Class<? extends RMObject>, ConstraintValidator> VALIDATORS =
+    private static final Map<Class<? extends RMObject>, ConstraintValidator> DEFAULT_VALIDATORS =
             ReflectionHelper.buildMap(ConstraintValidator.class);
+
+    // the validators of this walker: the defaults above plus the ones configured in the constructor
+    @SuppressWarnings("rawtypes")
+    private final Map<Class<? extends RMObject>, ConstraintValidator> validators = new HashMap<>(DEFAULT_VALIDATORS);
 
     private final DefaultValidator defaultValidator = new DefaultValidator();
 
@@ -56,9 +65,20 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     public ValidationWalker(
             ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate) {
+        this(externalTerminologyValidation, checkForChildrenNotInTemplate, TemporalPatternMode.LENIENT);
+    }
+
+    public ValidationWalker(
+            ExternalTerminologyValidation externalTerminologyValidation,
+            boolean checkForChildrenNotInTemplate,
+            TemporalPatternMode temporalPatternMode) {
         if (externalTerminologyValidation != null) {
-            VALIDATORS.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
+            validators.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
         }
+
+        validators.put(DvDate.class, new DvDateValidator(temporalPatternMode));
+        validators.put(DvTime.class, new DvTimeValidator(temporalPatternMode));
+        validators.put(DvDateTime.class, new DvDateTimeValidator(temporalPatternMode));
 
         this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
     }
@@ -118,7 +138,7 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     @SuppressWarnings("unchecked")
     private <T extends RMObject> ConstraintValidator<T> getValidator(RMObject object) {
-        return VALIDATORS.getOrDefault(object.getClass(), defaultValidator);
+        return validators.getOrDefault(object.getClass(), defaultValidator);
     }
 
     @Override

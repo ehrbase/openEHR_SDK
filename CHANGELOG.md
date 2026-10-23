@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- Validation of DV_DATE, DV_TIME and DV_DATE_TIME values against the `pattern` of their C_DATE, C_TIME and C_DATE_TIME constraint. [#767](https://github.com/ehrbase/openEHR_SDK/pull/767)
  ### Fixed 
 
 ## [2.35.0]

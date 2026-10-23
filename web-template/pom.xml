@@ -65,6 +65,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.ehrbase.openehr.sdk</groupId>
             <artifactId>test-data</artifactId>
             <scope>test</scope>

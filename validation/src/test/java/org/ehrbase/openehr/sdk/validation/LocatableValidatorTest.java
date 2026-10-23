@@ -23,6 +23,7 @@ import static org.ehrbase.openehr.sdk.terminology.TerminologyProvider.OPENEHR;
 import com.nedap.archie.rm.composition.Composition;
 import com.nedap.archie.rm.datastructures.Cluster;
 import com.nedap.archie.rm.datavalues.DvText;
+import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import com.nedap.archie.rm.directory.Folder;
 import com.nedap.archie.xml.JAXBUtil;
 import java.io.IOException;
@@ -41,10 +42,12 @@ import org.ehrbase.openehr.sdk.terminology.TerminologyProvider;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataCanonicalJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.validation.terminology.TerminologyValidationVisitor;
 import org.ehrbase.openehr.sdk.validation.webtemplate.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
+import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -182,6 +185,41 @@ class LocatableValidatorTest {
 
         var result = validator.validate(composition, template);
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void temporalPattern() throws Exception {
+        var template = getInternalTemplate(OperationalTemplateTestData.ALL_TYPES);
+        var composition = getComposition(CompositionTestDataCanonicalJson.ALL_TYPES);
+        var path = """
+            /content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]\
+            /items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/description[at0002]/items[at0004]/value""";
+        var partialDateTime = (DvDateTime) composition.itemAtPath(path);
+
+        // the constraint in test_all_types.opt uses the pattern yyyy-mm-ddTHH:??:??
+        partialDateTime.setValue(OpenEHRDateTimeParseUtils.parseDateTime("2019-01-28T21"));
+        assertThat(validator.validate(composition, template)).isEmpty();
+
+        partialDateTime.setValue(OpenEHRDateTimeParseUtils.parseDateTime("2019-01-28"));
+        assertThat(validator.validate(composition, template)).singleElement().satisfies(violation -> {
+            assertThat(violation.getAqlPath()).isEqualTo(path);
+            assertThat(violation.getMessage()).contains("does not match the pattern yyyy-mm-ddTHH:??:??");
+        });
+    }
+
+    @Test
+    void temporalPatternDisabled() throws Exception {
+        var template = getInternalTemplate(OperationalTemplateTestData.ALL_TYPES);
+        var composition = getComposition(CompositionTestDataCanonicalJson.ALL_TYPES);
+        var path = """
+            /content[openEHR-EHR-SECTION.test_all_types.v1]/items[at0001]/items[at0002]\
+            /items[openEHR-EHR-INSTRUCTION.test_all_types.v1]/activities[at0001]/description[at0002]/items[at0004]/value""";
+        var partialDateTime = (DvDateTime) composition.itemAtPath(path);
+        // violates the pattern yyyy-mm-ddTHH:??:?? of test_all_types.opt
+        partialDateTime.setValue(OpenEHRDateTimeParseUtils.parseDateTime("2019-01-28"));
+
+        var disabled = new LocatableValidator(null, true, true, null, TemporalPatternMode.DISABLED);
+        assertThat(disabled.validate(composition, template)).isEmpty();
     }
 
     @Test

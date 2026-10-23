@@ -3,6 +3,14 @@
 This file documents any backwards-incompatible changes in SDK and
 assists users migrating to a new version.
 
+## SDK 2.36.0
+
+- `LocatableValidator` validates DV_DATE, DV_TIME and DV_DATE_TIME values against the `pattern` of their C_DATE,
+  C_TIME or C_DATE_TIME constraint. Behavior can be selected using the `TemporalPatternMode` with the following options:
+  - `LENIENT` (default): values are validated; an unsupported pattern is logged and ignored
+  - `STRICT`: values are validated; an unsupported pattern rejects the template
+  - `DISABLED`: patterns are not validated
+
 ## SDK 2.34.0
 
 - Manual sanitization of AQL parameters for `AqlEndpoint::execute` and `AqlEndpoint::executeRaw` is no longer needed
