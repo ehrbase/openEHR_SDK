@@ -61,7 +61,7 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
 
     @Test
     void validatesRangeAndPatternIndependently() {
-        var node = parseNode("/webtemplate_nodes/dv_date_pattern_range.json");
+        var node = withTemporalPatterns(parseNode("/webtemplate_nodes/dv_date_pattern_range.json"));
 
         // in range, pattern violation, days not allowed
         var result = validator.validate(new DvDate(LocalDate.of(2022, 1, 10)), node);
@@ -83,15 +83,6 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
         var disabledValidator = new DvDateValidator(TemporalPatternMode.DISABLED);
 
         var result = disabledValidator.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate("2022")), node);
-        assertThat(result).isEmpty();
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"HH:MM:SS", "yyyy-mm-ddTHH:MM:SS"})
-    void validateIgnoresPatternOfAnotherKind(String pattern) {
-        var node = nodeWithValidationPattern("DV_DATE", "DATE", pattern);
-
-        var result = validator.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate("2022")), node);
         assertThat(result).isEmpty();
     }
 

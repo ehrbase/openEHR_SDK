@@ -17,6 +17,7 @@
  */
 package org.ehrbase.openehr.sdk.webtemplate.model;
 
+import java.io.Serializable;
 import java.time.temporal.ChronoField;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -42,7 +43,8 @@ import java.util.regex.Pattern;
  *     with an optional hour only values with a time pass, and a prohibited hour is not supported
  *     (yyyy-mm-ddTXX:XX:XXZ).</li>
  *     <li>A pattern applies only to an input of its own kind: a date pattern to DATE, a time pattern to TIME, a
- *     date-time pattern to DATETIME. Parsing does not know the input, see {@link #isOfInputType(String)}.</li>
+ *     date-time pattern to DATETIME. Parsing does not know the input; the OPTParser checks the kind with
+ *     {@link #isForInputType(String)}.</li>
  *     <li>{@link #parse(String)} returns null for any other pattern.</li>
  * </ul>
  * <p>Created by {@link #parse} when the template is parsed and kept on {@link WebTemplateValidation} next to the
@@ -50,7 +52,7 @@ import java.util.regex.Pattern;
  * <p>Note: archie keeps the pattern but does not evaluate it, see
  * {@code com.nedap.archie.aom.primitives.CTemporal#isValidValue}.</p>
  */
-public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity> validities) {
+public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity> validities) implements Serializable {
 
     private static final String MM = "(MM|\\?\\?|XX)";
     private static final String DD = "(DD|\\?\\?|XX)";
@@ -131,8 +133,8 @@ public record TemporalPattern(Map<TemporalPatternField, TemporalPatternValidity>
         };
     }
 
-    /** Whether this is a pattern of the web template input type DATE, TIME or DATETIME */
-    public boolean isOfInputType(String inputType) {
+    /** Whether this pattern is for the web template input type DATE, TIME or DATETIME */
+    public boolean isForInputType(String inputType) {
         boolean date = validities.containsKey(TemporalPatternField.DAY);
         boolean time = validities.containsKey(TemporalPatternField.MINUTE);
         return switch (inputType) {

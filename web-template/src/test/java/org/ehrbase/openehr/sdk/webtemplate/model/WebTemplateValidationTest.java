@@ -21,38 +21,53 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Test;
 
 class WebTemplateValidationTest {
 
     @Test
-    void temporalPatternFollowsThePattern() {
-        WebTemplateValidation validation = new WebTemplateValidation();
-        assertThat(validation.getTemporalPattern()).isNull();
-
-        validation.setPattern("yyyy-mm-dd");
-        TemporalPattern parsed = validation.getTemporalPattern();
-        assertThat(parsed).isNotNull().isSameAs(validation.getTemporalPattern());
+    void setPatternClearsTheTemporalPattern() {
+        WebTemplateValidation validation = validationWithTemporalPattern("yyyy-mm-dd");
 
         validation.setPattern("HH:MM:SS");
-        assertThat(validation.getTemporalPattern()).isNotNull().isNotSameAs(parsed);
-
-        validation.setPattern("not a temporal pattern");
         assertThat(validation.getTemporalPattern()).isNull();
+    }
+
+    @Test
+    void copyKeepsTheTemporalPattern() {
+        WebTemplateValidation validation = validationWithTemporalPattern("yyyy-mm-dd");
+
+        assertThat(new WebTemplateValidation(validation).getTemporalPattern())
+                .isSameAs(validation.getTemporalPattern());
+    }
+
+    @Test
+    void javaSerializationKeepsTheTemporalPattern() {
+        WebTemplateValidation validation = validationWithTemporalPattern("yyyy-mm-dd");
+
+        assertThat(SerializationUtils.roundtrip(validation).getTemporalPattern())
+                .isNotNull()
+                .isEqualTo(validation.getTemporalPattern());
     }
 
     @Test
     void temporalPatternIsNotPartOfTheJson() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        WebTemplateValidation validation = new WebTemplateValidation();
-        validation.setPattern("yyyy-mm-dd");
-        assertThat(validation.getTemporalPattern()).isNotNull();
+        WebTemplateValidation validation = validationWithTemporalPattern("yyyy-mm-dd");
 
         String json = objectMapper.writeValueAsString(validation);
         assertThat(json).contains("\"pattern\":\"yyyy-mm-dd\"").doesNotContain("temporalPattern");
 
         WebTemplateValidation read = objectMapper.readValue(json, WebTemplateValidation.class);
         assertThat(read).isEqualTo(validation);
-        assertThat(read.getTemporalPattern()).isNotNull();
+        assertThat(read.getTemporalPattern()).isNull();
+    }
+
+    private static WebTemplateValidation validationWithTemporalPattern(String pattern) {
+        WebTemplateValidation validation = new WebTemplateValidation();
+        validation.setPattern(pattern);
+        validation.setTemporalPattern(TemporalPattern.parse(pattern));
+        return validation;
     }
 }

@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateValidation;
@@ -49,6 +50,17 @@ public abstract class AbstractRMObjectValidatorTest {
         node.setRmType(rmType);
         node.setAqlPath("/test/" + rmType.toLowerCase());
         node.getInputs().add(input);
+        return withTemporalPatterns(node);
+    }
+
+    /**
+     * Sets the parsed pattern on the inputs of the node, which a node built by hand or read from JSON lacks.
+     */
+    protected static WebTemplateNode withTemporalPatterns(WebTemplateNode node) {
+        node.getInputs().stream()
+                .map(WebTemplateInput::getValidation)
+                .filter(v -> v != null && v.getPattern() != null)
+                .forEach(v -> v.setTemporalPattern(TemporalPattern.parse(v.getPattern())));
         return node;
     }
 }

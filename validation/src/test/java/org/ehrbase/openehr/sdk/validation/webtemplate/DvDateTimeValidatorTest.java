@@ -73,7 +73,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
 
     @Test
     void validatesRangeAndPatternIndependently() {
-        var node = parseNode("/webtemplate_nodes/dv_datetime_pattern_range.json");
+        var node = withTemporalPatterns(parseNode("/webtemplate_nodes/dv_datetime_pattern_range.json"));
 
         // in range, pattern violation, seconds not allowed
         var value = OffsetDateTime.of(2022, 1, 1, 12, 0, 30, 0, ZoneOffset.UTC);
@@ -98,15 +98,6 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
         var disabledValidator = new DvDateTimeValidator(TemporalPatternMode.DISABLED);
 
         var result = disabledValidator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022")), node);
-        assertThat(result).isEmpty();
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"yyyy-mm-dd", "HH:MM:SS"})
-    void validateIgnoresPatternOfAnotherKind(String pattern) {
-        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
-
-        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022")), node);
         assertThat(result).isEmpty();
     }
 

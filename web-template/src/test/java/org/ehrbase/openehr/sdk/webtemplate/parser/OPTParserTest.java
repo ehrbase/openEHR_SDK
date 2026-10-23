@@ -84,8 +84,10 @@ class OPTParserTest {
     @CsvSource({
         "DISABLED, yyyy-mm-dd, PARSED",
         "DISABLED, yyyy-mm-dd-XX, IGNORED",
+        "DISABLED, HH:MM:SS, IGNORED",
         "LENIENT, yyyy-mm-dd, PARSED",
         "LENIENT, yyyy-mm-dd-XX, IGNORED",
+        "LENIENT, HH:MM:SS, IGNORED",
         "STRICT, yyyy-mm-dd, PARSED",
         "STRICT, yyyy-mm-dd-XX, REJECTED",
         "STRICT, HH:MM:SS, REJECTED",

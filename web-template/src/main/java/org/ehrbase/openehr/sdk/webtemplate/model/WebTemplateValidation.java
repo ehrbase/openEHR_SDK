@@ -28,10 +28,7 @@ public class WebTemplateValidation implements Serializable {
     private WebTemplateInterval precision;
     private WebTemplateInterval range;
     private String pattern;
-
-    // derived from the pattern, not part of the JSON or Java serialized form, not part of equality
-    private transient TemporalPattern temporalPattern;
-    private transient boolean temporalPatternParsed;
+    private TemporalPattern temporalPattern;
 
     public WebTemplateValidation() {}
 
@@ -45,6 +42,7 @@ public class WebTemplateValidation implements Serializable {
         }
 
         this.pattern = other.pattern;
+        this.temporalPattern = other.temporalPattern;
     }
 
     public WebTemplateInterval getPrecision() {
@@ -67,24 +65,23 @@ public class WebTemplateValidation implements Serializable {
         return pattern;
     }
 
+    /** Sets the pattern string and clears its parsed form */
     public void setPattern(String pattern) {
         this.pattern = pattern;
         this.temporalPattern = null;
-        this.temporalPatternParsed = false;
     }
 
     /**
-     * Parsed form of a C_DATE, C_TIME or C_DATE_TIME pattern, or null when the pattern is absent or not supported.
-     * Parsed once per pattern, so an unsupported one is not retried for every validated value. The pattern may be of
-     * another kind than its input, see {@link TemporalPattern#isOfInputType(String)}.
+     * Parsed form of a C_DATE, C_TIME or C_DATE_TIME pattern, set by the OPTParser when the pattern is supported and
+     * of the kind of its input (see {@link TemporalPattern#isForInputType(String)}), null otherwise.
      */
     @JsonIgnore
     public TemporalPattern getTemporalPattern() {
-        if (pattern != null && !temporalPatternParsed) {
-            temporalPattern = TemporalPattern.parse(pattern);
-            temporalPatternParsed = true;
-        }
         return temporalPattern;
+    }
+
+    public void setTemporalPattern(TemporalPattern temporalPattern) {
+        this.temporalPattern = temporalPattern;
     }
 
     @Override

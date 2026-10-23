@@ -99,7 +99,7 @@ class TemporalPatternTest {
         "yyyy-mm-ddTHH:MM:SS, TIME, false",
         "yyyy-mm-ddTHH:MM:SS, DATETIME, true",
     })
-    void isOfTheInputTypeOfItsKind(String pattern, String inputType, boolean ofInputType) {
-        assertThat(TemporalPattern.parse(pattern).isOfInputType(inputType)).isEqualTo(ofInputType);
+    void isForTheInputTypeOfItsKind(String pattern, String inputType, boolean forInputType) {
+        assertThat(TemporalPattern.parse(pattern).isForInputType(inputType)).isEqualTo(forInputType);
     }
 }

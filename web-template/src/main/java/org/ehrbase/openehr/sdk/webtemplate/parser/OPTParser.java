@@ -188,19 +188,24 @@ public class OPTParser {
     }
 
     /**
-     * Parses the pattern of a date, time or date-time input here, with the template, and reports an unsupported
-     * one according to the mode: ignored (DISABLED), logged (LENIENT) or rejected (STRICT)
+     * Parses the pattern of a date, time or date-time input and keeps it on the validation when it is supported and
+     * of the kind of the input; reports any other pattern according to the mode: ignored (DISABLED), logged (LENIENT)
+     * or rejected (STRICT)
      */
-    private void checkTemporalPattern(WebTemplateInput input, AqlPath path) {
-        if (temporalPatternMode == TemporalPatternMode.DISABLED || !TEMPORAL_INPUT_TYPES.contains(input.getType())) {
+    private void parseTemporalPattern(WebTemplateInput input, AqlPath path) {
+        if (!TEMPORAL_INPUT_TYPES.contains(input.getType())) {
             return;
         }
         WebTemplateValidation validation = input.getValidation();
         if (validation == null || validation.getPattern() == null) {
             return;
         }
-        TemporalPattern temporalPattern = validation.getTemporalPattern();
-        if (temporalPattern != null && temporalPattern.isOfInputType(input.getType())) {
+        TemporalPattern temporalPattern = TemporalPattern.parse(validation.getPattern());
+        if (temporalPattern != null && temporalPattern.isForInputType(input.getType())) {
+            validation.setTemporalPattern(temporalPattern);
+            return;
+        }
+        if (temporalPatternMode == TemporalPatternMode.DISABLED) {
             return;
         }
         String message = "Unsupported %s pattern '%s' at %s"
@@ -486,7 +491,7 @@ public class OPTParser {
 
                 if (cobject instanceof CPRIMITIVEOBJECT cprimitiveobject) {
                     WebTemplateInput input = inputHandler.extractInput(cprimitiveobject);
-                    checkTemporalPattern(input, pathLoop);
+                    parseTemporalPattern(input, pathLoop);
                     inputMap.put(cattribute.getRmAttributeName(), input);
                 } else {
                     WebTemplateNode[] childNode =
