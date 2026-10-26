@@ -65,10 +65,8 @@ public class WebTemplateValidation implements Serializable {
         return pattern;
     }
 
-    /** Sets the pattern string and clears its parsed form */
     public void setPattern(String pattern) {
         this.pattern = pattern;
-        this.temporalPattern = null;
     }
 
     /**

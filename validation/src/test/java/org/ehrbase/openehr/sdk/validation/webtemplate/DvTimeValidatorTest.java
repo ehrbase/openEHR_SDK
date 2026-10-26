@@ -63,7 +63,7 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
 
     @Test
     void validatesRangeAndPatternIndependently() {
-        var node = withTemporalPatterns(parseNode("/webtemplate_nodes/dv_time_pattern_range.json"));
+        var node = parseNode("/webtemplate_nodes/dv_time_pattern_range.json");
 
         // in range, pattern violation, seconds not allowed
         var result = validator.validate(new DvTime(LocalTime.of(11, 30, 15)), node);

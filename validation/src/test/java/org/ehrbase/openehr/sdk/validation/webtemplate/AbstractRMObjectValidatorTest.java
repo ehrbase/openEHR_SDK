@@ -32,7 +32,9 @@ public abstract class AbstractRMObjectValidatorTest {
 
     protected WebTemplateNode parseNode(String file) {
         try (InputStream in = getClass().getResourceAsStream(file)) {
-            return OBJECT_MAPPER.readValue(in, WebTemplateNode.class);
+            WebTemplateNode node = OBJECT_MAPPER.readValue(in, WebTemplateNode.class);
+            initializeTree(node);
+            return node;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -50,17 +52,27 @@ public abstract class AbstractRMObjectValidatorTest {
         node.setRmType(rmType);
         node.setAqlPath("/test/" + rmType.toLowerCase());
         node.getInputs().add(input);
-        return withTemporalPatterns(node);
+        initializeTree(node);
+        return node;
     }
 
     /**
-     * Sets the parsed pattern on the inputs of the node, which a node built by hand or read from JSON lacks.
+     * Sets the parsed pattern on the inputs of the nodes recursively, which a node built by hand or read from JSON lacks.
      */
-    protected static WebTemplateNode withTemporalPatterns(WebTemplateNode node) {
-        node.getInputs().stream()
-                .map(WebTemplateInput::getValidation)
-                .filter(v -> v != null && v.getPattern() != null)
-                .forEach(v -> v.setTemporalPattern(TemporalPattern.parse(v.getPattern())));
-        return node;
+    protected static void initializeTree(WebTemplateNode node) {
+
+        // set temporal patterns, if needed
+        node.getInputs().forEach(in -> {
+            WebTemplateValidation validation = in.getValidation();
+            if (validation != null && validation.getPattern() != null) {
+                TemporalPattern temporalPattern = TemporalPattern.parse(validation.getPattern());
+                if (temporalPattern != null && temporalPattern.isForInputType(in.getType())) {
+                    validation.setTemporalPattern(temporalPattern);
+                }
+            }
+        });
+
+        // depth-first
+        node.getChildren().forEach(AbstractRMObjectValidatorTest::initializeTree);
     }
 }

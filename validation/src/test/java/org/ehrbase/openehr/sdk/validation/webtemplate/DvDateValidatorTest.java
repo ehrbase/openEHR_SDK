@@ -61,7 +61,7 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
 
     @Test
     void validatesRangeAndPatternIndependently() {
-        var node = withTemporalPatterns(parseNode("/webtemplate_nodes/dv_date_pattern_range.json"));
+        var node = parseNode("/webtemplate_nodes/dv_date_pattern_range.json");
 
         // in range, pattern violation, days not allowed
         var result = validator.validate(new DvDate(LocalDate.of(2022, 1, 10)), node);

@@ -64,7 +64,6 @@ import org.ehrbase.openehr.sdk.terminology.ValueSet;
 import org.ehrbase.openehr.sdk.terminology.openehr.AttributeCodesets;
 import org.ehrbase.openehr.sdk.util.exception.SdkException;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
-import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateAnnotation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
@@ -192,20 +191,12 @@ public class OPTParser {
      * of the kind of the input; reports any other pattern according to the mode: ignored (DISABLED), logged (LENIENT)
      * or rejected (STRICT)
      */
-    private void parseTemporalPattern(WebTemplateInput input, AqlPath path) {
-        if (!TEMPORAL_INPUT_TYPES.contains(input.getType())) {
+    private void checkTemporalPattern(WebTemplateInput input, AqlPath path) {
+        if (temporalPatternMode == TemporalPatternMode.DISABLED || !TEMPORAL_INPUT_TYPES.contains(input.getType())) {
             return;
         }
         WebTemplateValidation validation = input.getValidation();
-        if (validation == null || validation.getPattern() == null) {
-            return;
-        }
-        TemporalPattern temporalPattern = TemporalPattern.parse(validation.getPattern());
-        if (temporalPattern != null && temporalPattern.isForInputType(input.getType())) {
-            validation.setTemporalPattern(temporalPattern);
-            return;
-        }
-        if (temporalPatternMode == TemporalPatternMode.DISABLED) {
+        if (validation == null || validation.getPattern() == null || validation.getTemporalPattern() != null) {
             return;
         }
         String message = "Unsupported %s pattern '%s' at %s"
@@ -491,7 +482,7 @@ public class OPTParser {
 
                 if (cobject instanceof CPRIMITIVEOBJECT cprimitiveobject) {
                     WebTemplateInput input = inputHandler.extractInput(cprimitiveobject);
-                    parseTemporalPattern(input, pathLoop);
+                    checkTemporalPattern(input, pathLoop);
                     inputMap.put(cattribute.getRmAttributeName(), input);
                 } else {
                     WebTemplateNode[] childNode =

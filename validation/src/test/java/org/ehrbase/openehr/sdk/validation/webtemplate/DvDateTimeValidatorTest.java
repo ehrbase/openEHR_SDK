@@ -73,7 +73,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
 
     @Test
     void validatesRangeAndPatternIndependently() {
-        var node = withTemporalPatterns(parseNode("/webtemplate_nodes/dv_datetime_pattern_range.json"));
+        var node = parseNode("/webtemplate_nodes/dv_datetime_pattern_range.json");
 
         // in range, pattern violation, seconds not allowed
         var value = OffsetDateTime.of(2022, 1, 1, 12, 0, 30, 0, ZoneOffset.UTC);

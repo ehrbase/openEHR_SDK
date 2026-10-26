@@ -31,6 +31,7 @@ import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ehrbase.openehr.sdk.util.rmconstants.RmConstants;
 import org.ehrbase.openehr.sdk.webtemplate.model.ProportionType;
+import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateComparisonSymbol;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInputValue;
@@ -79,14 +80,16 @@ public class InputHandler {
                 .map(a -> a.newCursor().getTextValue())
                 .ifPresent(input::setDefaultValue);
 
-        boolean addValidation = false;
         if (item instanceof CDATETIME cdatetime) {
             pattern = cdatetime.getPattern();
-
+            setTemporalPattern(pattern, "DATETIME", validation);
         } else if (item instanceof CTIME ctime) {
             pattern = ctime.getPattern();
+            setTemporalPattern(pattern, "TIME", validation);
         } else if (item instanceof CDATE cdate) {
             pattern = cdate.getPattern();
+            setTemporalPattern(pattern, "DATE", validation);
+
         } else if (item instanceof CSTRING cstring) {
             pattern = cstring.getPattern();
             Arrays.stream(cstring.getListArray()).forEach(i -> {
@@ -117,6 +120,8 @@ public class InputHandler {
                 input.getList().add(inputValue);
             }
         }
+
+        boolean addValidation = false;
         if (StringUtils.isNotBlank(pattern)) {
             validation.setPattern(pattern);
             addValidation = true;
@@ -131,6 +136,13 @@ public class InputHandler {
             input.setValidation(validation);
         }
         return input;
+    }
+
+    private static void setTemporalPattern(String pattern, String inputType, WebTemplateValidation validation) {
+        TemporalPattern temporalPattern = TemporalPattern.parse(pattern);
+        if (temporalPattern != null && temporalPattern.isForInputType(inputType)) {
+            validation.setTemporalPattern(temporalPattern);
+        }
     }
 
     <T extends Serializable> WebTemplateInterval<T> extractInterval(Interval interval) {

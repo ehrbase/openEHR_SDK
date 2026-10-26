@@ -27,11 +27,12 @@ import org.junit.jupiter.api.Test;
 class WebTemplateValidationTest {
 
     @Test
-    void setPatternClearsTheTemporalPattern() {
+    void setPatternRetainsTemporalPattern() {
         WebTemplateValidation validation = validationWithTemporalPattern("yyyy-mm-dd");
+        TemporalPattern temporalPattern = validation.getTemporalPattern();
 
         validation.setPattern("HH:MM:SS");
-        assertThat(validation.getTemporalPattern()).isNull();
+        assertThat(validation.getTemporalPattern()).isSameAs(temporalPattern);
     }
 
     @Test
