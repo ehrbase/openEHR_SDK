@@ -82,19 +82,17 @@ class OPTParserTest {
 
     @ParameterizedTest(name = "{0} / {1}")
     @CsvSource({
-        "DISABLED, yyyy-mm-dd, PARSED",
-        "DISABLED, yyyy-mm-dd-XX, IGNORED",
-        "DISABLED, HH:MM:SS, IGNORED",
-        "LENIENT, yyyy-mm-dd, PARSED",
-        "LENIENT, yyyy-mm-dd-XX, IGNORED",
-        "LENIENT, HH:MM:SS, IGNORED",
-        "STRICT, yyyy-mm-dd, PARSED",
-        "STRICT, yyyy-mm-dd-XX, REJECTED",
-        "STRICT, HH:MM:SS, REJECTED",
+        "false, yyyy-mm-dd, PARSED",
+        "false, yyyy-mm-dd-XX, IGNORED",
+        "false, HH:MM:SS, IGNORED",
+        "true,  yyyy-mm-dd, PARSED",
+        "true,  yyyy-mm-dd-XX, REJECTED",
+        "true,  HH:MM:SS, REJECTED",
     })
-    void temporalPatternsAreCheckedWithTheTemplate(TemporalPatternMode mode, String pattern, String outcome)
-            throws XmlException, IOException {
-        OPTParser parser = new OPTParser(withTemporalPattern(OperationalTemplateTestData.ALL_TYPES, pattern), mode);
+    void temporalPatternsAreCheckedWithTheTemplate(
+            boolean rejectInvalidTemporalPatterns, String pattern, String outcome) throws XmlException, IOException {
+        OPTParser parser = new OPTParser(
+                withTemporalPattern(OperationalTemplateTestData.ALL_TYPES, pattern), rejectInvalidTemporalPatterns);
 
         switch (outcome) {
             case "PARSED" ->

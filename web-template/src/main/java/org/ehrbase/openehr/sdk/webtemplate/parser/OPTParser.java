@@ -135,7 +135,7 @@ public class OPTParser {
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
     private final InputHandler inputHandler;
-    private final TemporalPatternMode temporalPatternMode;
+    private final boolean temporalPatternSyntaxValidation;
     private final Map<String, Map<String, String>> annotationMap = new HashMap<>();
     private List<String> languages;
 
@@ -152,20 +152,19 @@ public class OPTParser {
     }
 
     /**
-     * Parses with {@link TemporalPatternMode#LENIENT}, as do the static {@code parse} methods; use
-     * {@link #OPTParser(OPERATIONALTEMPLATE, TemporalPatternMode)} for another mode.
+     * Parses OPTs rejecting invalid temporal patterns
      */
     public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
-        this(operationaltemplate, TemporalPatternMode.LENIENT);
+        this(operationaltemplate, true);
     }
 
     /**
      * @param operationaltemplate the template to parse
-     * @param temporalPatternMode how the patterns of C_DATE, C_TIME and C_DATE_TIME constraints are treated while parsing
+     * @param rejectInvalidTemporalPatterns if unsupported temporal patterns are rejected with an IllegalArgumentException
      */
-    public OPTParser(OPERATIONALTEMPLATE operationaltemplate, TemporalPatternMode temporalPatternMode) {
+    public OPTParser(OPERATIONALTEMPLATE operationaltemplate, boolean rejectInvalidTemporalPatterns) {
         this.operationaltemplate = operationaltemplate;
-        this.temporalPatternMode = temporalPatternMode;
+        this.temporalPatternSyntaxValidation = rejectInvalidTemporalPatterns;
         defaultLanguage = operationaltemplate.getLanguage().getCodeString();
 
         Map<String, String> defaultValues =
@@ -176,14 +175,23 @@ public class OPTParser {
         inputHandler = new InputHandler(defaultValues);
     }
 
+    public static WebTemplate parse(OPERATIONALTEMPLATE operationaltemplate, boolean rejectInvalidTemporalPatterns) {
+        return new OPTParser(operationaltemplate, rejectInvalidTemporalPatterns).parse();
+    }
+
     public static WebTemplate parse(OPERATIONALTEMPLATE operationaltemplate) {
-        return new OPTParser(operationaltemplate).parse();
+        return parse(operationaltemplate, true);
+    }
+
+    public static WebTemplate parse(InputStream in, boolean rejectInvalidTemporalPatterns)
+            throws XmlException, IOException {
+        try (in) {
+            return parse(TemplateDocument.Factory.parse(in).getTemplate(), rejectInvalidTemporalPatterns);
+        }
     }
 
     public static WebTemplate parse(InputStream in) throws XmlException, IOException {
-        try (in) {
-            return parse(TemplateDocument.Factory.parse(in).getTemplate());
-        }
+        return parse(in, true);
     }
 
     /**
@@ -192,19 +200,20 @@ public class OPTParser {
      * or rejected (STRICT)
      */
     private void checkTemporalPattern(WebTemplateInput input, AqlPath path) {
-        if (temporalPatternMode == TemporalPatternMode.DISABLED || !TEMPORAL_INPUT_TYPES.contains(input.getType())) {
-            return;
-        }
         WebTemplateValidation validation = input.getValidation();
-        if (validation == null || validation.getPattern() == null || validation.getTemporalPattern() != null) {
+        if (validation == null
+                || validation.getPattern() == null
+                || validation.getTemporalPattern() != null
+                || !TEMPORAL_INPUT_TYPES.contains(input.getType())) {
             return;
         }
         String message = "Unsupported %s pattern '%s' at %s"
                 .formatted(input.getType(), validation.getPattern(), path.format(true));
-        if (temporalPatternMode == TemporalPatternMode.STRICT) {
+        if (temporalPatternSyntaxValidation) {
             throw new IllegalArgumentException(message);
+        } else {
+            LOGGER.warn(message);
         }
-        LOGGER.warn(message);
     }
 
     public WebTemplate parse() {

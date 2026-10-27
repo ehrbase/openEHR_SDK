@@ -23,10 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -40,7 +38,7 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
     private final DvTimeValidator validator = new DvTimeValidator();
 
     @Test
-    void testValidate() throws Exception {
+    void testValidate() {
         var node = parseNode("/webtemplate_nodes/dv_time.json");
 
         var result = validator.validate(new DvTime(LocalTime.now()), node);
@@ -48,9 +46,8 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void testValidate_Range() throws Exception {
+    void testValidate_Range() {
         var node = parseNode("/webtemplate_nodes/dv_time_range.json");
-        OffsetDateTime value;
 
         var result = validator.validate(new DvTime(LocalTime.of(11, 30)), node);
         assertTrue(result.isEmpty());
@@ -82,7 +79,7 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
     @Test
     void disabledModeSkipsThePattern() {
         var node = nodeWithValidationPattern("DV_TIME", "TIME", "HH:MM:SS");
-        var disabledValidator = new DvTimeValidator(TemporalPatternMode.DISABLED);
+        var disabledValidator = new DvTimeValidator(false);
 
         var result = disabledValidator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime("10")), node);
         assertThat(result).isEmpty();

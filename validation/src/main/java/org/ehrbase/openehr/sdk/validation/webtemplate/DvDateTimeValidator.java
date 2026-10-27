@@ -18,11 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import java.util.List;
-import java.util.stream.Stream;
-import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
-import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 
 /**
  * {@link ConstraintValidator} that validates a <code>DV_DATE_TIME</code> object.
@@ -31,41 +26,13 @@ import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
  * @since 1.7
  */
 @SuppressWarnings("unused")
-public class DvDateTimeValidator implements ConstraintValidator<DvDateTime> {
-
-    private final boolean validatePattern;
+public class DvDateTimeValidator extends AbstractTemporalValidator<DvDateTime> {
 
     public DvDateTimeValidator() {
-        this(TemporalPatternMode.LENIENT);
+        this(true);
     }
 
-    public DvDateTimeValidator(TemporalPatternMode temporalPatternMode) {
-        this.validatePattern = temporalPatternMode != TemporalPatternMode.DISABLED;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvDateTime> getAssociatedClass() {
-        return DvDateTime.class;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ConstraintViolation> validate(DvDateTime dvDateTime, WebTemplateNode node) {
-        if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return List.of();
-        }
-
-        var input = WebTemplateValidationUtils.getInputWithType(node, "DATETIME");
-        var value = dvDateTime.getValue();
-        return ConstraintValidator.concat(
-                validatePattern
-                        ? Stream.ofNullable(TemporalPatternValidator.validate(node.getAqlPath(), value, input))
-                        : Stream.empty(),
-                PrimitiveConstraintValidator.validate(node.getAqlPath(), value, input).stream());
+    public DvDateTimeValidator(boolean validatePattern) {
+        super(validatePattern, DvDateTime.class, "DATETIME");
     }
 }

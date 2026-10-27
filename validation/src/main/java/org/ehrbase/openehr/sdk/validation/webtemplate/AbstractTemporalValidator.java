@@ -17,31 +17,72 @@
  */
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
+import com.nedap.archie.rm.RMObject;
+import com.nedap.archie.rm.datavalues.SingleValuedDataValue;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern;
-import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern.TemporalPatternField;
-import org.ehrbase.openehr.sdk.webtemplate.model.TemporalPattern.TemporalPatternValidity;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateInput;
+import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateValidation;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Validates DV_DATE, DV_TIME and DV_DATE_TIME values against the {@link TemporalPattern} of their input.
- * <p>Values are checked using ChronoFields: a mandatory field must be present, a prohibited one must not, optional
- * fields are not checked; a timezone suffix requires an offset, Z a zero offset, ±hh a whole number of hours.</p>
- */
-final class TemporalPatternValidator {
+public abstract class AbstractTemporalValidator<T extends RMObject & SingleValuedDataValue<? extends TemporalAccessor>>
+        implements ConstraintValidator<T> {
+    private final boolean validateTemporalPattern;
+    private final Class<T> associatedClass;
+    private final String temporalType;
 
-    private TemporalPatternValidator() {}
+    protected AbstractTemporalValidator(
+            boolean validateTemporalPattern, Class<T> associatedClass, String temporalType) {
+        this.validateTemporalPattern = validateTemporalPattern;
+        this.associatedClass = associatedClass;
+        this.temporalType = temporalType;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ConstraintViolation> validate(T dvDateTime, WebTemplateNode node) {
+        if (!WebTemplateValidationUtils.hasInputs(node)) {
+            return List.of();
+        }
+
+        var input = WebTemplateValidationUtils.getInputWithType(node, getTemporalType());
+        TemporalAccessor value = dvDateTime.getValue();
+
+        List<ConstraintViolation> violations = PrimitiveConstraintValidator.validate(node.getAqlPath(), value, input);
+
+        if (validateTemporalPattern) {
+            ConstraintViolation patternViolation = validateTemporalPattern(node.getAqlPath(), value, input);
+            return ConstraintValidator.concat(Stream.ofNullable(patternViolation), violations.stream());
+        } else {
+            return violations;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<T> getAssociatedClass() {
+        return associatedClass;
+    }
+
+    protected String getTemporalType() {
+        return temporalType;
+    }
 
     /**
      * Validates the value against the pattern of the input (if any)
      * Returns the violation with the value and the pattern, or null when the value conforms or nothing is to check
      */
-    public static @Nullable ConstraintViolation validate(
+    private static @Nullable ConstraintViolation validateTemporalPattern(
             String aqlPath, TemporalAccessor value, WebTemplateInput input) {
         if (value == null || input == null || !WebTemplateValidationUtils.hasValidationPattern(input)) {
             return null;
@@ -51,15 +92,15 @@ final class TemporalPatternValidator {
         if (temporalPattern == null) {
             return null;
         }
-        if (conforms(temporalPattern, value)) {
+        if (conformsToPattern(temporalPattern, value)) {
             return null;
         }
         return new ConstraintViolation(
                 aqlPath, "The value %s does not match the pattern %s".formatted(value, validation.getPattern()));
     }
 
-    private static boolean conforms(TemporalPattern pattern, TemporalAccessor value) {
-        for (Map.Entry<TemporalPatternField, TemporalPatternValidity> entry :
+    private static boolean conformsToPattern(TemporalPattern pattern, TemporalAccessor value) {
+        for (Map.Entry<TemporalPattern.TemporalPatternField, TemporalPattern.TemporalPatternValidity> entry :
                 pattern.validities().entrySet()) {
             ChronoField field = entry.getKey().chronoField();
             boolean present = value.isSupported(field);

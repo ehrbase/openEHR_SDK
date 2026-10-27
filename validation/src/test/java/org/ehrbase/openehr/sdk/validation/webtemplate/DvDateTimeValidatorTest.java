@@ -26,7 +26,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +40,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
     private final DvDateTimeValidator validator = new DvDateTimeValidator();
 
     @Test
-    void testValidate() throws Exception {
+    void testValidate() {
         var node = parseNode("/webtemplate_nodes/dv_datetime.json");
 
         var result = validator.validate(new DvDateTime(OffsetDateTime.now()), node);
@@ -95,7 +94,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
     @Test
     void disabledModeSkipsThePattern() {
         var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", "yyyy-mm-ddTHH:MM:SS");
-        var disabledValidator = new DvDateTimeValidator(TemporalPatternMode.DISABLED);
+        var disabledValidator = new DvDateTimeValidator(false);
 
         var result = disabledValidator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022")), node);
         assertThat(result).isEmpty();

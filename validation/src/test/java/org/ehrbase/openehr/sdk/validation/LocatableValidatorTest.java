@@ -47,7 +47,6 @@ import org.ehrbase.openehr.sdk.validation.terminology.TerminologyValidationVisit
 import org.ehrbase.openehr.sdk.validation.webtemplate.TestDataTemplateProvider;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplate;
 import org.ehrbase.openehr.sdk.webtemplate.parser.OPTParser;
-import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -218,7 +217,7 @@ class LocatableValidatorTest {
         // violates the pattern yyyy-mm-ddTHH:??:?? of test_all_types.opt
         partialDateTime.setValue(OpenEHRDateTimeParseUtils.parseDateTime("2019-01-28"));
 
-        var disabled = new LocatableValidator(null, true, true, null, TemporalPatternMode.DISABLED);
+        var disabled = new LocatableValidator(null, true, true, null, false);
         assertThat(disabled.validate(composition, template)).isEmpty();
     }
 

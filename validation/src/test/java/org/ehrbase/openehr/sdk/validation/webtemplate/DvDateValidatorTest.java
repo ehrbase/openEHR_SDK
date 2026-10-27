@@ -25,7 +25,6 @@ import com.nedap.archie.rm.datavalues.quantity.datetime.DvDate;
 import java.time.LocalDate;
 import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -39,7 +38,7 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
     private final DvDateValidator validator = new DvDateValidator();
 
     @Test
-    void testValidate() throws Exception {
+    void testValidate() {
         var node = parseNode("/webtemplate_nodes/dv_date.json");
 
         var result = validator.validate(new DvDate(LocalDate.now()), node);
@@ -80,7 +79,7 @@ class DvDateValidatorTest extends AbstractRMObjectValidatorTest {
     @Test
     void disabledModeSkipsThePattern() {
         var node = nodeWithValidationPattern("DV_DATE", "DATE", "yyyy-mm-dd");
-        var disabledValidator = new DvDateValidator(TemporalPatternMode.DISABLED);
+        var disabledValidator = new DvDateValidator(false);
 
         var result = disabledValidator.validate(new DvDate(OpenEHRDateTimeParseUtils.parseDate("2022")), node);
         assertThat(result).isEmpty();

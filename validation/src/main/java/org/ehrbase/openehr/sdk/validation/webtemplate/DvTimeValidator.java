@@ -18,11 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
-import java.util.List;
-import java.util.stream.Stream;
-import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
-import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 
 /**
  * {@link ConstraintValidator} that validates a <code>DV_TIME</code> object.
@@ -31,40 +26,13 @@ import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
  * @since 1.7
  */
 @SuppressWarnings("unused")
-public class DvTimeValidator implements ConstraintValidator<DvTime> {
-
-    private final boolean validatePattern;
+public class DvTimeValidator extends AbstractTemporalValidator<DvTime> {
 
     public DvTimeValidator() {
-        this(TemporalPatternMode.LENIENT);
+        this(true);
     }
 
-    public DvTimeValidator(TemporalPatternMode temporalPatternMode) {
-        this.validatePattern = temporalPatternMode != TemporalPatternMode.DISABLED;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvTime> getAssociatedClass() {
-        return DvTime.class;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ConstraintViolation> validate(DvTime dvTime, WebTemplateNode node) {
-        if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return List.of();
-        }
-
-        var input = WebTemplateValidationUtils.getInputWithType(node, "TIME");
-        var value = dvTime.getValue();
-        return ConstraintValidator.concat(
-                validatePattern
-                        ? Stream.ofNullable(TemporalPatternValidator.validate(node.getAqlPath(), value, input))
-                        : Stream.empty(),
-                PrimitiveConstraintValidator.validate(node.getAqlPath(), value, input).stream());
+    public DvTimeValidator(boolean validatePattern) {
+        super(validatePattern, DvTime.class, "TIME");
     }
 }

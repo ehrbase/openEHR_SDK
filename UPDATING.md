@@ -5,11 +5,10 @@ assists users migrating to a new version.
 
 ## SDK 2.36.0
 
-- `LocatableValidator` validates DV_DATE, DV_TIME and DV_DATE_TIME values against the `pattern` of their C_DATE,
-  C_TIME or C_DATE_TIME constraint. Behavior can be selected using the `TemporalPatternMode` with the following options:
-  - `LENIENT` (default): values are validated; an unsupported pattern is logged and ignored
-  - `STRICT`: values are validated; an unsupported pattern rejects the template
-  - `DISABLED`: patterns are not validated
+- Template validation of compositions now applies `pattern` constraints to DV_DATE, DV_TIME, and DV_DATE_TIME values.
+  To disable this check, set the `validateTemporalPattern` constructor parameter of `LocatableValidator` to `false`.
+- Template parsing now checks the syntax of temporal patterns.
+  To keep accepting templates with invalid patterns, set `rejectInvalidTemporalPatterns` to `false` on the classes that handle templates.
 
 ## SDK 2.34.0
 

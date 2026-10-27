@@ -27,6 +27,10 @@ public interface TemplateProvider {
     Optional<OPERATIONALTEMPLATE> find(String templateId);
 
     default Optional<WebTemplate> buildIntrospect(String templateId) {
-        return find(templateId).map(OPTParser::parse);
+        return find(templateId).map(t -> OPTParser.parse(t, isRejectInvalidTemporalPatterns()));
+    }
+
+    default boolean isRejectInvalidTemporalPatterns() {
+        return true;
     }
 }

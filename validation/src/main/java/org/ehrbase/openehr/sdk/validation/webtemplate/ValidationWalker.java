@@ -40,7 +40,6 @@ import org.ehrbase.openehr.sdk.util.reflection.ReflectionHelper;
 import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.ehrbase.openehr.sdk.validation.terminology.ExternalTerminologyValidation;
 import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
-import org.ehrbase.openehr.sdk.webtemplate.parser.TemporalPatternMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,20 +64,20 @@ public class ValidationWalker extends FromCompositionWalker<List<ConstraintViola
 
     public ValidationWalker(
             ExternalTerminologyValidation externalTerminologyValidation, boolean checkForChildrenNotInTemplate) {
-        this(externalTerminologyValidation, checkForChildrenNotInTemplate, TemporalPatternMode.LENIENT);
+        this(externalTerminologyValidation, checkForChildrenNotInTemplate, true);
     }
 
     public ValidationWalker(
             ExternalTerminologyValidation externalTerminologyValidation,
             boolean checkForChildrenNotInTemplate,
-            TemporalPatternMode temporalPatternMode) {
+            boolean validateTemporalPattern) {
         if (externalTerminologyValidation != null) {
             validators.put(DvCodedText.class, new DvCodedTextValidator(externalTerminologyValidation));
         }
 
-        validators.put(DvDate.class, new DvDateValidator(temporalPatternMode));
-        validators.put(DvTime.class, new DvTimeValidator(temporalPatternMode));
-        validators.put(DvDateTime.class, new DvDateTimeValidator(temporalPatternMode));
+        validators.put(DvDate.class, new DvDateValidator(validateTemporalPattern));
+        validators.put(DvTime.class, new DvTimeValidator(validateTemporalPattern));
+        validators.put(DvDateTime.class, new DvDateTimeValidator(validateTemporalPattern));
 
         this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
     }
