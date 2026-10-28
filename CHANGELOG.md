@@ -4,6 +4,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 
 ## [unreleased]
  ### Added 
+- Validation of temporal pattern constraints [#767](https://github.com/ehrbase/openEHR_SDK/pull/767)
  ### Fixed 
 
 ## [2.35.0]

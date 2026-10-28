@@ -17,13 +17,18 @@
  */
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  *
@@ -33,7 +38,7 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
     private final DvTimeValidator validator = new DvTimeValidator();
 
     @Test
-    void testValidate() throws Exception {
+    void testValidate() {
         var node = parseNode("/webtemplate_nodes/dv_time.json");
 
         var result = validator.validate(new DvTime(LocalTime.now()), node);
@@ -41,9 +46,8 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void testValidate_Range() throws Exception {
+    void testValidate_Range() {
         var node = parseNode("/webtemplate_nodes/dv_time_range.json");
-        OffsetDateTime value;
 
         var result = validator.validate(new DvTime(LocalTime.of(11, 30)), node);
         assertTrue(result.isEmpty());
@@ -55,10 +59,96 @@ class DvTimeValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void testValidate_Pattern() throws Exception {
-        var node = parseNode("/webtemplate_nodes/dv_time_pattern.json");
+    void validatesRangeAndPatternIndependently() {
+        var node = parseNode("/webtemplate_nodes/dv_time_pattern_range.json");
 
-        var result = validator.validate(new DvTime(LocalTime.of(11, 30)), node);
-        assertTrue(result.isEmpty());
+        // in range, pattern violation, seconds not allowed
+        var result = validator.validate(new DvTime(LocalTime.of(11, 30, 15)), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly("The value 11:30:15 does not match the pattern HH:MM:XX");
+
+        result = validator.validate(new DvTime(LocalTime.of(8, 30, 15)), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly(
+                        "The value 08:30:15 does not match the pattern HH:MM:XX",
+                        "The value 08:30:15 must be at least 10:00 and at most 12:00");
+    }
+
+    @Test
+    void disabledModeSkipsThePattern() {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", "HH:MM:SS");
+        var disabledValidator = new DvTimeValidator(false);
+
+        var result = disabledValidator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime("10")), node);
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"HH:MM", "HH:??:SS"})
+    void validateIgnoresUnsupportedPattern(String pattern) {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);
+
+        var result = validator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime("10")), node);
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "HH:MM:SS, 10:30:47",
+        "HH:MM:??, 10:30",
+        "HH:MM:??, 10:30:47",
+        "HH:MM:XX, 10:30",
+        "HH:??:??, 10",
+        "HH:??:??, 10:30",
+        "HH:??:??, 10:30:47",
+        "HH:??:XX, 10",
+        "HH:??:XX, 10:30",
+        "HH:XX:XX, 10",
+        "HH:MM:SS, 10:30:47.5Z",
+        "HH:??:XX, 10:30+02:00",
+        "hh:mm:ss, 10:30:47",
+        "HH:MM:SSZ, 10:30:47Z",
+        "HH:MM:SSZ, 10:30:47+00:00",
+        "HH:MM:SS+hh:mm, 10:30:47+01:30",
+        "HH:MM:SS+hh:mm, 10:30:47Z",
+        "HH:MM:SS+hh, 10:30:47Z",
+        "HH:MM:SS+hh, 10:30:47+01:00",
+        "HH:MM:SS+hhmm, 10:30:47-05:30",
+        "HH:MM:SS+hhmm, 10:30:47Z",
+    })
+    void validateAcceptedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);
+        var result = validator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime(value)), node);
+
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "HH:MM:SS, 10",
+        "HH:MM:SS, 10:30",
+        "HH:MM:??, 10",
+        "HH:MM:XX, 10",
+        "HH:MM:XX, 10:30:47",
+        "HH:??:XX, 10:30:47",
+        "HH:XX:XX, 10:30",
+        "HH:XX:XX, 10:30:47",
+        "HH:MM:XX, 10:30:47.5",
+        "HH:??:xx, 10:30:47",
+        "HH:MM:SSZ, 10:30",
+        "HH:MM:SSZ, 10:30:47",
+        "HH:MM:SSZ, 10:30:47+01:00",
+        "HH:MM:SS+HH:MM, 10:30:47",
+        "HH:MM:SS+hh, 10:30:47",
+        "HH:MM:SS+hh, 10:30:47+01:30",
+    })
+    void validateRejectedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_TIME", "TIME", pattern);
+        var result = validator.validate(new DvTime(OpenEHRDateTimeParseUtils.parseTime(value)), node);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getMessage()).contains(pattern);
     }
 }

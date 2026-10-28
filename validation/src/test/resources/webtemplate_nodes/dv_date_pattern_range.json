@@ -1,0 +1,17 @@
+{
+  "aqlPath": "/test/dv_date_pattern_range",
+  "inputs": [
+    {
+      "type": "DATE",
+      "validation": {
+        "pattern": "yyyy-mm-XX",
+        "range": {
+          "min": "2022-01-01",
+          "minOp": ">=",
+          "max": "2022-01-31",
+          "maxOp": "<="
+        }
+      }
+    }
+  ]
+}

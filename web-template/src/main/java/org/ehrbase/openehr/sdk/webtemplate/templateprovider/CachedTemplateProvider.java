@@ -31,6 +31,7 @@ public class CachedTemplateProvider implements TemplateProvider {
     private final TemplateProvider rootTemplateProvider;
     private final Cache<String, OPERATIONALTEMPLATE> optCache;
     private final Cache<String, WebTemplate> webTemplateCache;
+    private boolean rejectInvalidTemporalPatterns = true;
 
     /**
      * @param rootTemplateProvider The warped {@link TemplateProvider}
@@ -85,5 +86,14 @@ public class CachedTemplateProvider implements TemplateProvider {
         }
 
         return parsed;
+    }
+
+    @Override
+    public boolean isRejectInvalidTemporalPatterns() {
+        return rejectInvalidTemporalPatterns;
+    }
+
+    public void setRejectInvalidTemporalPatterns(boolean rejectInvalidTemporalPatterns) {
+        this.rejectInvalidTemporalPatterns = rejectInvalidTemporalPatterns;
     }
 }
