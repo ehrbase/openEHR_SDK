@@ -31,7 +31,7 @@ public class TemplateMetaDataDto {
 
     private String concept;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.[SSS][SS]XXX")
     @JsonProperty("created_timestamp")
     private OffsetDateTime createdOn;
 
