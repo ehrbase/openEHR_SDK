@@ -18,9 +18,6 @@
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
-import java.util.List;
-import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
-import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
 
 /**
  * {@link ConstraintValidator} that validates a <code>DV_DATE_TIME</code> object.
@@ -29,26 +26,13 @@ import org.ehrbase.openehr.sdk.webtemplate.model.WebTemplateNode;
  * @since 1.7
  */
 @SuppressWarnings("unused")
-public class DvDateTimeValidator implements ConstraintValidator<DvDateTime> {
+public class DvDateTimeValidator extends AbstractTemporalValidator<DvDateTime> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<DvDateTime> getAssociatedClass() {
-        return DvDateTime.class;
+    public DvDateTimeValidator() {
+        this(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ConstraintViolation> validate(DvDateTime dvDateTime, WebTemplateNode node) {
-        if (!WebTemplateValidationUtils.hasInputs(node)) {
-            return List.of();
-        }
-
-        var input = WebTemplateValidationUtils.getInputWithType(node, "DATETIME");
-        return PrimitiveConstraintValidator.validate(node.getAqlPath(), dvDateTime.getValue(), input);
+    public DvDateTimeValidator(boolean validatePattern) {
+        super(validatePattern, DvDateTime.class, "DATETIME");
     }
 }

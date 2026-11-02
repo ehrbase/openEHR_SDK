@@ -2,6 +2,11 @@
 
 Note: version releases in the 0.x.y range may introduce breaking changes.
 
+## [2.36.0]
+ ### Added 
+- Validation of temporal pattern constraints [#767](https://github.com/ehrbase/openEHR_SDK/pull/767)
+ ### Fixed 
+
 ## [2.35.0]
  ### Added 
  ### Fixed 
@@ -580,3 +585,4 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 [2.33.1]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.0...v2.33.1
 [2.34.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.33.1...v2.34.0
 [2.35.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.34.0...v2.35.0
+[2.36.0]: https://github.com/ehrbase/openEHR_SDK/compare/v2.35.0...v2.36.0

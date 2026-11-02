@@ -104,10 +104,15 @@ import org.openehr.schemas.v1.TCOMPLEXOBJECT;
 import org.openehr.schemas.v1.TCONSTRAINT;
 import org.openehr.schemas.v1.TERMINOLOGYID;
 import org.openehr.schemas.v1.TemplateDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class OPTParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OPTParser.class);
+    private static final Set<String> TEMPORAL_INPUT_TYPES = Set.of("DATE", "TIME", "DATETIME");
 
     private record Name(String label, Map<String, String> localizedLabels) {}
 
@@ -130,6 +135,7 @@ public class OPTParser {
     private final OPERATIONALTEMPLATE operationaltemplate;
     private final String defaultLanguage;
     private final InputHandler inputHandler;
+    private final boolean temporalPatternSyntaxValidation;
     private final Map<String, Map<String, String>> annotationMap = new HashMap<>();
     private List<String> languages;
 
@@ -145,8 +151,20 @@ public class OPTParser {
         }
     }
 
+    /**
+     * Parses OPTs rejecting invalid temporal patterns
+     */
     public OPTParser(OPERATIONALTEMPLATE operationaltemplate) {
+        this(operationaltemplate, true);
+    }
+
+    /**
+     * @param operationaltemplate the template to parse
+     * @param rejectInvalidTemporalPatterns if unsupported temporal patterns are rejected with an IllegalArgumentException
+     */
+    public OPTParser(OPERATIONALTEMPLATE operationaltemplate, boolean rejectInvalidTemporalPatterns) {
         this.operationaltemplate = operationaltemplate;
+        this.temporalPatternSyntaxValidation = rejectInvalidTemporalPatterns;
         defaultLanguage = operationaltemplate.getLanguage().getCodeString();
 
         Map<String, String> defaultValues =
@@ -157,13 +175,44 @@ public class OPTParser {
         inputHandler = new InputHandler(defaultValues);
     }
 
+    public static WebTemplate parse(OPERATIONALTEMPLATE operationaltemplate, boolean rejectInvalidTemporalPatterns) {
+        return new OPTParser(operationaltemplate, rejectInvalidTemporalPatterns).parse();
+    }
+
     public static WebTemplate parse(OPERATIONALTEMPLATE operationaltemplate) {
-        return new OPTParser(operationaltemplate).parse();
+        return parse(operationaltemplate, true);
+    }
+
+    public static WebTemplate parse(InputStream in, boolean rejectInvalidTemporalPatterns)
+            throws XmlException, IOException {
+        try (in) {
+            return parse(TemplateDocument.Factory.parse(in).getTemplate(), rejectInvalidTemporalPatterns);
+        }
     }
 
     public static WebTemplate parse(InputStream in) throws XmlException, IOException {
-        try (in) {
-            return parse(TemplateDocument.Factory.parse(in).getTemplate());
+        return parse(in, true);
+    }
+
+    /**
+     * Parses the pattern of a date, time or date-time input and keeps it on the validation when it is supported and
+     * of the kind of the input; reports any other pattern according to the mode: ignored (DISABLED), logged (LENIENT)
+     * or rejected (STRICT)
+     */
+    private void checkTemporalPattern(WebTemplateInput input, AqlPath path) {
+        WebTemplateValidation validation = input.getValidation();
+        if (validation == null
+                || validation.getPattern() == null
+                || validation.getTemporalPattern() != null
+                || !TEMPORAL_INPUT_TYPES.contains(input.getType())) {
+            return;
+        }
+        String message = "Unsupported %s pattern '%s' at %s"
+                .formatted(input.getType(), validation.getPattern(), path.format(true));
+        if (temporalPatternSyntaxValidation) {
+            throw new IllegalArgumentException(message);
+        } else {
+            LOGGER.warn(message);
         }
     }
 
@@ -441,7 +490,9 @@ public class OPTParser {
             for (COBJECT cobject : cattribute.getChildrenArray()) {
 
                 if (cobject instanceof CPRIMITIVEOBJECT cprimitiveobject) {
-                    inputMap.put(cattribute.getRmAttributeName(), inputHandler.extractInput(cprimitiveobject));
+                    WebTemplateInput input = inputHandler.extractInput(cprimitiveobject);
+                    checkTemporalPattern(input, pathLoop);
+                    inputMap.put(cattribute.getRmAttributeName(), input);
                 } else {
                     WebTemplateNode[] childNode =
                             parseCOBJECT(cobject, pathLoop, termDefinitionMap, cattribute.getRmAttributeName());

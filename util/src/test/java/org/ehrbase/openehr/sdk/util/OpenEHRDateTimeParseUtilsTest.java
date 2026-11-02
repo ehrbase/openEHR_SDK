@@ -431,6 +431,8 @@ class OpenEHRDateTimeParseUtilsTest {
         // -------Extended invalid formats
         EXTENDED_INVALID_TRAILING_T("2023-02-291T", IllegalArgumentException.class),
         EXTENDED_INVALID_TIME_STRING("12:13:14.123456789Z", IllegalArgumentException.class),
+        EXTENDED_INVALID_OFFSET_WITHOUT_TIME("2023-01-01+01:00", IllegalArgumentException.class),
+        EXTENDED_INVALID_OFFSET_ON_YEAR("2023+02", IllegalArgumentException.class),
 
         // -------Compact valid format and values
         COMPACT_PRECISION_NANOSECOND_ZULU_OFFSET(

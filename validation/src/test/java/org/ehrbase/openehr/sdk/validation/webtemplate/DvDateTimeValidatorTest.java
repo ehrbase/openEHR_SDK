@@ -17,14 +17,20 @@
  */
 package org.ehrbase.openehr.sdk.validation.webtemplate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.nedap.archie.rm.datavalues.quantity.datetime.DvDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import org.ehrbase.openehr.sdk.util.OpenEHRDateTimeParseUtils;
+import org.ehrbase.openehr.sdk.validation.ConstraintViolation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  *
@@ -34,7 +40,7 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
     private final DvDateTimeValidator validator = new DvDateTimeValidator();
 
     @Test
-    void testValidate() throws Exception {
+    void testValidate() {
         var node = parseNode("/webtemplate_nodes/dv_datetime.json");
 
         var result = validator.validate(new DvDateTime(OffsetDateTime.now()), node);
@@ -65,11 +71,108 @@ class DvDateTimeValidatorTest extends AbstractRMObjectValidatorTest {
     }
 
     @Test
-    void testValidate_Pattern() {
-        var node = parseNode("/webtemplate_nodes/dv_datetime_pattern.json");
-        var value = OffsetDateTime.of(2022, 1, 10, 12, 0, 0, 0, ZoneOffset.UTC);
+    void validatesRangeAndPatternIndependently() {
+        var node = parseNode("/webtemplate_nodes/dv_datetime_pattern_range.json");
 
+        // in range, pattern violation, seconds not allowed
+        var value = OffsetDateTime.of(2022, 1, 1, 12, 0, 30, 0, ZoneOffset.UTC);
         var result = validator.validate(new DvDateTime(value), node);
-        assertTrue(result.isEmpty());
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly("The value 2022-01-01T12:00:30Z does not match the pattern yyyy-mm-ddTHH:MM:XX");
+
+        value = OffsetDateTime.of(2022, 1, 10, 12, 0, 30, 0, ZoneOffset.UTC);
+        result = validator.validate(new DvDateTime(value), node);
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly(
+                        "The value 2022-01-10T12:00:30Z does not match the pattern yyyy-mm-ddTHH:MM:XX",
+                        "The value 2022-01-10T12:00:30Z must be at least 2022-01-01T10:00Z"
+                                + " and at most 2022-01-01T18:30Z");
+    }
+
+    @Test
+    void disabledModeSkipsThePattern() {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", "yyyy-mm-ddTHH:MM:SS");
+        var disabledValidator = new DvDateTimeValidator(false);
+
+        var result = disabledValidator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022")), node);
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"yyyy-mm-ddTHH:MM", "yyyy-??-??THH:??:??"})
+    void validateIgnoresUnsupportedPattern(String pattern) {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
+
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime("2022-10-24")), node);
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30:47.5Z",
+        "yyyy-XX-XXTXX:XX:XX, 2022",
+        "yyyy-??-??T??:??:??, 2022",
+        "yyyy-??-??T??:??:??, 2022-10-24",
+        "yyyy-??-??T??:??:??, 2022-10-24T10:30:47",
+        "yyyy-mm-??TXX:XX:XX, 2022-10",
+        "yyyy-mm-ddTXX:XX:XX, 2022-10-24",
+        "yyyy-mm-ddT??:XX:XX, 2022-10-24",
+        "yyyy-mm-ddT??:XX:XX, 2022-10-24T10",
+        "yyyy-??-??T??:??:XX, 2022",
+        "yyyy-??-??T??:??:XX, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:??:??, 2022-10-24T10",
+        "yyyy-mm-ddThh:??:??, 2022-10-24T10:30:47.5Z",
+        "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:mm:??, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:??:XX, 2022-10-24T10",
+        "YYYY-MM-DDT??:??:??, 2022-10-24T10",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47Z",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47+00:00",
+        "yyyy-mm-ddThh:mm:ss+hh:mm, 2022-10-24T10:30:47+01:00",
+        "yyyy-mm-ddThh:mm:ss+hh:mm, 2022-10-24T10:30:47Z",
+        "yyyy-mm-ddThh:??:??+hh, 2022-10-24T10:30:47-03:00",
+        "yyyy-mm-ddT??:??:??+hh:mm, 2022-10-24T10+01:00",
+    })
+    void validateAcceptedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime(value)), node);
+
+        assertThat(result).isEmpty();
+    }
+
+    @ParameterizedTest(name = "{0} / {1}")
+    @CsvSource({
+        "yyyy-mm-ddThh:mm:ss, 2022",
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24",
+        "yyyy-mm-ddThh:mm:ss, 2022-10-24T10:30",
+        "yyyy-XX-XXTXX:XX:XX, 2022-10",
+        "yyyy-XX-XXTXX:XX:XX, 2022-10-24T10",
+        "yyyy-mm-??TXX:XX:XX, 2022",
+        "yyyy-mm-??TXX:XX:XX, 2022-10-24T10",
+        "yyyy-mm-ddTXX:XX:XX, 2022-10",
+        "yyyy-mm-ddTXX:XX:XX, 2022-10-24T10",
+        "yyyy-mm-ddT??:XX:XX, 2022-10-24T10:30",
+        "yyyy-??-??T??:??:XX, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:??:??, 2022-10-24",
+        "yyyy-mm-ddThh:mm:XX, 2022-10-24T10",
+        "yyyy-mm-ddThh:mm:XX, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:mm:??, 2022-10-24T10",
+        "yyyy-mm-ddThh:??:XX, 2022-10-24T10:30:47",
+        "yyyy-mm-ddTHH:MM:SS, 2022-10-24T10:30",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:mm:ssZ, 2022-10-24T10:30:47+01:00",
+        "yyyy-mm-ddThh:??:??+hh, 2022-10-24T10:30:47",
+        "yyyy-mm-ddThh:??:??+hh, 2022-10-24T10:30:47+05:30",
+        "yyyy-mm-ddT??:??:??+hh:mm, 2022-10-24",
+    })
+    void validateRejectedPatternValues(String pattern, String value) {
+        var node = nodeWithValidationPattern("DV_DATE_TIME", "DATETIME", pattern);
+        var result = validator.validate(new DvDateTime(OpenEHRDateTimeParseUtils.parseDateTime(value)), node);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getMessage()).contains(pattern);
     }
 }

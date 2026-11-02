@@ -1,0 +1,17 @@
+{
+  "aqlPath": "/test/dv_datetime_pattern_range",
+  "inputs": [
+    {
+      "type": "DATETIME",
+      "validation": {
+        "pattern": "yyyy-mm-ddTHH:MM:XX",
+        "range": {
+          "min": "2022-01-01T10:00:00.000Z",
+          "minOp": ">=",
+          "max": "2022-01-01T18:30:00.000Z",
+          "maxOp": "<="
+        }
+      }
+    }
+  ]
+}

@@ -40,6 +40,7 @@ import org.jspecify.annotations.NonNull;
 public class LocatableValidator {
 
     private final boolean checkForChildrenNotInTemplate;
+    private final boolean validateTemporalPattern;
 
     private final RMObjectValidator rmObjectValidator;
 
@@ -61,7 +62,17 @@ public class LocatableValidator {
             boolean checkForChildrenNotInTemplate,
             boolean validateInvariants,
             OperationalTemplateProvider archetypeProvider) {
+        this(externalTerminologyValidation, checkForChildrenNotInTemplate, validateInvariants, archetypeProvider, true);
+    }
+
+    public LocatableValidator(
+            ExternalTerminologyValidation externalTerminologyValidation,
+            boolean checkForChildrenNotInTemplate,
+            boolean validateInvariants,
+            OperationalTemplateProvider archetypeProvider,
+            boolean validateTemporalPattern) {
         this.externalTerminologyValidation = externalTerminologyValidation;
+        this.validateTemporalPattern = validateTemporalPattern;
         this.checkForChildrenNotInTemplate = checkForChildrenNotInTemplate;
 
         ValidationConfiguration validationCfg = new ValidationConfiguration.Builder()
@@ -89,7 +100,7 @@ public class LocatableValidator {
         List<RMObjectValidationMessage> messages = rmObjectValidator.validate(composition);
         if (messages.isEmpty()) {
             List<ConstraintViolation> result = new ArrayList<>();
-            new ValidationWalker(externalTerminologyValidation, checkForChildrenNotInTemplate)
+            new ValidationWalker(externalTerminologyValidation, checkForChildrenNotInTemplate, validateTemporalPattern)
                     .walk(composition, result, template.getTree(), template.getTemplateId());
             return result;
         } else {

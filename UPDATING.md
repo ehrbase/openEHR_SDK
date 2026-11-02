@@ -3,6 +3,13 @@
 This file documents any backwards-incompatible changes in SDK and
 assists users migrating to a new version.
 
+## SDK 2.36.0
+
+- Template validation of compositions now applies `pattern` constraints to DV_DATE, DV_TIME, and DV_DATE_TIME values.
+  To disable this check, set the `validateTemporalPattern` constructor parameter of `LocatableValidator` to `false`.
+- Template parsing now checks the syntax of temporal patterns.
+  To keep accepting templates with invalid patterns, set `rejectInvalidTemporalPatterns` to `false` on the classes that handle templates.
+
 ## SDK 2.34.0
 
 - Manual sanitization of AQL parameters for `AqlEndpoint::execute` and `AqlEndpoint::executeRaw` is no longer needed

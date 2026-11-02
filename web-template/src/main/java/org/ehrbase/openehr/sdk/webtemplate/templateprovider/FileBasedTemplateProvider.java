@@ -41,6 +41,7 @@ public class FileBasedTemplateProvider implements TemplateProvider {
     private final Map<String, Path> pathMap = new HashMap<>();
 
     private final Path templateDirectory;
+    private boolean rejectInvalidTemporalPatterns = true;
 
     /**
      * @param templateDirectory Path to folder with the OPT files. Every file with ending  <code>*.opt</code> will be parsed.
@@ -85,5 +86,14 @@ public class FileBasedTemplateProvider implements TemplateProvider {
         }
 
         return Optional.ofNullable(pathMap.get(templateId)).map(this::readTemplate);
+    }
+
+    @Override
+    public boolean isRejectInvalidTemporalPatterns() {
+        return rejectInvalidTemporalPatterns;
+    }
+
+    public void setRejectInvalidTemporalPatterns(boolean rejectInvalidTemporalPatterns) {
+        this.rejectInvalidTemporalPatterns = rejectInvalidTemporalPatterns;
     }
 }

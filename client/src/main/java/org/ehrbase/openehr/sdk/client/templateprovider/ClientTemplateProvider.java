@@ -25,6 +25,7 @@ import org.openehr.schemas.v1.OPERATIONALTEMPLATE;
 public class ClientTemplateProvider implements TemplateProvider {
 
     private DefaultRestClient restClient;
+    private boolean rejectInvalidTemporalPatterns = true;
 
     public ClientTemplateProvider(DefaultRestClient restClient) {
         this.restClient = restClient;
@@ -33,5 +34,14 @@ public class ClientTemplateProvider implements TemplateProvider {
     @Override
     public Optional<OPERATIONALTEMPLATE> find(String templateId) {
         return restClient.templateEndpoint().findTemplate(templateId);
+    }
+
+    @Override
+    public boolean isRejectInvalidTemporalPatterns() {
+        return rejectInvalidTemporalPatterns;
+    }
+
+    public void setRejectInvalidTemporalPatterns(boolean rejectInvalidTemporalPatterns) {
+        this.rejectInvalidTemporalPatterns = rejectInvalidTemporalPatterns;
     }
 }
