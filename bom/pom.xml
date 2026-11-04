@@ -42,6 +42,8 @@
 
         <antlr4.version>4.13.2</antlr4.version>
         <archie.version>3.13.0</archie.version>
+        <!-- keep kryo in sync with archie -->
+        <kryo.version>5.6.2</kryo.version>
         <assertj.version>3.27.7</assertj.version>
         <classgraph.version>4.8.184</classgraph.version>
         <commons-cli.version>1.11.0</commons-cli.version>
@@ -174,6 +176,11 @@
                 <groupId>com.nedap.healthcare.archie</groupId>
                 <artifactId>openehr-rm</artifactId>
                 <version>${archie.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.esotericsoftware.kryo</groupId>
+                <artifactId>kryo5</artifactId>
+                <version>${kryo.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nedap.healthcare.archie</groupId>

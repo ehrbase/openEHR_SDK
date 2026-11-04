@@ -17,6 +17,11 @@
  */
 package org.ehrbase.openehr.sdk.util;
 
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.KryoCopyable;
+import com.esotericsoftware.kryo.kryo5.KryoSerializable;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -36,7 +41,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * Allows Year and YearMonth to behave like LocalDateTime
  */
-public final class OpenEhrTemporal implements Temporal {
+public final class OpenEhrTemporal implements Temporal, KryoCopyable<OpenEhrTemporal>, KryoSerializable {
 
     static final ChronoField[] CHRONO_FIELDS = new ChronoField[] {
         ChronoField.YEAR,
@@ -56,7 +61,7 @@ public final class OpenEhrTemporal implements Temporal {
     private final boolean[] supported = new boolean[CHRONO_FIELDS.length];
     private final int[] fields = new int[CHRONO_FIELDS.length];
 
-    private final ChronoField resolution;
+    private ChronoField resolution;
 
     public OpenEhrTemporal(TemporalAccessor value) {
         this(value, ChronoField.NANO_OF_SECOND);
@@ -224,5 +229,28 @@ public final class OpenEhrTemporal implements Temporal {
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public OpenEhrTemporal copy(final Kryo kryo) {
+        return new OpenEhrTemporal(this);
+    }
+
+    @Override
+    public void write(final Kryo kryo, final Output output) {
+        output.writeBoolean(supported[0]);
+        output.writeString(toString());
+    }
+
+    @Override
+    public void read(final Kryo kryo, final Input input) {
+        boolean hasDate = input.readBoolean();
+        OpenEhrTemporal temporal = (OpenEhrTemporal)
+                (hasDate
+                        ? OpenEHRDateTimeParseUtils.parseDateTime(input.readString())
+                        : OpenEHRDateTimeParseUtils.parseTime(input.readString()));
+        this.resolution = temporal.resolution;
+        System.arraycopy(temporal.fields, 0, this.fields, 0, fields.length);
+        System.arraycopy(temporal.supported, 0, this.supported, 0, supported.length);
     }
 }
