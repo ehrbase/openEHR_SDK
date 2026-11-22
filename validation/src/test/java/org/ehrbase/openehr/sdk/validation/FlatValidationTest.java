@@ -17,13 +17,20 @@
  */
 package org.ehrbase.openehr.sdk.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatFormat;
 import org.ehrbase.openehr.sdk.serialisation.flatencoding.FlatJasonProvider;
+import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataConformanceSDTJson;
 import org.ehrbase.openehr.sdk.test_data.composition.CompositionTestDataSimSDTJson;
 import org.ehrbase.openehr.sdk.test_data.operationaltemplate.OperationalTemplateTestData;
 import org.ehrbase.openehr.sdk.validation.webtemplate.TestDataTemplateProvider;
@@ -34,6 +41,11 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings("java:S5976")
 class FlatValidationTest {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static final String DV_QUANTITY_PATH =
+            "conformance-ehrbase.de.v0/conformance_section/conformance_observation/any_event:0/dv_quantity";
 
     private final LocatableValidator validator;
 
@@ -181,6 +193,57 @@ class FlatValidationTest {
         var testData = CompositionTestDataSimSDTJson.NESTED;
 
         validate(templateId, testData);
+    }
+
+    /**
+     * A normal_range with only an upper limit (e.g. LDL &lt; 130 mg/dL) where the FLAT input omits
+     * <code>|lower_unbounded</code>. The interval then has <code>lower = null</code> and
+     * <code>lower_unbounded = false</code>, which violates Limits_consistent. The validator must
+     * report that as a validation error, not as a NullPointerException thrown by the invariant.
+     */
+    @Test
+    void normalRangeWithoutLowerAndWithoutLowerUnbounded() throws IOException {
+        Map<String, Object> flat = conformanceDvQuantityWithoutNormalRangeLower();
+
+        List<ConstraintViolation> result = validate(flat);
+
+        // the fixture also sets |normal_status, so Normal_range_and_status_consistency must not throw either
+        assertThat(result)
+                .extracting(ConstraintViolation::getMessage)
+                .noneMatch(m -> m.contains("Exception"))
+                .anyMatch(m -> m.contains("Limits_consistent") && m.contains("lower"));
+        assertThat(result)
+                .extracting(ConstraintViolation::getAqlPath)
+                .anyMatch(p -> p.endsWith("/value/normal_range/interval"));
+    }
+
+    @Test
+    void normalRangeWithoutLowerAndWithLowerUnbounded() throws IOException {
+        Map<String, Object> flat = conformanceDvQuantityWithoutNormalRangeLower();
+        flat.put(DV_QUANTITY_PATH + "/_normal_range|lower_unbounded", true);
+        flat.put(DV_QUANTITY_PATH + "/_normal_range|lower_included", false);
+
+        assertThat(validate(flat)).isEmpty();
+    }
+
+    private static Map<String, Object> conformanceDvQuantityWithoutNormalRangeLower() throws IOException {
+        Map<String, Object> flat = new LinkedHashMap<>(OBJECT_MAPPER.readValue(
+                CompositionTestDataConformanceSDTJson.EHRBASE_CONFORMANCE_DATA_TYPES_DV_QUANTITY.getStream(),
+                new TypeReference<Map<String, Object>>() {}));
+        flat.keySet()
+                .removeIf(k -> k.startsWith(DV_QUANTITY_PATH + "/_normal_range/lower")
+                        || k.startsWith(DV_QUANTITY_PATH + "/_normal_range|lower"));
+        return flat;
+    }
+
+    private List<ConstraintViolation> validate(Map<String, Object> flat) throws IOException {
+        String templateId = OperationalTemplateTestData.CONFORMANCE.getTemplateId();
+        var composition = flatJsonProvider
+                .buildFlatJson(FlatFormat.SIM_SDT, templateId)
+                .unmarshal(OBJECT_MAPPER.writeValueAsString(flat));
+        var webTemplate = templateProvider.buildIntrospect(templateId);
+        assertTrue(webTemplate.isPresent());
+        return validator.validate(composition, webTemplate.get());
     }
 
     private void validate(String templateId, CompositionTestDataSimSDTJson testData) throws IOException {
