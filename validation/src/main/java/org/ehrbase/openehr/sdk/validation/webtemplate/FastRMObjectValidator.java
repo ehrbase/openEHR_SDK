@@ -45,6 +45,7 @@ import com.nedap.archie.flattener.OperationalTemplateProvider;
 import com.nedap.archie.query.RMObjectAttributes;
 import com.nedap.archie.query.RMObjectWithPath;
 import com.nedap.archie.query.RMPathQuery;
+import com.nedap.archie.rm.datavalues.quantity.DvOrdered;
 import com.nedap.archie.rminfo.InvariantMethod;
 import com.nedap.archie.rminfo.MetaModel;
 import com.nedap.archie.rminfo.ModelInfoLookup;
@@ -71,6 +72,9 @@ import java.util.stream.Collectors;
 import org.openehr.utils.message.I18n;
 
 public class FastRMObjectValidator extends RMObjectValidator {
+
+    private static final String LIMITS_CONSISTENT = "Limits_consistent";
+    private static final String NORMAL_RANGE_AND_STATUS_CONSISTENCY = "Normal_range_and_status_consistency";
 
     private final MetaModel metaModel;
     private final OperationalTemplateProvider operationalTemplateProvider;
@@ -314,6 +318,26 @@ public class FastRMObjectValidator extends RMObjectValidator {
             if (typeInfo != null) {
                 for (InvariantMethod invariantMethod : typeInfo.getInvariants()) {
                     if (!invariantMethod.getAnnotation().ignored()) {
+                        String invariantName = invariantMethod.getAnnotation().value();
+                        String missingLimit = missingLimitForLimitsConsistent(rmObject, invariantName);
+                        if (missingLimit != null) {
+                            result.add(new RMObjectValidationMessage(
+                                    null,
+                                    pathSoFar
+                                            .joinPaths(objectWithPath.getPath(), false)
+                                            .toString(),
+                                    I18n.t(
+                                            "Invariant {0} failed on type {1}: {2} is not set but {2}_unbounded is false."
+                                                    + " For an interval open on that side set {2}_unbounded to true"
+                                                    + " and {2}_included to false",
+                                            invariantName, typeInfo.getRmName(), missingLimit),
+                                    RMObjectValidationMessageType.INVARIANT_ERROR));
+                            continue;
+                        }
+                        if (isNormalRangeConsistencyOnIncompleteRange(rmObject, invariantName)) {
+                            // cannot be evaluated: a bounded side of the normal_range has no limit
+                            continue;
+                        }
                         try {
                             boolean passed =
                                     (boolean) invariantMethod.getMethod().invoke(rmObject);
@@ -354,6 +378,46 @@ public class FastRMObjectValidator extends RMObjectValidator {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    /**
+     * Archie's <code>Interval.limitsConsistent()</code> compares <code>lower</code> and <code>upper</code> whenever
+     * both sides are bounded, and throws a NullPointerException if one of them is not set (e.g. a FLAT
+     * <code>normal_range</code> with only <code>/upper</code> and no <code>|lower_unbounded</code>).
+     *
+     * @return the name of the missing limit ("lower" or "upper") if <code>Limits_consistent</code> is
+     *     violated that way, otherwise <code>null</code>
+     */
+    private static String missingLimitForLimitsConsistent(Object rmObject, String invariantName) {
+        if (!(rmObject instanceof Interval<?> interval)
+                || !LIMITS_CONSISTENT.equals(invariantName)
+                || interval.isLowerUnbounded()
+                || interval.isUpperUnbounded()) {
+            return null;
+        }
+        if (interval.getLower() == null) {
+            return "lower";
+        }
+        if (interval.getUpper() == null) {
+            return "upper";
+        }
+        return null;
+    }
+
+    /**
+     * When <code>normal_status</code> is set, <code>Normal_range_and_status_consistency</code> calls
+     * <code>normal_range.has(self)</code>, which throws a NullPointerException if a bounded side of the range has no
+     * limit.
+     */
+    private static boolean isNormalRangeConsistencyOnIncompleteRange(Object rmObject, String invariantName) {
+        if (!(rmObject instanceof DvOrdered<?> ordered)
+                || !NORMAL_RANGE_AND_STATUS_CONSISTENCY.equals(invariantName)
+                || ordered.getNormalRange() == null) {
+            return false;
+        }
+        Interval<?> range = ordered.getNormalRange().getInterval();
+        return (!range.isLowerUnbounded() && range.getLower() == null)
+                || (!range.isUpperUnbounded() && range.getUpper() == null);
     }
 
     private void validateUnconstrainedObjectWithPath(

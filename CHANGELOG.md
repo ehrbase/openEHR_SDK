@@ -5,6 +5,7 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## [unreleased]
  ### Added 
  ### Fixed 
+- Report missing interval limit as invariant error instead of NullPointerException in `Limits_consistent` [#779](https://github.com/ehrbase/openEHR_SDK/pull/779)
 
 ## [2.36.0]
  ### Added 
